@@ -1,0 +1,71 @@
+//适用于类似简单的浮动，.flex-start>div(li/p....)是垂直居中的
+//<div class="flex-row">
+//<div></div><span></span><a></a>
+//</div>
+display-flex($flex-flow = row nowrap, $justify-content = flex-start, $align-items = initial, $align-content = initial)
+  display: flex
+  flex-flow: $flex-flow
+  justify-content: $justify-content
+  if($align-items != initial)
+    align-items: $align-items
+  if($align-content != initial)
+    align-content: $align-content
+
+*
+  box-sizing: border-box
+  padding: 0
+  margin: 0
+
+li
+  list-style-type: none
+
+.markdown-body
+  li
+    list-style-type: disc;
+    li
+      list-style-type: circle;
+
+
+a
+  color: #666;
+  // background: transparent;
+  text-decoration: none;
+  outline: none;
+  // cursor: pointer;
+  // -webkit-transition: color .3s ease;
+  // transition: color .3s ease;
+
+img
+  width: 100%;
+  height: auto;
+
+
+// .boxer
+//   width: 100%
+//   height: 100%
+//   box-sizing: border-box
+//   display: table
+//   overflow: hidden
+//   .boxer-header
+//     display: table-row
+//   .boxer-body
+//     display: table-row
+//   .boxer-footer
+//     display: table-row
+.boxer
+  width: 100%
+  height: 100%
+  display-flex(column, flex-start)
+  .boxer-body
+    flex: 1
+    flex-basis:auto
+
+
+.flex-row
+  display-flex(row,flex-start,center,center)
+
+.flex-row-wrap
+  display-flex(row wrap,flex-start,center,center)
+
+.flex-cloumn
+  display-flex(column,flex-start,center,center)
