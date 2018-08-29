@@ -354,7 +354,12 @@ module.exports = function* main(assets, opts) {
   }
 
   if (!startDevQueues.length) {
-    console.log('没有匹配到合适的源文件，检查配置文件');
+    if (argv_name) {
+      console.log(`没有匹配到${argv_name}等项目，请检查配置文件`);
+    } else {
+      console.log('没有匹配到合适的源文件，检查配置文件');
+      process.exit()
+    }
   } else {
     yield startOneProjectDevServer(startDevQueues)
   }
