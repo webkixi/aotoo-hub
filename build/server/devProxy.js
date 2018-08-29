@@ -21,7 +21,7 @@ function* generateBabelCfgFile(distserver) {
   const DISTSERVER = distserver
   const path_babelrc = path.join(DISTSERVER, '.babelrc')
   
-  const content_babelrc_path = path.join(__dirname, '../lib/server/babelrc')
+  const content_babelrc_path = path.join(__dirname, '../lib/babelrc')
   const content_babelrc = fs.readFileSync(content_babelrc_path, 'utf-8')
 
   return new Promise( (res, rej)=>{
