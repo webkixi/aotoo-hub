@@ -7,7 +7,8 @@ function cmdIndex(params) {
   const {argv} = params
   let configs_aotoo, configs_apps=[];
   let localPath = process.cwd()
-  configs_aotoo = require(argv.config); 
+  let configPath = path.join(localPath, 'aotoo.config.js')
+  configs_aotoo = require(configPath);
   configs_aotoo.localPath = localPath
   configs_apps = configs_aotoo.apps && configs_aotoo.apps.length ? configs_aotoo.apps : generateFedJsDirectory(configs_aotoo)
   if (configs_apps.length) {
