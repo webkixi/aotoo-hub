@@ -30,7 +30,11 @@ if (fs.existsSync(configPath)) {
   configs_aotoo = require(configPath)
   configs_aotoo.localPath = localPath
   process.aotooConfigs = configs_aotoo
-  configs_apps = configs_aotoo.apps && configs_aotoo.apps.length ? configs_aotoo.apps : generateFedJsDirectory(configs_aotoo)
+  if (argv.name) {
+    configs_apps = generateFedJsDirectory(configs_aotoo)
+  } else {
+    configs_apps = configs_aotoo.apps && configs_aotoo.apps.length ? configs_aotoo.apps : generateFedJsDirectory(configs_aotoo)
+  }
   if (!configs_aotoo.apps.length) {
     if (!configs_apps.length) {
       inquirer.prompt([{
