@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "export NODE_ENV=development && node index.js ",
+    "dev-build": "export NODE_ENV=development && node index.js --onlybuild",
     "dev-clean": "export NODE_ENV=development && node index.js --rebuild",
     "build": "export NODE_ENV=production && node index.js ",
     "build-clean": "yarn run build"

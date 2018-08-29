@@ -1,0 +1,11 @@
+/node_modules
+/bower_components
+/dist
+*.log
+/dist_mir
+/public/dist_mir
+/public/dist_mir/*
+.DS_Store
+*.db
+.vscode
+/uploads

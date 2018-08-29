@@ -1,6 +1,6 @@
 {
   "name": "@aotoo/aotoo-hub",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "基于webpack4的多项目脚手架",
   "main": "index.js",
   "scripts": {
