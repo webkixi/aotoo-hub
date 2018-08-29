@@ -218,7 +218,7 @@ function* wpDevProxyerer(compiler, asset) {
 
   devS.listen(proxyPort, 'localhost', function (err, result) {
     if (err) console.log(err);
-    log(log(chalk.red.bold(`【${port}】`))) // 控制台输出信息
+    // log(chalk.red.bold(`【${port}】`)) // 控制台输出信息
   })
 }
 
