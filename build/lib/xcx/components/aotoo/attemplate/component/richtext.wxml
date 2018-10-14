@@ -1,0 +1,4 @@
+<wxs src="../utils.wxs" module="utils" />
+<template name="richtext">
+  <rich-text nodes="{{item.nodes||[]}}" ></rich-text>
+</template>

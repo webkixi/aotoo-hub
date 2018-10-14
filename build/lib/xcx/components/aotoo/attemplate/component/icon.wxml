@@ -1,0 +1,10 @@
+<wxs src="../utils.wxs" module="utils" />
+<template name="icon">
+  <icon 
+    class="{{item.class}}"
+    style="{{item.style}}"
+    type="{{item.type}}"
+    size="{{item.size || 23}}"
+    color="{{item.color}}"
+  />
+</template>

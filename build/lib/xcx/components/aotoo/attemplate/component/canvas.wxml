@@ -1,0 +1,21 @@
+<wxs src="../utils.wxs" module="utils" />
+<import src="./_coverview" />
+
+<template name="canvas">
+  <canvas 
+    canvas-id="{{item['canvas-id']}}"
+    disable-scroll="{{item['disable-scroll']||false}}"
+    bindtouchstart="{{item['bindtouchstart']}}"
+    bindtouchmove="{{item['bindtouchmove']}}"
+    bindtouchend="{{item['bindtouchend']}}"
+    bindtouchcancel="{{item['bindtouchcancel']}}"
+    bindlongtap="{{item['bindlongtap']}}"
+    binderror="{{item['binderror']}}"
+    class="{{item['class']}}"
+    style="{{item['style']}}"
+  >
+    <block wx:if="{{item.coverview}}">
+      <template is="parse-cover-view" data="{{item}}"></template>
+    </block>
+  </canvas>
+</template>

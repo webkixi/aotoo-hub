@@ -1,0 +1,253 @@
+var innerCount = -1
+function suid(prefix) {
+  innerCount++
+  if (typeof prefix == 'string') {
+    return prefix + innerCount
+  } else {
+    return '_' + innerCount
+  }
+}
+
+var templates = [
+  'audio',
+  'button',
+  'camera',
+  'canvas',
+  'checkbox',
+  'icon',
+  'image',
+  'input',
+  'liveplayer',
+  'livepusher',
+  'map',
+  'navigator',
+  'progress',
+  'radio',
+  'richtext',
+  'slider',
+  'switch',
+  'text',
+  'textarea',
+  'video',
+  'view',
+
+  // 不一样的解析模板
+  'swiper',
+  'form',
+  'label',
+  'coverview',
+  'coverimage'
+]
+
+function isString(title){
+  return typeof title == 'string'
+}
+
+function objTypeof(obj) {
+  if (obj) return obj.constructor.toLowerCase()
+}
+
+function isObject(obj) {
+  return objTypeof(obj) == 'object'
+}
+
+function isArray(obj) {
+  return objTypeof(obj) == 'array'
+}
+
+function log(what){
+  console.log('========= log what')
+  console.log(JSON.stringify(what))
+}
+
+function mergeItemEvent(key, props, item) {
+  return item[key] || props[key] || ''
+}
+
+function equal(item, equalwhat){
+  if (item.title ==  equalwhat) {
+    console.log(item)
+  }
+}
+
+function getItemClass(list, item) {
+  var cItemClass = (item.itemClass || item.class) || (list.itemClass||list.class)
+  return cItemClass ? 'item '+cItemClass : 'item'
+}
+
+function getItemStyle(list, item) {
+  var cItemStyle = (item.itemStyle||item.style) || (list.itemStyle||list.style)
+  return cItemStyle ? cItemStyle : ''
+}
+
+
+function existTemp(item, excludeTmp) {
+  var tmpName = ''
+  var _tmpName
+  var noopRet = {
+    temp: 'noop',
+    data: {}
+  }
+  for (var ii = 0; ii < templates.length; ii++) {
+    var tmp = templates[ii]
+    if (item[tmp]) {
+      tmpName = tmp
+    }
+  }
+
+  if ((isString(excludeTmp) && tmpName)) {
+    if (tmpName == excludeTmp) return noopRet
+  }
+
+  _tmpName = tmpName
+  var data = item[tmpName]
+
+  switch (tmpName) {
+    case 'label':
+      tmpName = 'parse-label'
+      data = item
+      break;
+    case 'form':
+      tmpName = 'parse-form'
+      data = item
+      break;
+    case 'swiper':
+      tmpName = 'parse-swiper'
+      data = item
+      break;
+  }
+
+  return tmpName ? {
+    temp: tmpName,
+    data: data
+  } : noopRet
+}
+
+function resetTitleArray(titles) {
+  return titles.map(function(tit) {
+    if (isString(tit)) {
+      return tit
+      // return {title: tit, uniqueKey: suid('parseTitle_')}
+    }
+    if (isObject(tit)) {
+      tit.uniqueKey = suid('parseTitle_')
+      return tit
+    }
+  })
+  
+}
+
+var lev = 0
+var used_lev = []
+function lpp(level){
+  if ((level&&level<8) || level == 0) {
+    return ++lev
+  } else {
+    if (lev >= 8) {
+      console.log('超出最大允许递归数-8')
+      return false
+    }
+    return ++lev
+  }
+}
+
+function getLevel(){
+  return lev
+}
+
+function clearLevel(){
+  lev = 0
+  used_lev = []
+}
+
+function customCustom(item, key, attrName) {
+  var comp = item[key]
+  var compOption = comp && comp.option || {}
+  var compChildren = comp && comp.children || []
+
+  if (attrName) {
+    return compOption[attrName]
+  }
+  if (isArray(comp)) {
+    return {
+      option: compOption,
+      children: comp
+    }
+  }
+  if (isObject(comp)) {
+    return {
+      option: compOption,
+      children: compChildren
+    }
+  }
+}
+
+function customScrollView(item, attrName) {
+  return customCustom(item, 'scroll', attrName)
+}
+
+function customSwiperView(item, attrName) {
+  return customCustom(item, 'swiper', attrName)
+}
+
+function customLabelrView(item, attrName) {
+  return customCustom(item, 'label', attrName)
+}
+
+function customMoveView(item, attrName) {
+  return customCustom(item, 'movearea', attrName)
+}
+
+function customForm(item, attrName) {
+  return customCustom(item, 'form', attrName)
+}
+
+function customPicker(item, attrName) {
+  return customCustom(item, 'picker', attrName)
+}
+
+function customPickerView(item, attrName) {
+  return customCustom(item, 'pickerview', attrName)
+}
+
+function customView(item, attrName) {
+  return customCustom(item, 'view', attrName)
+}
+
+function customCoverView(item, attrName) {
+  return customCustom(item, 'coverview', attrName)
+}
+
+function dataOptions(item) {
+  if (item && item['data-options']) {
+    var opts = item['data-options']
+    return JSON.stringify(opts)
+  }
+  return ''
+}
+
+
+module.exports = {
+  isString: isString,
+  isObject: isObject,
+  isArray: isArray,
+  log: log,
+  getLevel:  getLevel,
+  clearLevel:  clearLevel,
+  lpp:  lpp,
+  resetTitleArray: resetTitleArray,
+  csv: customScrollView,
+  cswv: customSwiperView,
+  csmv: customMoveView,
+  cform: customForm,
+  clabel: customLabelrView,
+  cpicker: customPicker,
+  cpickerv: customPickerView,
+  cview: customView,
+  ccview: customCoverView,
+  existTemp: existTemp,
+  getItemClass: getItemClass,
+  getItemStyle: getItemStyle,
+  mergeItemEvent: mergeItemEvent,
+  dataOptions: dataOptions
+}

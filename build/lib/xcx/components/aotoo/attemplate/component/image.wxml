@@ -1,0 +1,10 @@
+<wxs src="../utils.wxs" module="utils" />
+<template name="image">
+  <image 
+    src="{{item['src']}}"
+    mode="{{item['mode']||'scaleToFill'}}"
+    lazy-load="{{item['lazy-load']||false}}"
+    binderror="{{item['binderror']}}"
+    bindload="{{item['bindload']}}"
+  />
+</template>
