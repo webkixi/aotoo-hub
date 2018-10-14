@@ -26,7 +26,7 @@ function clearObjectEmptyKey(obj) {
   return entry
 }
 
-module.exports = function(dir, opts) {
+module.exports = function (dir, opts, asset) {
   if (!fs.existsSync(dir)) return;
   const stat = fs.statSync(dir)
   if (!stat.isDirectory()) return

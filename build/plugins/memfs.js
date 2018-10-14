@@ -1,5 +1,6 @@
 
 const fs = require('fs');
+const fse = require('fs-extra')
 const path = require('path');
 const md5 = require('blueimp-md5');
 const mkdirp = require('mkdirp')
@@ -97,13 +98,15 @@ module.exports = class memeryTofs {
                 }
               })
             }
-  
-            mkdirp(directory, function (err) {
-              if (err) console.log(err);
-              fs.writeFile(existsAt, file.source(), function (err) {
-                if (err) console.log(err);
-              })
-            })
+
+            fse.ensureDirSync(directory)
+            fse.writeFileSync(existsAt, file.source())
+            // mkdirp(directory, function (err) {
+            //   if (err) console.log(err);
+            //   fs.writeFile(existsAt, file.source(), function (err) {
+            //     if (err) console.log(err);
+            //   })
+            // })
           }
         })
   
