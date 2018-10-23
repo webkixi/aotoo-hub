@@ -136,19 +136,25 @@ function checkIsProxy(src) {
   return fs.existsSync(serverPath)
 }
 
-module.exports = function createWpConfig(asset, envAttributs, forvendors) {
-  
-  // 删除旧有数据，重新编译
-  delDist(asset, forvendors)
+module.exports = function createWpConfig(asset, envAttributs, buildType) { // buildType = 'vendors' / 'xcx'
+  const isVendors = buildType && (buildType == 'vendors' || buildType == 'common')
+  const isXcx = buildType && buildType == 'xcx'
 
-  if (forvendors) {
-    return createCommonConfig(asset, envAttributs)
+  if (isXcx) {
+    return createXcxConfig(asset, envAttributs)
   } else {
-    return createBusinessConfig(asset, envAttributs)
+    // 删除旧有数据，重新编译
+    delDist(asset, isVendors)
+  
+    if (buildType) {
+      return createCommonConfig(asset, envAttributs)
+    } else {
+      return createBusinessConfig(asset, envAttributs)
+    }
   }
 }
 
-function delDist(asset, forvendors) {
+function delDist(asset, buildType) {
   const {DIST, SRC, argv, isDev} = asset
   let delSomething = [
     DIST + '/css/***',
@@ -167,7 +173,7 @@ function delDist(asset, forvendors) {
   let delTarget = delSomething
 
   if (isDev) {
-    if (!argv.rebuild || !forvendors) {
+    if (!argv.rebuild || !buildType) {
       delTarget = [].concat(delSomething).concat(delCommonFiles)
     }
   } else {
@@ -180,6 +186,11 @@ function delDist(asset, forvendors) {
   }
 
   del.sync(delTarget)
+}
+
+// 生成小程序的配置文件
+function createXcxConfig(asset, envAttributs) {
+  return require('./webpack.xcx.config')(asset, envAttributs)
 }
 
 // 生成公共文件precommon

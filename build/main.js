@@ -15,6 +15,7 @@ const commonFileExist = require('./util/commonExist')
 
 const generateScenesDir = require('./util/generateScenes')
 const generateServer = require('./util/generateServer')
+const generateXcx = require('./util/generateXcxDirectory')
 
 const configs_wp_main = require('./webpack.main.config')
 
@@ -55,6 +56,21 @@ function* buildCommonFiles(asset, dllConfig) {
 // 编译并准备启动项目的配置参数
 function* buildBusinessFiles(asset, config) {
   const { name, startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT, argv } = asset
+  if (startup) {
+    let compilerConfig = config
+    let options = asset
+
+    options.host = asset.HOST
+    options.port = asset.PORT
+    options.proxyPort = asset.PROXYPORT
+    options.contentBase = asset.DIST
+    startDevQueues.push({ compilerConfig, options })
+  }
+}
+
+// 编译并准备启动项目的配置参数
+function* buildXcxFiles(asset, config) {
+  const { TYPE, name, startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT, argv } = asset
   if (startup) {
     let compilerConfig = config
     let options = asset
@@ -110,6 +126,7 @@ function* startOneProjectDevServer(startDevQueues) {
 
 
 // 获取各项目自己的环境配置
+// 如果没有则新建一个初始配置文件
 function *getScenesConfig(asset) {
   let {SRC, options} = asset
 
@@ -150,12 +167,17 @@ function *getScenesConfig(asset) {
 
 // main启动某个有效的项目
 function* buildOneProject(config, build_asset, envAttributs) {
-  const {isDev, argv} = build_asset
-  const dllCommonConfig = configs_wp_main(build_asset, envAttributs, 'vendors')
-  yield buildCommonFiles(build_asset, dllCommonConfig)
-
-  const wpBusinessConfig = configs_wp_main(build_asset, envAttributs)
-  yield buildBusinessFiles(build_asset, wpBusinessConfig)
+  const {isDev, argv, TYPE} = build_asset
+  if (TYPE == 'mp') {
+    const xcxConfig = configs_wp_main(build_asset, envAttributs, 'xcx')
+    yield buildXcxFiles(build_asset, xcxConfig)
+  } else {
+    const dllCommonConfig = configs_wp_main(build_asset, envAttributs, 'vendors')
+    yield buildCommonFiles(build_asset, dllCommonConfig)
+  
+    const wpBusinessConfig = configs_wp_main(build_asset, envAttributs)
+    yield buildBusinessFiles(build_asset, wpBusinessConfig)
+  }
 }
 
 
@@ -268,6 +290,15 @@ module.exports = function* main(assets, opts) {
 
   // 抽取编译配置
   for (let config of assets) {
+
+    if (argv_name) {
+      if (argv_name.indexOf(config.name) > -1) {
+        config.startup = true
+      } else {
+        config.startup = false
+      }
+    }
+
     if (!config.startup) {
       continue;
     }
@@ -278,6 +309,7 @@ module.exports = function* main(assets, opts) {
     let build_asset = {
       name: yield valideAttribut('name', config.name, config),
       version: config.version,
+      TYPE: config.type||'web',    // mp(小程序), web
       startup: config.startup,
       isDev: config.isDev || process.env.NODE_ENV == 'development',
       SRC: yield valideAttribut('src', config.src),
@@ -308,13 +340,23 @@ module.exports = function* main(assets, opts) {
     }
 
     if (argv_name) {
-      if (argv_name.indexOf(config.name) > -1) {
-        build_asset.startup = true
-      } else {
-        build_asset.startup = false
-      }
+        build_asset.startup = config.startup
+      // if (argv_name.indexOf(config.name) > -1) {
+      //   build_asset.startup = true
+      // } else {
+      //   build_asset.startup = false
+      // }
     }
 
+    // 是否为小程序
+    // 是否需要初始化小程序目录
+    if (build_asset.TYPE == 'mp') {
+      generateXcx(build_asset)
+    }
+
+
+    // 生成server目录
+    // @aotoo/aotoo-koa-server
     if (build_asset.startup) {
       if ((argv_name && Commonds.server) || config.server) {
         yield generateServer(build_asset)

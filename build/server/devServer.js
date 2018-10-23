@@ -12,6 +12,7 @@ const webpack = require('webpack')
 const React = require('react')
 const ReactDomServer = require('react-dom/server')
 const WebpackDevServer = require('webpack-dev-server')
+const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin')
 
 const browserSync = require('../util/openBrowser')
 const fillupMapfile = require('../util/fillupMapfile3ds')
@@ -34,6 +35,7 @@ function* wpDevServer(compiler, asset) {
     options,
     name
   } = asset
+  
   let publicPath = getPublicPath(options)
   const DISTHTML = path.join(DIST, 'html')
   const DISTCSS = path.join(DIST, 'css')
@@ -163,20 +165,29 @@ function* wpProductionDone(compiler, asset) {
 
 // 启动webpack-dev-server服务
 module.exports = function* (compilerConfig, asset) {
-  const { contentBase, host, port, SRC, DIST, isDev, argv } = asset
+  const { TYPE, contentBase, host, port, SRC, DIST, isDev, argv } = asset
   const DISTHTML = path.join(DIST, 'html')
   const DISTCSS = path.join(DIST, 'css')
   const DISTJS = path.join(DIST, 'js')
   const DISTIMG = SRC
-
+  const isXcx = (TYPE == 'mp' || TYPE == 'ali')
   if (isDev) {
-    compilerConfig.plugins.push(browserSync.openBrowser(asset))
+    if (!isXcx) {
+      compilerConfig.plugins.push(browserSync.openBrowser(asset))
+    } else {
+      compilerConfig.plugins.push(new WriteAssetsWebpackPlugin({
+        force: true,
+        extension: ['js', 'wxml', 'wxs', 'wxss', 'json', 'map']
+      }))
+    }
   }
   const compiler = webpack(compilerConfig)
   compiler.hooks.done.tap('start-node-server', stats => {
-    co(function* () {
-      yield fillupMapfile(asset)
-    })
+    if (!isXcx) {
+      co(function* () {
+        yield fillupMapfile(asset)
+      })
+    }
   })
 
   if (!argv.start) {
@@ -192,4 +203,5 @@ module.exports = function* (compilerConfig, asset) {
       yield wpProductionDone(compiler, asset)
     }
   }
+
 }

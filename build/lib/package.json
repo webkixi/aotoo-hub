@@ -1,6 +1,6 @@
 {
   "name": "@aotoo/aotoo-hub",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "基于webpack4的多项目脚手架",
   "main": "index.js",
   "scripts": {
@@ -33,14 +33,17 @@
     "browser-sync-webpack-plugin": "^2",
     "chalk": "^2.4.1",
     "commander": "^2.16.0",
+    "copy-webpack-plugin": "^4.5.3",
     "css-hot-loader": "^1.3.9",
     "css-loader": "^0.28.4",
     "del": "^3.0.0",
     "ejs-loader": "^0.3.1",
     "execa": "^0.10.0",
+    "extract-loader": "^3.0.0",
+    "file-loader": "^2.0.0",
     "fs-extra": "^7.0.0",
     "globby": "^8.0.1",
-    "happypack": "^5",
+    "happypack": "^5.0.0",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
     "inquirer": "^6.0.0",
@@ -59,7 +62,8 @@
     "uglifyjs-webpack-plugin": "^1.2.7",
     "webpack": "^4",
     "webpack-cli": "^2.1.3",
-    "webpack-dev-server": "^3"
+    "webpack-dev-server": "^3",
+    "write-assets-webpack-plugin": "^1.0.4"
   },
   "dependencies": {
     "@aotoo/aotoo": "^5.0.0",
