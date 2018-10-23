@@ -162,7 +162,8 @@ module.exports = function (asset) {
               test: /\.js(x?)/,
               chunks: 'all',
               name: 'common', // 任意命名
-              minSize: 0, // 只要超出0字节就生成一个新包
+              // minSize: 0, // 只要超出0字节就生成一个新包
+              minChunks: 3, // 只要超出0字节就生成一个新包
               priority: 10
             }
           }
