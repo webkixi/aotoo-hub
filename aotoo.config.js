@@ -9,12 +9,18 @@ module.exports = {
   src : path.join(__dirname, 'src'),
   // dist: path.join(__dirname, 'dist'),
   apps: [
+    // {
+    //   name: 'aotooSample',
+    //   startup: true,
+    //   src: path.join(ROOT, 'src/aotooSample'),
+    //   host: 'localhost',
+    //   port: 8400
+    // }
     {
-      name: 'aotooSample',
+      name: 'xcxdemo',
+      type: 'mp',
       startup: true,
-      src: path.join(ROOT, 'src/aotooSample'),
-      host: 'localhost',
-      port: 8400
+      src: path.join(ROOT, 'src/xcxdemo')
     }
   ]
 }
