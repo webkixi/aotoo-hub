@@ -1,0 +1,17 @@
+<wxs src="../utils.wxs" module="utils" />
+<import src="./_coverview" />
+
+<template name="camera">
+  <camera 
+    mode="{{item['mode']||'normal'}}"
+    device-position="{{item['device-position']||'back'}}"
+    flash="{{item['flash']||'auto'}}"
+    bindstop="{{item['bindstop']}}"
+    binderror	="{{item['binderror	']}}"
+    bindscancode="{{item['bindscancode']}}"
+  >
+    <block wx:if="{{item.coverview}}">
+      <template is="parse-cover-view" data="{{item}}"></template>
+    </block>
+  </camera>
+</template>

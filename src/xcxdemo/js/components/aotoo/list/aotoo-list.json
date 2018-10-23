@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "at-view": "/components/aotoo/atinnercomponent/view/at-view"
+  }
+}

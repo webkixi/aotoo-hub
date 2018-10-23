@@ -1,0 +1,74 @@
+<wxs src="../../attemplate/utils.wxs" module="utils" />
+<!-- <view 
+  class="{{utils.getItemClass(_props, _item)}}"
+  style="{{utils.getItemStyle(_props, _item)}}"
+  hover-class="{{_item['hover-class'] ||'none'}}"
+  hover-stop-propagation="{{_item['hover-stop-propagation']||false}}"
+  hover-start-time="{{_item['hover-start-time']||20}}"
+  hover-stay-time="{{_item['hover-stay-time']||70}}"
+
+  bindtouchstart="{{utils.mergeItemEvent('bindtouchstart', _props, _item)}}"
+  bindtouchmove="{{utils.mergeItemEvent('bindtouchmove', _props, _item)}}"
+  bindtouchcancel="{{utils.mergeItemEvent('bindtouchcancel', _props, _item)}}"
+  bindtouchend="{{utils.mergeItemEvent('bindtouchend', _props, _item)}}"
+  bindtap="{{utils.mergeItemEvent('bindtap', _props, _item)}}"
+  bindlongpress="{{utils.mergeItemEvent('bindlongpress', _props, _item)}}"
+  bindlongtap="{{utils.mergeItemEvent('bindlongtap', _props, _item)}}"
+  bindtransitionend="{{utils.mergeItemEvent('bindtransitionend', _props, _item)}}"
+  bindanimationstart="{{utils.mergeItemEvent('bindanimationstart', _props, _item)}}"
+  bindanimationiteration="{{utils.mergeItemEvent('bindanimationiteration', _props, _item)}}"
+  bindanimationend="{{utils.mergeItemEvent('bindanimationend', _props, _item)}}"
+  bindtouchforcechange="{{utils.mergeItemEvent('bindtouchforcechange', _props, _item)}}"
+
+  catchtouchstart="{{utils.mergeItemEvent('catchtouchstart', _props, _item)}}"
+  catchtouchmove="{{utils.mergeItemEvent('catchtouchmove', _props, _item)}}"
+  catchtouchcancel="{{utils.mergeItemEvent('catchtouchcancel', _props, _item)}}"
+  catchtouchend="{{utils.mergeItemEvent('catchtouchend', _props, _item)}}"
+  catchtap="{{utils.mergeItemEvent('catchtap', _props, _item)}}"
+  catchlongpress="{{utils.mergeItemEvent('catchlongpress', _props, _item)}}"
+  catchlongtap="{{utils.mergeItemEvent('catchlongtap', _props, _item)}}"
+  catchtransitionend="{{utils.mergeItemEvent('catchtransitionend', _props, _item)}}"
+  catchanimationstart="{{utils.mergeItemEvent('catchanimationstart', _props, _item)}}"
+  catchanimationiteration="{{utils.mergeItemEvent('catchanimationiteration', _props, _item)}}"
+  catchanimationend="{{utils.mergeItemEvent('catchanimationend', _props, _item)}}"
+  catchtouchforcechange="{{utils.mergeItemEvent('catchtouchforcechange', _props, _item)}}"
+> -->
+
+<template name='with_touch'>
+  <view 
+    id="{{id}}"
+    class="{{utils.getItemClass(_props, _item)}}"
+    style="{{utils.getItemStyle(_props, _item)}}"
+    hover-class="{{_item['hover-class'] ||'none'}}"
+    data-options="{{utils.dataOptions(_item)}}"
+
+    bindtouchstart="{{utils.mergeItemEvent('bindtouchstart', _props, _item)}}"
+    bindtouchmove="{{utils.mergeItemEvent('bindtouchmove', _props, _item)}}"
+    bindtouchcancel="{{utils.mergeItemEvent('bindtouchcancel', _props, _item)}}"
+    bindtouchend="{{utils.mergeItemEvent('bindtouchend', _props, _item)}}"
+    bindtouchforcechange="{{utils.mergeItemEvent('bindtouchforcechange', _props, _item)}}"
+    bindtap="{{utils.mergeItemEvent('bindtap', _props, _item)}}"
+    bindlongpress="{{utils.mergeItemEvent('bindlongpress', _props, _item)}}"
+    bindlongtap="{{utils.mergeItemEvent('bindlongtap', _props, _item)}}"
+  >
+    <slot ></slot>
+  </view>
+</template>
+
+<template name='without_touch'>
+  <view 
+    id="{{id}}"
+    class="{{utils.getItemClass(_props, _item)}}"
+    style="{{utils.getItemStyle(_props, _item)}}"
+    hover-class="{{_item['hover-class'] ||'none'}}"
+    data-options="{{utils.dataOptions(_item)}}"
+    
+    bindtap="{{utils.mergeItemEvent('bindtap', _props, _item)}}"
+    bindlongpress="{{utils.mergeItemEvent('bindlongpress', _props, _item)}}"
+    bindlongtap="{{utils.mergeItemEvent('bindlongtap', _props, _item)}}"
+  >
+    <slot ></slot>
+  </view>
+</template>
+
+<template is="{{_item['bindtouchstart'] ? 'with_touch' : 'without_touch'}}" data="{{_props, _item, id}}"></template>

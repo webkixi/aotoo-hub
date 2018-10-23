@@ -1,0 +1,13 @@
+<wxs src="../utils.wxs" module="utils" />
+<template name="view">
+  <view 
+    hover-class="{{item['hover-class'] ||'button-hover'}}"
+    hover-stop-propagation="{{item['hover-stop-propagation']||false}}"
+    hover-start-time="{{item['hover-start-time']||20}}"
+    hover-stay-time="{{item['hover-stay-time']||70}}"
+    class="{{item.class||''}}"
+    style="{{item['style']||''}}"
+  >
+    {{item.title}}
+  </view>
+</template>

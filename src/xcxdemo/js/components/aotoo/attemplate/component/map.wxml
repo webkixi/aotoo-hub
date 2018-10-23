@@ -1,0 +1,37 @@
+<wxs src="../utils.wxs" module="utils" />
+<import src="./_coverview" />
+
+<template name="map">
+  <map 
+    longitude="{{item['longitude']}}"
+    latitude="{{item['latitude']}}"
+    scale="{{item['scale']||16}}"
+    markers="{{item['markers']}}"
+    covers="{{item['covers']}}"
+    polyline="{{item['polyline']}}"
+    polygons="{{item['polygons']}}"
+    circles="{{item['circles']}}"
+    controls="{{item['controls']}}"
+    include-points	="{{item['include-points	']}}"
+    show-location	="{{item['show-location	']}}"
+    subkey="{{item['subkey']}}"
+    enable-3D	="{{item['enable-3D	']||false}}"
+    show-compass="{{item['show-compass']||false}}"
+    enable-overlooking="{{item['enable-overlooking']||false}}"
+    enable-zoom	="{{item['enable-zoom	']||true}}"
+    enable-scroll	="{{item['enable-scroll	']||true}}"
+    enable-rotate	="{{item['enable-rotate	']||false}}"
+    bindmarkertap	="{{item['bindmarkertap	']}}"
+    bindcallouttap="{{item['bindcallouttap']}}"
+    bindcontroltap="{{item['bindcontroltap']}}"
+    bindregionchange="{{item['bindregionchange']}}"
+    bindtap="{{item['bindtap']}}"
+    bindupdated="{{item['bindupdated']}}"
+    bindpoitap="{{item['bindpoitap']}}"
+    style="{{item['style']||''}}"
+  >
+    <block wx:if="{{item.coverview}}">
+      <template is="parse-cover-view" data="{{item}}"></template>
+    </block>
+  </map>
+</template>

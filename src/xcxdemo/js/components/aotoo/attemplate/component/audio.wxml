@@ -1,0 +1,17 @@
+<wxs src="../utils.wxs" module="utils" />
+<template name="audio">
+  <audio 
+    id="{{item['id']}}"
+    src="{{item['src']}}"
+    loop="{{item['loop']||false}}"
+    controls="{{item['controls']||false}}"
+    poster="{{item['poster']}}"
+    name="{{item['name']||'未知音频'}}"
+    author="{{item['author']||'未知作者'}}"
+    binderror="{{item['binderror']}}"
+    bindplay="{{item['bindplay']}}"
+    bindpause="{{item['bindpause']}}"
+    bindtimeupdate="{{item['bindtimeupdate']}}"
+    bindended="{{item['bindended']}}"
+  />
+</template>
