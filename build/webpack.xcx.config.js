@@ -198,20 +198,6 @@ function baseConfig(asset, envAttributs) {
             'html-loader'
           ]
         },
-        // {
-        //   test: /\.(wxml|axml)$/,
-        //   include: SRC,
-        //   use: [
-        //     relativeFileLoader(isWechat ? 'wxml' : 'axml'),
-        //     {
-        //       loader: 'wxml-loader',
-        //       options: {
-        //         root: DIST,
-        //         enforceRelativePath: true,
-        //       },
-        //     },
-        //   ]
-        // },
         {
           test: /\.(png|jpg|gif)$/,
           include: SRC,
