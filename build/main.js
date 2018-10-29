@@ -145,20 +145,34 @@ function *getScenesConfig(asset) {
   }
 
   const scenesDir  = path.join(SRC, 'configs')
-  
+  const defaultSenesConfigPath = path.join(scenesDir, 'default.js')
+  const defaultSenesConfigAt = path.join(scenesDir, 'default')
+  let defaultSenesConfigContent = {}
+
+  if (!fs.existsSync(defaultSenesConfigPath)) {
+    generateScenesDir(scenesDir, 'default', asset)
+    defaultSenesConfigContent = require(defaultSenesConfigAt)(asset)
+  } else {
+    defaultSenesConfigContent = require(defaultSenesConfigAt)(asset)
+  }
+
   if (typeof options.scenes == 'string') {
-    let scenesFile = path.join(SRC, 'configs/') + options.scenes + '.js'
-    let scenesAt   = scenesFile.replace('.js', '')
-    if (fs.existsSync(scenesFile)){
-      const scenesConfig = require(scenesAt)(asset)
-      asset.options.scenes = scenesConfig
-    } else {
-      generateScenesDir(scenesDir, options.scenes, asset)
-      asset.options.scenes = {}
+    const scenesFileName = options.scenes
+    asset.options.scenes = defaultSenesConfigContent
+    if (options.scenes != 'default') {
+      let scenesFile = path.join(SRC, 'configs/') + scenesFileName + '.js'
+      let scenesAt = scenesFile.replace('.js', '')
+      if (fs.existsSync(scenesFile)) {
+        const scenesConfig = require(scenesAt)(asset) || {}
+        asset.options.scenes = _.merge({}, defaultSenesConfigContent, scenesConfig)
+      } else {
+        generateScenesDir(scenesDir, scenesFileName, asset)
+      }
     }
     return asset
   } else {
     if (_.isPlainObject(options.scenes)) {
+      asset.options.scenes = _.merge({}, defaultSenesConfigContent, options.scenes)
       return asset
     }
   }

@@ -11,6 +11,7 @@ const sleep = require('../util/sleep')
 const portOccupied = require('../util/portOccupied')
 const validPort = require('../util/validPort')
 const fillupMapfile = require('../util/fillupMapfile3ds')
+const generateServerConfigsFile = require('../util/generateServerConfigsFile')
 const log = console.log
 
 const WebpackDevServer = require('webpack-dev-server')
@@ -43,47 +44,47 @@ function* generateBabelCfgFile(distserver) {
 // 1、生成server端的配置文件
 //    作为全局global.CONFIG
 // 2、生成.babelrc，支持jsx语法
-function* generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset) {
-  const {SRC, DIST} = asset
+// function* generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset) {
+//   const {SRC, DIST} = asset
 
-  if (fs.existsSync(path_config_file)) {
-    fs.unlinkSync(path_config_file)
-    yield sleep(1000, '==========  等待创建server端的configs文件  ============')
-  }
+//   if (fs.existsSync(path_config_file)) {
+//     fs.unlinkSync(path_config_file)
+//     yield sleep(1000, '==========  等待创建server端的configs文件  ============')
+//   }
 
-  return new Promise(function (res, rej) {
-    /**
-     * 设置mapper
-     * 将静态文件的映射文件mapper.json挂载到场景configs配置上
-     */
-    if (fs.existsSync(path_mapfile)) {
-      const mapper = require(path_mapfile)
-      if (asset.options && asset.options.scenes) {
-        const scenes = asset.options.scenes
-        if (typeof scenes == 'string') {
-          asset.options.scenes = { mapper: mapper }
-        }
+//   return new Promise(function (res, rej) {
+//     /**
+//      * 设置mapper
+//      * 将静态文件的映射文件mapper.json挂载到场景configs配置上
+//      */
+//     if (fs.existsSync(path_mapfile)) {
+//       const mapper = require(path_mapfile)
+//       if (asset.options && asset.options.scenes) {
+//         const scenes = asset.options.scenes
+//         if (typeof scenes == 'string') {
+//           asset.options.scenes = { mapper: mapper }
+//         }
         
-        if (typeof scenes == 'object') {
-          asset.options.scenes.mapper = mapper
-        }
-      }
+//         if (typeof scenes == 'object') {
+//           asset.options.scenes.mapper = mapper
+//         }
+//       }
       
-      /**
-      * 写配置文件 * 
-      * 
-      */
-      const scenes = asset.options.scenes
-      const configsContent = `module.exports = function(opts){
-        global.Configs = global.CONFIG = ${JSON.stringify(scenes)}
-        return ${JSON.stringify(asset)}
-      }`
+//       /**
+//       * 写配置文件 * 
+//       * 
+//       */
+//       const scenes = asset.options.scenes
+//       const configsContent = `module.exports = function(opts){
+//         global.Configs = global.CONFIG = ${JSON.stringify(scenes)}
+//         return ${JSON.stringify(asset)}
+//       }`
 
-      fs.writeFileSync(path_config_file, configsContent, 'utf-8')
-      return res(true)
-    }
-  })
-}
+//       fs.writeFileSync(path_config_file, configsContent, 'utf-8')
+//       return res(true)
+//     }
+//   })
+// }
 
 
 // 启动node端服务
@@ -143,11 +144,13 @@ function* getValidProxyPort(port) {
 
 
 
-function* browserOpen(name, port) {
-  browserSync.browserOpen({
-    name: name,
-    PORT: port
-  })
+function* browserOpen(name, port, isXcx) {
+  if (!isXcx) {
+    browserSync.browserOpen({
+      name: name,
+      PORT: port
+    })
+  }
 }
 
 
@@ -253,11 +256,13 @@ function* wpProductionDone(compiler, asset) {
 
 const names = []
 module.exports = function* myProxy(compilerConfig, asset) {
-  const { name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv } = asset
+  const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv } = asset
+  const isXcx = (TYPE == 'mp' || TYPE == 'ali')
+
   if (argv.start && typeof argv.start == 'string' && argv.start == name) {
     if (isDev) {
       yield startupNodeServer(asset)
-      yield browserOpen(asset.name, asset.port)
+      yield browserOpen(asset.name, asset.port, isXcx)
     }
   }
   else {
@@ -280,7 +285,7 @@ module.exports = function* myProxy(compilerConfig, asset) {
           
           if (isDev) {
             yield startupNodeServer(asset)
-            yield browserOpen(asset.name, asset.proxyPort)
+            yield browserOpen(asset.name, asset.proxyPort, isXcx)
           }
         })
       }
