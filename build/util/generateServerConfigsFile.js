@@ -44,8 +44,8 @@ function* generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, 
       }
 
       let scenesBak = _.cloneDeep(scenes)
-      delete scenesBak.apis
-      delete scenesBak.mapper
+      // delete scenesBak.apis
+      // delete scenesBak.mapper
       delete scenesBak.publicPath
       delete scenesBak.fetchOptions
       delete scenesBak.cacheOptions
