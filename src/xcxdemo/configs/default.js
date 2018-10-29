@@ -11,8 +11,5 @@ module.exports = function (asset) {
   const { name, startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT, options } = asset
   return {
     imgcodeurl: 'http://api.test.7atour.com/tp-web-api/captcha.svl',
-    apis: {
-      xxx: "http://www.163.com"
-    }
   }
 }

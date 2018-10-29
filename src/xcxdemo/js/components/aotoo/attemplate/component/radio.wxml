@@ -1,0 +1,10 @@
+<wxs src="../utils.wxs" module="utils" />
+<template name="radio">
+  <radio 
+    bindchange="{{item['bindchange']}}"
+    value="{{item['value']}}"
+    checked="{{item['checked']||false}}"
+    disabled="{{item['disabled']||false}}"
+    color="{{item['color']}}"
+  />
+</template>

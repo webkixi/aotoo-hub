@@ -1,0 +1,13 @@
+<wxs src="../utils.wxs" module="utils" />
+<template name="progress">
+  <progress 
+    percent="{{item['percent']||'20'}}" 
+    show-info="{{item['show-info']}}" 
+    stroke-width="{{item['stroke-width']||6}}" 
+    color="{{item['color']||'#09BB07'}}" 
+    activeColor="{{item['activeColor']}}" 
+    backgroundColor="{{item['backgroundColor']}}" 
+    active="{{item['active']}}" 
+    active-mode="{{item['active-mode']}}" 
+  />
+</template>

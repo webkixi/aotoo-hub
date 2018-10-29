@@ -1,0 +1,10 @@
+<wxs src="../utils.wxs" module="utils" />
+<template name="checkbox">
+  <checkbox 
+    bindchange="{{item.bindchange}}"
+    value="{{item.value}}"
+    disabled="{{item.disabled||false}}"
+    checked="{{item.checked||false}}"
+    color="{{item.color}}"
+  />
+</template>

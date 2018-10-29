@@ -1,0 +1,20 @@
+<wxs src="../utils.wxs" module="utils" />
+<template name="navigator">
+  <navigator 
+    target="{{item['target']||'self'}}"
+    url="{{item['url']}}"
+    open-type="{{item['open-type']}}"
+    delta="{{item['delta']}}"
+    app-id="{{item['app-id']}}"
+    path="{{item['path']}}"
+    extra-data="{{item['extra-data']}}"
+    version="{{item['version']}}"
+    hover-class="{{item['hover-class']}}"
+    hover-stop-propagation="{{item['hover-stop-propagation']}}"
+    hover-start-time="{{item['hover-start-time']}}"
+    hover-stay-time="{{item['hover-stay-time']}}"
+    bindsuccess="{{item['bindsuccess']}}"
+    bindfail="{{item['bindfail']}}"
+    bindcomplete="{{item['bindcomplete']}}"
+  />
+</template>

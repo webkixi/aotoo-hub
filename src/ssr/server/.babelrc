@@ -8,6 +8,7 @@
     [
       "transform-runtime",
       {
+        "helpers": true,
         "polyfill": true,
         "regenerator": true
       }
