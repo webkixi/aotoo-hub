@@ -32,9 +32,9 @@ function checkExist(filename, cb, falseCb) {
 }
 
 const AssetConfigs = require('./configs')() || defaultConfig
-const { TYPE, DIST, SRC, PORT, isDev, name } = AssetConfigs
+const { TYPE, DIST, SRC, PORT, isDev, name, options } = AssetConfigs
+const SCENES = options.scenes
 const isXcx = (TYPE == 'mp' || TYPE == 'ali')
-
 
 const path_controls = path.join(__dirname, './pages') // 指定controls的目录
 const path_plugins  = path.join(__dirname, './plugins') // 指定插件目录
@@ -91,7 +91,8 @@ checkExist(path_images, (p) => {
  * js: js映射表，key=>映射名称，value=>静态文件的真实地址
  * css: css映射表, key => 映射名称， value => 静态文件的真实地址
 */
-app.setMapper(AssetConfigs.mapper||{})
+app.setMapper(CONFIG.mapper||{})
+// Aotoo.inject.mapper = CONFIG.mapper
 
 
 /**
@@ -103,7 +104,7 @@ app.setMapper(AssetConfigs.mapper||{})
  * 用法
  * const result = await Fetch.post('xxx', param)
  */
-app.setApis(AssetConfigs.apis||{})
+app.setApis(CONFIG.apis||{})
 
 
 
@@ -113,7 +114,7 @@ app.setApis(AssetConfigs.apis||{})
  * 类似于webpack中的publicPath
  * 格式: {js: '/js/', css: '/css/'}
  */
-app.setPublic(AssetConfigs.publicPath || {})
+app.setPublic(SCENES.publicPath || {})
 
 
 
@@ -125,7 +126,7 @@ app.setPublic(AssetConfigs.publicPath || {})
  * timeout: request传输时间
  * 参考: https://www.npmjs.com/package/request
  */
-app.setFetchOptions(AssetConfigs.fetchOptions)
+app.setFetchOptions(SCENES.fetchOptions)
 
 
 
@@ -134,7 +135,7 @@ app.setFetchOptions(AssetConfigs.fetchOptions)
  * 设定node端Lru cache的相关参数
  * 基于lur-cache库实现，参考：https://www.npmjs.com/package/lru-cache
  */
-app.setCacheOptions(AssetConfigs.cacheOptions)
+app.setCacheOptions(SCENES.cacheOptions)
 
 
 
@@ -146,11 +147,11 @@ app.setCacheOptions(AssetConfigs.cacheOptions)
  * customControl => 自定义路由响应方法
  * 参考: https: //www.npmjs.com/package/koa-router
  */
-const configRouterPrefixes = AssetConfigs.routerPrefixes || (AssetConfigs.routerOptions && AssetConfigs.routerOptions.prefixes) || {}
+const configRouterPrefixes = SCENES.routerPrefixes || (SCENES.routerOptions && SCENES.routerOptions.prefixes) || {}
 const myRouterPrefixes = _.merge({}, configRouterPrefixes, {
   '/mapper': {
     customControl: async function (ctx, next) {
-      ctx.body = AssetConfigs.mapper
+      ctx.body = SCENES.mapper
     }
   }
 })
@@ -163,9 +164,9 @@ app.setRouterPrefixes(myRouterPrefixes)
  * 设置路由属性
  * 格式：{allMethods: ['get', 'post', 'put', 'del'], parameters: {get: [....], post: [....]}, prefixes: {....}}
  */
-if (AssetConfigs.routerOptions) {
-  AssetConfigs.routerOptions.prefixes = myRouterPrefixes
-  app.setRouterOptions(AssetConfigs.routerOptions)
+if (SCENES.routerOptions) {
+  SCENES.routerOptions.prefixes = myRouterPrefixes
+  app.setRouterOptions(SCENES.routerOptions)
 }
 
 
