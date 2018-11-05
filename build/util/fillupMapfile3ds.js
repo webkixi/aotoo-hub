@@ -28,8 +28,6 @@ module.exports = function* (asset) {
             fse.copySync(item, path.join(path_3ds_out_js, fileObj.name))
           }
         } else {
-          console.log(fileObj);
-          console.log(fileObj.dir == path_3ds_path);
           if (fileObj.dir == path_3ds_path) {
             if (extname.indexOf('.js')>-1 || extname.indexOf('.map')>-1) {
               const tJsFilePath = path.join(path_3ds_out_js, relativePath, fileObj.base)
