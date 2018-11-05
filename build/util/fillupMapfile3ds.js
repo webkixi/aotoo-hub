@@ -1,3 +1,4 @@
+const fs = require('fs')
 const fse = require('fs-extra')
 const globby = require('globby')
 const path = require('path')
@@ -14,28 +15,38 @@ module.exports = function* (asset) {
   if (fse.pathExistsSync(path_mapfile)) {
     if (fse.pathExistsSync(path_3ds_path)) {
       let mapfileJson = require(`${path_mapfile}`)
-      globby.sync(path_3ds_path).forEach(function(item){
+      globby.sync(path_3ds_path, {onlyFiles: false}).forEach(function(item){
         const fileObj = path.parse(item)
+        const fileStat = fs.statSync(item)
         const extname = fileObj.ext
         const re = /^\/(.*)/
         const relativePath = fileObj.dir.replace(path_3ds_path, '').replace(re, '$1')
         const relativeName = path.join('t', relativePath, fileObj.name).replace(re, '$1')
         const relativeFile = path.join('t', relativePath, fileObj.base).replace(re, '$1')
-
-        if (extname.indexOf('.js')>-1 || extname.indexOf('.map')>-1) {
-          const tJsFilePath = path.join(path_3ds_out_js, relativePath, fileObj.base)
-          fse.copySync(item, tJsFilePath)
-          if (extname.indexOf('.js')>-1) {
-            mapfileJson.js[relativeName] = relativeFile
+        if (fileStat.isDirectory()) {
+          if (fileObj.dir == path_3ds_path) {
+            fse.copySync(item, path.join(path_3ds_out_js, fileObj.name))
           }
-        }
-        
-        if (extname.indexOf('.css')>-1) {
-          const tCssFilePath = path.join(path_3ds_out_css, relativePath, fileObj.base)
-          const oriCssFilePath = path.join(path_3ds_out_js, relativePath, fileObj.base)
-          fse.copySync(item, tCssFilePath)
-          fse.copySync(item, oriCssFilePath)
-          mapfileJson.css[relativeName] = relativeFile
+        } else {
+          console.log(fileObj);
+          console.log(fileObj.dir == path_3ds_path);
+          if (fileObj.dir == path_3ds_path) {
+            if (extname.indexOf('.js')>-1 || extname.indexOf('.map')>-1) {
+              const tJsFilePath = path.join(path_3ds_out_js, relativePath, fileObj.base)
+              fse.copySync(item, tJsFilePath)
+              if (extname.indexOf('.js')>-1) {
+                mapfileJson.js[relativeName] = relativeFile
+              }
+            }
+            
+            if (extname.indexOf('.css')>-1) {
+              const tCssFilePath = path.join(path_3ds_out_css, relativePath, fileObj.base)
+              const oriCssFilePath = path.join(path_3ds_out_js, relativePath, fileObj.base)
+              fse.copySync(item, tCssFilePath)
+              fse.copySync(item, oriCssFilePath)
+              mapfileJson.css[relativeName] = relativeFile
+            }
+          }
         }
       })
       fse.removeSync(path_mapfile)
