@@ -44,6 +44,10 @@ module.exports = function* (asset) {
               fse.copySync(item, oriCssFilePath)
               mapfileJson.css[relativeName] = relativeFile
             }
+          } else {
+            if (extname.indexOf('.js')>-1 || extname.indexOf('.css')>-1) {
+              mapfileJson.css[relativeName] = relativeFile
+            }
           }
         }
       })
