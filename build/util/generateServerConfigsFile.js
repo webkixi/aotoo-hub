@@ -54,6 +54,9 @@ function* generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, 
       delete scenesBak.routerOptions
       delete scenesBak.routerPrefixes
 
+      scenesBak.ROOT = asset.ROOT
+
+
       const configsContent = `module.exports = function(opts){
         global.Configs = global.CONFIG = ${JSON.stringify(scenesBak)}
         return ${JSON.stringify(asset)}

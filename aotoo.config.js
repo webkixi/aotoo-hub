@@ -6,6 +6,7 @@ const version = pakg.version
 module.exports = {
   version: version,
   mode: process.env.NODE_ENV,
+  ROOT: ROOT,
   src : path.join(__dirname, 'src'),
   // dist: path.join(__dirname, 'dist'),
   apps: [

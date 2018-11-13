@@ -322,6 +322,7 @@ module.exports = function* main(assets, opts) {
     const _proxyPort = yield valideAttribut('proxyPort', (config.proxyPort||((config.port||_port)+17)))
     let build_asset = {
       name: yield valideAttribut('name', config.name, config),
+      ROOT: configs_aotoo.ROOT,
       version: config.version,
       TYPE: config.type||'web',    // mp(小程序), web
       startup: config.startup,

@@ -9,6 +9,8 @@ const co = require('co')
 const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
+const webpack = require('webpack')
+
 const log = console.log
 require('babel-core/register')
 require("babel-polyfill")
@@ -35,6 +37,8 @@ const AssetConfigs = require('./configs')() || defaultConfig
 const { TYPE, DIST, SRC, PORT, isDev, name, options } = AssetConfigs
 const SCENES = options.scenes
 const isXcx = (TYPE == 'mp' || TYPE == 'ali')
+CONFIG.DIST = DIST
+process.env.DIST = DIST
 
 const path_controls = path.join(__dirname, './pages') // 指定controls的目录
 const path_plugins  = path.join(__dirname, './plugins') // 指定插件目录
@@ -65,12 +69,14 @@ checkExist(path_views, (p) => {
 
 checkExist(path_js, (p) => {
   app.statics(p, {
+    dynamic: true,
     prefix: '/js'
   })
 })
 
 checkExist(path_css, (p) => {
   app.statics(p, {
+    dynamic: true,
     prefix: '/css'
   })
 })
@@ -80,6 +86,39 @@ checkExist(path_images, (p) => {
     dynamic: true,
     prefix: '/images'
   })
+})
+
+app.utile('webpack', async function(fkp, opts={}) {
+  const root = CONFIG.ROOT
+  const wpbin = path.join(root, 'node_modules/.bin/webpack')
+  const configFile = opts.config
+  let compilerConfig
+  if (configFile && Aotoo.isString(configFile) && fs.existsSync(configFile)) {
+    compilerConfig = require(configFile)
+
+    if (Aotoo.isFunction(compilerConfig)) {
+      compilerConfig = compilerConfig(app)
+    } 
+
+    if (typeof compilerConfig == 'object') {
+      compilerConfig = [].concat(compilerConfig)
+    }
+  }
+
+  if (Aotoo.isFunction(configFile)) {
+    compilerConfig = configFile(app)
+  } else {
+    if (Aotoo.isObject(configFile)) {
+      compilerConfig = configFile
+    }
+  }
+
+  if (compilerConfig) {
+    const compiler = webpack(compilerConfig)
+    compiler.run((err, state)=>{
+      if (err) { console.log(err); }
+    })
+  }
 })
 
 
@@ -151,7 +190,7 @@ const configRouterPrefixes = SCENES.routerPrefixes || (SCENES.routerOptions && S
 const myRouterPrefixes = _.merge({}, configRouterPrefixes, {
   '/mapper': {
     customControl: async function (ctx, next) {
-      ctx.body = SCENES.mapper
+      ctx.body = CONFIG.mapper
     }
   }
 })
