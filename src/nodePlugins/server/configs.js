@@ -1,4 +1,0 @@
-module.exports = function(opts){
-        global.Configs = global.CONFIG = {"imgcodeurl":"http://api.test.7atour.com/tp-web-api/captcha.svl","mapper":{"js":{"common":"common.js","index":"index.js","vendors":"vendors.js"},"css":{},"html":{"index":"index.html"}}}
-        return {"name":"nodePlugins","version":"1.0.0","startup":true,"isDev":true,"SRC":"/Users/yc/npm/@aotoo-hub/src/nodePlugins","DIST":"/Users/yc/npm/@aotoo-hub/dist/nodePlugins/1.0.0/dev","HOST":"localhost","PORT":8390,"PROXYPORT":8407,"options":{"scenes":{"imgcodeurl":"http://api.test.7atour.com/tp-web-api/captcha.svl","mapper":{"js":{"common":"common.js","index":"index.js","vendors":"vendors.js"},"css":{},"html":{"index":"index.html"}}}},"argv":{"_":[],"name":"nodePlugins","server":true},"host":"localhost","port":8390,"proxyPort":8407,"contentBase":"/Users/yc/npm/@aotoo-hub/dist/nodePlugins/1.0.0/dev"}
-      }

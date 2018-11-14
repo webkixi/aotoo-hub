@@ -1,8 +1,0 @@
-<wxs src="../utils.wxs" module="utils" />
-<template name="coverimage">
-  <cover-image 
-    class="{{item.class}}"
-    style="{{item.style}}"
-    src="{{item.src}}"
-  />
-</template>
