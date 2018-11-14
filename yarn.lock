@@ -311,8 +311,8 @@ anymatch@^2.0.0:
     normalize-path "^2.1.1"
 
 aotoo-inject@^1.0.22:
-  version "1.0.31"
-  resolved "https://registry.yarnpkg.com/aotoo-inject/-/aotoo-inject-1.0.31.tgz#32c21dfaba87d3ad8835fba99fca4651c592fa81"
+  version "1.0.33"
+  resolved "https://registry.yarnpkg.com/aotoo-inject/-/aotoo-inject-1.0.33.tgz#b5bd9d734decf252a124c73dffd5bdc8567af4c8"
   dependencies:
     blueimp-md5 "^2.7.0"
     fkp-sax "^1.5.19"
