@@ -6,6 +6,9 @@ const path = require('path')
 const inquirer = require('inquirer');
 const argv = require('minimist')(process.argv.slice(2));
 const generateFedJsDirectory = require('./util/generateFedJsDirectory')
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = 'production'
+}
 
 const Commonds = {
   name: argv.name,
@@ -25,6 +28,14 @@ let configPath = path.join(localPath, 'aotoo.config.js')
 
 function cmdIndex(params) {
   const {argv} = params
+  if (argv.start && (typeof argv.start == 'string' || Array.isArray(argv.start))) {
+    argv.start = [].concat(argv.start)
+    if (argv.name) {
+      argv.name = ([].concat(argv.name)).concat(argv.start)
+    } else {
+      argv.name = [].concat(argv.start)
+    }
+  }
   configs_aotoo = require(configPath);
   configs_aotoo.localPath = localPath
   process.aotooConfigs = configs_aotoo

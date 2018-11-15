@@ -40,16 +40,21 @@ function processArgv(argv) {
 }
 
 function* buildCommonFiles(asset, dllConfig) {
-  const { startup, isDev, SRC, DIST, HOST, PORT, argv } = asset
+  const { startup, isDev, SRC, DIST, HOST, PORT, argv, name } = asset
   if (!commonFileExist(DIST, isDev, Commonds.rebuild)) {
-    return new Promise((res, rej) => {
-      return webpack(dllConfig).run((err, stats) => {
-        if (err) return rej(err)
-        else {
-          return res(stats)
-        }
+    const start = argv.start
+    if (start && start.length && start.indexOf(name)>-1) {
+      /** nothing to do */
+    } else {
+      return new Promise((res, rej) => {
+        return webpack(dllConfig).run((err, stats) => {
+          if (err) return rej(err)
+          else {
+            return res(stats)
+          }
+        })
       })
-    })
+    }
   }
 }
 
@@ -305,13 +310,13 @@ module.exports = function* main(assets, opts) {
   // 抽取编译配置
   for (let config of assets) {
 
-    if (argv_name) {
-      if (argv_name.indexOf(config.name) > -1) {
-        config.startup = true
-      } else {
-        config.startup = false
-      }
-    }
+    // if (argv_name) {
+    //   if (argv_name.indexOf(config.name) > -1) {
+    //     config.startup = true
+    //   } else {
+    //     config.startup = false
+    //   }
+    // }
 
     if (!config.startup) {
       continue;
@@ -324,6 +329,7 @@ module.exports = function* main(assets, opts) {
       name: yield valideAttribut('name', config.name, config),
       ROOT: configs_aotoo.ROOT,
       version: config.version,
+      onlynode: config.onlynode,
       TYPE: config.type||'web',    // mp(小程序), web
       startup: config.startup,
       isDev: config.isDev || process.env.NODE_ENV == 'development',
@@ -354,14 +360,14 @@ module.exports = function* main(assets, opts) {
       build_asset.DIST = newDist
     }
 
-    if (argv_name) {
-        build_asset.startup = config.startup
-      // if (argv_name.indexOf(config.name) > -1) {
-      //   build_asset.startup = true
-      // } else {
-      //   build_asset.startup = false
-      // }
-    }
+    // if (argv_name) {
+    //     build_asset.startup = config.startup
+    //   // if (argv_name.indexOf(config.name) > -1) {
+    //   //   build_asset.startup = true
+    //   // } else {
+    //   //   build_asset.startup = false
+    //   // }
+    // }
 
     // 是否为小程序
     // 是否需要初始化小程序目录

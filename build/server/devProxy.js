@@ -3,6 +3,7 @@ const fs = require('fs')
 const fse = require('fs-extra')
 const globby = require('globby')
 const chalk = require('chalk')
+const _ = require('lodash')
 const path = require('path')
 const nodemon = require('nodemon')
 const webpack = require('webpack')
@@ -90,44 +91,48 @@ function* generateBabelCfgFile(distserver) {
 // 启动node端服务
 function* startupNodeServer(options) {
   let cmd_start
-  const { SRC, DIST, argv } = options
+  const { SRC, DIST, argv, isDev, name } = options
   const path_dir_server = path.join(SRC, 'server')
   const path_server_index = path.join(SRC, 'server/index.js')
 
   if (fs.existsSync(path_server_index)) {
-    
-    cmd_start = `node ${path_server_index}`
-    
-    const nmStart = nodemon({
-      "execMap": {
-        "js": cmd_start
-      },
-      "script": path_server_index,
-      "stdout": "false",
-      "ext": 'js json jsx css html md',
-      "restartable": "rs",
-      "verbose": true,
-      "ignore": [
-        ".git/*",
-        "*.db"
-      ],
-      "watch": [
-        path_dir_server + '/*'
-      ],
-    });
-
-    nmStart.on('start', function () {
-      console.log('========= 服务端启动完成 ============');
-    })
-
-    .on('restart', function (files) {
-      console.log('========== 正在重启服务端 ===========');
-    })
-
-    .on('quit', function () {
-      console.log('========= 服务端退出 ============');
-      process.exit();
-    })
+    if (isDev) {
+      cmd_start = `node ${path_server_index}`
+      const serverName = name || 'node'
+      
+      const nmStart = nodemon({
+        "execMap": {
+          "js": cmd_start
+        },
+        "script": path_server_index,
+        "stdout": "false",
+        "ext": 'js json jsx css html md',
+        "restartable": "rs",
+        "verbose": true,
+        "ignore": [
+          ".git/*",
+          "*.db"
+        ],
+        "watch": [
+          path_dir_server + '/*'
+        ],
+      });
+  
+      nmStart.on('start', function () {
+        console.log(serverName,'========= 服务端启动完成 ============');
+      })
+  
+      .on('restart', function (files) {
+        console.log('========== 正在重启服务端 ===========');
+      })
+  
+      .on('quit', function () {
+        console.log('========= 服务端退出 ============');
+        process.exit();
+      })
+    } else {
+      require(path_server_index)
+    }
   }
 }
 
@@ -146,10 +151,12 @@ function* getValidProxyPort(port) {
 
 function* browserOpen(name, port, isXcx) {
   if (!isXcx) {
-    browserSync.browserOpen({
-      name: name,
-      PORT: port
-    })
+    setTimeout(() => {
+      browserSync.browserOpen({
+        name: name,
+        PORT: port
+      })
+    }, 1000);
   }
 }
 
@@ -253,18 +260,64 @@ function* wpProductionDone(compiler, asset) {
   })
 }
 
+function* selectConfig(asset) {
+  const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv } = asset
+  const DISTSERVER = path.join(SRC, 'server')
+
+  const path_mapfile = path.join(DIST, 'mapfile.json')
+  const path_config_file = path.join(DISTSERVER, 'configs.js')
+
+  yield fillupMapfile(asset)
+
+  yield generateBabelCfgFile(DISTSERVER)
+  yield sleep(500, '==========  babel配置文件写入完成  ===========')
+
+  if (isStart) {
+    const oldConfig = require(path_config_file)()
+    asset = _.merge({}, asset, oldConfig)
+    process.env.NODE_ENV = asset.isDev ? 'development' : 'production'
+  }
+
+  yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
+  yield sleep(500, '=========  server端的configs文件写入完成  ===============')
+
+  return yield {success: true}
+}
 
 const names = []
 module.exports = function* myProxy(compilerConfig, asset) {
-  const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv } = asset
+  const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv, onlynode } = asset
   const isXcx = (TYPE == 'mp' || TYPE == 'ali')
 
-  if (argv.start && typeof argv.start == 'string' && argv.start == name) {
+  const starts = [].concat(argv.start)
+  if ((starts.length && starts.indexOf(name)>-1) || onlynode) {
+    yield startupNodeServer(asset)
     if (isDev) {
-      yield startupNodeServer(asset)
       yield browserOpen(asset.name, asset.port, isXcx)
     }
-  }
+  } 
+  // -------- 方案一 ------------
+  // if (argv.start || onlynode) {
+  //   const starts = [].concat(argv.start)
+  //   if (starts.indexOf(name) > -1 || onlynode) {
+  //     yield startupNodeServer(asset)
+  //     if (isDev) {
+  //       yield browserOpen(asset.name, asset.port, isXcx)
+  //     }
+  //   } else {
+  //     console.log(chalk.bold.red('没有匹配到项目'))
+  //     process.exit()
+  //   }
+  // }
+
+  // ----------- 方案二 ------------
+  // if ((argv.start && typeof argv.start == 'string' && argv.start == name) || onlynode) {
+  //   yield selectConfig(asset)
+  //   yield startupNodeServer(asset)
+  //   if (isDev) {
+  //     yield browserOpen(asset.name, asset.port, isXcx)
+  //   }
+  // }
   else {
     const DISTSERVER = path.join(SRC, 'server')
     const compiler = webpack(compilerConfig)
@@ -272,17 +325,18 @@ module.exports = function* myProxy(compilerConfig, asset) {
       if (names.indexOf(name) == -1) {
         names.push(name)
         co(function* () {
-          const path_mapfile = path.join(DIST, 'mapfile.json')
-          const path_config_file = path.join(DISTSERVER, 'configs.js')
+          // const path_mapfile = path.join(DIST, 'mapfile.json')
+          // const path_config_file = path.join(DISTSERVER, 'configs.js')
 
-          yield fillupMapfile(asset)
+          // yield fillupMapfile(asset)
           
-          yield generateBabelCfgFile(DISTSERVER)
-          yield sleep(500, '==========  babel配置文件写入完成  ===========')
+          // yield generateBabelCfgFile(DISTSERVER)
+          // yield sleep(500, '==========  babel配置文件写入完成  ===========')
   
-          yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
-          yield sleep(500, '=========  server端的configs文件写入完成  ===============')
-          
+          // yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
+          // yield sleep(500, '=========  server端的configs文件写入完成  ===============')
+
+          yield selectConfig(asset)
           if (isDev) {
             yield startupNodeServer(asset)
             yield browserOpen(asset.name, asset.proxyPort, isXcx)

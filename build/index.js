@@ -7,7 +7,18 @@ const path    = require('path')
 const inquirer = require('inquirer');
 const argv    = require('minimist')(process.argv.slice(2));
 const generateFedJsDirectory = require('./util/generateFedJsDirectory')
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = 'production'
+}
 
+if (argv.start && (typeof argv.start == 'string' || Array.isArray(argv.start))) {
+  argv.start = [].concat(argv.start)
+  if (argv.name) {
+    argv.name = ([].concat(argv.name)).concat(argv.start)
+  } else {
+    argv.name = [].concat(argv.start)
+  }
+}
 
 const Commonds = {
   name: argv.name,

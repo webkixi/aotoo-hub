@@ -54,6 +54,14 @@ module.exports = function (atConfig, argv) {
     
 
     apps.forEach(function(app) {
+      if (names.length) {
+        if (app.name && names.indexOf(app.name) > -1) {
+          app.startup = true
+        } else {
+          app.startup = false
+        }
+      }
+      
       if (app.startup) {
         const dir = app.src
         const dirObj = path.parse(dir)
