@@ -260,8 +260,8 @@ function* wpProductionDone(compiler, asset) {
   })
 }
 
-function* selectConfig(asset) {
-  const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv } = asset
+function* selectConfig(asset, isStart) {
+  const { SRC, DIST } = asset
   const DISTSERVER = path.join(SRC, 'server')
 
   const path_mapfile = path.join(DIST, 'mapfile.json')
@@ -281,14 +281,15 @@ function* selectConfig(asset) {
   yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
   yield sleep(500, '=========  server端的configs文件写入完成  ===============')
 
-  return yield {success: true}
+  return yield asset
 }
 
 const names = []
 module.exports = function* myProxy(compilerConfig, asset) {
+  asset = yield selectConfig(asset, true)
   const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv, onlynode } = asset
   const isXcx = (TYPE == 'mp' || TYPE == 'ali')
-
+  
   const starts = [].concat(argv.start)
   if ((starts.length && starts.indexOf(name)>-1) || onlynode) {
     yield startupNodeServer(asset)
