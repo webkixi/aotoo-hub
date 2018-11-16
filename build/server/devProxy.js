@@ -260,9 +260,18 @@ function* wpProductionDone(compiler, asset) {
   })
 }
 
-function* selectConfig(asset, isStart) {
-  const { SRC, DIST } = asset
+function* selectConfig(asset, ifStart) {
+  const { SRC, DIST, argv } = asset
   const DISTSERVER = path.join(SRC, 'server')
+  const starts = argv.start ? [].concat(argv.start) : undefined
+
+  if (ifStart) {  //非hooks传入，检测是否只是启动node
+    if (starts && starts.length) {
+      ifStart = true
+    } else {
+      ifStart = false
+    }
+  }
 
   const path_mapfile = path.join(DIST, 'mapfile.json')
   const path_config_file = path.join(DISTSERVER, 'configs.js')
@@ -272,7 +281,7 @@ function* selectConfig(asset, isStart) {
   yield generateBabelCfgFile(DISTSERVER)
   yield sleep(500, '==========  babel配置文件写入完成  ===========')
 
-  if (isStart) {
+  if (ifStart) {
     const oldConfig = require(path_config_file)()
     asset = _.merge({}, asset, oldConfig)
     process.env.NODE_ENV = asset.isDev ? 'development' : 'production'
@@ -289,37 +298,13 @@ module.exports = function* myProxy(compilerConfig, asset) {
   asset = yield selectConfig(asset, true)
   const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv, onlynode } = asset
   const isXcx = (TYPE == 'mp' || TYPE == 'ali')
+  const starts = argv.start ? [].concat(argv.start) : undefined
   
   const starts = [].concat(argv.start)
-  if ((starts.length && starts.indexOf(name)>-1) || onlynode) {
+  if ((starts && starts.length && starts.indexOf(name) > -1) || onlynode) {
     yield startupNodeServer(asset)
-    if (isDev) {
-      yield browserOpen(asset.name, asset.port, isXcx)
-    }
-  } 
-  // -------- 方案一 ------------
-  // if (argv.start || onlynode) {
-  //   const starts = [].concat(argv.start)
-  //   if (starts.indexOf(name) > -1 || onlynode) {
-  //     yield startupNodeServer(asset)
-  //     if (isDev) {
-  //       yield browserOpen(asset.name, asset.port, isXcx)
-  //     }
-  //   } else {
-  //     console.log(chalk.bold.red('没有匹配到项目'))
-  //     process.exit()
-  //   }
-  // }
-
-  // ----------- 方案二 ------------
-  // if ((argv.start && typeof argv.start == 'string' && argv.start == name) || onlynode) {
-  //   yield selectConfig(asset)
-  //   yield startupNodeServer(asset)
-  //   if (isDev) {
-  //     yield browserOpen(asset.name, asset.port, isXcx)
-  //   }
-  // }
-  else {
+    yield browserOpen(asset.name, asset.port, isXcx)
+  } else {
     const DISTSERVER = path.join(SRC, 'server')
     const compiler = webpack(compilerConfig)
     compiler.hooks.done.tap('start-node-server', stats => {
