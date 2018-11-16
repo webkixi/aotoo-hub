@@ -300,7 +300,6 @@ module.exports = function* myProxy(compilerConfig, asset) {
   const isXcx = (TYPE == 'mp' || TYPE == 'ali')
   const starts = argv.start ? [].concat(argv.start) : undefined
   
-  const starts = [].concat(argv.start)
   if ((starts && starts.length && starts.indexOf(name) > -1) || onlynode) {
     yield startupNodeServer(asset)
     yield browserOpen(asset.name, asset.port, isXcx)
