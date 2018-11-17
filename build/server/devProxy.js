@@ -156,7 +156,7 @@ function* browserOpen(name, port, isXcx) {
         name: name,
         PORT: port
       })
-    }, 1000);
+    }, 3000);
   }
 }
 
