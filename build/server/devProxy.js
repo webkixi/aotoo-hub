@@ -261,32 +261,31 @@ function* wpProductionDone(compiler, asset) {
 }
 
 function* selectConfig(asset, ifStart) {
-  const { SRC, DIST, argv } = asset
+  let { SRC, DIST, argv } = asset
   const DISTSERVER = path.join(SRC, 'server')
   const starts = argv.start ? [].concat(argv.start) : undefined
+  const path_config_file = path.join(DISTSERVER, 'configs.js')
 
   if (ifStart) {  //非hooks传入，检测是否只是启动node
     if (starts && starts.length) {
       ifStart = true
+      let oldConfig = require(path_config_file)
+      if (typeof oldConfig == 'function') {
+        oldConfig = oldConfig()
+      }
+      // console.log(asset);
+      asset = _.merge({}, asset, oldConfig)
+      DIST = asset.DIST
+      process.env.NODE_ENV = asset.isDev ? 'development' : 'production'
     } else {
       ifStart = false
     }
   }
 
   const path_mapfile = path.join(DIST, 'mapfile.json')
-  const path_config_file = path.join(DISTSERVER, 'configs.js')
-
   yield fillupMapfile(asset)
-
   yield generateBabelCfgFile(DISTSERVER)
   yield sleep(500, '==========  babel配置文件写入完成  ===========')
-
-  if (ifStart) {
-    const oldConfig = require(path_config_file)()
-    asset = _.merge({}, asset, oldConfig)
-    process.env.NODE_ENV = asset.isDev ? 'development' : 'production'
-  }
-
   yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
   yield sleep(500, '=========  server端的configs文件写入完成  ===============')
 
@@ -322,7 +321,7 @@ module.exports = function* myProxy(compilerConfig, asset) {
           // yield sleep(500, '=========  server端的configs文件写入完成  ===============')
 
           yield selectConfig(asset)
-          if (isDev) {
+          if (isDev && !argv.onlybuild) {
             yield startupNodeServer(asset)
             yield browserOpen(asset.name, asset.proxyPort, isXcx)
           }
