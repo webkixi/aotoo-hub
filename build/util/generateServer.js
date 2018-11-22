@@ -17,16 +17,19 @@ module.exports = function* (asset) {
   const jsPath = path.join(SRC, 'js')
   const serverPath = path.join(SRC, 'server')
   const serverIndex = path.join(serverPath, 'index.js')
+  const serverIndexLib = path.join(serverPath, 'lib.js')
 
   const controlPath = path.join(serverPath, 'pages')
   const controlIndex = path.join(controlPath, 'index.js')
 
+  const content_serverIndexlib = path.join(__dirname, '../lib/server/indexlib.js')
   const content_serverIndex = path.join(__dirname, '../lib/server/index.js')
   const content_controlIndex = path.join(__dirname, '../lib/server/indexControl.js')
 
   if (!fs.pathExistsSync(serverPath)) {
     fs.mkdirpSync(controlPath)
     fs.copySync(content_serverIndex, serverIndex)
+    fs.copySync(content_serverIndexlib, serverIndexLib)
 
     
     globby.sync([`${jsPath}/**/*`]).forEach(file => {
@@ -36,7 +39,6 @@ module.exports = function* (asset) {
         const servFile = file.replace(jsPath, controlPath)
         fs.copySync(content_controlIndex, servFile)
       }
-
     });
   }
 }
