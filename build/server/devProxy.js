@@ -301,7 +301,9 @@ module.exports = function* myProxy(compilerConfig, asset) {
   
   if ((starts && starts.length && starts.indexOf(name) > -1) || onlynode) {
     yield startupNodeServer(asset)
-    yield browserOpen(asset.name, asset.port, isXcx)
+    if (isDev) {
+      yield browserOpen(asset.name, asset.port, isXcx)
+    }
   } else {
     const DISTSERVER = path.join(SRC, 'server')
     const compiler = webpack(compilerConfig)
