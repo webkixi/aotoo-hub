@@ -215,9 +215,9 @@ function getFreePort(port, step) {
 // 检查aotoo.config中的参数
 function* valideAttribut(key, val, param, param1) {
   let step = 30
+  const pconfig = param
   switch (key) {
     case 'name':
-      const pconfig = param
       const src = pconfig.src
       let name = val
       if (!val) {
@@ -243,9 +243,10 @@ function* valideAttribut(key, val, param, param1) {
       break;
 
     case 'dist':
-      if (val) {
-        return val
-      } 
+      let dist = val || path.join(pconfig.src, 'dist')
+      const distEnv = process.env.NODE_ENV == 'development' ? 'dev' : 'pro'
+      return path.join(dist, pconfig.version, distEnv)
+      break;
       break;
 
     case 'host':
@@ -303,9 +304,9 @@ module.exports = function* main(assets, opts) {
     argv_name = [].concat(argv_name)
   }
 
-  if (!configs_aotoo.dist) {
-    configs_aotoo.dist = path.join(localPath, 'dist')
-  }
+  // if (!configs_aotoo.dist) {
+  //   configs_aotoo.dist = path.join(localPath, 'dist')
+  // }
 
   // 抽取编译配置
   for (let config of assets) {
@@ -319,6 +320,10 @@ module.exports = function* main(assets, opts) {
     // }
 
     if (!config.startup) {
+      continue;
+    }
+
+    if (!config.src) {
       continue;
     }
 
@@ -353,12 +358,12 @@ module.exports = function* main(assets, opts) {
       continue;
     }
 
-    if (!build_asset.DIST) {
-      const dest = configs_aotoo.dist
-      const distEnv = build_asset.isDev ? 'dev' : 'pro'
-      const newDist = path.join(dest, build_asset.name, build_asset.version, distEnv)
-      build_asset.DIST = newDist
-    }
+    // if (!build_asset.DIST) {
+    //   const dest = configs_aotoo.dist
+    //   const distEnv = build_asset.isDev ? 'dev' : 'pro'
+    //   const newDist = path.join(dest, build_asset.name, build_asset.version, distEnv)
+    //   build_asset.DIST = newDist
+    // }
 
     // if (argv_name) {
     //     build_asset.startup = config.startup
