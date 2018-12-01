@@ -274,7 +274,7 @@ function* selectConfig(asset, ifStart) {
         oldConfig = oldConfig()
       }
       // console.log(asset);
-      asset = _.merge({}, asset, oldConfig)
+      asset = _.merge({}, asset, oldConfig, {PORT: (argv.port||oldConfig.PORT)})
       DIST = asset.DIST
       process.env.NODE_ENV = asset.isDev ? 'development' : 'production'
     } else {
@@ -302,7 +302,7 @@ module.exports = function* myProxy(compilerConfig, asset) {
   if ((starts && starts.length && starts.indexOf(name) > -1) || onlynode) {
     yield startupNodeServer(asset)
     if (isDev) {
-      yield browserOpen(asset.name, asset.port, isXcx)
+      yield browserOpen(asset.name, asset.PORT, isXcx)
     }
   } else {
     const DISTSERVER = path.join(SRC, 'server')

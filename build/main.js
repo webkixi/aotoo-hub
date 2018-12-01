@@ -258,6 +258,7 @@ function* valideAttribut(key, val, param, param1) {
 
     case 'port':
       step = param || 30
+      val = Commonds.port || val
       if (val) {
         let vport = getFreePort(val, step)
         return vport.validPort
@@ -269,6 +270,7 @@ function* valideAttribut(key, val, param, param1) {
 
     case 'proxyPort':
       step = param || 1000
+      val = Commonds.port || val
       if (val) {
         let vport = getFreePort(val, step)
         return vport.validPort
@@ -329,7 +331,7 @@ module.exports = function* main(assets, opts) {
 
     config.version = config.version || configs_aotoo.version || '1.0.0'
     const _port = yield valideAttribut('port', config.port)
-    const _proxyPort = yield valideAttribut('proxyPort', (config.proxyPort||((config.port||_port)+17)))
+    const _proxyPort = yield valideAttribut('proxyPort', (config.proxyPort||(_port+17)))
     let build_asset = {
       name: yield valideAttribut('name', config.name, config),
       ROOT: configs_aotoo.ROOT,
