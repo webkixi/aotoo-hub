@@ -68,7 +68,8 @@ function getPublicPath(options) {
 }
 
 function re_TemplateContent(template, asset, isContent) {
-  const {isDev} = asset
+  const {isDev, SRC, argv} = asset
+  const startFromServer = checkIsProxy(SRC) 
 
   let tpC = ''
   const precommonKey = ['precommon', 'vendors']
@@ -94,11 +95,24 @@ function re_TemplateContent(template, asset, isContent) {
   } else {
     tpC = fs.readFileSync(template, 'utf-8')
   }
+  const re_prescript = /<script>[\s\S]+?<\/script>/i
   const re_script = /<script>[\s\S]+?<\/script>/ig
   const scripts = tpC.match(re_script)||[]
-  scripts.push(`<script src="${precommonFile}"></script>`)
-  const str_scripts = scripts.join('\n') + '</body>'
-  return precommonFile ? tpC.replace('</body>', str_scripts) : tpC
+  tpC = tpC.replace(re_prescript, '')
+
+  // scripts.push(`<script src="${precommonFile}"></script>`)
+  // const str_scripts = scripts.join('\n') + '</body>'
+
+  let str_scripts = `
+<script src="${precommonFile}"></script>
+</body>`
+  if (startFromServer) {
+    scripts.shift('<%- attachJs %>')
+  }
+  str_scripts += scripts.join('\n')
+  tpC = precommonFile ? tpC.replace('</body>', str_scripts) : tpC
+  
+  return tpC
 }
 
 // 生成htmlplugins的配置
