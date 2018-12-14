@@ -57,9 +57,45 @@ function* generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, 
       scenesBak.ROOT = asset.ROOT
 
 
-      const configsContent = `module.exports = function(opts){
+      const configsContent = `
+      const path = require('path')
+      module.exports = function(opts){
         global.Configs = global.CONFIG = ${JSON.stringify(scenesBak)}
-        return ${JSON.stringify(asset)}
+        const rtnJson = ${JSON.stringify(asset)}  
+        let oldRoot = rtnJson.ROOT
+        let oldSrc = rtnJson.SRC
+        let oldSSrc = path.join(oldSrc, 'server')
+        let oldDist = rtnJson.DIST
+        let oldContentPath = rtnJson.contentBase
+
+        let nRoot = ''
+        let nSrc = ''
+        let nDist = ''
+        let nContentPath = ''
+
+        const pathLevel = (()=>{
+          let tmpsrc = oldSrc.replace(oldRoot, '')
+          let tmpssrc = oldSSrc.replace(oldRoot, '')
+          let tmpdist = oldDist.replace(oldRoot, '')
+          let tmpAry = tmpssrc.split('/')
+          tmpAry.forEach((item, ii)=> {
+            if (ii>0) {
+              if (!nRoot) {
+                nRoot = __dirname
+              }
+              nRoot = path.join(nRoot, '../')
+            }
+          })
+          nSrc = path.join(nRoot, tmpsrc)
+          nDist = path.join(nRoot, tmpdist)
+          nContentPath = nDist
+        })()
+
+        global.CONFIG.ROOT = nRoot
+        rtnJson.ROOT = nRoot
+        rtnJson.SRC = nSrc
+        rtnJson.DIST = nDist
+        return rtnJson
       }`
 
       fs.writeFileSync(path_config_file, configsContent, 'utf-8')
