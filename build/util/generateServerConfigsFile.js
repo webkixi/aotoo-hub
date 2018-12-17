@@ -77,6 +77,9 @@ function* generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, 
           let tmpsrc = oldSrc.replace(oldRoot, '')
           let tmpssrc = oldSSrc.replace(oldRoot, '')
           let tmpdist = oldDist.replace(oldRoot, '')
+          tmpsrc = path.join('/', tmpsrc)
+          tmpssrc = path.join('/', tmpssrc)
+          tmpdist = path.join('/', tmpdist)
           let tmpAry = tmpssrc.split('/')
           tmpAry.forEach((item, ii)=> {
             if (ii>0) {
