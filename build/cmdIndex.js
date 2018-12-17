@@ -23,11 +23,12 @@ const Commonds = {
 let configs_aotoo
 let configs_apps = []
 
-let localPath = process.cwd()
-let configPath = path.join(localPath, 'aotoo.config.js')
+let lpath = process.cwd()
 
 function cmdIndex(params) {
-  const {argv} = params
+  let argv = params.argv
+  let localPath = params.localPath || lpath
+  let configPath = path.join(localPath, 'aotoo.config.js')
   if (argv.start && (typeof argv.start == 'string' || Array.isArray(argv.start))) {
     argv.start = [].concat(argv.start)
     if (argv.name) {
