@@ -6,6 +6,7 @@ var MiniCssExtractPlugin = require('mini-css-extract-plugin')
   , Concat = require('./plugins/concat')
   , happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })  // 构造一个线程池
   , aotooConfigs = process.aotooConfigs
+  , VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 function baseConfig(asset, envAttributs) {
   const {DIST, SRC, isDev} = asset
@@ -39,6 +40,10 @@ function baseConfig(asset, envAttributs) {
               interpolate: true
             }
           }
+        },
+        {
+          test: /\.vue$/,
+          use: 'vue-loader'
         },
         {
           test: /\.js(x?)$/,
@@ -82,9 +87,10 @@ function baseConfig(asset, envAttributs) {
     },
     resolve: {
       alias: alias,
-      extensions: ['.js', '.styl', '.stylus', '.css', '.jsx', '.json', '.md']
+      extensions: ['.js', '.vue', '.styl', '.stylus', '.css', '.jsx', '.json', '.md']
     },
     plugins: envAttributs('plugins', [
+      new VueLoaderPlugin(),
       new MiniCssExtractPlugin({
         filename: isDev ? "css/[name].css" : "css/[name]__[hash:10].css",
         chunkFilename: isDev ? "css/[id].css" : "css/[id]__[hash:10].css"

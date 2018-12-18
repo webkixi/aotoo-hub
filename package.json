@@ -1,6 +1,6 @@
 {
   "name": "@aotoo/aotoo-hub",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "基于webpack4的多项目脚手架",
   "main": "index.js",
   "scripts": {
@@ -60,6 +60,7 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
     "uglifyjs-webpack-plugin": "^1.2.7",
+    "vue-loader": "^15.4.2",
     "webpack": "^4",
     "webpack-cli": "^3",
     "webpack-dev-server": "^3",

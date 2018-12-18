@@ -7,6 +7,7 @@ module.exports = function (atc, asset) {
     css: path.join(SRC, 'css'),
     component: path.join(SRC, 'component'),
     sync: path.join(SRC, 'sync'),
-    ssr: path.join(SRC, 'ssr')
+    ssr: path.join(SRC, 'ssr'),
+    vue: 'vue/dist/vue.js'
   }
 }
