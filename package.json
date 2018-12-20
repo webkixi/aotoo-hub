@@ -11,6 +11,9 @@
     "build-clean": "yarn run build"
   },
   "author": "webkixi",
+  "engines": {
+    "node": ">= 8.9.0"
+  },
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^8.5.0",
