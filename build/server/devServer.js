@@ -119,6 +119,18 @@ function* wpDevServer(compiler, asset) {
           title: 'aotoo-hub 多项目全栈脚手架'
         })
       })
+
+      app.get('/*.html', function (req, res) {
+        const urlPath = req.url.substr(1, (req.url.indexOf('.html')-1))
+        const filePath = path.join(DISTHTML, req.url)
+        if (fs.existsSync(filePath)) {
+          res.render(urlPath, {
+            title: 'aotoo-hub 多项目全栈脚手架'
+          })
+        } else {
+          res.send('404！找不到页面')
+        }
+      })
     },
   }).listen((port || 8300), 'localhost', function (err, result) {
     if (err) { console.log(err) }
