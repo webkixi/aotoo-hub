@@ -1,4 +1,0 @@
-<wxs src="../attemplate/utils.wxs" module="utils" />
-<import src="../attemplate/parse_list" />
-
-<template is="loop-list" data="{{props}}" />

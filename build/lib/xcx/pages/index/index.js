@@ -15,11 +15,6 @@ Page({
       url: '../logs/logs'
     })
   },
-  bindGotoList: function(){
-    wx.navigateTo({
-      url: '../test/index'
-    })
-  },
   onLoad: function () {
     if (app.globalData.userInfo) {
       this.setData({
