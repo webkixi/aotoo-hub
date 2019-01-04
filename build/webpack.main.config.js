@@ -155,6 +155,7 @@ module.exports = function createWpConfig(asset, envAttributs, buildType) { // bu
   const isXcx = buildType && buildType == 'xcx'
 
   if (isXcx) {
+    delDist(asset, isVendors, isXcx)
     return createXcxConfig(asset, envAttributs)
   } else {
     // 删除旧有数据，重新编译
@@ -168,7 +169,8 @@ module.exports = function createWpConfig(asset, envAttributs, buildType) { // bu
   }
 }
 
-function delDist(asset, buildType) {
+function delDist(asset, buildType, isXcx) {
+
   const {DIST, SRC, argv, isDev} = asset
   let delSomething = [
     DIST + '/css/***',
@@ -192,6 +194,10 @@ function delDist(asset, buildType) {
     }
   } else {
     delTarget = [].concat(delSomething).concat(delCommonFiles)
+  }
+
+  if (isXcx) {
+    delTarget = [DIST + '/***']
   }
 
   // 只启动node端

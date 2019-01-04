@@ -16,29 +16,42 @@ var MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 class appendCommonFile {
   constructor(options) {
+    const {DIST, TYPE} = options
     const TYPE = options.TYPE
     const isXcx = TYPE == 'mp'
     const isAli = TYPE == 'ali'
     const globalVar = isXcx ? 'wx' : 'my'
     this.globalVar = globalVar
     this.prePath = '../'
+    this.options = options
     // this.contentSource = `; function webpackJsonp() { require("~~~~"); ${globalVar}.webpackJsonp.apply(null, arguments); }`;
     this.contentSource = `; require("~~~~");`;
   }
   apply(compiler) {
     const that = this
+    const options = this.options
+    const {DIST} = options
     const windowRegExp = new RegExp('window', 'g');
 
     compiler.hooks.compilation.tap('wpConcatFile', (compilation, params) => {
       compilation.hooks.beforeChunkAssets.tap('wpConcatFile', () => {
-        const assetsChunkIndex = compilation.chunks.findIndex(function(item) {
-          return item.name.indexOf('nobuild__')>-1
+        compilation.chunks = compilation.chunks.filter(function (item) {
+          return item.name.indexOf('nobuild__') == -1
         })
-				if (assetsChunkIndex > -1) {
-					compilation.chunks.splice(assetsChunkIndex, 1);
-				}
+        // const assetsChunkIndex = compilation.chunks.findIndex(function(item) {
+        //   return item.name.indexOf('nobuild__')>-1
+        // })
+				// if (assetsChunkIndex > -1) {
+				// 	compilation.chunks.splice(assetsChunkIndex, 1);
+				// }
       })
       compilation.hooks.optimizeChunkAssets.tapAsync('wpConcatFile', (chunks, callback) => {
+        let hasCommon = false
+        chunks.forEach(chunk => {
+          if (chunk.name == 'common') {
+            hasCommon = true
+          }
+        })
         chunks.forEach(chunk => {
           chunk.files.forEach(file => {
             const fileObj = path.parse(file)
@@ -46,15 +59,25 @@ class appendCommonFile {
               // chunk.name  chunk.name
               if (chunk.name !== 'common') {
                 const lens = []
-                let posixPath = './'
+                let posixPath = ''
                 const matchIt = chunk.name.match(/\//g)
                 if (matchIt) {
                   matchIt.forEach(it => lens.push(this.prePath))
-                  posixPath = './'+lens.join('')
+                  // posixPath = './'+lens.join('')
+                  posixPath = lens.join('')
                 } else {
                   posixPath = './'
                 }
-                const contentSource = this.contentSource.replace('~~~~', posixPath+'common.js')
+                let posixPathFile = posixPath + 'runtime.js'
+                let contentSource = this.contentSource.replace('~~~~', posixPathFile)
+                if (chunk.name == 'runtime') {
+                  posixPathFile = posixPath + 'common.js'
+                  if (hasCommon) {
+                    contentSource = this.contentSource.replace('~~~~', posixPathFile)
+                  } else {
+                    contentSource = ''
+                  }
+                }
                 let contentObj = compilation.assets[file]
                 let code = contentObj.source()
                 code = code.replace(windowRegExp, that.globalVar);
@@ -67,7 +90,6 @@ class appendCommonFile {
                   '\n',
                   contentObj,
                 );
-                
               } else {
                 const contentObj = compilation.assets[file]
                 let code = contentObj.source()
@@ -164,16 +186,20 @@ function baseConfig(asset, envAttributs) {
       aggregateTimeout: 300,
       poll: 1000
     },
-    devtool: isDev ? 'source-map' : false,
+    // devtool: isDev ? 'source-map' : false,
+    devtool: false,
     output: {
       filename: '[name].js',
       publicPath: '/',
       path: DIST
     },
     optimization: {
-      noEmitOnErrors: true,
-      namedModules: true,
+      runtimeChunk: 'single', // 抽离webpack内部模块调用为独立文件，否则每个编译后的文件都包含有webpack内部模块调用部分
+      noEmitOnErrors: false,
+      namedModules: false, // webpack编译后的模块名具有可读性
+      namedChunks: false, // webpack编译后的chunk名具有可读性
       minimizer: envAttributs('minimizerCss'),
+      occurrenceOrder: true,
       splitChunks: {
         cacheGroups: {
           common: { // 抽离自己写的公共代码，utils这个名字可以随意起
@@ -186,7 +212,6 @@ function baseConfig(asset, envAttributs) {
           }
         }
       },
-      occurrenceOrder: true
     },
     module: {
       rules: [
@@ -256,7 +281,7 @@ function baseConfig(asset, envAttributs) {
       extensions: ['.js', '.styl', '.wxml', '.wxss', '.css', '.json', '.md']
     },
     plugins: [
-      new appendCommonFile({TYPE}),
+      new appendCommonFile({...asset}),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': isDev ? JSON.stringify('development') : JSON.stringify('production'),
         '__DEV__': true
