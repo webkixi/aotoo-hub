@@ -17,7 +17,6 @@ var MiniCssExtractPlugin = require('mini-css-extract-plugin')
 class appendCommonFile {
   constructor(options) {
     const {DIST, TYPE} = options
-    const TYPE = options.TYPE
     const isXcx = TYPE == 'mp'
     const isAli = TYPE == 'ali'
     const globalVar = isXcx ? 'wx' : 'my'
