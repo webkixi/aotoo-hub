@@ -205,7 +205,7 @@ function baseConfig(asset, envAttributs) {
             test: /\.js(x?)/,
             chunks: 'all',
             name: 'common', // 任意命名
-            // minSize: 30000, // 只要超出0字节就生成一个新包
+            minSize: 50000, // 只要超出0字节就生成一个新包
             minChunks: 2, // 只要超出0字节就生成一个新包
             priority: 10
           }
