@@ -2,6 +2,7 @@ const co      = require('co')
 const fs      = require('fs')
 const del     = require('del')
 const path    = require('path')
+const chalk = require('chalk')
 const _       = require('lodash')
 const webpack = require('webpack')
 // const argv    = require('minimist')(process.argv.slice(2));
@@ -88,15 +89,32 @@ function* buildXcxFiles(asset, config) {
   }
 }
 
+function checkIsXcx(options) {
+  const { TYPE, DIST } = options
+  const isXcx = TYPE == 'mp' || TYPE == 'ali'
+  const development = process.env.NODE_ENV == 'development'
+  const modeDesc = development ? '开发模式' : '生产模式'
+  const modeDist = chalk.yellow.bold(DIST)
+  if (isXcx) {
+    console.log(chalk.white.bold(`
+你正在启动小程序项目(${modeDesc})
+请打开微信开发者工具，并指定项目目录到
+${modeDist}
+    `));
+  }
+}
+
 function* proxyServer(compilerConfig, options) {
   // const vport = yield validPort(options.port)
   yield devProxy(compilerConfig, options)
   yield sleep(3000)
+  checkIsXcx(options)
 }
 
 function* wpDevServers(compilerConfig, options) {
   yield devServer(compilerConfig, options)
   yield sleep(3000)
+  checkIsXcx(options)
 }
 
 // 启动服务前检查端口 portOccupied
