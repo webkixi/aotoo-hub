@@ -4,6 +4,9 @@ const { TYPE, PORT, name } = appConfigs
 const isXcx = (TYPE == 'mp' || TYPE == 'ali')
 const app = require('./lib')(appConfigs)
 
+if (isXcx) {
+  app.state.views = true
+}
 app.listen(PORT, function (err, stat) {
   if (err) console.log(err);
   const destPort = chalk.green.bold(`【${PORT}】`)
@@ -16,6 +19,6 @@ app.listen(PORT, function (err, stat) {
       `);
 
   if (isXcx) {
-    log(chalk.bold.yellow('node端已启动，请打开微信开发工具并指定项目目录'))
+    console.log(chalk.bold.yellow('node端已启动，请打开微信开发工具并指定项目目录'))
   }
 })
