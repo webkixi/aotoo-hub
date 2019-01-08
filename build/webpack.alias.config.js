@@ -6,6 +6,7 @@ module.exports = function (atc, asset) {
     root: SRC,
     css: path.join(SRC, 'css'),
     component: path.join(SRC, 'component'),
+    common: path.join(SRC, 'common'),
     sync: path.join(SRC, 'sync'),
     ssr: path.join(SRC, 'ssr'),
     vue: 'vue/dist/vue.js'
