@@ -132,9 +132,10 @@ function core(params) {
       }
       app.activePage = activePage = this
       if (typeof oldLoad == 'function') {
+        // oldLoad.apply(this, arguments)
         setTimeout(() => {
           oldLoad.apply(this, arguments)
-        }, 100);
+        }, 150);
       }
     }
 
@@ -157,9 +158,10 @@ function core(params) {
       })
 
       if (typeof oldReady == 'function') {
-        setTimeout(() => {
-          oldReady.apply(this, arguments)
-        }, 100);
+        oldReady.apply(this, arguments)
+        // setTimeout(() => {
+        //   oldReady.apply(this, arguments)
+        // }, 100);
       }
     }
 
