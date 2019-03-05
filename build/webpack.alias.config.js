@@ -5,7 +5,8 @@ module.exports = function (atc, asset) {
   return {
     root: SRC,
     css: path.join(SRC, 'css'),
-    component: path.join(SRC, 'component'),
+    component: path.join(SRC, 'component'), 
+    components: path.join(SRC, 'js/components'),
     common: path.join(SRC, 'common'),
     sync: path.join(SRC, 'sync'),
     ssr: path.join(SRC, 'ssr'),

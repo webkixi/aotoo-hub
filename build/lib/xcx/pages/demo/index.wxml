@@ -1,0 +1,7 @@
+<!-- index.wxml -->
+<view class="boxer">
+  <ui-item item="{{motto}}"/>
+  <action-side item="{{actionSide1}}" />
+  <action-side item="{{actionSide2}}" />
+  <action-side item="{{actionSide3}}" />
+</view>

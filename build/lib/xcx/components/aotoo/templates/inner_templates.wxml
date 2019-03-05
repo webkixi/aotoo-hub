@@ -1,0 +1,94 @@
+<wxs src="../util.wxs" module="util" />
+<wxs module="inner">
+  function has(item, type){
+    if (item.form) return item.form[type]
+  }
+  module.exports = { has: has }
+</wxs>
+<import src="../../templates.wxml" />
+
+<!-- <template name="temp">
+  <template is="{{tempName}}" data="{{stuff}}" />
+</template> -->
+
+<template name="@component">
+  <block wx:if="{{util.isString(props.is)}}">
+    <template is="{{props.is}}" data="{{item: props, props}}" />
+  </block>
+</template>
+
+<template name="a">
+  <view class="htitle {{item.class || item.itemClass}}" wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" bind:tap="aim" data-aim="{{item.aim}}">{{item.title}}</view>
+  <block wx:else>
+    <view class="htitle {{item.class || item.itemClass}}" bind:tap="aim" data-aim="{{item.aim}}">{{item.title}}</view>
+  </block>
+</template>
+
+<template name="img">
+  <image bind:tap="aim" data-aim="{{item.aim}}" wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" lazy-load="{{true}}" class="himg {{ item.class || item.itemClass }}" mode="{{item.mode || 'widthFix'}}" src="{{item.src}}" />
+  <block wx:else>
+    <image bind:tap="aim" data-aim="{{item.aim}}" class="himg {{ item.class || item.itemClass }}" mode="{{item.mode || 'widthFix'}}" lazy-load="{{true}}" src="{{item.src}}" />
+  </block>
+</template>
+
+<template name="@item">
+  <block wx:if="{{util.isObject(props)}}">
+    <ui-item item="{{props}}"/>
+  </block>
+</template>
+
+<template name="@list">
+  <block wx:if="{{util.isObject(props)}}">
+    <ui-list list="{{props}}"/>
+  </block>
+</template>
+
+<template name="@tree">
+  <block wx:if="{{util.isObject(props)}}">
+    <ui-tree list="{{props}}"/>
+  </block>
+</template>
+
+<template name="@icon">
+  <block wx:if="{{util.isString(props)}}">
+    <icon class="iconfont {{props}}" />
+  </block>
+  <block wx:elif="{{util.isObject(props)}}">
+    <block wx:if="{{props.aim}}">
+      <block wx:if="{{props.style}}">
+        <icon 
+          class="iconfont {{props.class || props.itemClass}}" 
+          bind:tap="aim" data-aim="{{props.aim}}"
+          style="{{props.style||''}}" 
+        />
+      </block>
+      <block wx:else>
+        <icon 
+          class="iconfont {{props.class || props.itemClass}}" 
+          bind:tap="aim" data-aim="{{props.aim}}"
+        />
+      </block>
+    </block>
+    <block wx:else>
+      <block wx:if="{{props.style}}">
+        <icon 
+          class="iconfont {{props.class || props.itemClass}}" 
+          style="{{props.style||''}}" 
+        />
+      </block>
+      <block wx:else>
+        <icon 
+          class="iconfont {{props.class || props.itemClass}}" 
+        />
+      </block>
+    </block>
+  </block>
+</template>
+
+<template name="@form">
+  <block wx:if="{{props && util.isObject(props)}}">
+    <!-- <block wx:if="{{inner.has(item, 'text')}}">
+      <input type="text" value="hahaha" />
+    </block> -->
+  </block>
+</template>

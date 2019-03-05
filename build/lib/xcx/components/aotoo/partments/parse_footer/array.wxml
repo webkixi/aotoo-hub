@@ -1,0 +1,26 @@
+<wxs src="../../util.wxs" module="util" />
+<import src="../parse_common/index.wxml" />
+
+<template name="hb-content">
+  <block wx:if="{{util.isString(item)}}">
+    <text>{{item}}</text>
+  </block>
+
+  <block wx:elif="{{util.isObject(item)}}">
+    <template is="tik" data="{{item}}" />
+  </block>
+</template>
+
+<!-- 这个key要小心 -->
+<view class="hfooter {{item.footerClass||''}}">
+  <block wx:for="{{item.footer}}" wx:key="">
+    <view id="{{item.id}}" class="hf-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}">
+      <template is="hf-content" data="{{item}}" />
+    </view>
+    <block wx:else>
+      <view id="{{item.id}}" class="hf-item {{item.itemClass||item.class}}">
+        <template is="hf-content" data="{{item}}" />
+      </view>
+    </block>
+  </block>
+</view>

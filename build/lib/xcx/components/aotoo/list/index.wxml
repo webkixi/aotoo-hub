@@ -1,0 +1,45 @@
+<!-- 作者：天天修改 -->
+<!-- github: webkixi -->
+<!-- 小程序的模板真是又长又臭 -->
+<wxs src="../util.wxs" module="util" />
+<import src="../templates/item.wxml" />
+
+<template name="listContent">
+  <block wx:if="{{util.isArray(collects)}}">
+    <block wx:for="{{collects}}" wx:key="">
+      <block wx:if="{{item.$$id}}">
+        <ui-item item="{{item}}" id="{{item.id || item.$$id}}" fromList="{{true}}" />
+      </block>
+      <block wx:else>
+        <template is="item" data="{{item}}" />
+      </block>
+    </block>
+  </block>
+</template>
+
+
+<template name="mylist">
+  <block wx:if="{{list.type == 'scroll'}}">
+  <!-- 设置scroll-view -->
+  </block>
+  <block wx:else>
+    <view id="{{list.id||id}}" 
+      class="hlist {{list.listClass||list.class||'class-name'}}" 
+      wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}"
+    >
+      <template is="listContent" data="{{collects: list.data, list}}" />
+    </view>
+  
+    <block wx:else>
+      <view id="{{list.id||id}}" 
+        class="hlist {{list.listClass||list.class||'class-name'}}" 
+      >
+        <template is="listContent" data="{{collects: list.data, list}}" />
+      </view>
+    </block>
+  </block>
+</template>
+
+<block wx:if="{{$list.show}}">
+  <template is="mylist" data="{{list: $list, id}}" />
+</block>

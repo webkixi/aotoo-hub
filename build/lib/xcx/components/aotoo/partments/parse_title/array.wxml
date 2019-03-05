@@ -1,0 +1,34 @@
+<wxs src="../../util.wxs" module="util" />
+<import src="../parse_common/index.wxml" />
+
+
+<template name="titles-content">
+  <block wx:if="{{util.isString(item)}}">
+    <text class="htitle">{{item}}</text>
+  </block>
+  <block wx:else>
+    <block wx:if="{{util.isString(item.title)}}">
+      <template is="title-obj" data="{{ item: {title: item.title} }}"/>
+    </block>
+    <block wx:elif="{{util.isObject(item.title)}}">
+      <template is="title-obj" data="{{ item: {title: item.title} }}"/>
+    </block>
+    <block wx:else>
+      <template is="title-obj" data="{{ item }}"/>
+    </block>
+  </block>
+</template>
+
+<!-- 这个key要小心 -->
+<view class="htitles {{item.titleClass||''}}">
+  <block wx:for="{{item.title}}" wx:key="" wx:for-item="tItem">
+    <view class="{{tItem.itemClass||tItem.class}} t-item" wx:if="{{tItem.aim}}" bind:tap="aim" data-aim="{{tItem.aim}}">
+      <template is="titles-content" data="{{item: tItem}}" />
+    </view>
+    <block wx:else>
+      <view class="{{tItem.itemClass||tItem.class}} t-item">
+        <template is="titles-content" data="{{item: tItem}}" />
+      </view>
+    </block>
+  </block>
+</view>

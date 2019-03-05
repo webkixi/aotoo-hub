@@ -1,17 +1,26 @@
-<!--index.wxml-->
-<view class="container">
-  <view class="userinfo">
-    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
-  </view>
-    <view class="flex-box">
-      <view class="flex-item-1">12</view>
-      <view class="flex-item-2">34</view>
-    </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
-  </view>
+<view class="boxer">
+  <!-- <view class="demo-item">
+    <ui-item item="{{title}}" />
+    <ui-item item="{{icon}}" />
+    <ui-item item="{{titleAndAim}}" />
+    <ui-item item="{{titleAndClass}}" />
+    <ui-item item="{{titleAndEvt}}" />
+    <ui-item item="{{titles}}" />
+    <ui-item item="{{titleAndImg}}" />
+    <ui-item item="{{titleAndBody}}" />
+    <ui-item item="{{titleAndFooter}}" />
+    <ui-item item="{{titleAndDot}}" />
+    <ui-item item="{{titleAndLi}}" />
+
+    <ui-list list="{{listData}}" />
+    <ui-tree list="{{treeData}}" />
+
+    <ui-item item="{{modal}}" />
+    <ui-item item="{{pageData}}" />
+  </view> -->
+
+  <ui-list list="{{menuData}}" />
+  <!-- <ui-list list="{{menuData2}}" /> -->
+  <!-- <action-side item="{{aside1}}" />
+  <action-side item="{{aside2}}" /> -->
 </view>
