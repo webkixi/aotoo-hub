@@ -122,7 +122,7 @@ class DoneCompile {
 
 function jsEntries(dir) {
   var jsFiles = {}
-  const accessExts = ['.wxml', '.styl', '.wxs', '.json', '.png', '.jpg', '.jpeg', '.gif']
+  const accessExts = ['.wxml', '.wxss', '.styl', '.wxs', '.json', '.png', '.jpg', '.jpeg', '.gif']
   if (fse.existsSync(dir) ){
     globby.sync([`${dir}/**/*`, '!node_modules']).forEach(function(item) {
       if (item.indexOf('_')!=0) {
@@ -224,6 +224,11 @@ function baseConfig(asset, envAttributs) {
         },
         {
           test: /\.(png|jpg|gif)$/,
+          include: SRC,
+          use: relativeFileLoader(),
+        },
+        {
+          test: /\.wxss$/,
           include: SRC,
           use: relativeFileLoader(),
         },
