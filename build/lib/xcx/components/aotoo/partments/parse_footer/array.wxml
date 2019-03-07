@@ -1,7 +1,7 @@
 <wxs src="../../util.wxs" module="util" />
 <import src="../parse_common/index.wxml" />
 
-<template name="hb-content">
+<template name="hf-content">
   <block wx:if="{{util.isString(item)}}">
     <text>{{item}}</text>
   </block>

@@ -86,9 +86,5 @@
 </template>
 
 <template name="@form">
-  <block wx:if="{{props && util.isObject(props)}}">
-    <!-- <block wx:if="{{inner.has(item, 'text')}}">
-      <input type="text" value="hahaha" />
-    </block> -->
-  </block>
+  
 </template>
