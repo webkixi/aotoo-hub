@@ -135,8 +135,14 @@
   </block>
 </template>
 
-<template name="for-title-obj-string">
-  <text class="htitle">{{item.title}}</text>
+ <template name="for-title-obj-string">
+  <text wx:if="{{item.itemDataRoot}}" class="htitle">{{item.title}}</text>
+  <block wx:else>
+    <text wx:if="{{item.itemStyle || item.style}}" style="{{item.itemStyle||item.style}}" class="htitle {{item.itemClass||item.class}}">{{item.title}}</text>
+    <block wx:else>
+      <text class="htitle {{item.itemClass||item.class}}">{{item.title}}</text>
+    </block>
+  </block>
   <!-- <block wx:if="{{util.isString(item.title)}}">
     <block wx:if="{{util.isString(item.aim)}}">
       <template is="a" data="{{item: {title: item.title, aim: item.aim} }}" />
