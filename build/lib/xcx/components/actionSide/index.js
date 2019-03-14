@@ -57,17 +57,14 @@ Component({
     multipleSlots: true, // 在组件定义时的选项中启用多slot支持
     addGlobalClass: true
   },
-  behaviors: [Core.itemBehavior(app, 'actionSide')],
+  behaviors: [Core.itemComponentBehavior(app, 'actionSide')],
   lifetimes: {
     attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
       let properties = this.properties
       let item       = properties.item
       item.itemClass = 'actionSide'
       item.__actionMask = 'actionMask'
-      item = Core.setItem(item)
-      this.setData({
-        $item: item,
-      })
+      this.setData({ $item: item })
     },
     ready: function() {
       const that = this
@@ -83,6 +80,14 @@ Component({
     }
   },
   methods: {
+    // closeIt: function(event, param, ctx) {
+    //   const dataset = event.currentTarget.dataset
+    //   const aim = dataset.aim
+    //   if (aim && aim == 'closeIt') {
+    //     this.hide()
+    //     return 0
+    //   }
+    // },
     show: function (p, c) {
       const {param, cb} = paramCb(p, c)
       const myContent = content.call(this, param) || {}

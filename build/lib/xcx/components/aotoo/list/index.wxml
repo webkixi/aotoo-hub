@@ -4,41 +4,59 @@
 <wxs src="../util.wxs" module="util" />
 <import src="../templates/item.wxml" />
 
-<template name="listContent">
-  <block wx:if="{{util.isArray(collects)}}">
-    <block wx:for="{{collects}}" wx:key="">
-      <block wx:if="{{item.$$id}}">
-        <ui-item item="{{item}}" id="{{item.id || item.$$id}}" fromList="{{true}}" />
-      </block>
-      <block wx:else>
-        <template is="item" data="{{item}}" />
-      </block>
-    </block>
-  </block>
-</template>
-
-
-<template name="mylist">
-  <block wx:if="{{list.type == 'scroll'}}">
-  <!-- 设置scroll-view -->
+<template name="itemContent">
+  <block wx:if="{{item.$$id}}">
+    <ui-item item="{{item}}" id="{{item.$$id}}" />
   </block>
   <block wx:else>
-    <view id="{{list.id||id}}" 
-      class="hlist {{list.listClass||list.class||'class-name'}}" 
-      wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}"
-    >
-      <template is="listContent" data="{{collects: list.data, list}}" />
-    </view>
-  
-    <block wx:else>
-      <view id="{{list.id||id}}" 
-        class="hlist {{list.listClass||list.class||'class-name'}}" 
-      >
-        <template is="listContent" data="{{collects: list.data, list}}" />
-      </view>
-    </block>
+    <template is="item" data="{{item}}" />
   </block>
 </template>
+
+<template name="listWrap">
+  <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class||'class-name'}}" wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}" >
+    <block wx:if="{{util.isArray(list.data)}}">
+      <block wx:for="{{list.data}}" wx:key="">
+        <template is="itemContent" data="{{item}}" />
+      </block>
+    </block>
+  </view>
+  <block wx:else>
+    <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class||'class-name'}}" >
+      <block wx:if="{{util.isArray(list.data)}}">
+        <block wx:for="{{list.data}}" wx:key="">
+          <template is="itemContent" data="{{item}}" />
+        </block>
+      </block>
+      <!-- <template is="listContent" data="{{collects: list.data, list}}" /> -->
+    </view>
+  </block>
+</template>
+
+<template name="swiperWrap">
+  <swiper indicator-dots="{{  list.type['indicator-dots'] }}" indicator-color="{{ list.type['indicator-color'] }}" indicator-active-color="{{ list.type['indicator-active-color'] }}" autoplay="{{ list.type['autoplay'] }}" current="{{ list.type['current'] }}" current-item-id	="{{ list.type['current-item-id'] }}" interval	="{{ list.type['interval'] }}" duration	="{{ list.type['duration'] }}" circular	="{{ list.type['circular'] }}" vertical	="{{ list.type['vertical'] }}" previous-margin	="{{ list.type['previous-margin'] }}" next-margin	="{{ list.type['next-margin'] }}" display-multiple-items		="{{ list.type['display-multiple-items'] }}" skip-hidden-item-layout		="{{ list.type['skip-hidden-item-layout'] }}" bindchange		="{{ list.type['bindchange'] }}" bindtransition		="{{ list.type['bindtransition'] }}" bindanimationfinish		="{{ list.type['bindanimationfinish'] }}" >
+    <block wx:if="{{util.isArray(list.data)}}">
+      <block wx:for="{{list.data}}" wx:key="">
+        <swiper-item>
+          <template is="itemContent" data="{{item}}" />
+        </swiper-item>
+      </block>
+    </block>
+  </swiper>
+</template>
+
+<template name="mylist">
+  <block wx:if="{{list.type && util.isObject(list.type)}}">
+    <block wx:if="{{list.type.is}}">
+      <block wx:if="{{list.type.is == 'swiper'}}"> <template is="swiperWrap" data="{{list}}" /> </block>
+    </block>
+  </block>
+  <block wx:else>
+    <template is="listWrap" data="{{list}}" />
+  </block>
+</template>
+
+
 
 <block wx:if="{{$list.show}}">
   <template is="mylist" data="{{list: $list, id}}" />

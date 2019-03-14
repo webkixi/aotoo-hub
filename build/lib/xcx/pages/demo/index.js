@@ -8,7 +8,8 @@ import * as myData  from './demodata'
 Pager({
   data: {
     motto: Pager.item({
-      title: '示例'
+      title: '示例',
+      itemClass: 'padding-20-r'
     }),
     actionSide1: myData.actionSide1,
     actionSide2: myData.actionSide2,
@@ -64,6 +65,14 @@ Pager({
             }
           })
           break;
+        case 'tab':
+          motto.reset().update({
+            '@component': {
+              is: 'tab',
+              data: myData.tabData
+            }
+          })
+          break;
       }
     }
   },
@@ -79,6 +88,7 @@ Pager({
     const aside3 = this.getElementsById('actionSide3')
 
     const mytree = this.getElementsById('mytree')
+    const mytree2 = this.getElementsById('mytree2')
 
     switch (theAim) {
       case 'inner-response':

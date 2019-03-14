@@ -1,0 +1,11 @@
+//指定几行出现省略号
+ss-textellipsis($line-clamp = 3, $max-height = false)
+  if ($max-height != false)
+    max-height: $max-height        //加这个andriod会有兼容性问题
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $line-clamp;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+  white-space: normal

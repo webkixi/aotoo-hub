@@ -1,0 +1,56 @@
+icon 
+  display: block
+//小圆点
+.icon-dot
+  background: red
+  background:#f00;
+  color:#fff;
+  display: block;
+  font-size: 10px;
+  width 20rpx
+  height @width
+  border-radius @width
+  ss-display-flex(row nowrap, center, center, center)
+
+.icon-dot-small
+  @extends .icon-dot
+  width 16rpx
+  height @width
+  border-radius @width
+
+.icon-dot-more
+  @extends .icon-dot
+  border-radius: 20rpx
+  padding: 0 4px;
+
+
+//iconfont
+.icon-arrows-a-r
+  &:after
+    content: '\e618'
+.icon-arrows-r
+  &:before
+    content: '\e618'
+.icon-arrows-t
+  &:before
+    content: '\e617'
+.icon-arrows-b
+  &:before
+    content: '\e616'
+
+.icon-silence
+  &:before
+    content: '\e74d'
+
+.icon-1
+  &:before
+    content: '\e6aa'
+.icon-2
+  &:before
+    content: '\e6a6'
+.icon-3
+  &:before
+    content: '\e69d'
+.icon-4
+  &:before
+    content: '\e6a7'

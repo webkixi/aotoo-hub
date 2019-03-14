@@ -92,6 +92,7 @@
       </block>
     </block>
   </block>
+  
 </template>
 
 <!-- title img kv -->
@@ -135,7 +136,7 @@
   </block>
 </template>
 
- <template name="for-title-obj-string">
+<template name="for-title-obj-string">
   <text wx:if="{{item.itemDataRoot}}" class="htitle">{{item.title}}</text>
   <block wx:else>
     <text wx:if="{{item.itemStyle || item.style}}" style="{{item.itemStyle||item.style}}" class="htitle {{item.itemClass||item.class}}">{{item.title}}</text>

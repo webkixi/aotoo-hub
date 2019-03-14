@@ -30,3 +30,7 @@
     <button class="{{props.class||''}}">{{props.title}}</button>
   </block>
 </template>
+
+<template name="tab">
+  <ui-tab dataSource="{{props.data}}" />
+</template>

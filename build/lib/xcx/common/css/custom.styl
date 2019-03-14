@@ -1,0 +1,38 @@
+/*
+  custom.styl
+    不知道放在哪个样式表的，
+    或需要@extends 简单的
+  -------------------------------------
+  -------------------------------------lgh
+*/
+
+.ss-focus
+  &:focus, &:active
+    background: #eee
+
+.flex-1
+  flex: 1
+
+//带背景色标题
+.bg-title-f3f3f3
+  >.htitles
+    height: 100%
+  background: #f3f3f3
+  height: 70rpx
+  padding: 0 20rpx
+  >.htitles
+    ss-display-flex(row nowrap, space-between, center, center)
+
+.bg-title-body-f3f3f3
+  ss-display-flex(row nowrap, space-between, center, center)
+  background: #f3f3f3
+  height: 70rpx
+  padding: 0 20rpx
+  .htitles
+    ss-display-flex(row nowrap, flex-start, center)
+.item-titlex
+  color: #333333
+  font-size: 16px
+.item-descx
+  color: #999
+  font-size: 14px

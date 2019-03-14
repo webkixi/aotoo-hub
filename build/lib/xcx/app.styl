@@ -1,4 +1,4 @@
-@import "./common/css/iconfont.styl"
+@import "./common/css/index"
 
 /**app.wxss**/
 .container {
@@ -9,3 +9,18 @@
   justify-content: space-between;
   box-sizing: border-box;
 } 
+
+// tab的默认样式
+.tab-container 
+  background-color red
+  .menu-box 
+    display flex
+    flex-direction: row
+    .menu-item
+      flex:1;
+      background-color:#00f;
+      text-align:center;
+      height:40px;
+      line-height:36px;
+      &.active
+        background-color yellow
