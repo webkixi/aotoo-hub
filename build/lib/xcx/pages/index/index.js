@@ -189,51 +189,51 @@ Pager({
       data: [
         { title: [
             {title: 'string', class: 'item' },
-            {title: '简单字符', class: 'item iconfont item-icon', aim: 'demo-string'},
+            {title: '简单字符', class: 'item icon-arrows-a-r color-999', aim: 'demo-string'},
         ]},
         { title: [
             {title: 'response', class: 'item' },
-            {title: '响应标签', class: 'item iconfont item-icon', aim: 'demo-link'},
+            {title: '响应标签', class: 'item icon-arrows-a-r color-999', aim: 'demo-link'},
         ]},
         { title: [
             {title: 'icon', class: 'item' },
-            {title: '小图标', class: 'item iconfont item-icon', aim: 'demo-icon'},
+            {title: '小图标', class: 'item icon-arrows-a-r color-999', aim: 'demo-icon'},
         ]},
         { title: [
             {title: 'longpress', class: 'item' },
-            {title: '长按响应', class: 'item iconfont item-icon', aim: 'demo-longpress'},
+            {title: '长按响应', class: 'item icon-arrows-a-r color-999', aim: 'demo-longpress'},
         ]},
         { title: [
             {title: 'titles', class: 'item' },
-            {title: '一组title', class: 'item iconfont item-icon', aim: 'demo-titles'},
+            {title: '一组title', class: 'item icon-arrows-a-r color-999', aim: 'demo-titles'},
         ]},
         { title: [
             {title: 'pic', class: 'item' },
-            {title: '图片', class: 'item iconfont item-icon', aim: 'demo-onepic'},
+            {title: '图片', class: 'item icon-arrows-a-r color-999', aim: 'demo-onepic'},
         ]},
         { title: [
             {title: 'pics', class: 'item' },
-            {title: '图片组', class: 'item iconfont item-icon', aim: 'demo-pics'},
+            {title: '图片组', class: 'item icon-arrows-a-r color-999', aim: 'demo-pics'},
         ]},
         { title: [
             {title: 'sort', class: 'item' },
-            {title: '自定义排序', class: 'item iconfont item-icon', aim: 'demo-sort'},
+            {title: '自定义排序', class: 'item icon-arrows-a-r color-999', aim: 'demo-sort'},
         ]},
         { title: [
             {title: 'list', class: 'item' },
-            {title: '列表文档', class: 'item iconfont item-icon', aim: 'demo-list'},
+            {title: '列表文档', class: 'item icon-arrows-a-r color-999', aim: 'demo-list'},
         ]},
         { title: [
             {title: 'tree', class: 'item' },
-            {title: '树结构', class: 'item iconfont item-icon', aim: 'demo-tree'},
+            {title: '树结构', class: 'item icon-arrows-a-r color-999', aim: 'demo-tree'},
         ]},
         { title: [
             {title: 'actionSide', class: 'item' },
-            {title: '侧弹', class: 'item iconfont item-icon', aim: 'demo-as'},
+            {title: '侧弹', class: 'item icon-arrows-a-r color-999', aim: 'demo-as'},
         ]},
         { title: [
             {title: 'otherComponent', class: 'item' },
-            {title: '自定义组件', class: 'item iconfont item-icon', aim: 'demo-component'},
+            {title: '自定义组件', class: 'item icon-arrows-a-r color-999', aim: 'demo-component'},
         ]},
       ],
       itemClass: 'li item-normal',

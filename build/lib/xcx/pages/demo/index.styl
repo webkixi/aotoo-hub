@@ -66,14 +66,14 @@
   width: 250rpx
 
 
-display-flex($flex-row = row nowrap, $justify-content = flex-start, $align-items = false, $align-content = false)
-  display: flex
-  flex-flow: $flex-row
-  justify-content: $justify-content;
-  if ($align-items != false)
-    align-items: $align-items
-  if ($align-content != false)
-    align-content: $align-content
+// ss-display-flex($flex-row = row nowrap, $justify-content = flex-start, $align-items = false, $align-content = false)
+//   display: flex
+//   flex-flow: $flex-row
+//   justify-content: $justify-content;
+//   if ($align-items != false)
+//     align-items: $align-items
+//   if ($align-content != false)
+//     align-content: $align-content
 
 
 .block
@@ -84,28 +84,28 @@ display-flex($flex-row = row nowrap, $justify-content = flex-start, $align-items
   height: 100vh
   overflow-x hidden
   position relative
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  padding 15rpx
-  .ul
-    // display: flex
-    // flex-direction: column
-    padding 0 10px
-  .item-normal
-    width 100%
-    font-size 14px
-    padding 6px 0
-    border-bottom 1px solid #d3d3d3
-    &:last-child
-      border-bottom none
-    .htitles
-      display-flex(row nowrap, space-between, center, center)
-      width 100%
-      .item-icon
-        font-size 14px
-        &:after
-          content: '\e618'
+  // display: flex;
+  // flex-direction: column;
+  // box-sizing: border-box;
+  // padding 15rpx
+  // .ul
+  //   // display: flex
+  //   // flex-direction: column
+  //   padding 0 10px
+  // .item-normal
+  //   width 100%
+  //   font-size 14px
+  //   padding 6px 0
+  //   border-bottom 1px solid #d3d3d3
+  //   &:last-child
+  //     border-bottom none
+  //   .htitles
+  //     ss-display-flex(row nowrap, space-between, center, center)
+  //     width 100%
+  //     .item-icon
+  //       font-size 14px
+  //       &:after
+  //         content: '\e618'
 
 .list-normal
   >.li
@@ -116,15 +116,15 @@ display-flex($flex-row = row nowrap, $justify-content = flex-start, $align-items
       border-bottom none
 
 .item-pic
-  display-flex(row nowrap, flex-start)
+  ss-display-flex(row nowrap, flex-start)
   position relative
   .ul
-    display-flex(column, space-between)
+    ss-display-flex(column, space-between)
     padding 0
     flex: 1
   .hbody
     &, ../ .hfooter
-      display-flex(row nowrap, space-between, center, center)
+      ss-display-flex(row nowrap, space-between, center, center)
   .item-title
     font-size 14px
     color: #333
@@ -138,29 +138,29 @@ display-flex($flex-row = row nowrap, $justify-content = flex-start, $align-items
     font-size 10px
     color: #999
 
-.icon-dot
-  background: red
-  background:#f00;
-  font-size:10px;
-  color:#fff;
-  display:block;
-  position:absolute;
-  top: 0
-  // left:45px;
-  right: 77vw
-  min-width 6px
-  min-height @min-width
-  border-radius @min-width
-  display-flex(row nowrap, center, center, center)
+// .icon-dot
+//   background: red
+//   background:#f00;
+//   font-size:10px;
+//   color:#fff;
+//   display:block;
+//   position:absolute;
+//   top: 0
+//   // left:45px;
+//   right: 77vw
+//   min-width 6px
+//   min-height @min-width
+//   border-radius @min-width
+//   ss-display-flex(row nowrap, center, center, center)
 
-.icon-dot-small
-  width 14px
-  height @width
-  border-radius @width
+// .icon-dot-small
+//   width 14px
+//   height @width
+//   border-radius @width
 
-.icon-dot-more
-  border-radius: 10px
-  padding: 0 4px;
+// .icon-dot-more
+//   border-radius: 10px
+//   padding: 0 4px;
 
 .h1, .h2, .h3, .h4 {
   color: #111111

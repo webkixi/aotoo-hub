@@ -1,0 +1,41 @@
+
+.hkv-between
+  height: 100%
+  >.hkv
+    ss-display-flex(column, space-between)
+    height: 100%
+.hkv-around
+  height: 100%
+  >.hkv
+    ss-display-flex(column, space-around)
+    height: 100%
+
+// .item-bodyx
+//   ss-display-flex(row nowrap, flex-start)
+//   >.hkv
+//     flex: 1
+
+
+// .item-bodyx-aim
+//   >.hb-item
+//    @extends .item-bodyx
+  
+// .item-bodyx-aim-between
+//   @extends .item-bodyx-aim
+//   >.hb-item
+//     @extends .hkv-between
+// .item-bodyx-aim-around
+//   @extends .item-bodyx-aim
+//   >.hb-item
+//     @extends .hkv-around
+
+   
+.item-normal-row
+  ss-display-flex(row nowrap, flex-start)
+  &:last-child
+    border-bottom: none
+  .hbody
+    border-bottom: 1px solid #e3e3e3
+    margin-left: 20rpx
+    padding: 20rpx 0
+    flex: 1

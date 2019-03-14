@@ -1,3 +1,6 @@
+import getdata from './data'
+import adapter from './adapter'
+
 export const stringData = {
   title: [
     {title: '字符串', class: 'h2'},
@@ -88,22 +91,200 @@ export const sortData = {
 }
 
 export const listData = {
+  itemClass: 'x',
   title: [
-    {title: '插入列表', class: 'h2'},
-    {title: '动态插入一个列表', class: 'h6', style: 'margin: 0 0 50rpx 0;'},
+    {
+      '@item': {
+        title: [
+          {
+            title: '效果1',
+            class: 'item-titlex'
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        class: 'bg-title-f3f3f3'
+      },
+    },
     {
       '@list': {
-        data: [
-          '前前前前前前',
-          '端端端端端端',
-          '入入入入入入',
-          '坑坑坑坑坑坑',
-          '指指指指指指',
-          '南南南南南南'
-        ],
-        class: 'h5'
+        listClass: 'bb-e3e3e3-list-hbody',
+        itemClass: 'plr-20-r ss-focus flex-row',
+        data: adapter.adapterListSs(
+          getdata.listDatax,
+          {
+            imgClass: 'pic-120-r radius-10-r mtb-20-r',
+            titleClass: 'title-333 size16 textellipsis-1',
+            descClass: 'color-999 textellipsis-1 size14',
+            bodyClass: 'ml-20-r ptb-20-r flex-1'
+          }
+        )
       }
-    }
+    },
+    {
+      '@list': {
+        listClass: 'bb-e3e3e3-list-hbody',
+        itemClass: 'plr-20-r ss-focus flex-row',
+        data: adapter.adapterListSs(
+          getdata.listData4x,
+          {
+            imgClass: 'pic-120-r radius-10-r mtb-20-r',
+            titleClass: 'title-333 size16 textellipsis-1',
+            descClass: 'color-999 textellipsis-1 size14',
+            kvitemClass: 'hei-p100 flex-column-between',
+            hbitemClass: 'hei-p100',
+            bodyClass: 'ml-20-r ptb-20-r flex-1 flex-row-between-center'
+          }
+        )
+      }
+    },
+    {
+      '@item': {
+        title: [
+          {
+            title: '效果2',
+            class: 'item-titlex'
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        class: 'bg-title-f3f3f3'
+      },
+    },
+    {
+      '@list': {
+        itemClass: 'padding-20-r item-normal-row',
+        data: adapter.adapterListSs(
+          getdata.listData2x,
+          {
+            imgClass: 'pic-120-r radius-10-r',
+            titleClass: 'title-333 size16 textellipsis-1',
+            descClass: 'color-999 textellipsis-1 size14',
+            kvitemClass: 'hkv-around',
+          }
+        )
+      }
+    },
+    {
+      '@item': {
+        body: [
+          {
+            title: [
+              {title: '', class: 'icon-1 mr-10-r size16 color-227ce1'},
+              {title: '效果3', class: 'item-titlex'}
+            ],
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        bodyClass: 'bg-title-body-f3f3f3'
+      },
+    },
+    {
+      '@list': {
+        itemClass: 'plr-20-r ss-focus flex-row',
+        data: adapter.adapterList2Ss(
+          getdata.listDatax,
+          {
+            imgClass: 'pic-80-r radius-10-r mtb-20-r',
+            titleClass: 'title-333 size16 textellipsis-1',
+            descClass: 'color-999 textellipsis-1 size14',
+            bodyClass: 'flex-1 pt-20-r ml-20-r bb-e3e3e3',
+            imgDotClass: 'icon-dot-small ss-absolute-tr'
+          }
+        )
+      }
+    },
+    {
+      '@item': {
+        body: [
+          {
+            title: [
+              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '效果4', class: 'item-titlex'}
+            ],
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        bodyClass: 'bg-title-body-f3f3f3'
+      },
+    },
+    {
+      '@list': {
+        itemClass: 'plr-20-r ss-focus flex-row',
+        data: adapter.adapterList3Ss(
+          getdata.listData2x,
+          {
+            imgClass: 'pic-80-r radius-10-r mtb-20-r',
+            titleClass: 'title-333 size16 textellipsis-1',
+            bodyClass: 'flex-row-center',
+            footerdescClass: 'color-999 size14',
+            footerimgClass: 'pic-40-r',
+            footerClass: 'flex-row-center',
+            itemliClass: 'flex-row-between-center hei-p100',
+            liClass: 'hei-120-r ml-20-r flex-1 bb-e3e3e3',
+          }
+        )
+      }
+    },
+    {
+      '@list': {
+        itemClass: 'plr-20-r ss-focus flex-row',
+        data: adapter.adapterList3Ss(
+          getdata.listData2x,
+          {
+            imgClass: 'pic-80-r radius-10-r mtb-20-r',
+            titleClass: 'title-333 size16 textellipsis-1',
+            bodyClass: 'flex-row-between-center hei-120-r ml-20-r flex-1 bb-e3e3e3',
+            type: 2
+          }
+        )
+      }
+    },
+    // {
+    //   '@item': {
+    //     body: [
+    //       {
+    //         title: [
+    //           {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+    //           {title: '效果5', class: 'item-titlex'}
+    //         ],
+    //       },
+    //       {
+    //         title: 'ss',
+    //         class: 'item-descx'
+    //       }
+    //     ],
+    //     bodyClass: 'bg-title-body-f3f3f3'
+    //   },
+    // },
+    // {
+    //   '@list': {
+    //     itemClass: 'plr-20-r ss-focus flex-row',
+    //     data: adapter.adapterList4Ss(
+    //       getdata.listData2x,
+    //       {
+    //         imgClass: 'pic-80-r radius-10-r mtb-20-r',
+    //         titleClass: 'title-333 size16 textellipsis-1',
+    //         bodyClass: 'flex-row-center',
+    //         footerdescClass: 'color-999 size14',
+    //         footerimgClass: 'pic-40-r',
+    //         footerClass: 'flex-row-center',
+    //         itemliClass: 'flex-row-between-center hei-p100',
+    //         liClass: 'hei-120-r ml-20-r flex-1 bb-e3e3e3',
+    //       }
+    //     )
+    //   }
+    // },
   ]
 }
 
@@ -111,6 +292,23 @@ export const treeData = {
   title: [
     {title: '树结构', class: 'h2'},
     {title: '支持4层树，树结构需特定数据结构', class: 'h6', style: 'margin: 0 0 50rpx 0;'},
+    {
+      '@item': {
+        body: [
+          {
+            title: [
+              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '效果1', class: 'item-titlex'}
+            ],
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        bodyClass: 'bg-title-body-f3f3f3'
+      },
+    },
     {
       '@tree': {
         $$id: 'mytree',
@@ -137,7 +335,32 @@ export const treeData = {
         {title: 'prepend', class: 'button primary', aim: 'tree-prepend'},
         {title: 'hide', class: 'button primary', aim: 'tree-hide'},
       ]
-    }}
+    }},
+    {
+      '@item': {
+        body: [
+          {
+            title: [
+              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '效果2', class: 'item-titlex'}
+            ],
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        bodyClass: 'bg-title-body-f3f3f3 mt-20-r'
+      },
+    },
+    {
+      '@tree': {
+        $$id: 'mytree2',
+        listClass: 'ss-tree-hierarchy',
+        // itemClass: 'ss-tree-hierarchy',
+        data: adapter.adapterTreeSs(getdata.listData3x)
+      }
+    },
   ]
 }
 
@@ -145,35 +368,35 @@ export const buttonForAs = {
   data: [
     { title: [
         {title: 'fullscreen-right', class: 'item' },
-        {title: '全屏侧弹窗-右侧', aim: 'as-full', class: 'item iconfont item-icon'},
+        {title: '全屏侧弹窗-右侧', aim: 'as-full', class: 'item icon-arrows-a-r'},
     ]},
     { title: [
         {title: 'fullscreen-left', class: 'item' },
-        {title: '全屏侧弹窗-左侧', aim: 'as-full?direction=left', class: 'item iconfont item-icon'},
+        {title: '全屏侧弹窗-左侧', aim: 'as-full?direction=left', class: 'item icon-arrows-a-r'},
     ]},
     { title: [
         {title: 'fullscreen-bottom', class: 'item' },
-        {title: '全屏侧弹窗-底弹', aim: 'as-full?direction=bot', class: 'item iconfont item-icon'},
+        {title: '全屏侧弹窗-底弹', aim: 'as-full?direction=bot', class: 'item icon-arrows-a-r'},
     ]},
     { title: [
         {title: 'fullscreen-top', class: 'item' },
-        {title: '全屏侧弹窗-顶弹', aim: 'as-full?direction=top', class: 'item iconfont item-icon'},
+        {title: '全屏侧弹窗-顶弹', aim: 'as-full?direction=top', class: 'item icon-arrows-a-r'},
     ]},
     { title: [
         {title: 'bar-right', class: 'item' },
-        {title: '弹半框-右侧', aim: 'open-bar', class: 'item iconfont item-icon'},
+        {title: '弹半框-右侧', aim: 'open-bar', class: 'item icon-arrows-a-r'},
     ]},
     { title: [
         {title: 'bar-left', class: 'item' },
-        {title: '弹半框-左侧', aim: 'open-bar?direction=left', class: 'item iconfont item-icon'},
+        {title: '弹半框-左侧', aim: 'open-bar?direction=left', class: 'item icon-arrows-a-r'},
     ]},
     { title: [
         {title: 'bar-bot', class: 'item' },
-        {title: '弹半框-底侧', aim: 'open-bar?direction=bot', class: 'item iconfont item-icon'},
+        {title: '弹半框-底侧', aim: 'open-bar?direction=bot', class: 'item icon-arrows-a-r'},
     ]},
     { title: [
         {title: 'bar-top', class: 'item' },
-        {title: '弹半框-顶侧', aim: 'open-bar?direction=top', class: 'item iconfont item-icon'},
+        {title: '弹半框-顶侧', aim: 'open-bar?direction=top', class: 'item icon-arrows-a-r'},
     ]},
   ],
   itemClass: 'li item-normal',
