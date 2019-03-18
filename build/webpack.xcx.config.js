@@ -124,7 +124,7 @@ function jsEntries(dir) {
   var jsFiles = {}
   const accessExts = ['.wxml', '.wxss', '.styl', '.wxs', '.json', '.png', '.jpg', '.jpeg', '.gif']
   if (fse.existsSync(dir) ){
-    globby.sync([`${dir}/**/*`, '!node_modules']).forEach(function(item) {
+    globby.sync([`${dir}/**/*`, '!node_modules', `!${dir}/dist`]).forEach(function(item) {
       if (item.indexOf('_')!=0) {
         const fileObj = path.parse(item)
         const xcxSrc = path.join(dir, 'js')
@@ -134,7 +134,7 @@ function jsEntries(dir) {
           let relativeKey = relativeFile.replace(fileObj.ext, '').substring(1)
           if (fileObj.ext == '.js') {
             jsFiles[relativeKey] = item
-          } 
+          }
           else {
             if (accessExts.indexOf(fileObj.ext)>-1) {
               jsFiles['nobuild__' + relativeFile] = item
@@ -146,32 +146,34 @@ function jsEntries(dir) {
   }
   return jsFiles
 }
-  
+
+function fileLoaderConfig(asset, ext) {
+  const {TYPE, DIST, SRC, isDev} = asset
+  return {
+    loader: 'file-loader',
+    options: {
+      emitFile: true,
+      useRelativePath: true,
+      outputPath: DIST,
+      name: function (file) {
+        const targetFile = file.replace(path.join(SRC, 'js'), '')
+        const fileObj = path.parse(targetFile)
+        let targetPath = fileObj.dir == '/' ? '' : fileObj.dir
+        // targetPath = path.join(DIST, targetPath)
+        return `${targetPath}/[name].${ext}`
+      },
+      context: SRC,
+    },
+  };
+}
 
 function baseConfig(asset, envAttributs) {
   const {TYPE, DIST, SRC, isDev} = asset
-  const alias = require('./webpack.alias.config')(aotooConfigs, asset)
   const isXcx = TYPE == 'mp'
   const isWechat = isXcx
   const isAli = TYPE == 'ali'
-
-  const relativeFileLoader = (ext = '[ext]') => {
-    return {
-      loader: 'file-loader',
-      options: {
-        emitFile: true,
-        useRelativePath: false,
-        outputPath: '',
-        name: function(file) {
-          const targetFile = file.replace(path.join(SRC, 'js'), '')
-          const fileObj = path.parse(targetFile)
-          let targetPath = fileObj.dir
-          return `${targetPath}/[name].${ext}`
-        },
-        context: SRC,
-      },
-    };
-  };
+  const alias = require('./webpack.alias.config')(aotooConfigs, asset)
+  const relativeFileLoader = (ext = '[ext]') => fileLoaderConfig(asset, ext)
 
   let myEntries = jsEntries(SRC)
 
@@ -282,7 +284,7 @@ function baseConfig(asset, envAttributs) {
     },
     resolve: {
       alias: alias,
-      extensions: ['.js', '.styl', '.wxml', '.wxss', '.css', '.json', '.md']
+      extensions: ['.js', '.styl', '.wxml', '.wxss', '.css', '.json', '.md', '.png', '.jpg', '.jpeg', '.gif']
     },
     plugins: [
       new appendCommonFile({...asset}),

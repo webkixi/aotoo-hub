@@ -189,6 +189,7 @@ function* wpDevProxyerer(compiler, asset) {
       redirect: false
     },
     clientLogLevel: 'info',
+    writeToDisk: true,
     // progress: true,
     stats: {
       assets: false,
