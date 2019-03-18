@@ -153,13 +153,13 @@ function fileLoaderConfig(asset, ext) {
     loader: 'file-loader',
     options: {
       emitFile: true,
-      useRelativePath: true,
-      outputPath: DIST,
+      useRelativePath: false,
+      outputPath: '',
       name: function (file) {
         const targetFile = file.replace(path.join(SRC, 'js'), '')
         const fileObj = path.parse(targetFile)
         let targetPath = fileObj.dir == '/' ? '' : fileObj.dir
-        // targetPath = path.join(DIST, targetPath)
+        targetPath = path.join(DIST, targetPath)
         return `${targetPath}/[name].${ext}`
       },
       context: SRC,
