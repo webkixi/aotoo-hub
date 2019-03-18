@@ -152,17 +152,16 @@ function fileLoaderConfig(asset, ext) {
   return {
     loader: 'file-loader',
     options: {
-      emitFile: true,
-      useRelativePath: false,
-      outputPath: '',
-      name: function (file) {
-        const targetFile = file.replace(path.join(SRC, 'js'), '')
-        const fileObj = path.parse(targetFile)
-        let targetPath = fileObj.dir == '/' ? '' : fileObj.dir
-        targetPath = path.join(DIST, targetPath)
-        return `${targetPath}/[name].${ext}`
+      // emitFile: true,
+      // useRelativePath: true,
+      // outputPath: DIST,
+      name: function(file) {
+        return `[path][name].${ext}`
       },
-      context: SRC,
+      outputPath: function (url, resourcePath, context) {
+        return url
+      },
+      context: path.join(SRC, 'js')
     },
   };
 }
@@ -225,9 +224,8 @@ function baseConfig(asset, envAttributs) {
           ]
         },
         {
-          test: /\.(png|jpg|gif)$/,
-          include: SRC,
-          use: relativeFileLoader(),
+          test: /\.(jp(e?)g|png|gif)$/,
+          use: relativeFileLoader()
         },
         {
           test: /\.wxss$/,
