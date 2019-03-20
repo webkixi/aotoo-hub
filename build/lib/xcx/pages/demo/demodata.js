@@ -220,7 +220,7 @@ export const listData = {
     },
     {
       '@list': {
-        itemClass: 'plr-20-r ss-focus flex-row',
+        itemClass: 'plr-20-r ss-focus flex-row bb-e3e3e3-item-line',
         data: adapter.adapterList3Ss(
           getdata.listData2x,
           {
@@ -231,24 +231,113 @@ export const listData = {
             footerimgClass: 'pic-40-r',
             footerClass: 'flex-row-center',
             itemliClass: 'flex-row-between-center hei-p100',
-            liClass: 'hei-120-r ml-20-r flex-1 bb-e3e3e3',
+            liClass: 'hei-120-r ml-20-r flex-1 item-line',
           }
         )
       }
     },
     {
+      '@item': {
+        body: [
+          {
+            title: [
+              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '效果5', class: 'item-titlex'}
+            ],
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        bodyClass: 'bg-title-body-f3f3f3'
+      },
+    },
+    {
       '@list': {
-        itemClass: 'plr-20-r ss-focus flex-row',
-        data: adapter.adapterList3Ss(
+        // itemClass: 'plr-20-r ss-focus flex-row',
+        data: adapter.adapterList4Ss(
           getdata.listData2x,
           {
             imgClass: 'pic-80-r radius-10-r mtb-20-r',
             titleClass: 'title-333 size16 textellipsis-1',
-            bodyClass: 'flex-row-between-center hei-120-r ml-20-r flex-1 bb-e3e3e3',
-            type: 2
+            bodyClass: 'flex-row-between-center hei-120-r ml-20-r flex-1 item-line',
+            itemliClass: 'plr-20-r ss-focus flex-row bb-e3e3e3-item-line',
           }
         )
       }
+    },
+    {
+      '@item': {
+        body: [
+          {
+            title: [
+              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '效果6', class: 'item-titlex'}
+            ],
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        bodyClass: 'bg-title-body-f3f3f3'
+      },
+    },
+    {
+      '@list': {
+        listClass: 'bg-f3f3f3',
+        itemClass: 'mb-20-r bg-fff',
+        data: adapter.adapterList5Ss(
+          getdata.listData5x,
+          {
+            imgClass: 'pic-80-r radius-10-r mtb-20-r',
+            titleClass: 'title-333 size16 textellipsis-1',
+            bodyClass: 'flex-row-between-center hei-120-r ml-20-r flex-1 item-line',
+            itemliClass: 'plr-20-r ss-focus flex-row bb-e3e3e3-item-line',
+          }
+        )
+      }
+    },
+    {
+      '@item': {
+        body: [
+          {
+            title: [
+              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '效果7', class: 'item-titlex'}
+            ],
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        bodyClass: 'bg-title-body-f3f3f3'
+      },
+    },
+    {
+      title: {title: '点击有惊喜', aim: 'open_diytour?direction=bot', class: 'padding-20-r'},
+    },
+    {
+      '@item': {
+        body: [
+          {
+            title: [
+              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '效果8', class: 'item-titlex'}
+            ],
+          },
+          {
+            title: 'ss',
+            class: 'item-descx'
+          }
+        ],
+        bodyClass: 'bg-title-body-f3f3f3'
+      },
+    },
+    {
+      title: {title: '点击有惊喜2', aim: 'open_diytourx?direction=bot', class: 'padding-20-r'},
     },
     // {
     //   '@item': {
@@ -358,7 +447,7 @@ export const treeData = {
         $$id: 'mytree2',
         listClass: 'ss-tree-hierarchy',
         // itemClass: 'ss-tree-hierarchy',
-        data: adapter.adapterTreeSs(getdata.listData3x)
+        data: adapter.adapterTreeSs(getdata.listData1xx)
       }
     },
   ]
@@ -422,10 +511,38 @@ export const actionSide3 = {
   title: '侧弹3',
 }
 
+
+
+export const listDiytour = {
+  id: 'listDiytour',
+  title: '侧弹3',
+}
+
+
 export const tabData = {
   data: [
     {title: 'aaa', content: 'aaa-content'},
     {title: 'bbb', content: 'bbb-content'},
     {title: 'ccc', content: 'ccc-content'},
   ]
+}
+
+export const diytourData = {
+  '@list': {
+    listClass: 'bs-e3e3e3-list',
+    itemClass: 'ss-focus flex-row item padding-normal',
+    data: adapter.adapterList6Ss(
+      getdata.listData2xx
+    )
+  }
+}
+
+export const diytour2Data = {
+  '@list': {
+    listClass: 'list-pic-column pic-2',
+    itemClass: 'ss-focus item-li',
+    data: adapter.adapterList7Ss(
+      getdata.listData2xx
+    )
+  }
 }

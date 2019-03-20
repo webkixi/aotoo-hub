@@ -6,10 +6,18 @@
 
 .bb-e3e3e3-item
   &:last-child
-    .bb
+    .item-line
       border-bottom: none
-  .bb
+  >.item-line
     border-bottom: 1px solid #e3e3e3
+
+
+
+.br-e3e3e3-li
+  >.item-line
+    border-left: 1rpx solid #e3e3e3
+    &:first-child
+      border-left: none
 
 .bb-e3e3e3-list-hbody
   >view
@@ -19,10 +27,23 @@
   .hbody
     border-bottom: 1px solid #e3e3e3
 
+.bs-e3e3e3-list
+  >.item-li
+    box-shadow: 0 10rpx 12rpx rgba(21,61,106,0.03)
+    &:last-child
+      box-shadow: inherit
+
 .bb-e3e3e3-list-hkv
   >view
     &:last-child
       .hkv
         border-bottom: none
   .hkv
+    border-bottom: 1rpx solid #e3e3e3
+
+.bb-e3e3e3-item-line
+  &:last-child
+    >.item-line
+      border-bottom: none
+  >.item-line
     border-bottom: 1rpx solid #e3e3e3

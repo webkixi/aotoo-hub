@@ -1,0 +1,18 @@
+box-shadow(args...)
+  if (args != 'none')
+    box-shadow: args
+    -webkit-box-shadow: args
+
+//背景透明度
+ss-bg-opacity($background = #333, $height = 54px, $opacity = 0.6, $abs = bottom)
+  background: $background
+  width: 100%;
+  height: $height
+  opacity: $opacity
+  position: absolute;
+  left: 0;
+  if ($abs == bottom)
+    bottom: 0
+  else if($abs == top)
+    top: 0
+  z-index: 15
