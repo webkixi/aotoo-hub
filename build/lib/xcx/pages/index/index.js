@@ -239,15 +239,17 @@ Pager({
             {title: 'tab', class: 'item' },
             {title: '自定义组件', class: 'item icon-arrows-a-r color-999', aim: 'demo-tab'},
         ]},
+        { title: [
+            {title: 'list', class: 'item' },
+            {title: '新列表', class: 'item icon-arrows-a-r color-999', aim: 'demo-newlist'},
+        ]},
+        { title: [
+            {title: 'form', class: 'item' },
+            {title: '表单', class: 'item icon-arrows-a-r color-999', aim: 'demo-form'},
+        ]},
       ],
       itemClass: 'li item-normal',
       listClass: 'ul'
-    }),
-
-    menuData2: Pager.list({
-      data: menuListData, 
-      itemClass: 'li item-pic hei45',
-      listClass: 'ul list-normal'
     }),
 
     aside1,
@@ -260,6 +262,13 @@ Pager({
 
   onTap: function(e, inst) {
 
+  },
+
+  oktapme: function(e) {
+    // this.setData({
+    //   'formData.data[0].title': '这就是类目1'
+    // })
+    Pager.alert('点我干啥？')
   },
 
   onShow: function () {
@@ -354,8 +363,23 @@ Pager({
           break;
 
         case 'demo-tab':
+          // wx.navigateTo({
+          //   url: '../demo/index?demo=tab'
+          // })
           wx.navigateTo({
-            url: '../demo/index?demo=tab'
+            url: '../demo/tab/index'
+          })
+          break;
+
+        case 'demo-newlist':
+          wx.navigateTo({
+            url: '../demo/list/index'
+          })
+          break;
+
+        case 'demo-form':
+          wx.navigateTo({
+            url: '../demo/form/index'
           })
           break;
       

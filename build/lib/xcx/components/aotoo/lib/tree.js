@@ -28,8 +28,10 @@ function valideClassName(clsname, level) {
 		return clsname
 	}
 }
+
+let treeDeep = 1
 function subTree(item, dataAry, deep){
-  deep = deep||1
+  deep = treeDeep = deep || 1
   let fromTree
   if (this && this.fromTree) {
     fromTree = this.fromTree
@@ -86,12 +88,15 @@ export function tree(dataAry, props, fromTree){
     itemStyle: props.itemStyle || props.style,
   }
   dataAry.forEach( (item, ii) => {
+    treeDeep = 1
     if (typeof item == 'object' && !Array.isArray(item)) {
       if (item.idf && !item.parent && idrecode.indexOf(item.idf) == -1) {
         var clsName = item.itemClass || item.class
         clsName = clsName ? clsName.indexOf('level0') == -1 ? clsName + ' level0' : clsName : 'level0'
         item.itemClass = clsName
-        menus.push(subTree.call({fromTree}, item, dataAry))
+        let nItem = subTree.call({fromTree}, item, dataAry) 
+        nItem.__deep = treeDeep
+        menus.push(nItem)
       }
       if (!item.idf && !item.parent) {
         menus.push(item)

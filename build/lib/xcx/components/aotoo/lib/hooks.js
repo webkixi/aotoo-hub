@@ -91,6 +91,9 @@ class _hooks {
           if (isFunction(fun)) {
             const res = fun.call(ctx, param)
             if (res) vals.push(res)
+            if (fun.onlyonetime) {
+              this.off(key, fun)
+            }
             // vals.push(fun.call(ctx, param))
           }
         })
@@ -100,7 +103,12 @@ class _hooks {
       }
     }
   }
-  one(key, cb) {}
+  one(key, cb) {
+    if (key && typeof cb == 'function') {
+      cb.onlyonetime = true
+    }
+    this.on(key, cb)
+  }
 }
 
 let myhooks = {}

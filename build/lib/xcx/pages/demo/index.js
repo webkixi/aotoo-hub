@@ -95,6 +95,43 @@ Pager({
         Pager.alert('点我干什么!')
         break;
 
+      case 'open_diytour':
+        (()=>{
+          const direction = theQuery && theQuery.direction || 'right'
+          aside1.reset()[direction](
+            myData.diytourData
+          )
+          // aside1.reset()[direction]({
+            // title: [
+            //   {title: '弹窗1', class: 'h2'},
+            //   {title: '支持多弹窗，灵活属性设置可以实现多种弹窗效果', class: 'h6', style: 'margin: 0 0 50rpx 0;'},
+            //   {
+            //     title: '打开第二个弹窗',
+            //     aim: 'open-as2?abc=123'
+            //   }
+            // ],
+          // })
+        })()
+        break;
+      case 'open_diytourx':
+        (()=>{
+          const direction = theQuery && theQuery.direction || 'right'
+          aside1.reset()[direction](
+            myData.diytour2Data
+          )
+          // aside1.reset()[direction]({
+            // title: [
+            //   {title: '弹窗1', class: 'h2'},
+            //   {title: '支持多弹窗，灵活属性设置可以实现多种弹窗效果', class: 'h6', style: 'margin: 0 0 50rpx 0;'},
+            //   {
+            //     title: '打开第二个弹窗',
+            //     aim: 'open-as2?abc=123'
+            //   }
+            // ],
+          // })
+        })()
+        break;
+
       case 'as-full':
         (()=>{
           const direction = theQuery && theQuery.direction || 'right'

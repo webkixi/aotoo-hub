@@ -48,6 +48,10 @@ export const listBehavior = function(app, mytype) {
         value: false   // 来自tree实例的 uniqId
       },
       id: String,
+      fromComponent: {
+        type: String,
+        value: ''
+      }
     },
     data: {
       $list: {}
@@ -58,7 +62,7 @@ export const listBehavior = function(app, mytype) {
       },
       attached: function attached() { //节点树完成，可以用setData渲染节点，但无法操作节点
         const properties = this.properties
-        const list = properties.list
+        const list = properties.list || properties.dataSource
         updateSelf.call(this, list)
       },
 
@@ -221,7 +225,64 @@ export const listBehavior = function(app, mytype) {
           }
         }
         return this
-      }
+      },
+
+      _scrollMethod: function (e) {
+        if (this.treeInst) {
+          this.treeInst._scrollMethod(e)
+          return
+        }
+
+        const $list = this.data.$list
+        const mytype = $list.type
+        const {fun, param} = this._rightEvent(e)
+
+        if (mytype && mytype.is == 'scroll') {
+          this.hooks.emit('bindscroll', e)
+          this.hooks.emit('bindscrolltoupper', e)
+          this.hooks.emit('bindscrolltolower', e)
+        }
+        
+        const activePage = this.activePage
+        const parentInstance = this.componentInst
+        const evtFun = activePage[fun]
+        const isEvt = lib.isFunction(evtFun)
+
+        if (parentInstance && lib.isFunction(parentInstance[fun])) {
+          parentInstance[fun].call(parentInstance, e, param)
+        } else {
+          if (isEvt) evtFun.call(activePage, e, param, that)
+        }
+        
+      },
+
+      _swiperMethod: function (e) {
+        if (this.treeInst) {
+          this.treeInst._swiperMethod(e)
+          return
+        }
+
+        const $list = this.data.$list
+        const mytype = $list.type
+
+        if (mytype && mytype.is == 'scroll') {
+          this.hooks.emit('bindchange', e)
+          this.hooks.emit('bindtransition', e)
+          this.hooks.emit('bindanimationfinish', e)
+        }
+
+        const activePage = this.activePage
+        const parentInstance = this.componentInst
+        const {fun, param} = this._rightEvent(e)
+        const evtFun = activePage[fun]
+        const isEvt = lib.isFunction(evtFun)
+
+        if (parentInstance && lib.isFunction(parentInstance[fun])) {
+          parentInstance[fun].call(parentInstance, e, param)
+        } else {
+          if (isEvt) evtFun.call(activePage, e, param, that)
+        }
+      },
 
     }
   })

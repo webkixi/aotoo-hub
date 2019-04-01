@@ -34,3 +34,7 @@
 <template name="tab">
   <ui-tab dataSource="{{props.data}}" />
 </template>
+
+<template name="form">
+  <ui-form dataSource="{{props.data}}" />
+</template>

@@ -6,38 +6,44 @@ export function resetStoreEvts(params) {
 }
 
 function rightEvent(dsetEvt) {
-  if (storeEvts[dsetEvt]) {
-    return storeEvts[dsetEvt]
+  if (lib.isString(dsetEvt)) {
+    const $id = lib.md5(dsetEvt)
+
+    if (storeEvts[$id]) {
+      return storeEvts[$id]
+    }
+    
+    let rightEvt
+    if (dsetEvt.indexOf('?')>-1) {
+      let myQuery = {}
+      const params = dsetEvt.split('@@')
+      const evtType = params[0]
+      dsetEvt = params[1]
+      const evts = dsetEvt.split(',')
+      evts.forEach(function(item) {
+        if (item) {
+          const its = item.split('=')
+          const itName = its.splice(0, 1)
+          const itQuery = its.join('=')
+          const evtObj = lib.formatQuery(itQuery)
+          myQuery[itName] = {fun: evtObj.url, param: evtObj.query}
+        }
+      })
+      rightEvt = myQuery[evtType]
+    } else {
+      dsetEvt = dsetEvt.replace('@@', '?').replace(/,/g, '&')
+      const evtObj = lib.formatQuery(dsetEvt)
+      const evtType = evtObj.url
+      const evtQuery = evtObj.query
+      const evtSelect = evtQuery[evtType]
+      const selObj = lib.formatQuery(evtSelect)
+      const selFun = selObj.url
+      const selParam = selObj.query
+      rightEvt = {fun: selFun, param: selParam}
+    }
+    storeEvts[$id] = rightEvt
+    return rightEvt||{}
   }
-  
-  let rightEvt
-  if (dsetEvt.indexOf('?')>-1) {
-    let myQuery = {}
-    const params = dsetEvt.split('@@')
-    const evtType = params[0]
-    dsetEvt = params[1]
-    const evts = dsetEvt.split(',')
-    evts.forEach(function(item) {
-      const its = item.split('=')
-      const itName = its.splice(0, 1)
-      const itQuery = its.join('=')
-      const evtObj = lib.formatQuery(itQuery)
-      myQuery[itName] = {fun: evtObj.url, param: evtObj.query}
-    })
-    rightEvt = myQuery[evtType]
-  } else {
-    dsetEvt = dsetEvt.replace('@@', '?').replace(/,/g, '&')
-    const evtObj = lib.formatQuery(dsetEvt)
-    const evtType = evtObj.url
-    const evtQuery = evtObj.query
-    const evtSelect = evtQuery[evtType]
-    const selObj = lib.formatQuery(evtSelect)
-    const selFun = selObj.url
-    const selParam = selObj.query
-    rightEvt = {fun: selFun, param: selParam}
-  }
-  storeEvts[dsetEvt] = rightEvt
-  return rightEvt
 }
 
 export const commonBehavior = (app, mytype) => {
@@ -72,6 +78,7 @@ export const commonBehavior = (app, mytype) => {
         this.hooks = lib.hooks(this.uniqId)
         this.$$type = mytype
         this.init = true // 第一次进入
+        this.mounted = false
       },
       //节点树完成，可以用setData渲染节点，但无法操作节点
       attached: function () { //节点树完成，可以用setData渲染节点，但无法操作节点
@@ -88,9 +95,16 @@ export const commonBehavior = (app, mytype) => {
       ready: function (params) {
         const that = this
         this.init = false
+        this.mounted = true
         this.hooks.emit('ready')
         this.activePage = app.activePage
         this.originalDataSource = JSON.stringify((this.data.item || this.data.list || this.data.dataSource))
+        if (this.data.fromTree) {
+          this.treeInst = app['_vars'][this.data.fromTree]
+        }
+        if (this.data.fromComponent) {
+          this.componentInst = app['_vars'][this.data.fromComponent]
+        }
       },
 
       //组件实例被移动到树的另一个位置
@@ -105,8 +119,9 @@ export const commonBehavior = (app, mytype) => {
       },
 
       _getAppVars: function(key) {
-        if (key) {
-          return app['_vars'][key] || {}
+        const id = key || this.data.fromComponent
+        if (id) {
+          return app['_vars'][id] || {}
         }
         return {}
       },
@@ -176,12 +191,15 @@ export const commonMethodBehavior = (app, mytype) => {
     behaviors: [],
     methods: {
       aim: function (e) {
+        if (this.treeInst) {
+          this.treeInst.aim(e)
+          return false
+        }
         const that = this
         const activePage = this.activePage
         const target = e.currentTarget
         const currentDset = target.dataset
-        const fromComponent = this.data.fromComponent
-        const parentInstance = this._getAppVars(fromComponent)
+        const parentInstance = this._getAppVars()
         let query
         let theAim = currentDset.aim
 
@@ -192,25 +210,6 @@ export const commonMethodBehavior = (app, mytype) => {
           e.currentTarget.dataset.aim = theAim
           e.currentTarget.dataset._query = query
         }
-
-        // const activePage = this.activePage
-        // let closetMethods = this
-        // if (fromComponent) {
-        //   closetMethods = this._getAppVars(fromComponent)
-        // }
-        // const evtFun = activePage['aim']
-        // const closetFun = closetMethods[theAim]
-        // const isEvt = lib.isFunction(evtFun)
-        // const isCloset = lib.isFunction(closetFun)
-        // if (isCloset) {
-        //   const res = closetFun.call(closetMethods, e, query, this)
-        //   if (res != 0) {
-        //     if (isEvt) evtFun.call(activePage, e, query, closetMethods)
-        //   }
-        // } else {
-        //   if (isEvt) evtFun.call(activePage, e, query, closetMethods)
-        // }
-
 
         const evtFun = activePage['aim']
         const isEvt = lib.isFunction(evtFun)
@@ -228,13 +227,32 @@ export const commonMethodBehavior = (app, mytype) => {
         }
       },
 
+      _rightEvent: function (e) {
+        const is = this.$$is
+        const currentTarget = e.currentTarget
+        const dataset = currentTarget.dataset
+        let dsetEvt = e.type+'@@'+dataset['evt']
+        if (is == 'list' || is == 'tree') {
+          const mytype = this.data.$list.type
+          if (mytype.is == 'scroll' || mytype.is == 'swiper') {
+            dsetEvt = 'bind'+dsetEvt
+          }
+        }
+        const tmp = rightEvent(dsetEvt)
+        e.currentTarget.dataset._query = tmp.param
+        return tmp
+      },
+
       itemMethod: function (e) {
+        if (this.treeInst) {
+          this.treeInst.itemMethod(e)
+          return false
+        }
         const that = this
         const currentTarget = e.currentTarget
         const dataset = currentTarget.dataset
         const activePage = this.activePage
-        const fromComponent = this.data.fromComponent
-        const parentInstance = this._getAppVars(fromComponent)
+        const parentInstance = this._getAppVars()
 
         let dsetEvt = e.type+'@@'+dataset['evt']
         const {fun, param} = rightEvent(dsetEvt)
@@ -256,12 +274,15 @@ export const commonMethodBehavior = (app, mytype) => {
       },
 
       catchItemMethod: function (e) {
+        if (this.treeInst) {
+          this.treeInst.catchItemMethod(e)
+          return false
+        }
         const that = this
         const currentTarget = e.currentTarget
         const dataset = currentTarget.dataset
         const activePage = this.activePage
-        const fromComponent = this.data.fromComponent
-        const parentInstance = this._getAppVars(fromComponent)
+        const parentInstance = this._getAppVars()
 
         const oType = e.type
         const nType = 'catch' + oType
@@ -283,30 +304,6 @@ export const commonMethodBehavior = (app, mytype) => {
             if (isEvt) evtFun.call(activePage, e, param, that)
           }
         }
-
-
-        // let closetMethods = activePage.hooks.getItem('methods') || {}
-        // if (fromComponent) {
-        //   closetMethods = this._getAppVars(fromComponent)
-        // }
-        // let dsetEvt = nType + '@@' + dataset['evt']
-        // const {fun, param} = rightEvent(dsetEvt)
-        // e.currentTarget.dataset._query = param
-        // const evtFun = activePage[fun]
-        // const closetFun = closetMethods[fun]
-        // const isEvt = lib.isFunction(evtFun)
-        // const isCloset = lib.isFunction(closetFun)
-
-        // if (isEvt && isCloset) {
-        //   console.log(`请检查page页面的${fun}方法，该方法与组件方法冲突`);
-        //   closetFun.call(closetMethods, e, param, this)
-        // } else {
-        //   if (isEvt || isCloset) {
-        //     const rightFun = isCloset ? closetFun : evtFun
-        //     const ctx = isCloset ? closetMethods : activePage
-        //     rightFun.call(ctx, e, param, this)
-        //   }
-        // }
       },
     }
   })

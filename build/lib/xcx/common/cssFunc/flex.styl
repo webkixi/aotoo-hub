@@ -24,3 +24,34 @@ ss-flex-row( $justify-content = flex-start, $align-items = initial, $align-conte
 
 ss-flex-column( $justify-content = flex-start, $align-items = initial, $align-content = initial)
   ss-display-flex(column nowrap, $justify-content, $align-items, $align-content)
+
+
+
+ss-row-list-x($typex = 1, $isBorder = false, $borderHeight = 12px, $justify-content = flex-start, $align-items = center, $ml = 10rpx, $pl= 10rpx)
+  ss-display-flex(row nowrap, $justify-content, $align-items, center)
+  >.item-li:not(:first-of-type)
+    if ($isBorder != false)
+      &:before
+        content: ''
+        background: $isBorder
+        width: 2rpx
+        height: $borderHeight
+        position: absolute
+        left: -1px
+        top: ((50% - @height)/2)
+        
+  if ($typex == 1)
+    overflow: hidden
+    margin-left: -($ml + $pl)
+    >.item-li
+      margin-left: $ml
+      padding-left: $pl
+      position: relative
+  if ($typex == 2)
+    >.item-li
+      margin-left: $ml
+      padding-left: $pl
+      position: relative
+      &:first-child
+        margin-left: 0
+        padding-left: 0

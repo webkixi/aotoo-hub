@@ -7,6 +7,13 @@
 <block wx:if="{{$dataSource.show}}">
   <view class="tab-container">
     <ui-list list="{{$menus}}" fromComponent="{{uniqId}}"/>
-    <ui-list list="{{$contents}}" fromComponent="{{uniqId}}"/>
+    <block wx:if="{{$dataSource.multipy}}">
+      <block wx:for="{{$contents}}" wx:key="" wx:for-item="myitem">
+        <ui-item item="{{myitem}}" fromComponent="{{uniqId}}" />
+      </block>
+    </block>
+    <block wx:else>
+      <ui-list list="{{$contents}}" fromComponent="{{uniqId}}"/>
+    </block>
   </view>
 </block>

@@ -1,3 +1,6 @@
+
+export const md5 = require('md5')
+
 export {
   isString,
   isObject,

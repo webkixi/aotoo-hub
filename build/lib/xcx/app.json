@@ -2,6 +2,9 @@
   "pages":[
     "pages/index/index",
     "pages/demo/index",
+    "pages/demo/list/index",
+    "pages/demo/form/index",
+    "pages/demo/tab/index",
     "pages/empty/index",
     "pages/logs/logs"
   ],
@@ -10,7 +13,8 @@
     "ui-list": "/components/aotoo/list/index",
     "ui-tree": "/components/aotoo/tree/index",
     "action-side": "/components/actionSide/index",
-    "ui-tab": "/components/tab/index"
+    "ui-tab": "/components/tab/index",
+    "ui-form": "/components/form/index"
   },
   "window":{
     "backgroundTextStyle":"light",

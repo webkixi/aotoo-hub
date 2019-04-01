@@ -34,7 +34,27 @@
 </template>
 
 <template name="swiperWrap">
-  <swiper indicator-dots="{{  list.type['indicator-dots'] }}" indicator-color="{{ list.type['indicator-color'] }}" indicator-active-color="{{ list.type['indicator-active-color'] }}" autoplay="{{ list.type['autoplay'] }}" current="{{ list.type['current'] }}" current-item-id	="{{ list.type['current-item-id'] }}" interval	="{{ list.type['interval'] }}" duration	="{{ list.type['duration'] }}" circular	="{{ list.type['circular'] }}" vertical	="{{ list.type['vertical'] }}" previous-margin	="{{ list.type['previous-margin'] }}" next-margin	="{{ list.type['next-margin'] }}" display-multiple-items		="{{ list.type['display-multiple-items'] }}" skip-hidden-item-layout		="{{ list.type['skip-hidden-item-layout'] }}" bindchange		="{{ list.type['bindchange'] }}" bindtransition		="{{ list.type['bindtransition'] }}" bindanimationfinish		="{{ list.type['bindanimationfinish'] }}" >
+  <swiper 
+    class="hlist {{list.listClass||list.class}}" 
+    indicator-dots="{{  list.type['indicator-dots'] }}" 
+    indicator-color="{{ list.type['indicator-color'] }}" 
+    indicator-active-color="{{ list.type['indicator-active-color'] }}" 
+    autoplay="{{ list.type['autoplay'] }}" 
+    current="{{ list.type['current'] }}" 
+    current-item-id	="{{ list.type['current-item-id'] }}" 
+    interval	="{{ list.type['interval'] }}" 
+    duration	="{{ list.type['duration'] }}" 
+    circular	="{{ list.type['circular'] }}" 
+    vertical	="{{ list.type['vertical'] }}" 
+    previous-margin	="{{ list.type['previous-margin'] }}" 
+    next-margin	="{{ list.type['next-margin'] }}" 
+    display-multiple-items="{{ list.type['display-multiple-items'] }}" 
+    skip-hidden-item-layout="{{ list.type['skip-hidden-item-layout'] }}" 
+    bindchange="_swiperMethod" 
+    bindtransition="_swiperMethod"
+    bindanimationfinish	="_swiperMethod" 
+    data-evt="{{util.dataEvt(list.type, ['bindchange', 'bindtransition', 'bindanimationfinish'])}}"
+  >
     <block wx:if="{{util.isArray(list.data)}}">
       <block wx:for="{{list.data}}" wx:key="">
         <swiper-item>
@@ -45,10 +65,37 @@
   </swiper>
 </template>
 
+<template name="scrollWrap">
+  <scroll-view 
+    class="hlist {{list.listClass||list.class}}" 
+    scroll-x	="{{  list.type['scroll-x'] }}" 
+    scroll-y	="{{ list.type['scroll-y'] }}" 
+    upper-threshold="{{ list.type['upper-threshold'] }}" 
+    lower-threshold="{{ list.type['lower-threshold'] }}" 
+    scroll-top="{{ list.type['scroll-top'] }}" 
+    scroll-left="{{ list.type['scroll-left'] }}" 
+    scroll-into-view="{{ list.type['scroll-into-view']}}" 
+    scroll-with-animation	="{{ list.type['scroll-with-animation'] }}" 
+    enable-back-to-top="{{ list.type['enable-back-to-top'] }}" 
+    bindscrolltoupper	="_scrollMethod"
+    bindscrolltolower	="_scrollMethod"     
+    bindscroll="_scrollMethod"
+    aria-label="{{ list.type['aria-label'] }}" 
+    data-evt="{{util.dataEvt(list.type, ['bindscroll', 'bindscrolltolower', 'bindscrolltoupper'])}}"
+  >
+    <block wx:if="{{util.isArray(list.data)}}">
+      <block wx:for="{{list.data}}" wx:key="">
+        <template is="itemContent" data="{{item}}" />
+      </block>
+    </block>
+  </scroll-view>
+</template>
+
 <template name="mylist">
   <block wx:if="{{list.type && util.isObject(list.type)}}">
     <block wx:if="{{list.type.is}}">
       <block wx:if="{{list.type.is == 'swiper'}}"> <template is="swiperWrap" data="{{list}}" /> </block>
+      <block wx:if="{{list.type.is == 'scroll'}}"> <template is="scrollWrap" data="{{list}}" /> </block>
     </block>
   </block>
   <block wx:else>

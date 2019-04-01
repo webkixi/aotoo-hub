@@ -20,7 +20,7 @@
   </view> -->
 
   <ui-list list="{{menuData}}" />
-  <ui-list list="{{menuData2}}" />
+  <!-- <ui-form dataSource="{{formData}}"/> -->
   <!-- <action-side item="{{aside1}}" />
   <action-side item="{{aside2}}" /> -->
 </view>

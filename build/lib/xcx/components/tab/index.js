@@ -57,7 +57,8 @@ function grabData(dataSource) {
  * $$id: 'some id',
  * select: 0,
  * multipy: false,
- * singleView: false
+ * singleView: false,
+ * show: true
  */
 
 // 基于item的组件
@@ -97,7 +98,8 @@ Component({
       })
     },
     ready: function() {
-      this.mount()
+      const ds = this.data.$dataSource
+      this.mount((ds.$$id || ds.id))
     }
   },
   methods: {
