@@ -34,16 +34,17 @@ function* generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, 
         asset.options.scenes = {}
       }
 
-      const scenes = asset.options.scenes
+      let scenes = asset.options.scenes
       if (typeof scenes == 'string') {
-        asset.options.scenes = {}
+        scenes = asset.options.scenes = {}
       }
 
       if (typeof scenes == 'object') {
         asset.options.scenes.mapper = mapper
+        asset.options.scenes.isXcx = asset.isXcx
       }
 
-      let scenesBak = _.cloneDeep(scenes)
+      let scenesBak = _.cloneDeep(asset.options.scenes)
       // delete scenesBak.apis
       // delete scenesBak.mapper
       delete scenesBak.publicPath

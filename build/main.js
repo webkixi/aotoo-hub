@@ -89,9 +89,14 @@ function* buildXcxFiles(asset, config) {
   }
 }
 
+function isMiniapp(options) {
+  const { TYPE, DIST } = options
+  return TYPE == 'mp' || TYPE == 'ali'
+}
+
 function checkIsXcx(options) {
   const { TYPE, DIST } = options
-  const isXcx = TYPE == 'mp' || TYPE == 'ali'
+  const isXcx = isMiniapp(options)
   const development = process.env.NODE_ENV == 'development'
   const modeDesc = development ? '开发模式' : '生产模式'
   const modeDist = chalk.yellow.bold(DIST)
@@ -134,7 +139,7 @@ function* startOneProjectDevServer(startDevQueues) {
         // options.argv = argv
         const SRC = options.SRC
         const serverPath = path.join(SRC, 'server')
-        if (fs.existsSync(serverPath)) {
+        if (fs.existsSync(serverPath) && options.server) {
           yield proxyServer(compilerConfig, options)
         } else {
           yield wpDevServers(compilerConfig, options)
@@ -355,6 +360,7 @@ module.exports = function* main(assets, opts) {
       ROOT: configs_aotoo.ROOT,
       version: config.version,
       onlynode: config.onlynode,
+      server: config.server,
       TYPE: config.type||'web',    // mp(小程序), web
       startup: config.startup,
       isDev: config.isDev || process.env.NODE_ENV == 'development',
@@ -396,10 +402,10 @@ module.exports = function* main(assets, opts) {
 
     // 是否为小程序
     // 是否需要初始化小程序目录
-    if (build_asset.TYPE == 'mp') {
+    if (isMiniapp(build_asset)) {
+      build_asset.isXcx = true
       generateXcx(build_asset)
     }
-
 
     // 生成server目录
     // @aotoo/aotoo-koa-server

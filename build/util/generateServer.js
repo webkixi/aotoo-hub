@@ -13,7 +13,7 @@ function accessStat(fobj, dobj) {
 }
 
 module.exports = function* (asset) {
-  const {SRC} = asset
+  const {SRC, isXcx} = asset
   const jsPath = path.join(SRC, 'js')
   const serverPath = path.join(SRC, 'server')
   const serverIndex = path.join(serverPath, 'index.js')
@@ -31,14 +31,17 @@ module.exports = function* (asset) {
     fs.copySync(content_serverIndex, serverIndex)
     fs.copySync(content_serverIndexlib, serverIndexLib)
 
-    
-    globby.sync([`${jsPath}/**/*`]).forEach(file => {
-      const fileObj = path.parse(file)
-      const dirObj = path.parse(fileObj.dir)
-      if (accessStat(fileObj, dirObj) ){
-        const servFile = file.replace(jsPath, controlPath)
-        fs.copySync(content_controlIndex, servFile)
-      }
-    });
+    if (isXcx) {
+      fs.copySync(content_controlIndex, controlIndex)
+    } else {
+      globby.sync([`${jsPath}/**/*`]).forEach(file => {
+        const fileObj = path.parse(file)
+        const dirObj = path.parse(fileObj.dir)
+        if (accessStat(fileObj, dirObj) ){
+          const servFile = file.replace(jsPath, controlPath)
+          fs.copySync(content_controlIndex, servFile)
+        }
+      })
+    }
   }
 }
