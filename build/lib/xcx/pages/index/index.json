@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "demo",
+  "navigationBarTitleText": "首页",
   "usingComponents": {
     "ui-item": "/components/aotoo/item/index",
     "ui-list": "/components/aotoo/list/index",

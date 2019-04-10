@@ -2,11 +2,29 @@
   "pages":[
     "pages/index/index",
     "pages/demo/index",
-    "pages/demo/list/index",
-    "pages/demo/form/index",
     "pages/demo/tab/index",
     "pages/empty/index",
     "pages/logs/logs"
+  ],
+  "subpackages": [{
+      "root": "demo/",
+      "name": "mydemo",
+      "pages": [
+        "ui/list/index",
+        "form/union/index",
+        "form/checkbox/index",
+        "form/radio/index",
+        "form/input/index",
+        "form/number/index",
+        "form/icon/index",
+        "form/switch/index",
+        "form/slider/index",
+        "form/singlepicker/index",
+        "form/multipypicker/index",
+        "form/dropdown/index",
+        "form/index/index"
+      ]
+    }
   ],
   "usingComponents": {
     "ui-item": "/components/aotoo/item/index",
@@ -14,7 +32,8 @@
     "ui-tree": "/components/aotoo/tree/index",
     "action-side": "/components/actionSide/index",
     "ui-tab": "/components/tab/index",
-    "ui-form": "/components/form/index"
+    "ui-form": "/components/form/index",
+    "ui-collapse": "/components/collapse/index"
   },
   "window":{
     "backgroundTextStyle":"light",

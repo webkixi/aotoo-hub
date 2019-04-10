@@ -22,7 +22,7 @@
 <!-- 这个key要小心 -->
 <view class="htitles {{item.titleClass||''}}">
   <block wx:for="{{item.title}}" wx:key="" wx:for-item="tItem">
-    <view class="{{tItem.itemClass||tItem.class}} t-item" wx:if="{{tItem.aim}}" bind:tap="aim" data-aim="{{tItem.aim}}">
+    <view class="{{tItem.itemClass||tItem.class}} t-item" wx:if="{{tItem.aim}}" catch:tap="aim" data-aim="{{tItem.aim}}">
       <template is="titles-content" data="{{item: tItem}}" />
     </view>
     <block wx:else>

@@ -19,7 +19,8 @@
     <ui-item item="{{pageData}}" />
   </view> -->
 
-  <ui-list list="{{menuData}}" />
+  <!-- <ui-tree list="{{menuData}}" /> -->
+  <ui-collapse dataSource="{{menuData}}" />
   <!-- <ui-form dataSource="{{formData}}"/> -->
   <!-- <action-side item="{{aside1}}" />
   <action-side item="{{aside2}}" /> -->

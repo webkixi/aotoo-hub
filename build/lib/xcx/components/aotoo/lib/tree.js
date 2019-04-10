@@ -60,6 +60,7 @@ function subTree(item, dataAry, deep){
       listClass: item.liClass || 'ul',
       itemClass: treeProps.itemClass||'',
       itemStyle: treeProps.itemStyle||'',
+      show: item.hasOwnProperty('show') ? item.show : true,
       fromTree : fromTree
     }
     item['__sort'] = (item['__sort'] || []).concat('@list')

@@ -26,6 +26,17 @@ export function clone(params) {
   return JSON.parse(JSON.stringify(params))
 }
 
+export function isEmpty(params) {
+  if (isObject(params)) {
+    const len = Object.keys(params).length
+    return len ? false : true
+  }
+  if (isArray(params)) {
+    return params.length ? false : true
+  }
+  return true
+}
+
 export function formatQuery(url) {
   let aim = url
   let query={};

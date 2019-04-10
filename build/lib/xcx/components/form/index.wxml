@@ -3,6 +3,7 @@
 <!-- 小程序的模板真是又长又臭 -->
 <!-- <ui-item item="{{$item}}" class-name="{{myClass}}"/> -->
 <wxs src="../aotoo/util.wxs" module="util" />
+<import src="../aotoo/templates/inner_templates.wxml" />
 <wxs module="tmp">
   var inputType = ['text', 'password', 'number', 'idcard', 'digit', 'dropdown']
   var crType = ['radio', 'checkbox', 'radiobox']
@@ -79,10 +80,17 @@
     return input.type == 'dropdown'
   }
 
+  // 按钮的data-evt属性
+  function btnEvt(input) {
+    if (input['form-type'] || input['open-type']) return false
+    return true
+  }
+
   module.exports = {
     isInput: isInput,
     isDropdown: isDropdown,
     isCr:  isCr,
+    btnEvt:  btnEvt,
     validrcp: validrcp,
     plen: plen,
     isChecked: isChecked,
@@ -116,6 +124,125 @@
     bindblur ="inputItemMethod"
     bindconfirm ="inputItemMethod"
   />
+</template>
+
+<template name="@button">
+  <block wx:if="{{input['open-type']=='contact'}}">
+    <button 
+      type="{{input.type||'default'}}" 
+      size="{{input.size||'mini'}}"
+      plain="{{input.plain}}"
+      disabled="{{input.disabled}}"
+      open-type="{{input['open-type']}}"
+      lang="{{input.lang||'en'}}"
+      session-from="{{input['session-from']}}"
+      send-message-title="{{input['send-message-title']}}"
+      send-message-path="{{input['send-message-path']}}"
+      send-message-img="{{input['send-message-img']}}"
+      show-message-card	="{{input['show-message-card']}}"
+      bindcontact	="{{input['bindcontact']}}"
+      class="{{input.itemClass}}"
+      style="{{input.itemStyle}}"
+      id="{{input.id}}"
+      data-address="{{input.uAddress}}"
+    >
+    {{input.value}}
+    </button>
+  </block>
+  <block wx:elif="{{input['open-type']=='getPhoneNumber'}}">
+    <button 
+      type="{{input.type||'default'}}" 
+      size="{{input.size||'mini'}}"
+      plain="{{input.plain}}"
+      disabled="{{input.disabled}}"
+      loading="{{input.loading}}"
+      open-type="{{input['open-type']}}"
+      lang="{{input.lang||'en'}}"
+      bindgetphonenumber="{{input['bindgetphonenumber']}}"
+      class="{{input.itemClass}}"
+      style="{{input.itemStyle}}"
+      id="{{input.id}}"
+      data-address="{{input.uAddress}}"
+    >
+    {{input.value}}
+    </button>
+  </block>
+  <block wx:elif="{{input['open-type']=='getUserInfo'}}">
+    <button 
+      type="{{input.type||'default'}}" 
+      size="{{input.size||'mini'}}"
+      plain="{{input.plain}}"
+      disabled="{{input.disabled}}"
+      loading="{{input.loading}}"
+      open-type="{{input['open-type']}}"
+      lang="{{input.lang||'en'}}"
+      bindgetuserinfo="{{input['bindgetuserinfo']}}"
+      class="{{input.itemClass}}"
+      style="{{input.itemStyle}}"
+      id="{{input.id}}"
+      data-address="{{input.uAddress}}"
+    >
+    {{input.value}}
+    </button>
+  </block>
+  <block wx:elif="{{input['open-type']=='openSetting'}}">
+    <button 
+      type="{{input.type||'default'}}" 
+      size="{{input.size||'mini'}}"
+      plain="{{input.plain}}"
+      disabled="{{input.disabled}}"
+      loading="{{input.loading}}"
+      open-type="{{input['open-type']}}"
+      lang="{{input.lang||'en'}}"
+      bindopensetting="{{input['bindopensetting']}}"
+      class="{{input.itemClass}}"
+      style="{{input.itemStyle}}"
+      id="{{input.id}}"
+      data-address="{{input.uAddress}}"
+    >
+    {{input.value}}
+    </button>
+  </block>
+  <block wx:elif="{{input['open-type']=='launchApp'}}">
+    <button 
+      type="{{input.type||'default'}}" 
+      size="{{input.size||'mini'}}"
+      plain="{{input.plain}}"
+      disabled="{{input.disabled}}"
+      loading="{{input.loading}}"
+      open-type="{{input['open-type']}}"
+      lang="{{input.lang||'en'}}"
+      app-parameter	="{{input['app-parameter']}}"
+      bindlaunchapp="{{input['bindlaunchapp']}}"
+      binderror="{{input['binderror']}}"
+      class="{{input.itemClass}}"
+      style="{{input.itemStyle}}"
+      id="{{input.id}}"
+      data-address="{{input.uAddress}}"
+    >
+    {{input.value}}
+    </button>
+  </block>
+  <block wx:else>
+    <button 
+      type="{{input.type||'default'}}" 
+      size="{{input.size||'mini'}}"
+      plain="{{input.plain}}"
+      disabled="{{input.disabled}}"
+      loading="{{input.loading}}"
+      form-type="{{input['form-type']}}"
+      lang="{{input.lang||'en'}}"
+
+      bind:tap="{{input['form-type'] ? undefined : 'inputItemMethod'}}"
+      class="{{input.itemClass}}"
+      style="{{input.itemStyle}}"
+      id="{{input.id}}"
+      data-address="{{input.uAddress}}"
+      data-evt="{{util.dataEvt(input, ['tap'])}}"
+    >
+    {{input.value}}
+    </button>
+  </block>
 </template>
 
 <template name="@slider">
@@ -176,16 +303,21 @@
 </template>
 
 <template name="@switch">
-  <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" class="input-item-switch {{input.itemClass}}" wx:if="{{input.value}}" checked />
+  <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch {{input.itemClass}}" wx:if="{{input.value}}" checked />
   <block wx:else>
-    <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" class="input-item-switch"/>
+    <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch"/>
   </block>
 </template>
 
 <template name="@picker">
   <block wx:if="{{util.isArray(input.value)}}">
     <!-- <picker mode="multiSelector" bindcolumnchange="{{input.bindcolumnchange ? 'pickersChange': ''}}" bindchange="{{input.bindcolumnchange ? '': 'rcChange'}}" value="{{input.value||[0]}}" range="{{input.titles||[[]]}}" data-address="{{input.uAddress}}"> -->
-    <picker mode="multiSelector" bindcolumnchange="pickersChange" bindcancel="pickersChange" value="{{input.value||[0]}}" range="{{input.titles||[[]]}}" data-address="{{input.uAddress}}" class="input-item-picker {{input.itemClass}}">
+    <!-- <picker mode="multiSelector" bindcolumnchange="{{input.value.length > 1 ? 'pickersChange' : undefined}}" /> -->
+    <picker mode="multiSelector" 
+      bindcolumnchange="{{input['bindcolumnchange'] ? 'pickersChange' : undefined}}" 
+      bindchange="pickersChange"
+      bindcancel="pickersChange" 
+      value="{{input.value||[0]}}" range="{{input.titles||[[]]}}" data-address="{{input.uAddress}}" class="input-item-picker {{input.itemClass}}">
       <view class="picker">
         <block wx:if="{{tmp.plen(input)==1}}">
           {{input.titles[0][input.value[0]]}}
@@ -229,7 +361,19 @@
     <block wx:if="{{input.eye}}">
       <view class="input-item-passwd-eye">
         <template is="whatTypeElement" data="{{uniqId, props, profile, input, inputStyle: 'flex: 3'}}"/>
-        <block wx:if="{{input.type=='password'||input.type=='text'}}">
+        <block wx:if="{{tmp.isInput(input.type)}}">
+          <block wx:if="{{input.type=='dropdown'}}">
+            <text catch:tap="inputItemDropdown" data-eye="{{true}}" data-address="{{input.uAddress}}" class="{{input.eye}} mr-10-r size16 color-227ce1" style="flex: 1; text-align: center"></text>
+          </block>
+          <block wx:elif="{{util.isString(input.eye)}}">
+            <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="{{input.eye}}" style="flex: 1; text-align: center"></text>
+          </block>
+          <block wx:else>
+            <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="icon-eye mr-10-r size16 color-227ce1" style="flex: 1; text-align: center"></text>
+          </block>
+        </block>
+
+        <!-- <block wx:if="{{input.type=='password'||input.type=='text'}}">
           <block wx:if="{{util.isString(input.eye)}}">
             <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="{{input.eye}}" style="flex: 1; text-align: center"></text>
           </block>
@@ -240,7 +384,7 @@
 
         <block wx:if="{{input.type=='dropdown'}}">
           <text catch:tap="inputItemDropdown" data-eye="{{true}}" data-address="{{input.uAddress}}" class="{{input.eye}} mr-10-r size16 color-227ce1" style="flex: 1; text-align: center"></text>
-        </block>
+        </block> -->
       </view>
     </block>
     <block wx:else>
@@ -263,22 +407,24 @@
 
 <!-- profile:{}, input: {} -->
 <template name="inputItem">
-  <view class="input-item-content {{input.error? 'error':''}}">
-    <!-- required -->
-    <block wx:if="{{input.required}}">
-      <text class="input-item-required"></text>
-    </block>
+  <block wx:if="{{input.show}}">
+    <view class="input-item-content {{input.error? 'error':''}}">
+      <!-- required -->
+      <block wx:if="{{input.required}}">
+        <text class="input-item-required"></text>
+      </block>
 
-    <!-- title -->
-    <block wx:if="{{input.title}}">
-      <ui-item item="{{ input.title }}" fromComponent="{{uniqId}}" />
-    </block>
+      <!-- title -->
+      <block wx:if="{{input.title}}">
+        <ui-item item="{{ input.title }}" fromComponent="{{uniqId}}" />
+      </block>
 
-    <!-- content -->
-    <block wx:if="{{input.type}}">
-      <template is="@input-element" data="{{uniqId, props, profile, input}}" />
-    </block>
-  </view>
+      <!-- content -->
+      <block wx:if="{{input.type}}">
+        <template is="@input-element" data="{{uniqId, props, profile, input}}" />
+      </block>
+    </view>
+  </block>
 </template>
 
 

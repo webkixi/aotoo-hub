@@ -90,7 +90,10 @@ class _hooks {
         funs.forEach(fun => {
           if (isFunction(fun)) {
             const res = fun.call(ctx, param)
-            if (res) vals.push(res)
+            if (res) vals.push(res) 
+            else {
+              vals.push(undefined)
+            }
             if (fun.onlyonetime) {
               this.off(key, fun)
             }

@@ -16,6 +16,10 @@ import {
   alert 
 } from "./ui";
 
+import { 
+  post 
+} from "./utils";
+
 function pageDataElement(data) {
   let nData
   let eles = {}
@@ -203,6 +207,7 @@ function setItem(item) {
 
 core.lib = lib
 core.alert = alert
+core.post = post
 core.setItem = setItem
 core.commonBehavior = commonBehavior
 core.commonMethodBehavior = commonMethodBehavior

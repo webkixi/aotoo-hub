@@ -10,7 +10,8 @@ export {
   formatQuery,
   suid,
   resetSuidCount,
-  clone
+  clone,
+  isEmpty
 } from './util'
 
 export {

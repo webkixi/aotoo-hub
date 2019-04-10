@@ -1,0 +1,3 @@
+<view class="boxer">
+  <ui-form dataSource="{{motto}}" />
+</view>

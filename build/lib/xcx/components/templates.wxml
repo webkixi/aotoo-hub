@@ -25,9 +25,9 @@
 
 
 <template name="button">
-  <button class="{{props.class||''}}" wx:if="{{props.style}}" style="{{props.style||''}}">{{props.title}}</button>
+  <button disabled="{{props.disabled}}" class="{{props.class||''}}" wx:if="{{props.style}}" style="{{props.style||''}}">{{props.value || props.title}}</button>
   <block wx:else>
-    <button class="{{props.class||''}}">{{props.title}}</button>
+    <button disabled="{{props.disabled}}" class="{{props.class||''}}">{{props.value || props.title}}</button>
   </block>
 </template>
 
@@ -36,5 +36,5 @@
 </template>
 
 <template name="form">
-  <ui-form dataSource="{{props.data}}" />
+  <ui-form dataSource="{{props}}" />
 </template>

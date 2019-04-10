@@ -3,12 +3,30 @@
   function has(item, type){
     if (item.form) return item.form[type]
   }
-  module.exports = { has: has }
+  function mixprops(input, profile){
+    if (typeof input == 'object') {
+      input.profile = profile
+    }
+    return input
+  }
+  module.exports = { 
+    has: has,
+    mixprops: mixprops
+  }
 </wxs>
 <import src="../../templates.wxml" />
 
 <!-- <template name="temp">
   <template is="{{tempName}}" data="{{stuff}}" />
+</template> -->
+
+<!-- <template name="@button">
+  <block wx:if="{{input || profile}}">
+    <template is="button" data="{{props: inner.mixprops(input, profile) }}" />
+  </block>
+  <block wx:else>
+    <template is="button" data="{{ props }}" />
+  </block>
 </template> -->
 
 <template name="@component">
@@ -101,5 +119,7 @@
 </template>
 
 <template name="@form">
-  
+  <block wx:if="{{util.isObject(props)}}">
+    <ui-form dataSource="{{props}}" />
+  </block>
 </template>

@@ -21,7 +21,7 @@
 
 <view class="hbody {{item.bodyClass||''}}">
   <block wx:for="{{item.body}}" wx:key="">
-    <view id="{{item.id}}" class="hb-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}">
+    <view id="{{item.id}}" class="hb-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
       <template is="hb-content" data="{{item}}" />
     </view>
     <block wx:else>

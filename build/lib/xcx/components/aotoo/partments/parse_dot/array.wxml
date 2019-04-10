@@ -13,7 +13,7 @@
 
 <!-- 这个key要小心 -->
 <block wx:for="{{item.dot}}" wx:key="">
-  <view id="{{item.id}}" class="hdot-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}">
+  <view id="{{item.id}}" class="hdot-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
     <template is="hdot-content" data="{{item}}" />
   </view>
   <block wx:else>

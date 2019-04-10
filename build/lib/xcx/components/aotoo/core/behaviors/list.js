@@ -108,7 +108,7 @@ export const listBehavior = function(app, mytype) {
         if (lib.isArray(param)) {
           let target = Object.assign({data: param}, this.data.props)
           const mylist = reSetList.call(this, target)
-          this.setData({ $list: mylist })
+          this.setData({ $list: mylist }, cb)
         }
         return this
       },
@@ -166,11 +166,27 @@ export const listBehavior = function(app, mytype) {
 
       find: function (params, bywhat) {
         const index = this.findIndex(params, bywhat)
-        if (index || index == 0) {
+        if (index || index === 0) {
           if (lib.isArray(index)) {
-            return index.map((idx) => this.data.$list[idx])
+            return index.map((idx) => this.data.$list.data[idx])
           }
-          return this.data.$list[index]
+          let res = this.data.$list.data[index]
+          res.__realIndex = index
+          return res
+        }
+      },
+
+      findAndUpdate: function (treeid, cb) {
+        const res = this.find(treeid)
+        const index = res.__realIndex
+        const isFun = lib.isFunction(cb)
+        let result
+        if (res) {
+          if (!isFun) return res
+          result = cb(res)
+          if (result) {
+            this.update({ [`data[${index}]`]: result })
+          }
         }
       },
 
@@ -228,64 +244,81 @@ export const listBehavior = function(app, mytype) {
       },
 
       _scrollMethod: function (e) {
-        if (this.treeInst) {
-          this.treeInst._scrollMethod(e)
-          return
-        }
+        return listReactFun.call(this, e, 'scroll')
 
-        const $list = this.data.$list
-        const mytype = $list.type
-        const {fun, param} = this._rightEvent(e)
+        // if (this.treeInst) {
+        //   this.treeInst._scrollMethod(e)
+        //   return
+        // }
 
-        if (mytype && mytype.is == 'scroll') {
-          this.hooks.emit('bindscroll', e)
-          this.hooks.emit('bindscrolltoupper', e)
-          this.hooks.emit('bindscrolltolower', e)
-        }
+        // const $list = this.data.$list
+        // const mytype = $list.type
+        // const {fun, param} = this._rightEvent(e)
+
+        // if (mytype && mytype.is == 'scroll') {
+        //   this.hooks.emit('bindscroll', e)
+        //   this.hooks.emit('bindscrolltoupper', e)
+        //   this.hooks.emit('bindscrolltolower', e)
+        // }
         
-        const activePage = this.activePage
-        const parentInstance = this.componentInst
-        const evtFun = activePage[fun]
-        const isEvt = lib.isFunction(evtFun)
+        // const activePage = this.activePage
+        // const parentInstance = this.componentInst
+        // const evtFun = activePage[fun]
+        // const thisFun = this[fun]
+        // const isEvt = lib.isFunction(evtFun)
 
-        if (parentInstance && lib.isFunction(parentInstance[fun])) {
-          parentInstance[fun].call(parentInstance, e, param)
-        } else {
-          if (isEvt) evtFun.call(activePage, e, param, that)
-        }
-        
+        // if (parentInstance && lib.isFunction(parentInstance[fun])) {
+        //   parentInstance[fun].call(parentInstance, e, param)
+        // } else {
+        //   if (lib.isFunction(thisFun)) {
+        //     thisFun(e, param, this)
+        //   } else {
+        //     if (isEvt) evtFun.call(activePage, e, param, that)
+        //   }
+        // }
       },
 
       _swiperMethod: function (e) {
-        if (this.treeInst) {
-          this.treeInst._swiperMethod(e)
-          return
-        }
-
-        const $list = this.data.$list
-        const mytype = $list.type
-
-        if (mytype && mytype.is == 'scroll') {
-          this.hooks.emit('bindchange', e)
-          this.hooks.emit('bindtransition', e)
-          this.hooks.emit('bindanimationfinish', e)
-        }
-
-        const activePage = this.activePage
-        const parentInstance = this.componentInst
-        const {fun, param} = this._rightEvent(e)
-        const evtFun = activePage[fun]
-        const isEvt = lib.isFunction(evtFun)
-
-        if (parentInstance && lib.isFunction(parentInstance[fun])) {
-          parentInstance[fun].call(parentInstance, e, param)
-        } else {
-          if (isEvt) evtFun.call(activePage, e, param, that)
-        }
+        return listReactFun.call(this, e, 'swiper')
       },
-
     }
   })
+}
+
+function listReactFun(e, type) {
+  if (this.treeInst) {
+    this.treeInst._swiperMethod(e)
+    return
+  }
+
+  const $list = this.data.$list
+  const mytype = $list.type
+
+  if (mytype && mytype.is == type) {
+    this.hooks.emit('bindchange', e)
+    this.hooks.emit('bindtransition', e)
+    this.hooks.emit('bindanimationfinish', e)
+  }
+
+  const activePage = this.activePage
+  let parentInstance = this.componentInst
+  const {fun, param} = this._rightEvent(e)
+  const evtFun = activePage[fun]
+  const thisFun = this[fun]
+  const isEvt = lib.isFunction(evtFun)
+  if (lib.isEmpty(parentInstance)) {
+    parentInstance = undefined
+  }
+
+  if (parentInstance && lib.isFunction(parentInstance[fun])) {
+    parentInstance[fun].call(parentInstance, e, param)
+  } else {
+    if (lib.isFunction(thisFun)) {
+      thisFun.call(this, e, param, this)
+    } else {
+      if (isEvt) evtFun.call(activePage, e, param, (parentInstance||that))
+    }
+  }
 }
 
 export const listComponentBehavior = function(app, mytype) {

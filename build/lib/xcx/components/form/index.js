@@ -47,7 +47,7 @@ const containerAttributs = { // attrs
   itemStyle: undefined,
   required: undefined,
   show: true,
-  union: {}
+  union: undefined
 }
 
 const inputAttributs = {
@@ -58,7 +58,8 @@ const inputAttributs = {
   error: undefined,
   eye: undefined,   // 密码键盘的显示密码的眼睛
   readonly: false,
-
+  test: undefined, // 校验
+  show: true,
   attr: undefined,
 
   maxlength: undefined,
@@ -80,6 +81,31 @@ const inputAttributs = {
   descs: undefined,
   values: undefined,
   checked: undefined,
+
+  // button
+  plain: undefined,
+  size: undefined,
+  loading: undefined,
+  'form-type': undefined,
+  'open-type': undefined,
+  'hover-class': undefined,
+  'hover-stop-propagation': undefined,
+  'hover-start-time': undefined,
+  'hover-stay-time': undefined,
+  'lang': 'en',
+  'session-from': undefined,
+  'send-message-title': undefined,
+  'send-message-path': undefined,
+  'send-message-img': undefined,
+  'app-parameter': undefined,
+  'show-message-card': undefined,
+  'bindgetuserinfo': undefined,
+  'bindcontact': undefined,
+  'bindgetphonenumber': undefined,
+  'binderror': undefined,
+  'bindopensetting': undefined,
+  'bindlaunchapp': undefined,
+  'tap': undefined,
 
   // sloder
   min: undefined,
@@ -164,7 +190,7 @@ function resetPickersValues(params, e) {
           _titles.push(item.title)
         }
       })
-      if (!e && (value[ii] || value[ii]==0)) {
+      if (e && (value[ii] || value[ii]==0)) {
         _select = value[ii]
       }
       value[ii] = _select
@@ -176,12 +202,51 @@ function resetPickersValues(params, e) {
   return params
 }
 
+// let _watcher = {}
+
 // 规范input的属性
 function normInput(params, profile) {
+  const that = this
   if (lib.isObject(params)) {
     params.disabled = params.hasOwnProperty('disabled') ? params.disabled : false
     params.uid = params.hasOwnProperty('uid') ? params.uid : lib.suid('input_input_')
     params.uAddress = [profile.uid, params.uid].join('.') // 0 => item的uid, 1=>input的uid
+
+    if (params.union) {
+      const union = params.union
+      if (union.target || union.id) {
+        const selfId = params.id || params.name
+        const target = union.target || union.id
+        const cb = union.callback
+        if (typeof cb == 'function') {
+          let tmp = {
+            id: selfId,
+            address: '',
+            assets: {},
+            setData: function() {
+              that.setData.apply(that, arguments)
+            },
+            save: function(param) {
+              if (param && lib.isObject(param)) {
+                this.setData({ [tmp.address]: param })
+              } else {
+                that.setData({[tmp.address]: tmp.assets })
+              }
+            }
+          }
+          this.hooks.on('change', function(param) {
+            const {id, point} = param   // point为观察的点的inputData
+            if (id == target) {
+              const res = that.getAddressInfo(params.uAddress)
+              tmp.assets = that.getAddressInfo(params.uAddress).inputData
+              tmp.address = res.address
+              cb.call(tmp, {value: point.value})
+            }
+          })
+          // _watcher = Object.assign(_watcher, tmp)
+        }
+      }
+    }
     
     if (params.title) {
       params.title = resetUIitem(params.title)
@@ -390,6 +455,12 @@ Component({
       const ds = this.data.$dataSource
       // if (ds.$$id) this.mount((ds.$$id))
       this.mount((ds.$$id))
+      this.parentInstance = this._getAppVars()
+      if (lib.isEmpty(this.parentInstance)) {
+        this.parentInstance = undefined
+      } else {
+        this.parentInstance.form = this
+      }
     }
   },
   methods: {
@@ -424,6 +495,7 @@ Component({
       let inputIndex
       let itemData
       let inputData
+      let itemProfile
       const $validInputs = this.data.$validInputs
       if (address && $validInputs.length) {
         const [profile_uid, input_uid] = address.split('.')
@@ -431,6 +503,7 @@ Component({
         if (res) {
           itemData = [res.info]
           itemIndex = res.index
+          itemProfile = res.info.profile
         }
         if (input_uid && itemData.length) {
           inputData = itemData[0].input.filter((ipt, jj) => {
@@ -450,14 +523,22 @@ Component({
             findIt = itemData
           }
         }
-        return {address: findAddress, inputData: findIt[0]}
+        if (findAddress) {
+          return {address: findAddress, inputData: findIt[0], profile: itemProfile}
+        }
       }
     },
     addWarn: function (id, message) {
       this.value(id, { error: message })
     },
+    addDesc: function (id, message) {
+      this.value(id, { desc: message })
+    },
     removeWarn: function(id) {
       this.value(id, {error: null})
+    },
+    removeDesc: function(id) {
+      this.value(id, {desc: null})
     },
     empty: function(params) {
       const allocation = this.allocation
@@ -467,51 +548,79 @@ Component({
       })
       this.value(willEmpty)
     },
-    value: function(id, val) {
+    profile: function (id, val) {
       const allocation = this.allocation
       if (id) {
         if (lib.isString(id)) {
-          if (allocation[id] && val) {
-            const ipData = allocation[id] 
-            const address = ipData['uAddress']
-            let res = this.getAddressInfo(address)
-            if (res) {
-              if (lib.isString(val)) {
-                res.inputData.value = val
-                this.setData({ [res.address]: res.inputData })
-              } else {
-                if (lib.isObject(val)) {
-                  let resault = Object.assign({}, res.inputData, val)
-                  this.setData({ [res.address]: resault })
-                }
-              }
-              allocation[id] = res.inputData
+          const ipData = allocation[id]
+          const address = ipData['uAddress']
+          const profileId = address.split('.')[0]
+          let res = this.find(profileId)
+          if (res && val) {
+            if (lib.isObject(val)) {
+              res.info.profile = Object.assign(res.info.profile, val)
+              this.setData({
+                [`$validInputs[${res.index}]`]: res.info
+              })
             }
           }
         }
-        if (lib.isObject(id)) {
-          let willUpdate = {}
-          Object.keys(id).forEach($id=>{
-            const myval = id[$id]
-            const ipData = allocation[$id]
-            if (ipData) {
+      }
+    },
+    value: function(id, val) {
+      const allocation = this.allocation
+      if (id) {
+        if (val) {
+          if (lib.isString(id)) {
+            if (allocation[id] && val) {
+              const ipData = allocation[id] 
               const address = ipData['uAddress']
+              let willUpdate
               let res = this.getAddressInfo(address)
               if (res) {
-                if (lib.isString(myval)) {
-                  res.inputData.value = myval
-                  willUpdate[res.address] = res.inputData
+                if (lib.isString(val)) {
+                  res.inputData.value = val
+                  let resault = res.inputData
+                  res.inputData = resault = normInput.call(this, resault, res.profile)
+                  willUpdate = {[res.address]: resault}
                 } else {
-                  if (lib.isObject(myval)) {
-                    let resault = Object.assign({}, res.inputData, myval)
-                    willUpdate[res.address] = resault
+                  if (lib.isObject(val)) {
+                    let resault = Object.assign({}, res.inputData, val)
+                    res.inputData = resault = normInput.call(this, resault, res.profile)
+                    willUpdate = { [res.address]: resault }
                   }
                 }
-                allocation[$id] = res.inputData
+                allocation[id] = res.inputData
+                this.setData(willUpdate)
               }
             }
-          })
-          this.setData(willUpdate)
+          }
+          if (lib.isObject(id)) {
+            let willUpdate = {}
+            Object.keys(id).forEach($id=>{
+              const myval = id[$id]
+              const ipData = allocation[$id]
+              if (ipData) {
+                const address = ipData['uAddress']
+                let res = this.getAddressInfo(address)
+                if (res) {
+                  if (lib.isString(myval)) {
+                    res.inputData.value = myval
+                    willUpdate[res.address] = res.inputData
+                  } else {
+                    if (lib.isObject(myval)) {
+                      let resault = Object.assign({}, res.inputData, myval)
+                      willUpdate[res.address] = resault
+                    }
+                  }
+                  allocation[$id] = res.inputData
+                }
+              }
+            })
+            this.setData(willUpdate)
+          }
+        } else {
+          return allocation[id]
         }
       } else {
         return allocation
@@ -525,6 +634,8 @@ Component({
       // console.log(param);
     },
     // dropdown
+    // e evtent
+    // param 经过 core itemMethod解析过后的数据，包含?abc=xxx等query信息
     inputItemDropdown: function (e, param={}) {
       const mytype = e.type
       const dataset = e.currentTarget.dataset
@@ -558,6 +669,8 @@ Component({
       const address = dataset.address
       const res = this.getAddressInfo(address)
       const activePage = this.activePage
+      const {fun, param} = this._rightEvent(e)
+
       if (res) {
         var id = res.inputData.id || res.inputData.name
       }
@@ -589,6 +702,14 @@ Component({
             res.inputData.value = detail.value
           }
           runFormBindFun.call(this, 'bindinput', res, e)
+          break;
+
+        case 'tap':
+          const targetFun = this.parentInstance&&this.parentInstance[fun] || activePage[fun]
+          if (lib.isFunction(targetFun)) {
+            const tapctx = this.parentInstance || activePage
+            targetFun.call(tapctx, e, param, this)
+          }
           break;
       
         default:
@@ -631,11 +752,17 @@ Component({
         const type = res.inputData.type
         const column = detail.column
         const value = detail.value
-        if (column || column == 0) {
+        if (column || column === 0) {
           res.inputData.value[column] = value
-          setAllocation.call(this, res, {value: res.inputData.value})
+        } else {
+          res.inputData.value = value
+        }
+        setAllocation.call(this, res, {value: res.inputData.value})
+        if (column || column === 0) {
+          runFormBindFun.call(this, 'bindcolumnchange', res, e, 'pickers')
+        } else {
           runFormBindFun.call(this, 'bindchange', res, e, 'pickers')
-        } 
+        }
       } else {
         runFormBindFun.call(this, 'bindcancel', res, e, 'cancel')
       }
@@ -648,12 +775,13 @@ function setAllocation(res, val) {
   let itemInput = this.allocation[id]
   if (itemInput) {
     if (lib.isObject(val)) {
+      this.allocation[id] = Object.assign({}, itemInput, val)
       if (val.value) {
         if (itemInput.value != val.value) {
-          this.hooks.emit('change', val)
+          itemInput = this.allocation[id]
+          this.hooks.emit('change', {id, point: itemInput})
         }
       }
-      this.allocation[id] = Object.assign({}, itemInput, val)
     }
   }
 }
@@ -672,6 +800,8 @@ function runFormBindFun(fn, res, e, from) {
           resData = resetPickersValues(resData, e)
         }
         from == 'cancel' ? '' : this.setData({[res.address]: resData})
+      } else {
+        /** 什么都不做 ? */
       }
     } else {
       from == 'cancel' ? '' : this.setData({[res.address]: res.inputData})

@@ -26,6 +26,26 @@
         background-color yellow
 
 
+/*原生swtich样式调整-start*/
+/*swtich整体大小*/
+.wx-switch-input
+  width: 82rpx !important
+  height: 40rpx !important
+  margin: 0 !important
+  padding: 0 !important
+
+/*白色样式（false的样式）*/
+.wx-switch-input::before
+  width: 80rpx !important
+  height: 36rpx !important
+
+/*绿色样式（true的样式）*/
+.wx-switch-input::after
+  width: 38rpx !important
+  height: 36rpx !important
+/*swtich样式end*/
+
+
 .input-container
   min-height 400px
 .input-item
@@ -49,6 +69,8 @@
     border-bottom: 1px solid #e5e5e5
     background #fff
     .input-item
+      &-switch
+        width: 82rpx !important
       &-dropdown
         font-size 28rpx
       &-dropdown-options
@@ -78,7 +100,7 @@
         // ss-display-flex(row nowrap, flex-start, center)
       &-input
         font-size 28rpx
-        height 51rpx
+        // height 51rpx
       &-title
         width 160rpx
         line-height 53rpx

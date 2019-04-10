@@ -35,7 +35,7 @@
 <view class="ul {{item.liClass||''}}">
   <block wx:for="{{item.li}}" wx:key="">
     <block wx:if="{{item.attr}}">
-      <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
+      <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
         <template is="li0-content" data="{{item}}" />
       </view>
       <block wx:else>
@@ -46,7 +46,7 @@
     </block>
 
     <block wx:else>
-      <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}">
+      <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
         <template is="li0-content" data="{{item}}" />
       </view>
       <block wx:else>
@@ -81,7 +81,7 @@
   <view class="ul {{item.liClass||''}}">
     <block wx:for="{{item.li}}" wx:key="">
       <block wx:if="{{item.attr}}">
-        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
+        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
           <template is="li1-content" data="{{item}}" />
         </view>
         <block wx:else>
@@ -91,7 +91,7 @@
         </block>
       </block>
       <block wx:else>
-        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}">
+        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
           <template is="li1-content" data="{{item}}" />
         </view>
         <block wx:else>
@@ -127,7 +127,7 @@
   <view class="ul {{item.liClass||''}}">
     <block wx:for="{{item.li}}" wx:key="">
       <block wx:if="{{item.attr}}">
-        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
+        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
           <template is="li2-content" data="{{item}}" />
         </view>
         <block wx:else>
@@ -137,7 +137,7 @@
         </block>
       </block>
       <block wx:else>
-        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}">
+        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
           <template is="li2-content" data="{{item}}" />
         </view>
         <block wx:else>
@@ -169,7 +169,7 @@
   <view class="ul {{item.liClass||''}}">
     <block wx:for="{{item.li}}" wx:key="">
       <block wx:if="{{item.attr}}">
-        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
+        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
           <template is="li3-content" data="{{item}}" />
         </view>
         <block wx:else>
@@ -179,7 +179,7 @@
         </block>
       </block>
       <block wx:else>
-        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" bind:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
+        <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
           <template is="li3-content" data="{{item}}" />
         </view>
         <block wx:else>

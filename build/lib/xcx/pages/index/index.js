@@ -373,13 +373,15 @@ Pager({
 
         case 'demo-newlist':
           wx.navigateTo({
-            url: '../demo/list/index'
+            url: '../../demo/ui/list/index'
           })
           break;
 
         case 'demo-form':
           wx.navigateTo({
-            url: '../demo/form/index'
+            url: '../../demo/form/index/index'
+            // url: '../../demo/form/union/index'
+            // url: '../demo/form/index'
           })
           break;
       
