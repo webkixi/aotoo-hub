@@ -145,7 +145,8 @@ function* startOneProjectDevServer(startDevQueues) {
           yield wpDevServers(compilerConfig, options)
         }
       } else {
-        console.log(`${options.name} port is occupied`)
+        console.log(chalk.red.bold(`您正在启动项目：${options.name}， 但该项目端口${options.port}已被占用，请在配置文件中指定其他端口`))
+        process.exit()
       }
       // yield sleep(3000)
     }

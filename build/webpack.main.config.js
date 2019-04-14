@@ -205,7 +205,7 @@ function delDist(asset, buildType, isXcx) {
     delTarget = []
   }
 
-  del.sync(delTarget)
+  del.sync(delTarget, { force: true })
 }
 
 // 生成小程序的配置文件
