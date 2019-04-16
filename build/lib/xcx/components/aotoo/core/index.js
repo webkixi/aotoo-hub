@@ -51,7 +51,7 @@ function pageDataElement(data) {
               }
             }
     
-            if (lib.data && lib.isArray(item.data)) {
+            if (item.data && lib.isArray(item.data)) {
               item.data = item.data.map(sub => {
                 if (lib.isObject(sub) && sub['$$id']) {
                   const obj = pageDataElement(sub)

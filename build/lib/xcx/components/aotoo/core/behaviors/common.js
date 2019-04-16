@@ -234,7 +234,7 @@ export const commonMethodBehavior = (app, mytype) => {
         let dsetEvt = e.type+'@@'+dataset['evt']
         if (is == 'list' || is == 'tree') {
           const mytype = this.data.$list.type
-          if (mytype.is == 'scroll' || mytype.is == 'swiper') {
+          if (mytype && (mytype.is == 'scroll' || mytype.is == 'swiper')) {
             dsetEvt = 'bind'+dsetEvt
           }
         }

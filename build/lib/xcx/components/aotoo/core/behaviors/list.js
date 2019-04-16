@@ -227,7 +227,7 @@ export const listBehavior = function(app, mytype) {
         return this
       },
 
-      insert: function (treeid) {
+      insert: function (treeid, pay) {
         if (lib.isString(treeid)) {
           if (pay) {
             pay = this.__newItem(pay)
@@ -285,19 +285,24 @@ export const listBehavior = function(app, mytype) {
   })
 }
 
-function listReactFun(e, type) {
+function listReactFun(e, type="list") {
   if (this.treeInst) {
-    this.treeInst._swiperMethod(e)
-    return
+    return this.treeInst.listReactFun(e, type)
   }
 
   const $list = this.data.$list
   const mytype = $list.type
 
-  if (mytype && mytype.is == type) {
+  if (type == 'swiper') {
     this.hooks.emit('bindchange', e)
     this.hooks.emit('bindtransition', e)
     this.hooks.emit('bindanimationfinish', e)
+  }
+
+  if (type == 'scroll') {
+    this.hooks.emit('bindscroll', e)
+    this.hooks.emit('bindscrolltoupper', e)
+    this.hooks.emit('bindscrolltolower', e)
   }
 
   const activePage = this.activePage

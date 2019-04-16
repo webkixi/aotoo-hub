@@ -46,6 +46,9 @@ export const itemBehavior = function(app, mytype) {
       }
     },
     methods: {
+      attr: function (params) {
+        return this.data.$item.attr
+      },
       reset: function() {
         this.setData({$item: JSON.parse(this.originalDataSource)})
         return this
