@@ -6,7 +6,7 @@
 
 <template name="itemContent">
   <block wx:if="{{item.$$id}}">
-    <ui-item item="{{item}}" id="{{item.$$id}}" />
+    <ui-item item="{{item}}" id="{{item.$$id}}" fromComponent="{{uniqId}}"/>
   </block>
   <block wx:else>
     <template is="item" data="{{item}}" />

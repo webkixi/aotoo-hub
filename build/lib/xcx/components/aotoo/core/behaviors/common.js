@@ -192,7 +192,7 @@ export const commonMethodBehavior = (app, mytype) => {
     methods: {
       aim: function (e) {
         if (this.treeInst) {
-          this.treeInst.aim(e)
+          this.treeInst.aim.call(this.treeInst, e)
           return false
         }
         const that = this
@@ -292,7 +292,7 @@ export const commonMethodBehavior = (app, mytype) => {
 
 function itemReactFun(e, prefix) {
   if (this.treeInst) {
-    this.treeInst[(prefix ? 'catchItemMethod' : 'itemMethod')](e, prefix)
+    this.treeInst[(prefix ? 'catchItemMethod' : 'itemMethod')].call(this.treeInst, e, prefix)
     return false
   }
   const that = this

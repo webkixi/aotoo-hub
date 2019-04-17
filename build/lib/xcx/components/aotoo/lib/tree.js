@@ -30,7 +30,7 @@ function valideClassName(clsname, level) {
 }
 
 let treeDeep = 1
-function subTree(item, dataAry, deep){
+function subTree(item, dataAry, deep, index){
   deep = treeDeep = deep || 1
   let fromTree
   if (this && this.fromTree) {
@@ -44,7 +44,7 @@ function subTree(item, dataAry, deep){
     son.itemClass = _clsName
 		if (son.idf && idrecode.indexOf(son.idf) == -1) {
 			idrecode.push(son.idf)
-			nsons = nsons.concat([subTree.call({fromTree}, son, dataAry, ++deep)])
+			nsons = nsons.concat([subTree.call({fromTree}, son, dataAry, ++deep, ii)])
 			--deep
 		} else {
 			nsons = nsons.concat(son)
@@ -53,9 +53,11 @@ function subTree(item, dataAry, deep){
 	if (nsons.length) {
     // item.li = nsons
     // item['__sort'] = (item['__sort']||[]).concat('li')
-
+    const treeid = (item.attr && item.attr['data-treeid']) || index
+    // const $id = item.$$id || item.id || `level${deep}-${treeid}`
+    const $id = item.$$id || item.id || `${treeid}`
 		item['@list'] = {
-      $$id: `level${deep}`,
+      $$id: $id,
       data: nsons,
       listClass: item.liClass || 'ul',
       itemClass: treeProps.itemClass||'',
@@ -95,7 +97,7 @@ export function tree(dataAry, props, fromTree){
         var clsName = item.itemClass || item.class
         clsName = clsName ? clsName.indexOf('level0') == -1 ? clsName + ' level0' : clsName : 'level0'
         item.itemClass = clsName
-        let nItem = subTree.call({fromTree}, item, dataAry) 
+        let nItem = subTree.call({fromTree}, item, dataAry, ii) 
         nItem.__deep = treeDeep
         menus.push(nItem)
       }

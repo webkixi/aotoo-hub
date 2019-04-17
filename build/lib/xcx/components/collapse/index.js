@@ -71,7 +71,7 @@ Component({
       })
     },
     ready: function() {
-      const ds = this.data.$dataSource
+      const ds = this.data.$list
       this.mount((ds.$$id || ds.id))
     }
   },
