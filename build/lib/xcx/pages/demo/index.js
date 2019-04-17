@@ -217,18 +217,26 @@ Pager({
         break;
 
       case 'tree-hide':
-        mytree.children.level3.toggle(stat => {
-          const hideTitle = stat ? 'hide' : 'show'
-          inst.update({
-            'title[2].title': hideTitle
-          })
-        })
+        // mytree.children.level3.toggle(stat => {
+        //   const hideTitle = stat ? 'hide' : 'show'
+        //   inst.update({
+        //     'title[2].title': hideTitle
+        //   })
+        // })
         break;
 
       case 'tree-delete':  // tree使用li而不是@list的模式
         // mytree.delete(currentDset['treeid'])
         break;
     }
+  },
+
+  'tree-hide': function (e, param, inst) {
+    const mytree = this.getElementsById('mytree')
+    const treeid = e.currentTarget.dataset['treeid']
+    const tinst = mytree.children[treeid]
+    tinst.toggle()
+    // console.log(e);
   },
 
   onLongPress: function(e, param, inst) {

@@ -408,7 +408,7 @@ export const treeData = {
           // {title: {title: 'content222', class: 'h6'}, parent: 'level_2', aim: 'xx-delete'},
           {title: {title: '点击删除本行', class: 'h6', style: 'text-decoration: underline;'}, parent: 'level_2', tap: 'mytree-delete'},
           {title: {title: 'content', class: 'h6'}, parent: 'level_2'},
-          {title: {title: '层级三', class: 'h6'}, parent: 'level_2', idf: 'level_3'},
+          {title: {title: '层级三，点我折叠', class: 'h6'}, parent: 'level_2', idf: 'level_3', tap: 'tree-hide'},
           {title: {title: 'content', class: 'h6'}, parent: 'level_3'},
           {title: {title: 'content', class: 'h6'}, parent: 'level_3'},
           {title: {title: '层级四', class: 'h6'}, parent: 'level_3', idf: 'level_4'},
@@ -422,7 +422,7 @@ export const treeData = {
       title: [
         {title: 'append', class: 'button primary', aim: 'tree-append'},
         {title: 'prepend', class: 'button primary', aim: 'tree-prepend'},
-        {title: 'hide', class: 'button primary', aim: 'tree-hide'},
+        // {title: 'hide', class: 'button primary', aim: 'tree-hide'},
       ]
     }},
     {
