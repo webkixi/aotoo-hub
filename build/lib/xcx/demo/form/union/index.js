@@ -16,10 +16,10 @@ const formData = {
             callback: function(point) {
               switch (point.value) {
                 case '1002':
-                  this.assets.value = '湖南省吧'
+                  this.inputData.value = '湖南省吧'
                   break;
                 case '1001':
-                  this.assets.value = '广东省吧'
+                  this.inputData.value = '广东省吧'
                   break;
               }
               this.save()

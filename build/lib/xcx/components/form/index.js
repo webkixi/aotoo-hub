@@ -223,6 +223,7 @@ function normInput(params, profile) {
             id: selfId,
             address: '',
             assets: {},
+            inputData: {},
             setData: function() {
               that.setData.apply(that, arguments)
             },
@@ -230,7 +231,7 @@ function normInput(params, profile) {
               if (param && lib.isObject(param)) {
                 this.setData({ [tmp.address]: param })
               } else {
-                that.setData({[tmp.address]: tmp.assets })
+                that.setData({[tmp.address]: tmp.inputData })
               }
             }
           }
@@ -239,6 +240,7 @@ function normInput(params, profile) {
             if (id == target) {
               const res = that.getAddressInfo(params.uAddress)
               tmp.assets = that.getAddressInfo(params.uAddress).inputData
+              tmp.inputData = tmp.assets
               tmp.address = res.address
               cb.call(tmp, {value: point.value})
             }
