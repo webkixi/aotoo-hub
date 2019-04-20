@@ -3,7 +3,20 @@ export function isString(title) {
 }
 
 export function objTypeof(obj) {
-  if (obj) return obj.nv_constructor ? obj.nv_constructor.toLowerCase() : obj.constructor.toLowerCase()
+  // if (obj) return obj.nv_constructor ? obj.nv_constructor.toLowerCase() : (obj.constructor.toLowerCase && obj.constructor.toLowerCase())
+  if (obj) {
+    if (obj.nv_constructor) {
+      return obj.nv_constructor.toLowerCase()
+    } else {
+      if (obj.constructor.toLowerCase) {
+        return obj.constructor.toLowerCase()
+      }
+    }
+    if (type && type == 'array') {
+      return Array.isArray(obj)
+    }
+    return typeof obj
+  }
 }
 
 export function isObject(obj) {
