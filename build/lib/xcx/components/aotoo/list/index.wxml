@@ -44,7 +44,7 @@
     current-item-id	="{{ list.type['current-item-id'] }}" 
     interval	="{{ list.type['interval'] }}" 
     duration	="{{ list.type['duration'] }}" 
-    circular	="{{ list.type['circular'] }}" 
+    circular	="{{ list.type['circular'] || false}}" 
     vertical	="{{ list.type['vertical'] }}" 
     previous-margin	="{{ list.type['previous-margin'] }}" 
     next-margin	="{{ list.type['next-margin'] }}" 

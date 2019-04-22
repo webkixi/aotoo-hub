@@ -11,14 +11,21 @@ const {
 
 function updateSelf(params) {
   if (params) {
-    const list = params
-    const listProps = (() => {
+    let list = params
+    let listProps = (() => {
       let props = {}
       Object.keys(list).forEach(key => {
         if (key != 'data') props[key] = list[key]
       })
       return props
     })()
+
+    if (list.itemMethod && lib.isObject(list.itemMethod)) {
+      Object.keys(list.itemMethod).forEach(fn=>{
+        this[fn] = list.itemMethod[fn]
+      })
+      delete list.itemMethod
+    }
 
     let mylist = list
     const fromTree = this.data.fromTree

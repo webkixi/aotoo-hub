@@ -1,7 +1,6 @@
 <wxs src="../../util.wxs" module="util" />
 
-<include wx:if="{{item.animation}}" src="./touch_animate.wxml" />
-<block wx:elif="{{util.dataset(item, 'data-treeid')}}">
+<block wx:if="{{util.dataset(item, 'data-treeid')}}">
 
 
     <!--  -->
@@ -21,6 +20,7 @@
               data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}"
+              animation="{{item.animation}}"
               wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
               class="{{item.class||item.itemClass||'class-name'}}"  
               data-evt="{{util.dataEvt(item, ['tap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
@@ -33,6 +33,7 @@
                 data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
                 data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
                 id="{{item.id || id}}" 
+                animation="{{item.animation}}"
                 class="{{item.class||item.itemClass||'class-name'}}"  
                 data-evt="{{util.dataEvt(item, ['tap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
                 bind:tap="itemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
@@ -50,6 +51,7 @@
               data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
+              animation="{{item.animation}}"
               class="{{item.class||item.itemClass||'class-name'}}"  
               style="{{item.style||item.itemStyle}}" 
               data-evt="{{util.dataEvt(item, ['catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
@@ -62,6 +64,7 @@
                 data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
                 data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
                 id="{{item.id || id}}" 
+                animation="{{item.animation}}"
                 class="{{item.class||item.itemClass||'class-name'}}"  
                 data-evt="{{util.dataEvt(item, ['catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
                 catch:tap="catchItemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
@@ -79,6 +82,7 @@
               data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
+              animation="{{item.animation}}"
               class="{{item.class||item.itemClass||'class-name'}}"  
               style="{{item.style||item.itemStyle}}"
               data-evt="{{util.dataEvt(item, ['touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
@@ -91,6 +95,7 @@
                 data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
                 data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
                 id="{{item.id || id}}" 
+                animation="{{item.animation}}"
                 class="{{item.class||item.itemClass||'class-name'}}"  
                 data-evt="{{util.dataEvt(item, ['touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
                 bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
@@ -111,6 +116,7 @@
           data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
           data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
           id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
+          animation="{{item.animation}}"
           class="{{item.class||item.itemClass||'class-name'}}"  
           style="{{item.style||item.itemStyle}}" 
           data-evt="{{util.dataEvt(item, ['touchend', 'touchcancel'])}}"
@@ -123,6 +129,7 @@
             data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
+            animation="{{item.animation}}"
             class="{{item.class||item.itemClass||'class-name'}}"  
             data-evt="{{util.dataEvt(item, ['touchend', 'touchcancel'])}}"
             bind:touchend="itemMethod" bind:touchcancel="itemMethod"
@@ -155,6 +162,7 @@
             <view 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}"
+              animation="{{item.animation}}"
               wx:if="{{item.style||item.itemStyle}}" 
               class="{{item.class||item.itemClass||'class-name'}}"  
               style="{{item.style||item.itemStyle}}" 
@@ -167,6 +175,7 @@
               <view 
                 data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
                 id="{{item.id || id}}" 
+                animation="{{item.animation}}"
                 class="{{item.class||item.itemClass||'class-name'}}"  
                 data-evt="{{util.dataEvt(item, ['tap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
                 bind:tap="itemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
@@ -183,6 +192,7 @@
             <view 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
+              animation="{{item.animation}}"
               class="{{item.class||item.itemClass||'class-name'}}"  
               style="{{item.style||item.itemStyle}}" 
               data-evt="{{util.dataEvt(item, ['catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
@@ -194,6 +204,7 @@
               <view 
                 data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
                 id="{{item.id || id}}" 
+                animation="{{item.animation}}"
                 class="{{item.class||item.itemClass||'class-name'}}"  
                 data-evt="{{util.dataEvt(item, ['catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
                 catch:tap="catchItemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
@@ -210,6 +221,7 @@
             <view 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
+              animation="{{item.animation}}"
               class="{{item.class||item.itemClass||'class-name'}}"  
               style="{{item.style||item.itemStyle}}"
               data-evt="{{util.dataEvt(item, ['touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
@@ -221,6 +233,7 @@
               <view 
                 data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
                 id="{{item.id || id}}" 
+                animation="{{item.animation}}"
                 class="{{item.class||item.itemClass||'class-name'}}"  
                 data-evt="{{util.dataEvt(item, ['touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
                 bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
@@ -240,6 +253,7 @@
         <view 
           data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
           id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
+          animation="{{item.animation}}"
           class="{{item.class||item.itemClass||'class-name'}}"  
           style="{{item.style||item.itemStyle}}" 
           data-evt="{{util.dataEvt(item, ['touchend', 'touchcancel'])}}"
@@ -251,6 +265,7 @@
           <view 
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
+            animation="{{item.animation}}"
             class="{{item.class||item.itemClass||'class-name'}}"  
             data-evt="{{util.dataEvt(item, ['touchend', 'touchcancel'])}}"
             bind:touchend="itemMethod" bind:touchcancel="itemMethod"

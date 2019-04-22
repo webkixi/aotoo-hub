@@ -190,42 +190,42 @@ export const commonMethodBehavior = (app, mytype) => {
   return Behavior({
     behaviors: [],
     methods: {
-      aim: function (e) {
-        if (this.treeInst) {
-          this.treeInst.aim.call(this.treeInst, e)
-          return false
-        }
-        const that = this
-        const activePage = this.activePage
-        const target = e.currentTarget
-        const currentDset = target.dataset
-        const parentInstance = this._getAppVars()
-        let query
-        let theAim = currentDset.aim
+      // aim: function (e) {
+      //   if (this.treeInst) {
+      //     this.treeInst.aim.call(this.treeInst, e)
+      //     return false
+      //   }
+      //   const that = this
+      //   const activePage = this.activePage
+      //   const target = e.currentTarget
+      //   const currentDset = target.dataset
+      //   const parentInstance = this._getAppVars()
+      //   let query
+      //   let theAim = currentDset.aim
 
-        if (theAim) {
-          const aimObj = lib.formatQuery(theAim)
-          theAim = aimObj.url
-          query = aimObj.query
-          e.currentTarget.dataset.aim = theAim
-          e.currentTarget.dataset._query = query
-        }
+      //   if (theAim) {
+      //     const aimObj = lib.formatQuery(theAim)
+      //     theAim = aimObj.url
+      //     query = aimObj.query
+      //     e.currentTarget.dataset.aim = theAim
+      //     e.currentTarget.dataset._query = query
+      //   }
 
-        const evtFun = activePage['aim']
-        const isEvt = lib.isFunction(evtFun)
-        let vals = this.hooks.emit('beforeAim', {ctx: this, event: e, aim: theAim, param: query})
-        if (parentInstance && lib.isFunction(parentInstance['aim'])) {
-          parentInstance['aim'].call(parentInstance, e)
-        } else {
-          if (vals) {
-            vals.forEach(function(val) {
-              if (val !== 0 && isEvt) evtFun.call(activePage, e, query, that) // 返回值为0则不透传
-            })
-          } else {
-            if (isEvt) evtFun.call(activePage, e, query, that)
-          }
-        }
-      },
+      //   const evtFun = activePage['aim']
+      //   const isEvt = lib.isFunction(evtFun)
+      //   let vals = this.hooks.emit('beforeAim', {ctx: this, event: e, aim: theAim, param: query})
+      //   if (parentInstance && lib.isFunction(parentInstance['aim'])) {
+      //     parentInstance['aim'].call(parentInstance, e)
+      //   } else {
+      //     if (vals) {
+      //       vals.forEach(function(val) {
+      //         if (val !== 0 && isEvt) evtFun.call(activePage, e, query, that) // 返回值为0则不透传
+      //       })
+      //     } else {
+      //       if (isEvt) evtFun.call(activePage, e, query, that)
+      //     }
+      //   }
+      // },
 
       _rightEvent: function (e) {
         const is = this.$$is

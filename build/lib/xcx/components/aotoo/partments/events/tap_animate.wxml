@@ -1,7 +1,6 @@
 <wxs src="../../util.wxs" module="util" />
 
-<include wx:if="{{item.animation}}" src="./tap_animate.wxml" />
-<block wx:elif="{{util.dataset(item, 'data-treeid')}}">
+<block wx:if="{{util.dataset(item, 'data-treeid')}}">
   <!--  -->
   <!--  -->
   <!-- item.tap -->
@@ -10,6 +9,7 @@
       data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
       data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
       id="{{item.id || id}}" 
+      animation="{{item.animation}}"
       wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" 
       class="{{item.class||item.itemClass||'class-name'}}"  
       bind:tap="itemMethod" 
@@ -22,6 +22,7 @@
         data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
         id="{{item.id || id}}" 
+        animation="{{item.animation}}"
         class="{{item.class||item.itemClass||'class-name'}}"  
         bind:tap="itemMethod" 
         data-evt="{{util.dataEvt(item, ['tap'])}}"
@@ -39,6 +40,7 @@
       data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
       data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
       id="{{item.id || id}}" 
+      animation="{{item.animation}}"
       wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" 
       class="{{item.class||item.itemClass||'class-name'}}"  
       catch:tap="catchItemMethod" 
@@ -51,6 +53,7 @@
         data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}" 
         id="{{item.id || id}}" 
+        animation="{{item.animation}}"
         class="{{item.class||item.itemClass||'class-name'}}"  
         catch:tap="catchItemMethod" 
         data-evt="{{util.dataEvt(item, ['catchtap'])}}"
@@ -74,6 +77,7 @@
     <view 
       data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
       id="{{item.id || id}}" 
+      animation="{{item.animation}}"
       wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" 
       class="{{item.class||item.itemClass||'class-name'}}"  
       bind:tap="itemMethod" 
@@ -85,6 +89,7 @@
       <view 
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
         id="{{item.id || id}}" 
+        animation="{{item.animation}}"
         class="{{item.class||item.itemClass||'class-name'}}"  
         bind:tap="itemMethod" 
         data-evt="{{util.dataEvt(item, ['tap'])}}"
@@ -101,6 +106,7 @@
     <view 
       data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
       id="{{item.id || id}}" 
+      animation="{{item.animation}}"
       wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" 
       class="{{item.class||item.itemClass||'class-name'}}"  
       catch:tap="catchItemMethod" 
@@ -112,6 +118,7 @@
       <view 
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
         id="{{item.id || id}}" 
+        animation="{{item.animation}}"
         class="{{item.class||item.itemClass||'class-name'}}"  
         catch:tap="catchItemMethod" 
         data-evt="{{util.dataEvt(item, ['catchtap'])}}"

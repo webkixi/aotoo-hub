@@ -59,7 +59,7 @@ export function reSetItemAttr(item, list){
     }
   }
 
-  const newItem = item['$$id'] ? item : resetItem(item)
+  const newItem = item['$$id'] ? item : resetItem(item, this)
   return newItem
 }
 

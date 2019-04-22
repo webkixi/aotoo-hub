@@ -2,7 +2,7 @@ export function isString(title) {
   return typeof title == 'string'
 }
 
-export function objTypeof(obj) {
+export function objTypeof(obj, type) {
   // if (obj) return obj.nv_constructor ? obj.nv_constructor.toLowerCase() : (obj.constructor.toLowerCase && obj.constructor.toLowerCase())
   if (obj) {
     if (obj.nv_constructor) {
@@ -12,10 +12,11 @@ export function objTypeof(obj) {
         return obj.constructor.toLowerCase()
       }
     }
+    const typeofobj = typeof obj
     if (type && type == 'array') {
-      return Array.isArray(obj)
+      return Array.isArray(obj) ? 'array' : typeofobj
     }
-    return typeof obj
+    return typeofobj
   }
 }
 
@@ -24,7 +25,7 @@ export function isObject(obj) {
 }
 
 export function isArray(obj) {
-  return objTypeof(obj) == 'array'
+  return objTypeof(obj, 'array') == 'array'
 }
 
 export function isNumber(obj) {

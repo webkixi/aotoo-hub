@@ -15,7 +15,7 @@ export const itemBehavior = function(app, mytype) {
           if (!this.init) {
             if (params) {
               if (params.$$id) {
-                this.setData({$item: lib.resetItem(params)})
+                this.setData({$item: lib.resetItem(params, this)})
               } else {
                 this.update(params)
               }
@@ -67,7 +67,7 @@ export const itemBehavior = function(app, mytype) {
           param = target
 
           this.setData(param)
-          const _item = lib.resetItem(this.data.$item)
+          const _item = lib.resetItem(this.data.$item, this)
           const cb = lib.isFunction(callback) ? callback : null
           this.setData({
             item: _item,
@@ -94,7 +94,7 @@ export const itemComponentBehavior = function(app, mytype) {
         if (this.init) {
           if (data && lib.isObject(data)) {
             let myitem = data.$item || data.item || data.dataSource || {}
-            data.$item = lib.resetItem(myitem)
+            data.$item = lib.resetItem(myitem, this)
           }
         }
         const originalSetData = this._originalSetData // 原始 setData

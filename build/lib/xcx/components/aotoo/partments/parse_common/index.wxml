@@ -139,40 +139,34 @@
 <template name="for-title-obj-string">
   <text wx:if="{{item.itemDataRoot}}" class="htitle">{{item.title}}</text>
   <block wx:else>
-    <text wx:if="{{item.itemStyle || item.style}}" style="{{item.itemStyle||item.style}}" class="htitle {{item.itemClass||item.class}}">{{item.title}}</text>
+    <template is="make-title" data="{{item}}" />
+    <!-- <text wx:if="{{item.itemStyle || item.style}}" style="{{item.itemStyle||item.style}}" class="htitle {{item.itemClass||item.class}}">{{item.title}}</text>
     <block wx:else>
       <text class="htitle {{item.itemClass||item.class}}">{{item.title}}</text>
-    </block>
+    </block> -->
   </block>
-  <!-- <block wx:if="{{util.isString(item.title)}}">
-    <block wx:if="{{util.isString(item.aim)}}">
-      <template is="a" data="{{item: {title: item.title, aim: item.aim} }}" />
-    </block>
-    <block wx:else>
-      <text class="htitle">{{item.title}}</text>
-    </block>
-  </block> -->
 </template>
 
 
 
 <template name="make-title">
-  <block wx:if="{{util.isString(item.title)}}">
+  <template is="@item" data="{{props: item}}" />
+  <!-- <block wx:if="{{util.isString(item.title)}}">
     <block wx:if="{{util.isString(item.aim)}}">
       <template is="a" data="{{item}}" />
     </block>
     <block wx:else>
-      <text 
+      <view 
         class="htitle {{item.itemClass||item.class}}"
         wx:if="{{item.itemStyle||item.style}}" style="{{item.itemStyle||item.style}}"
       >
         {{item.title}}
-      </text>
+      </view>
       <block wx:else>
-        <text class="htitle {{item.itemClass||item.class}}">{{item.title}}</text>
+        <view class="htitle {{item.itemClass||item.class}}">{{item.title}}</view>
       </block>
     </block>
-  </block>
+  </block> -->
 </template>
 
 <template name="for-title-obj-object">
@@ -184,11 +178,10 @@
       <block wx:for="{{item['__sort']}}" wx:key="" wx:for-item="tempname">
         <block wx:if="{{tmp.execTemp(tempname, exclude)}}">
           <block wx:if="{{tempname=='title'}}">
-            <template is="make-title" data="{{item}}"/>
+            <template is="make-title" data="{{item: {title: item.title,  itemClass: item.itemClass||item.class, style: item.itemStyle||item.style, aim: item.aim, tap: item.tap, captchtap: item.catchtap, longpress: item.longpress, catchlongpress: item.catchlongpress, touchstart: item.touchstart, touchmove: item.touchmove, touchcancel: item.touchcancel, touchend: item.touchend} }}"/>
           </block>
           <block wx:else>
             <template is="extraTemp" data="{{tempname, item}}" />
-            <!-- <template is="{{'@'+tempname}}" data="{{item}}" /> -->
           </block>
         </block>
       </block>
