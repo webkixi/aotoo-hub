@@ -1,15 +1,18 @@
 <wxs src="../../util.wxs" module="util" />
 <import src="../parse_common/index.wxml" />
+<import src="../../templates/inner_templates.wxml" />
 
 <view class="hkv {{item.kvClass||''}}">
   <block wx:if="{{item.v}}">
     <text wx:if="{{util.isString(item.k)}}">{{item.k}}</text>
     <block wx:elif="{{util.isObject(item.k)}}">
-      <template is="@ti" data="{{item: item.k, exclude: ['k', 'v'] }}" />
+      <template is="@item" data="{{ props: item.k}}" />
+      <!-- <template is="@ti" data="{{item: item.k, exclude: ['k', 'v'] }}" /> -->
     </block>
     <text wx:if="{{util.isString(item.v)}}">{{item.v}}</text>
     <block wx:elif="{{util.isObject(item.v)}}">
-      <template is="@ti" data="{{item: item.v, exclude: ['k', 'v'] }}" />
+      <template is="@item" data="{{ props: item.v}}" />
+      <!-- <template is="@ti" data="{{item: item.v, exclude: ['k', 'v'] }}" /> -->
     </block>
   </block>
 
@@ -21,7 +24,8 @@
       </block>
     </block>
     <block wx:elif="{{util.isObject(item.k)}}">
-      <template is="@ti" data="{{item: item.k, exclude: ['k', 'v'] }}" />
+      <template is="@item" data="{{ props: item.k}}" />
+      <!-- <template is="@ti" data="{{item: item.k, exclude: ['k', 'v'] }}" /> -->
     </block>
   </block>
 </view>

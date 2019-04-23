@@ -1,5 +1,6 @@
 <wxs src="../../util.wxs" module="util" />
 <import src="../parse_common/index.wxml" />
+<import src="../../templates/inner_templates.wxml" />
 
 <template name="hb-content">
   <block wx:if="{{util.isString(item)}}">
@@ -21,6 +22,16 @@
 
 <view class="hbody {{item.bodyClass||''}}">
   <block wx:for="{{item.body}}" wx:key="">
+    <block wx:if="{{util.isString(item)}}">
+      <view class="hb-item">
+        <text>{{item}}</text>
+      </view>
+    </block>
+    <block wx:else>
+      <template is="@item" data="{{ props: {...item, itemClass: item.itemClass ?  'hb-item ' + item.itemClass : 'hb-item'} }}" />
+    </block>
+  </block>
+  <!-- <block wx:for="{{item.body}}" wx:key="">
     <view id="{{item.id}}" class="hb-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
       <template is="hb-content" data="{{item}}" />
     </view>
@@ -29,5 +40,5 @@
         <template is="hb-content" data="{{item}}" />
       </view>
     </block>
-  </block>
+  </block> -->
 </view>

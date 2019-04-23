@@ -47,13 +47,9 @@
   <include src="./kv.wxml" />
 </template>
 
-<template name="@k">
+<!-- <template name="@v">
   <include src="./kv.wxml" />
-</template>
-
-<template name="@v">
-  <include src="./kv.wxml" />
-</template>
+</template> -->
 
 <template name="@body">
   <include src="./body.wxml" />

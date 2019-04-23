@@ -1,5 +1,6 @@
 <wxs src="../../util.wxs" module="util" />
 <import src="../parse_common/index.wxml" />
+<import src="../../templates/inner_templates.wxml" />
 
 <template name="for-li">
   <template is="@itk" data="{{item}}" />
@@ -34,6 +35,16 @@
 <!-- 这个key要小心 -->
 <view class="ul {{item.liClass||''}}">
   <block wx:for="{{item.li}}" wx:key="">
+    <block wx:if="{{util.isString(item)}}">
+      <view class="li-item">
+        <text class="hli-item">{{item}}</text>
+      </view>
+    </block>
+    <block wx:else>
+      <template is="@item" data="{{ props: {...item, itemClass: item.itemClass ?  'li-item ' + item.itemClass : 'li-item'} }}" />
+    </block>
+  </block>
+  <!-- <block wx:for="{{item.li}}" wx:key="">
     <block wx:if="{{item.attr}}">
       <view id="{{item.id}}" class="{{item.itemClass||item.class}} li-item" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}" data-treeid="{{item.attr['data-treeid']}}">
         <template is="li0-content" data="{{item}}" />
@@ -56,7 +67,7 @@
       </block>
     </block>
 
-  </block>
+  </block> -->
 </view>
 
 

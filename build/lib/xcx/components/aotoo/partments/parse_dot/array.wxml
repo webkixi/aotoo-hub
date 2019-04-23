@@ -1,5 +1,6 @@
 <wxs src="../../util.wxs" module="util" />
 <import src="../parse_common/index.wxml" />
+<import src="../../templates/inner_templates.wxml" />
 
 <template name="hdot-content">
   <block wx:if="{{util.isString(item)}}">
@@ -13,6 +14,16 @@
 
 <!-- 这个key要小心 -->
 <block wx:for="{{item.dot}}" wx:key="">
+  <block wx:if="{{util.isString(item)}}">
+    <view class="hdot-item">
+      <text>{{item}}</text>
+    </view>
+  </block>
+  <block wx:else>
+    <template is="@item" data="{{ props: {...item, itemClass: item.itemClass ?  'hdot-item ' + item.itemClass : 'hdot-item'} }}" />
+  </block>
+</block>
+<!-- <block wx:for="{{item.dot}}" wx:key="">
   <view id="{{item.id}}" class="hdot-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
     <template is="hdot-content" data="{{item}}" />
   </view>
@@ -21,4 +32,4 @@
       <template is="hdot-content" data="{{item}}" />
     </view>
   </block>
-</block>
+</block> -->

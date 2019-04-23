@@ -1,5 +1,6 @@
 <wxs src="../../util.wxs" module="util" />
 <import src="../parse_common/index.wxml" />
+<import src="../../templates/inner_templates.wxml" />
 
 
 <template name="titles-content">
@@ -22,7 +23,17 @@
 
 <!-- 这个key要小心 -->
 <view class="htitles {{item.titleClass||''}}">
-  <block wx:for="{{item.title}}" wx:key="" wx:for-item="tItem">
+  <block wx:for="{{item.title}}" wx:key="">
+    <block wx:if="{{util.isString(item)}}">
+      <view class="t-item">
+        <text class="htitle">{{item}}</text>
+      </view>
+    </block>
+    <block wx:else>
+      <template is="@item" data="{{ props: {...item, itemClass: item.itemClass ?  't-item ' + item.itemClass : 't-item'} }}" />
+    </block>
+  </block>
+  <!-- <block wx:for="{{item.title}}" wx:key="" wx:for-item="tItem">
     <view class="{{tItem.itemClass||tItem.class}} t-item" wx:if="{{tItem.aim}}" catch:tap="aim" data-aim="{{tItem.aim}}">
       <template is="titles-content" data="{{item: tItem}}" />
     </view>
@@ -31,5 +42,5 @@
         <template is="titles-content" data="{{item: tItem}}" />
       </view>
     </block>
-  </block>
+  </block> -->
 </view>

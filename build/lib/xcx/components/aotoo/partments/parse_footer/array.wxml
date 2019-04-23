@@ -1,5 +1,6 @@
 <wxs src="../../util.wxs" module="util" />
 <import src="../parse_common/index.wxml" />
+<import src="../../templates/inner_templates.wxml" />
 
 <template name="hf-content">
   <block wx:if="{{util.isString(item)}}">
@@ -14,6 +15,16 @@
 <!-- 这个key要小心 -->
 <view class="hfooter {{item.footerClass||''}}">
   <block wx:for="{{item.footer}}" wx:key="">
+    <block wx:if="{{util.isString(item)}}">
+      <view class="hf-item">
+        <text>{{item}}</text>
+      </view>
+    </block>
+    <block wx:else>
+      <template is="@item" data="{{ props: {...item, itemClass: item.itemClass ?  'hf-item ' + item.itemClass : 'hf-item'} }}" />
+    </block>
+  </block>
+  <!-- <block wx:for="{{item.footer}}" wx:key="">
     <view id="{{item.id}}" class="hf-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
       <template is="hf-content" data="{{item}}" />
     </view>
@@ -22,5 +33,5 @@
         <template is="hf-content" data="{{item}}" />
       </view>
     </block>
-  </block>
+  </block> -->
 </view>
