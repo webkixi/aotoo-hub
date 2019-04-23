@@ -11,7 +11,7 @@
       id="{{item.id || id}}" 
       animation="{{item.animation}}"
       wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" 
-      class="{{item.class||item.itemClass||'class-name'}}"  
+      class="{{item.class||item.itemClass}}"  
       bind:tap="itemMethod" 
       data-evt="{{util.dataEvt(item, ['tap'])}}"
     >
@@ -23,7 +23,7 @@
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
         id="{{item.id || id}}" 
         animation="{{item.animation}}"
-        class="{{item.class||item.itemClass||'class-name'}}"  
+        class="{{item.class||item.itemClass}}"  
         bind:tap="itemMethod" 
         data-evt="{{util.dataEvt(item, ['tap'])}}"
       >
@@ -42,7 +42,7 @@
       id="{{item.id || id}}" 
       animation="{{item.animation}}"
       wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" 
-      class="{{item.class||item.itemClass||'class-name'}}"  
+      class="{{item.class||item.itemClass}}"  
       catch:tap="catchItemMethod" 
       data-evt="{{util.dataEvt(item, ['catchtap'])}}"
     >
@@ -54,7 +54,7 @@
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}" 
         id="{{item.id || id}}" 
         animation="{{item.animation}}"
-        class="{{item.class||item.itemClass||'class-name'}}"  
+        class="{{item.class||item.itemClass}}"  
         catch:tap="catchItemMethod" 
         data-evt="{{util.dataEvt(item, ['catchtap'])}}"
       >
@@ -79,7 +79,7 @@
       id="{{item.id || id}}" 
       animation="{{item.animation}}"
       wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" 
-      class="{{item.class||item.itemClass||'class-name'}}"  
+      class="{{item.class||item.itemClass}}"  
       bind:tap="itemMethod" 
       data-evt="{{util.dataEvt(item, ['tap'])}}"
     >
@@ -90,7 +90,7 @@
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
         id="{{item.id || id}}" 
         animation="{{item.animation}}"
-        class="{{item.class||item.itemClass||'class-name'}}"  
+        class="{{item.class||item.itemClass}}"  
         bind:tap="itemMethod" 
         data-evt="{{util.dataEvt(item, ['tap'])}}"
       >
@@ -108,7 +108,7 @@
       id="{{item.id || id}}" 
       animation="{{item.animation}}"
       wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" 
-      class="{{item.class||item.itemClass||'class-name'}}"  
+      class="{{item.class||item.itemClass}}"  
       catch:tap="catchItemMethod" 
       data-evt="{{util.dataEvt(item, ['catchtap'])}}"
     >
@@ -119,7 +119,7 @@
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
         id="{{item.id || id}}" 
         animation="{{item.animation}}"
-        class="{{item.class||item.itemClass||'class-name'}}"  
+        class="{{item.class||item.itemClass}}"  
         catch:tap="catchItemMethod" 
         data-evt="{{util.dataEvt(item, ['catchtap'])}}"
       >

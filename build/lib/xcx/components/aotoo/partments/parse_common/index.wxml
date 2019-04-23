@@ -150,23 +150,17 @@
 
 
 <template name="make-title">
-  <template is="@item" data="{{props: item}}" />
-  <!-- <block wx:if="{{util.isString(item.title)}}">
-    <block wx:if="{{util.isString(item.aim)}}">
-      <template is="a" data="{{item}}" />
-    </block>
+  <block wx:if="{{util.hasEvent(item, 'aim')||util.hasEvent(item, 'tap') || util.hasEvent(item, 'longtap') || util.hasEvent(item, 'touchstart') || util.hasEvent(item, 'touchend')}}">
+    <template is="@item" data="{{props: item}}" />
+  </block>
+  <block wx:else>
+    <view class="htitle {{item.itemClass||item.class}}" wx:if="{{item.itemStyle||item.style}}" style="{{item.itemStyle||item.style}}">
+      {{item.title}}
+    </view>
     <block wx:else>
-      <view 
-        class="htitle {{item.itemClass||item.class}}"
-        wx:if="{{item.itemStyle||item.style}}" style="{{item.itemStyle||item.style}}"
-      >
-        {{item.title}}
-      </view>
-      <block wx:else>
-        <view class="htitle {{item.itemClass||item.class}}">{{item.title}}</view>
-      </block>
+      <view class="htitle {{item.itemClass||item.class}}">{{item.title}}</view>
     </block>
-  </block> -->
+  </block>
 </template>
 
 <template name="for-title-obj-object">

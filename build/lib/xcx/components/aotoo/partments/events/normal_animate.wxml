@@ -11,7 +11,7 @@
       id="{{item.id || id}}" 
       animation="{{item.animation}}"
       wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-      class="{{item.class||item.itemClass||'class-name'}}"  
+      class="{{item.class||item.itemClass}}"  
     >
       <include src="../slot.wxml" />
     </view>
@@ -21,7 +21,7 @@
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
         id="{{item.id || id}}" 
         animation="{{item.animation}}"
-        class="{{item.class||item.itemClass||'class-name'}}"  
+        class="{{item.class||item.itemClass}}"  
       >
         <include src="../slot.wxml" />
       </view>
@@ -38,7 +38,7 @@
       data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
       id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
       animation="{{item.animation}}"
-      class="{{item.class||item.itemClass||'class-name'}}"  
+      class="{{item.class||item.itemClass}}"  
       style="{{item.style||item.itemStyle}}"
     >
       <include src="../slot.wxml" />
@@ -48,7 +48,7 @@
         data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
         id="{{item.id || id}}" 
         animation="{{item.animation}}"
-        class="{{item.class||item.itemClass||'class-name'}}"  
+        class="{{item.class||item.itemClass}}"  
       >
         <include src="../slot.wxml" />
       </view>

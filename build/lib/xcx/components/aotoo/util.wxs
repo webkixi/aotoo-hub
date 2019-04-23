@@ -269,12 +269,20 @@ function clearLevel(){
 }
 
 function hasEvent(props, key) {
-  if (key == 'tap') {
-    return props && (props.tap || props.catchtap) ? true : false
-  }
+  if (props) {
+    if (key == 'tap') {
+      return (props.tap || props.catchtap) ? true : false
+    }
+    else if (key == 'longtap') {
+      return (props.longtap || props.catchlongtap) ? true : false
+    }
+    else if (key == 'longpress') {
+      return (props.longpress || props.catchlongpress) ? true : false
+    }
+    else {
+      return props[key] ? true : false
+    }
 
-  if (key == 'longtap') {
-    return props && (props.longtap || props.catchlongtap) ? true : false
   }
 }
 

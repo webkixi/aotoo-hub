@@ -19,7 +19,7 @@
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}" 
             id="{{item.id || id}}" 
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['tap', 'longtap', 'longpress'])}}"
             bind:tap="itemMethod" bind:longpress="itemMethod"
           >
@@ -30,7 +30,7 @@
               data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"
+              class="{{item.class||item.itemClass}}"
               data-evt="{{util.dataEvt(item, ['tap', 'longtap', 'longpress'])}}"
               bind:tap="itemMethod" bind:longpress="itemMethod"
             >
@@ -46,7 +46,7 @@
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['catchtap', 'longtap', 'longpress'])}}"
             catch:tap="catchItemMethod" bind:longpress="itemMethod"
           >
@@ -57,7 +57,7 @@
               data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"  
+              class="{{item.class||item.itemClass}}"  
               data-evt="{{util.dataEvt(item, ['catchtap', 'longtap', 'longpress'])}}"
               catch:tap="catchItemMethod" bind:longpress="itemMethod"
             >
@@ -73,7 +73,7 @@
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['longtap', 'longpress'])}}"
             bind:longpress="itemMethod"
           >
@@ -84,7 +84,7 @@
               data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"  
+              class="{{item.class||item.itemClass}}"  
               data-evt="{{util.dataEvt(item, ['longtap', 'longpress'])}}"
               bind:longpress="itemMethod"
             >
@@ -101,7 +101,7 @@
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['catchtap', 'catchlongtap', 'catchlongpress'])}}"
             catch:tap="catchItemMethod" catch:longpress="catchItemMethod"
           >
@@ -112,7 +112,7 @@
               data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"  
+              class="{{item.class||item.itemClass}}"  
               data-evt="{{util.dataEvt(item, ['catchtap', 'catchlongtap', 'catchlongpress'])}}"
               catch:tap="catchItemMethod" catch:longpress="catchItemMethod"
             >
@@ -127,7 +127,7 @@
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['catchlongtap', 'catchlongpress'])}}"
             catch:longpress="catchItemMethod"
           >
@@ -138,7 +138,7 @@
               data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"  
+              class="{{item.class||item.itemClass}}"  
               data-evt="{{util.dataEvt(item, ['catchlongtap', 'catchlongpress'])}}"
               catch:longpress="catchItemMethod"
             >
@@ -164,7 +164,7 @@
           <view 
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['tap', 'longtap', 'longpress'])}}"
             bind:tap="itemMethod" bind:longpress="itemMethod"
           >
@@ -174,7 +174,7 @@
             <view 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"  
+              class="{{item.class||item.itemClass}}"  
               data-evt="{{util.dataEvt(item, ['tap', 'longtap', 'longpress'])}}"
               bind:tap="itemMethod" bind:longpress="itemMethod"
             >
@@ -190,7 +190,7 @@
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['catchtap', 'longtap', 'longpress'])}}"
             catch:tap="catchItemMethod" bind:longpress="itemMethod"
           >
@@ -200,7 +200,7 @@
             <view 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"  
+              class="{{item.class||item.itemClass}}"  
               data-evt="{{util.dataEvt(item, ['catchtap', 'longtap', 'longpress'])}}"
               catch:tap="catchItemMethod" bind:longpress="itemMethod"
             >
@@ -216,7 +216,7 @@
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['longtap', 'longpress'])}}"
             bind:longpress="itemMethod"
           >
@@ -226,7 +226,7 @@
             <view 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"  
+              class="{{item.class||item.itemClass}}"  
               data-evt="{{util.dataEvt(item, ['longtap', 'longpress'])}}"
               bind:longpress="itemMethod"
             >
@@ -244,7 +244,7 @@
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" 
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['catchtap', 'catchlongtap', 'catchlongpress'])}}"
             catch:tap="catchItemMethod" catch:longpress="catchItemMethod"
           >
@@ -254,7 +254,7 @@
             <view
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"  
+              class="{{item.class||item.itemClass}}"  
               data-evt="{{util.dataEvt(item, ['catchtap', 'catchlongtap', 'catchlongpress'])}}"
               catch:tap="catchItemMethod" catch:longpress="catchItemMethod"
             >
@@ -269,7 +269,7 @@
             data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
             id="{{item.id || id}}" 
             wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-            class="{{item.class||item.itemClass||'class-name'}}"  
+            class="{{item.class||item.itemClass}}"  
             data-evt="{{util.dataEvt(item, ['catchlongtap', 'catchlongpress'])}}"
             catch:longpress="catchItemMethod"
           >
@@ -279,7 +279,7 @@
             <view 
               data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
               id="{{item.id || id}}" 
-              class="{{item.class||item.itemClass||'class-name'}}"  
+              class="{{item.class||item.itemClass}}"  
               data-evt="{{util.dataEvt(item, ['catchlongtap', 'catchlongpress'])}}"
               catch:longpress="catchItemMethod"
             >

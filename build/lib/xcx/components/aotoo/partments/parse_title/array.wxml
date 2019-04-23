@@ -7,15 +7,16 @@
     <text class="htitle">{{item}}</text>
   </block>
   <block wx:else>
-    <block wx:if="{{util.isString(item.title)}}">
-      <template is="title-obj" data="{{ item: {title: item.title} }}"/>
+    <template is="title-obj" data="{{ item }}" />
+    <!-- <block wx:if="{{util.isString(item.title)}}">
+      <template is="title-obj" data="{{ item }}"/>
     </block>
     <block wx:elif="{{util.isObject(item.title)}}">
-      <template is="title-obj" data="{{ item: {title: item.title} }}"/>
+      <template is="title-obj" data="{{ item }}"/>
     </block>
     <block wx:else>
       <template is="title-obj" data="{{ item }}"/>
-    </block>
+    </block> -->
   </block>
 </template>
 
