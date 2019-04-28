@@ -1,4 +1,5 @@
 //app.js
+require('./envconfigs')()
 App({
   onLaunch: function () {
     // 展示本地存储能力

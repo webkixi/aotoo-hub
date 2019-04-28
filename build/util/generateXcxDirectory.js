@@ -1,14 +1,18 @@
 const fs = require('fs-extra')
 const path = require('path')
 const globby = require('globby')
+const generateServerConfigsFile = require('./generateServerConfigsFile')
 
-module.exports = function (asset) {
+
+module.exports = function* (asset) {
   const {TYPE, isDev, SRC, DIST, options, PORT, PROXYPORT } = asset
   const jsSrcPath = path.join(SRC, 'js')
+  const configSrcPath = path.join(jsSrcPath, 'envconfigs.js')
   const indexSrcPath = path.join(jsSrcPath, 'index.js')
   const utilSrcPath = path.join(jsSrcPath, 'utils/util.js')
 
   const xcxTemplateFiles = path.join(__dirname, '../lib/xcx')
+  yield generateServerConfigsFile('', 'nomapfile', configSrcPath, asset)
   
   // 该目录为初始化的小程序目录
   // 清空目录并拉取模板文件

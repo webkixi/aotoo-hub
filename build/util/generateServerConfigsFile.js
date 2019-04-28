@@ -15,11 +15,12 @@ function* generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, 
 
   if (fs.existsSync(path_config_file)) {
     fs.unlinkSync(path_config_file)
-    yield sleep(1000, '==========  等待创建server端的configs文件  ============')
+    yield sleep(1000, '==========  创建configs文件  ============')
   }
 
   return new Promise((res, rej)=>{
     if (fs.existsSync(path_mapfile)) {
+      var hasMapper = true
       var mapper = require(path_mapfile)
     }
 
@@ -32,18 +33,20 @@ function* generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, 
 
     const configsContent = 
 `
-const fs = require('fs')
 const path = require('path')
-const _ = require('lodash')
 const asset = ${JSON.stringify(asset)} 
 const scene = '${scenes}'
 module.exports = function (opts) {
   let targetConfig = require('${defaultScenePath}')(asset)
   if (scene && scene != 'default') {
     const sceneConfig = require('${scenePath}')(asset)
-    targetConfig = _.merge({}, targetConfig, sceneConfig)
+    targetConfig = Object.assign({}, targetConfig, sceneConfig)
   }
-  global.Configs = global.CONFIG = targetConfig
+  if (typeof wx == 'undefined') {
+    global.Configs = global.CONFIG = targetConfig
+  } else {
+    wx.CONFIG = targetConfig
+  }
   let oldRoot = asset.ROOT
   let oldSrc = asset.SRC
   let oldSSrc = path.join(oldSrc, 'server')
@@ -74,12 +77,19 @@ module.exports = function (opts) {
     nDist = path.join(nRoot, tmpdist)
     nContentPath = nDist
   })()
-  global.CONFIG.ROOT = nRoot
   asset.ROOT = nRoot
   asset.SRC = nSrc
   asset.DIST = nDist
   asset.options.scenes = targetConfig
   asset.options.scenes.isXcx = ${isXcx}
+  const mapper = ${hasMapper ? 'require("'+path_mapfile+'")' : '{}'}
+  asset.options.scenes.mapper = mapper
+  if (typeof wx == 'undefined') {
+    global.CONFIG.ROOT = nRoot
+    global.Configs.mapper = global.CONFIG.mapper = mapper
+  } else {
+    wx.CONFIG.ROOT = nRoot
+  }
   return asset
 }
 `

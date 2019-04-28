@@ -439,7 +439,7 @@ module.exports = function* main(assets, opts) {
     // 是否需要初始化小程序目录
     if (isMiniapp(build_asset)) {
       build_asset.isXcx = true
-      generateXcx(build_asset)
+      yield generateXcx(build_asset)
     }
 
     // 生成server目录
