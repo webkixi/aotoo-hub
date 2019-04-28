@@ -11,12 +11,12 @@ module.exports = function (asset) {
   const { name, startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT, options } = asset
   return {
     hooks: {
-      // 'global-config-plugin': Array[function] / Object 动态全局CONFIG配置插件，场景比如 appllo配置中心的需求
-      // app-use-set
-      // app-statics-set
-      // app-utile-set
-      // app-plugins-set
-      // pre-fetch-set
+      // aks-globalconfig-set: Array[function] / Object 动态全局CONFIG配置插件，场景比如 appllo配置中心的需求
+      // aks-use-set
+      // aks-statics-set
+      // aks-utile-set
+      // aks-plugins-set
+      // fetch-before-set
       // fetch-inject-origin-get
       // fetch-inject-origin-post
       // fetch-inject-pre-get

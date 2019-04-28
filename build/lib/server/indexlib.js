@@ -139,8 +139,8 @@ module.exports = function (appConfigs) {
   // 上传插件
   // 公众号插件
 
-  if (hooks['global-config-plugin']) {
-    let cfgPlugins = hooks['global-config-plugin']
+  if (hooks['aks-globalconfig-set']) {
+    let cfgPlugins = hooks['aks-globalconfig-set']
     if (_.isFunction(cfgPlugins)) cfgPlugins = [cfgPlugins]
     if (_.isArray(cfgPlugins)) {
       global.CONFIG = cfgPlugins.reduce((p, n) => {
@@ -160,8 +160,8 @@ module.exports = function (appConfigs) {
     }
   }
 
-  if (hooks['app-use-set']) {
-    let staticHooks = hooks['app-use-set']
+  if (hooks['aks-use-set']) {
+    let staticHooks = hooks['aks-use-set']
     if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
     if (_.isArray(staticHooks)) {
       staticHooks.forEach(fun => {
@@ -178,8 +178,8 @@ module.exports = function (appConfigs) {
   }
 
   // 静态资源的钩子
-  if (hooks['app-statics-set']) {
-    let staticHooks = hooks['app-statics-set']
+  if (hooks['aks-statics-set']) {
+    let staticHooks = hooks['aks-statics-set']
     if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
     if (_.isArray(staticHooks)) {
       staticHooks.forEach(fun => {
@@ -197,8 +197,8 @@ module.exports = function (appConfigs) {
     
 
 
-  if (hooks['app-utile-set']) {
-    let staticHooks = hooks['app-utile-set']
+  if (hooks['aks-utile-set']) {
+    let staticHooks = hooks['aks-utile-set']
     if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
     if (_.isArray(staticHooks)) {
       staticHooks.forEach(fun => {
@@ -214,8 +214,8 @@ module.exports = function (appConfigs) {
     }
   }
 
-  if (hooks['app-plugins-set']) {
-    let staticHooks = hooks['app-plugins-set']
+  if (hooks['aks-plugins-set']) {
+    let staticHooks = hooks['aks-plugins-set']
     if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
     if (_.isArray(staticHooks)) {
       staticHooks.forEach(fun => {
@@ -340,8 +340,8 @@ module.exports = function (appConfigs) {
         route = route.replace('api/', '')
 
         let body = (ctx.method == 'GET' ? ctx.query : ctx.request.body) || {}
-        if (hooks['pre-fetch-set']) {
-          let cfgPlugins = hooks['pre-fetch-set']
+        if (hooks['fetch-before-set']) {
+          let cfgPlugins = hooks['fetch-before-set']
           if (_.isFunction(cfgPlugins)) cfgPlugins = [cfgPlugins]
           if (_.isArray(cfgPlugins)) {
             body = cfgPlugins.reduce((p, n) => {
