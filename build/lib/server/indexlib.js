@@ -167,8 +167,8 @@ module.exports = function (appConfigs) {
       staticHooks.forEach(fun => {
         if (_.isFunction(fun)) {
           const context = {
-            use: function (opts) {
-              app.use(opts)
+            use: function () {
+              app.use.apply(app, arguments)
             }
           }
           fun(context)
@@ -185,8 +185,8 @@ module.exports = function (appConfigs) {
       staticHooks.forEach(fun => {
         if (_.isFunction(fun)) {
           const context = {
-            statics: function (opts) {
-              app.statics(opts)
+            statics: function () {
+              app.statics.apply(app, arguments)
             }
           }
           fun(context)
@@ -204,8 +204,8 @@ module.exports = function (appConfigs) {
       staticHooks.forEach(fun => {
         if (_.isFunction(fun)) {
           const context = {
-            utile: function (opts) {
-              app.utile(opts)
+            utile: function () {
+              app.utile.apply(app, arguments)
             }
           }
           fun(context)
@@ -221,8 +221,8 @@ module.exports = function (appConfigs) {
       staticHooks.forEach(fun => {
         if (_.isFunction(fun)) {
           const context = {
-            plugins: function (opts) {
-              app.plugins(opts)
+            plugins: function () {
+              app.utile.apply(app, arguments)
             }
           }
           fun(context)
