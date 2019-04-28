@@ -164,48 +164,82 @@ function *getScenesConfig(asset) {
   }
 
   if (!options.scenes) {
-    options.scenes = 'default'
     asset.options.scenes = 'default'
   }
 
   if (Commonds.scenes && typeof Commonds.scenes == 'string') {
     asset.options.scenes = Commonds.scenes
-    options.scenes = Commonds.scenes
   }
 
-  const scenesDir  = path.join(SRC, 'configs')
+  const scenesDir = path.join(SRC, 'configs')
   const defaultSenesConfigPath = path.join(scenesDir, 'default.js')
-  const defaultSenesConfigAt = path.join(scenesDir, 'default')
-  let defaultSenesConfigContent = {}
-
+  
   if (!fs.existsSync(defaultSenesConfigPath)) {
     generateScenesDir(scenesDir, 'default', asset)
-    defaultSenesConfigContent = require(defaultSenesConfigAt)(asset)
-  } else {
-    defaultSenesConfigContent = require(defaultSenesConfigAt)(asset)
   }
-
-  if (typeof options.scenes == 'string') {
-    const scenesFileName = options.scenes
-    asset.options.scenes = defaultSenesConfigContent
-    if (options.scenes != 'default') {
-      let scenesFile = path.join(SRC, 'configs/') + scenesFileName + '.js'
-      let scenesAt = scenesFile.replace('.js', '')
-      if (fs.existsSync(scenesFile)) {
-        const scenesConfig = require(scenesAt)(asset) || {}
-        asset.options.scenes = _.merge({}, defaultSenesConfigContent, scenesConfig)
-      } else {
-        generateScenesDir(scenesDir, scenesFileName, asset)
-      }
-    }
-    return asset
-  } else {
-    if (_.isPlainObject(options.scenes)) {
-      asset.options.scenes = _.merge({}, defaultSenesConfigContent, options.scenes)
-      return asset
+  
+  if (asset.options.scenes != 'default') {
+    const senesConfigPath = path.join(scenesDir, asset.options.scenes, '.js')
+    if (!fs.existsSync(senesConfigPath)) {
+      generateScenesDir(scenesDir, asset.options.scenes, asset)
     }
   }
+  return asset
 }
+
+// 获取各项目自己的环境配置
+// 如果没有则新建一个初始配置文件
+
+// function *getScenesConfig(asset) {
+//   let {SRC, options} = asset
+
+//   if (!options) {
+//     asset.options = options = {}
+//   }
+
+//   if (!options.scenes) {
+//     options.scenes = 'default'
+//     asset.options.scenes = 'default'
+//   }
+
+//   if (Commonds.scenes && typeof Commonds.scenes == 'string') {
+//     asset.options.scenes = Commonds.scenes
+//     options.scenes = Commonds.scenes
+//   }
+
+//   const scenesDir  = path.join(SRC, 'configs')
+//   const defaultSenesConfigPath = path.join(scenesDir, 'default.js')
+//   const defaultSenesConfigAt = path.join(scenesDir, 'default')
+//   let defaultSenesConfigContent = {}
+
+//   if (!fs.existsSync(defaultSenesConfigPath)) {
+//     generateScenesDir(scenesDir, 'default', asset)
+//     defaultSenesConfigContent = require(defaultSenesConfigAt)(asset)
+//   } else {
+//     defaultSenesConfigContent = require(defaultSenesConfigAt)(asset)
+//   }
+
+//   if (typeof options.scenes == 'string') {
+//     const scenesFileName = options.scenes
+//     asset.options.scenes = defaultSenesConfigContent
+//     if (options.scenes != 'default') {
+//       let scenesFile = path.join(SRC, 'configs/') + scenesFileName + '.js'
+//       let scenesAt = scenesFile.replace('.js', '')
+//       if (fs.existsSync(scenesFile)) {
+//         const scenesConfig = require(scenesAt)(asset) || {}
+//         asset.options.scenes = _.merge({}, defaultSenesConfigContent, scenesConfig)
+//       } else {
+//         generateScenesDir(scenesDir, scenesFileName, asset)
+//       }
+//     }
+//     return asset
+//   } else {
+//     if (_.isPlainObject(options.scenes)) {
+//       asset.options.scenes = _.merge({}, defaultSenesConfigContent, options.scenes)
+//       return asset
+//     }
+//   }
+// }
 
 
 // main启动某个有效的项目

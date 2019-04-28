@@ -4,12 +4,10 @@ const globby = require('globby')
 const mkdirp = require('mkdirp')
 const excludes = ['common', 'precommon', 'vendor', 'vendors']
 
-function accessStat(fobj, dobj) {
-  if (excludes.indexOf(fobj.name) == -1 && excludes.indexOf(dobj.name) == -1) {
-    if (dobj.name.indexOf('_') !==0 && fobj.name.indexOf('_') !== 0) {
-      return true
-    }
-  }
+function accessStat(fobj, dobj, file) {
+  const re = /[\/\\](common|precommon|vendor|vendors|_)\/?/g
+  if (re.test(file)) return false
+  else return true
 }
 
 module.exports = function* (asset) {
@@ -37,7 +35,7 @@ module.exports = function* (asset) {
       globby.sync([`${jsPath}/**/*`]).forEach(file => {
         const fileObj = path.parse(file)
         const dirObj = path.parse(fileObj.dir)
-        if (accessStat(fileObj, dirObj) ){
+        if (accessStat(fileObj, dirObj, file)) {
           const servFile = file.replace(jsPath, controlPath)
           fs.copySync(content_controlIndex, servFile)
         }

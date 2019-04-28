@@ -19,9 +19,9 @@ const fillupMapfile = require('../util/fillupMapfile3ds')
 
 function getPublicPath(options) {
   let publicPath = options.publicPath || '/'
-  if (options.scenes && options.scenes.publicPath) {
-    publicPath = options.scenes.publicPath
-  }
+  // if (options.scenes && options.scenes.publicPath) {
+  //   publicPath = options.scenes.publicPath
+  // }
   return publicPath
 }
 

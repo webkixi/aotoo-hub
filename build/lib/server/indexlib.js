@@ -10,11 +10,18 @@ const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const webpack = require('webpack')
+const _ = require('lodash')
 
 const log = console.log
 require('babel-core/register')
 require("babel-polyfill")
-require('app-module-path').addPath(path.join(__dirname, '../')) // 强插root路径到require中，
+const appModulePath = require('app-module-path')
+appModulePath.addPath(path.join(__dirname, '../')) // 强插root路径到require中，
+const aotooExtendsPath = path.join(__dirname, '../../../aotooExtends')
+if (fs.existsSync(aotooExtendsPath)) {
+  appModulePath.addPath(aotooExtendsPath) // 强插root路径到require中，
+}
+
 const aks = require('@aotoo/aotoo-koa-server')
 const defaultConfig = {
   DIST: '',
@@ -40,6 +47,7 @@ module.exports = function (appConfigs) {
   const SCENES = options.scenes
   const isXcx = (TYPE == 'mp' || TYPE == 'ali')
   CONFIG.DIST = DIST
+  const hooks = CONFIG.hooks || {}
   process.env.DIST = DIST
 
   const path_controls = path.join(__dirname, './pages') // 指定controls的目录
@@ -90,6 +98,8 @@ module.exports = function (appConfigs) {
     })
   })
 
+  app.apis(CONFIG.apis)
+
   app.utile('webpack', async function(fkp, opts={}) {
     const root = CONFIG.ROOT
     const wpbin = path.join(root, 'node_modules/.bin/webpack')
@@ -123,6 +133,135 @@ module.exports = function (appConfigs) {
     }
   })
 
+  // session未完成 钩子
+  // 插件库 钩子
+  // 上传钩子
+  // 上传插件
+  // 公众号插件
+
+  if (hooks['global-config-plugin']) {
+    let cfgPlugins = hooks['global-config-plugin']
+    if (_.isFunction(cfgPlugins)) cfgPlugins = [cfgPlugins]
+    if (_.isArray(cfgPlugins)) {
+      global.CONFIG = cfgPlugins.reduce((p, n) => {
+        if (_.isFunction(n)) {
+          return n(p, AssetConfigs) || p
+        } else if (_.isPlainObject(n)) {
+          return _.merge({}, p, n)
+        } else {
+          return p
+        }
+      }, CONFIG)
+
+      global.Configs = global.CONFIG
+      if (AssetConfigs.options) {
+        AssetConfigs.options.scenes = global.CONFIG
+      }
+    }
+  }
+
+  if (hooks['app-use-set']) {
+    let staticHooks = hooks['app-use-set']
+    if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
+    if (_.isArray(staticHooks)) {
+      staticHooks.forEach(fun => {
+        if (_.isFunction(fun)) {
+          const context = {
+            use: function (opts) {
+              app.use(opts)
+            }
+          }
+          fun(context)
+        }
+      })
+    }
+  }
+
+  // 静态资源的钩子
+  if (hooks['app-statics-set']) {
+    let staticHooks = hooks['app-statics-set']
+    if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
+    if (_.isArray(staticHooks)) {
+      staticHooks.forEach(fun => {
+        if (_.isFunction(fun)) {
+          const context = {
+            statics: function (opts) {
+              app.statics(opts)
+            }
+          }
+          fun(context)
+        }
+      })
+    }
+  }
+    
+
+
+  if (hooks['app-utile-set']) {
+    let staticHooks = hooks['app-utile-set']
+    if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
+    if (_.isArray(staticHooks)) {
+      staticHooks.forEach(fun => {
+        if (_.isFunction(fun)) {
+          const context = {
+            utile: function (opts) {
+              app.utile(opts)
+            }
+          }
+          fun(context)
+        }
+      })
+    }
+  }
+
+  if (hooks['app-plugins-set']) {
+    let staticHooks = hooks['app-plugins-set']
+    if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
+    if (_.isArray(staticHooks)) {
+      staticHooks.forEach(fun => {
+        if (_.isFunction(fun)) {
+          const context = {
+            plugins: function (opts) {
+              app.plugins(opts)
+            }
+          }
+          fun(context)
+        }
+      })
+    }
+  }
+
+  if (hooks['fetch-inject-origin-get']) {
+    let staticHooks = hooks['fetch-inject-origin-get']
+    if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
+    if (_.isArray(staticHooks) && Fetch.hooks) {
+      Fetch.hooks['origin-fetch-get'] = staticHooks
+    }
+  }
+
+  if (hooks['fetch-inject-origin-post']) {
+    let staticHooks = hooks['fetch-inject-origin-post']
+    if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
+    if (_.isArray(staticHooks) && Fetch.hooks) {
+      Fetch.hooks['origin-fetch-post'] = staticHooks
+    }
+  }
+
+  if (hooks['fetch-inject-pre-get']) {
+    let staticHooks = hooks['fetch-inject-pre-get']
+    if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
+    if (_.isArray(staticHooks) && Fetch.hooks) {
+      Fetch.hooks['pre-fetch-get'] = staticHooks
+    }
+  }
+
+  if (hooks['fetch-inject-pre-post']) {
+    let staticHooks = hooks['fetch-inject-pre-post']
+    if (_.isFunction(staticHooks)) staticHooks = [staticHooks]
+    if (_.isArray(staticHooks) && Fetch.hooks) {
+      Fetch.hooks['pre-fetch-post'] = staticHooks
+    }
+  }
 
 
   /**
@@ -139,15 +278,13 @@ module.exports = function (appConfigs) {
   /**
    * 设定apis
    * apis用于fetch异步获取后端数据的请求地址列表
-   * 格式{list: {....}}
+   * 格式{api: apiurl}
    * key=> 请求名称
    * value=> 实际请求地址
    * 用法
    * const result = await Fetch.post('xxx', param)
    */
   app.setApis(CONFIG.apis||{})
-
-
 
 
   /**
@@ -194,6 +331,37 @@ module.exports = function (appConfigs) {
       customControl: async function (ctx, next) {
         ctx.body = CONFIG.mapper
       }
+    }, 
+    '/api': {
+      customControl: async function (ctx, next) {
+        const fkp = ctx.fkp
+        let route = ctx.aotooRoutePath
+        const isAjax = fkp.isAjax()
+        route = route.replace('api/', '')
+
+        let body = (ctx.method == 'GET' ? ctx.query : ctx.request.body) || {}
+        if (hooks['pre-fetch-set']) {
+          let cfgPlugins = hooks['pre-fetch-set']
+          if (_.isFunction(cfgPlugins)) cfgPlugins = [cfgPlugins]
+          if (_.isArray(cfgPlugins)) {
+            body = cfgPlugins.reduce((p, n) => {
+              if (_.isFunction(n)) {
+                return n(p, ctx) || p
+              } else if (_.isPlainObject(n)) {
+                return _.merge({}, p, n)
+              } else {
+                return p
+              }
+            }, body)
+          }
+        }
+
+        if (ctx.method == 'GET') {
+          if (isAjax) ctx.body = await Fetch.get(route, body)
+        } else {
+          ctx.body = await Fetch.post(route, body)
+        }
+      }
     }
   })
   app.setRouterPrefixes(myRouterPrefixes)
@@ -210,34 +378,5 @@ module.exports = function (appConfigs) {
     app.setRouterOptions(SCENES.routerOptions)
   }
 
-  // app.listen(PORT, function (err, stat) {
-  //   if (err) console.log(err);
-  //   const destPort = chalk.green.bold(`【${PORT}】`)
-  //   console.log(`
-  // ============================
-  // + node-server           +
-  // + 服务名: ${name}       +
-  // + 端口: ${destPort}      +
-  // +===========================
-  //     `);
-    
-  //   if (isXcx) {
-  //     log(chalk.bold.yellow('node端已启动，请打开微信开发工具并指定项目目录'))
-  //   }
-  // })
-
   return app
 }
-
-
-
-
-
-// co(app.init()).then(function (server) {
-//   server.listen(PORT, function (err, stat) {
-//     if (err) console.log(err);
-//     console.log('========== service start ==========');
-//   })
-// })
-
-
