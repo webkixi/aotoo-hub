@@ -16,29 +16,30 @@ function sty(param) {
 }
 
 function content(param, myclass) {
-  let beforAim = false
-  if (lib.isObject(param)) {
-    delete param.class
-    delete param.itemClass
-    delete param.style
-    delete param.itemStyle
-    if (!myclass) {
-      beforAim = true
-      if (param.dot) {
-        // param.dot = [].concat(param.dot).concat({title: 'co', class: 'closeIt'})
-        param.dot = [].concat(param.dot).concat({icon: {class: 'icon-guanbida closeIt', aim: 'closeIt'}})
-      } else {
-        // param.dot = [{title: 'co', class: 'closeIt'}]
-        param.dot = [{icon: {class: 'icon-guanbida closeIt', aim: 'closeIt'}}]
-      }
-    }
-  } else {
-    if (!myclass) {
-      beforAim = true
-      // param = { dot: [{title: 'co', class: 'closeIt'}] }
-      param = { dot: [{icon: {class: 'icon-guanbida closeIt', aim: 'closeIt'}}] }
-    }
-  }
+  // let beforAim = false
+  // if (lib.isObject(param)) {
+  //   delete param.class
+  //   delete param.itemClass
+  //   delete param.style
+  //   delete param.itemStyle
+  //   if (!myclass) {
+  //     beforAim = true
+  //     if (param.dot) {
+  //       // param.dot = [].concat(param.dot).concat({title: 'co', class: 'closeIt'})
+  //       // param.dot = [].concat(param.dot).concat({icon: {class: 'icono-crossCircle closeIt', aim: 'closeIt'}})
+  //       param.dot = [].concat(param.dot).concat({class: 'icono-crossCircle closeIt', aim: 'hide'})
+  //     } else {
+  //       // param.dot = [{title: 'co', class: 'closeIt'}]
+  //       param.dot = [{class: 'icono-crossCircle closeIt', aim: 'hide'}]
+  //     }
+  //   }
+  // } else {
+  //   if (!myclass) {
+  //     beforAim = true
+  //     // param = { dot: [{title: 'co', class: 'closeIt'}] }
+  //     param = { dot: [{class: 'icono-crossCircle closeIt', aim: 'hide'}] }
+  //   }
+  // }
 
   return param
 }
@@ -62,9 +63,16 @@ Component({
     attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
       let properties = this.properties
       let item       = properties.item
-      item.itemClass = 'actionSide'
-      item.__actionMask = 'actionMask'
-      this.setData({ $item: item })
+      if (lib.isObject(item)) {
+        item.itemClass = 'actionSide'
+        item.__actionMask = 'actionMask'
+        if (item.dot) {
+          item.dot = [].concat(item.dot).concat({class: 'icono-crossCircle closeIt', aim: 'hide'})
+        } else {
+          item.dot = [{class: 'icono-crossCircle closeIt', aim: 'hide'}]
+        }
+        this.setData({ $item: lib.resetItem(item) })
+      }
     },
     ready: function() {
       const that = this

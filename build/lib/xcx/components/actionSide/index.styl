@@ -1,9 +1,8 @@
-// @import "../../common/css/iconfont.styl"
-
-.common
+.as-common
   background-color #FAFAFA
   width 98vw
-  min-height 98vh
+  height 100%
+  // min-height 98vh
   padding 1vw
   // padding 10rpx
   &.moveit
@@ -24,7 +23,7 @@
     display block
 
 .actionSide
-  @extends .common
+  @extends .as-common
   position absolute
   right -100vw
   top 0
@@ -35,7 +34,7 @@
     transform: translate3d(-100vw, 0, 0);
 
 .actionSide-left
-  @extends .common
+  @extends .as-common
   position absolute
   left -100vw
   top 0
@@ -46,7 +45,7 @@
     transform: translate3d(100vw, 0, 0);
 
 .actionSide-bot
-  @extends .common
+  @extends .as-common
   position absolute
   left 0
   bottom -100vh
@@ -59,7 +58,7 @@
     transform: translate3d(0, -100vh, 0);
 
 .actionSide-top
-  @extends .common
+  @extends .as-common
   position absolute
   left 0
   top -100vh

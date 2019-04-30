@@ -1,0 +1,6 @@
+<!-- 作者：天天修改 -->
+<!-- github: webkixi -->
+<block wx:if="{{$list.show}}">
+  <ui-list list="{{$list}}" fromComponent="{{uniqId}}" />
+  <action-side item="{{popshow}}" />
+</block>
