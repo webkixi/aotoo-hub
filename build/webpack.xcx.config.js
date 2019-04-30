@@ -122,22 +122,25 @@ class DoneCompile {
 
 function jsEntries(dir) {
   var jsFiles = {}
+  let _partten = /[\/|\\][_](\w)+/;
   const accessExts = ['.wxml', '.wxss', '.styl', '.wxs', '.json', '.png', '.jpg', '.jpeg', '.gif']
-  if (fse.existsSync(dir) ){
-    globby.sync([`${dir}/**/*`, '!node_modules', `!${dir}/dist`]).forEach(function(item) {
-      if (item.indexOf('_')!=0) {
-        const fileObj = path.parse(item)
-        const xcxSrc = path.join(dir, 'js')
-        if (~item.indexOf(xcxSrc)) {
-          const fileStat = fs.statSync(item)
-          const relativeFile = item.replace(xcxSrc, '')
-          let relativeKey = relativeFile.replace(fileObj.ext, '').substring(1)
-          if (fileObj.ext == '.js') {
-            jsFiles[relativeKey] = item
-          }
-          else {
-            if (accessExts.indexOf(fileObj.ext)>-1) {
-              jsFiles['nobuild__' + relativeFile] = item
+  if (fse.existsSync(dir)) {
+    globby.sync([`${dir}/**/*`, '!node_modules', `!${dir}/dist`]).forEach(function (item) {
+      if (item.indexOf('/js/common/') == -1) {
+        if (!_partten.test(item)) {
+          const fileObj = path.parse(item)
+          const xcxSrc = path.join(dir, 'js')
+          if (~item.indexOf(xcxSrc)) {
+            const fileStat = fs.statSync(item)
+            const relativeFile = item.replace(xcxSrc, '')
+            let relativeKey = relativeFile.replace(fileObj.ext, '').substring(1)
+            if (fileObj.ext == '.js') {
+              jsFiles[relativeKey] = item
+            }
+            else {
+              if (accessExts.indexOf(fileObj.ext) > -1) {
+                jsFiles['nobuild__' + relativeFile] = item
+              }
             }
           }
         }
