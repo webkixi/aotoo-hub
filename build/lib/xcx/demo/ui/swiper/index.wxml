@@ -1,0 +1,5 @@
+<view class="boxer">
+  <!-- <ui-item item="{{testData}}"/> -->
+  <ui-list list="{{menuData}}" />
+  <ui-item item="{{stickyBottomBar}}" />
+</view>

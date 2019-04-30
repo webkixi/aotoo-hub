@@ -1,0 +1,118 @@
+.wid250
+  width: 250rpx
+
+
+display-flex($flex-row = row nowrap, $justify-content = flex-start, $align-items = false, $align-content = false)
+  display: flex
+  flex-flow: $flex-row
+  justify-content: $justify-content;
+  if ($align-items != false)
+    align-items: $align-items
+  if ($align-content != false)
+    align-content: $align-content
+
+
+.block
+  display block
+
+swiper
+  height 100%
+
+.stickyBottomBar
+  position fixed
+  left 30rpx
+  bottom 50rpx
+  width 96vw
+  .recodeButton
+    font-size 22px
+    image
+      margin 0 auto
+      
+.boxer
+  width 100vw
+  height: auto
+  position relative
+  overflow hidden
+  .ul
+    width auto
+    height auto
+    margin-bottom 60px
+  .item-normal
+    width auto
+    height 180px
+    overflow hidden
+    font-size 14px
+    padding 10px
+    border-radius 5px
+    margin-bottom 20rpx
+    .htitles
+      display-flex(row nowrap, space-between, center, center)
+      width 100%
+      .item-icon
+        font-size 14px
+        &:after
+          content: '\e618'
+
+//swiper
+.d-swiper-li
+  border-radius 10px
+  color: #fff
+  font-size 14px
+  overflow hidden
+  margin 0 auto
+  margin-top 15px
+  box-shadow 0 0 20px rgba(136,136,136, .8)
+.d-swiper-title
+  height 88%
+  padding 10px
+  width 92%
+.d-swiper-ul
+  height 450px
+  .d-swiper-title
+    @extends .d-swiper-li
+  swiper-item
+    overflow inherit
+  // swiper-item
+  //   @extends .d-swiper-li
+.ds-li-bg-dc251a
+  .d-swiper-title
+    background #dc251a
+  // swiper-item
+  //   background #dc251a
+.ds-li-bg-02943e
+  .d-swiper-title
+    background #02943e
+  // swiper-item
+  //   background #02943e
+.ds-li-bg-0092df
+  .d-swiper-title
+    background #0092df
+  // swiper-item
+  //   background #0092df
+.ds-li-bg-e99718
+  .d-swiper-title
+    background #e99718
+  // swiper-item
+  //   background #e99718
+.ds-li-bg-dcdcdc
+  .d-swiper-title
+    background #dcdcdc
+  // swiper-item
+  //   background #dcdcdc
+
+.d-swiper-item
+  margin-bottom 20px
+  .item-title
+    font-size 20px
+    margin-left: 18px
+    margin-bottom 8px
+    display block
+.list-normal
+  >.li
+    font-size 14px
+    padding 6px 0
+    border-bottom 1px solid #d3d3d3
+    &:last-child
+      border-bottom none
+
+
