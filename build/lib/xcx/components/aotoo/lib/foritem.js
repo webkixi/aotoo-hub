@@ -30,9 +30,11 @@ function setItemSortIdf(item, context) {
     if (!Array.isArray(item)) {
       let extAttrs = {}
       let incAttrs = []
+      item['__sort'] = []
 
       if (context) {
-        item.fromComponent = context.uniqId
+        // item.fromComponent = context.data.fromComponent||context.data.uniqId
+        item.fromComponent = context.data.uniqId
       }
 
       Object.keys(item).forEach(function (key) {

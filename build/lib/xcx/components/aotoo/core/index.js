@@ -140,6 +140,8 @@ function core(params) {
         }
       })
 
+      this.hooks.emit('onReady')
+
       if (typeof oldReady == 'function') {
         setTimeout(() => {
           oldReady.apply(this, arguments)

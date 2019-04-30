@@ -32,6 +32,14 @@ export const itemBehavior = function(app, mytype) {
       created: function() {
         this.$$is = 'item'
       },
+      attached: function attached() { //节点树完成，可以用setData渲染节点，但无法操作节点
+        const xitem = lib.resetItem(this.properties.item)
+        if (xitem) {
+          this.setData({
+            "$item": xitem
+          })
+        }
+      },
       ready: function () { //组件布局完成，这时可以获取节点信息，也可以操作节点
         const activePage = this.activePage = app.activePage
         const $id = this.data.item['$$id'] || this.properties.id || this.data.item['id']
@@ -70,7 +78,7 @@ export const itemBehavior = function(app, mytype) {
           const _item = lib.resetItem(this.data.$item, this)
           const cb = lib.isFunction(callback) ? callback : null
           this.setData({
-            item: _item,
+            // item: _item,
             $item: _item
           }, cb)
         }

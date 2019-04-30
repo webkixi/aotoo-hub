@@ -54,11 +54,6 @@ export const listBehavior = function(app, mytype) {
         type: Boolean|String,  // 来自tree，tree的结构依赖list生成
         value: false   // 来自tree实例的 uniqId
       },
-      id: String,
-      fromComponent: {
-        type: String,
-        value: ''
-      }
     },
     data: {
       $list: {}
@@ -69,7 +64,7 @@ export const listBehavior = function(app, mytype) {
       },
       attached: function attached() { //节点树完成，可以用setData渲染节点，但无法操作节点
         const properties = this.properties
-        const list = properties.list || properties.dataSource
+        const list = properties.list
         updateSelf.call(this, list)
       },
 
@@ -90,6 +85,7 @@ export const listBehavior = function(app, mytype) {
             }
           }
         }
+        app['_vars'][this.uniqId] = this
       }
     },
     methods: {

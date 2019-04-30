@@ -35,6 +35,7 @@ export function reSetItemAttr(item, list){
   let itmc = list.itemClass || list.class || ''
   let myClass = item['itemClass'] || item['class'] || item['className'] || ''
   item['itemClass'] = myClass ? itmc + ' ' + myClass : itmc
+  item['itemClass'] = item.idf ? 'item itemroot ' + item['itemClass'] : 'item ' + item['itemClass']
 
   if (list.itemStyle || list.style) {
     var itsy = list.itemStyle || list.style

@@ -43,19 +43,19 @@
 </template>
 
 <template name="img">
-  <image bind:tap="aim" data-aim="{{item.aim}}" wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" lazy-load="{{true}}" class="himg {{ item.class || item.itemClass }}" mode="{{item.mode || 'widthFix'}}" src="{{item.src}}" />
+  <image catch:tap="catchItemMethod" data-evt="{{util.dataEvt(item, ['catchtap', 'tap', 'longpress', 'aim', 'touchstart', 'tourchend', 'touchmove', 'touchcancel'])}}" wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" lazy-load="{{true}}" class="himg {{ item.class || item.itemClass }}" mode="{{item.mode || 'widthFix'}}" src="{{item.src}}" />
   <block wx:else>
-    <image bind:tap="aim" data-aim="{{item.aim}}" class="himg {{ item.class || item.itemClass }}" mode="{{item.mode || 'widthFix'}}" lazy-load="{{true}}" src="{{item.src}}" />
+    <image catch:tap="catchItemMethod" data-evt="{{util.dataEvt(item, ['catchtap', 'tap', 'longpress', 'aim', 'touchstart', 'tourchend', 'touchmove', 'touchcancel'])}}" class="himg {{ item.class || item.itemClass }}" mode="{{item.mode || 'widthFix'}}" lazy-load="{{true}}" src="{{item.src}}" />
   </block>
 </template>
 
 <template name="@item">
   <block wx:if="{{util.isObject(props)}}">
     <block wx:if="{{props.fromComponent}}">
-      <ui-item item="{{props}}" fromComponent="{{props.fromComponent}}"/>
+      <ui-item class="ui-item" item="{{props}}" fromComponent="{{props.fromComponent}}"/>
     </block>
     <block wx:else>
-      <ui-item item="{{props}}"/>
+      <ui-item class="ui-item" item="{{props}}"/>
     </block>
   </block>
 </template>
@@ -63,10 +63,10 @@
 <template name="@list">
   <block wx:if="{{util.isObject(props)}}">
     <block wx:if="{{props.fromComponent}}">
-      <ui-list list="{{props}}" fromComponent="{{props.fromComponent}}"/>
+      <ui-list class="ui-list" list="{{props}}" fromComponent="{{props.fromComponent}}"/>
     </block>
     <block wx:else>
-      <ui-list list="{{props}}"/>
+      <ui-list class="ui-list" list="{{props}}"/>
     </block>
   </block>
 </template>
@@ -74,10 +74,10 @@
 <template name="@tree">
   <block wx:if="{{util.isObject(props)}}">
     <block wx:if="{{props.fromComponent}}">
-      <ui-tree list="{{props}}" fromComponent="{{props.fromComponent}}"/>
+      <ui-tree class="ui-tree" list="{{props}}" fromComponent="{{props.fromComponent}}"/>
     </block>
     <block wx:else>
-      <ui-tree list="{{props}}"/>
+      <ui-tree class="ui-tree" list="{{props}}"/>
     </block>
   </block>
 </template>
@@ -120,6 +120,6 @@
 
 <template name="@form">
   <block wx:if="{{util.isObject(props)}}">
-    <ui-form dataSource="{{props}}" />
+    <ui-form class="ui-form" dataSource="{{props}}" />
   </block>
 </template>

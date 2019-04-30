@@ -269,6 +269,7 @@ function clearLevel(){
 }
 
 function hasEvent(props, key) {
+  var keys = ['tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchend', 'touchmove', 'touchcancel']
   if (props) {
     if (key == 'tap') {
       return (props.tap || props.catchtap) ? true : false
@@ -280,7 +281,19 @@ function hasEvent(props, key) {
       return (props.longpress || props.catchlongpress) ? true : false
     }
     else {
-      return props[key] ? true : false
+      if (key) {
+        return props[key] ? true : false
+      } else {
+        var state = false
+        for (var ii=0; ii<keys.length; ii++) {
+          var mykey = keys[ii]
+          if (props[mykey]) {
+            state = true
+            break;
+          }
+        }
+        return state
+      }
     }
 
   }

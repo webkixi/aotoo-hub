@@ -150,7 +150,8 @@
 
 
 <template name="make-title">
-  <block wx:if="{{util.hasEvent(item, 'aim')||util.hasEvent(item, 'tap') || util.hasEvent(item, 'longtap') || util.hasEvent(item, 'touchstart') || util.hasEvent(item, 'touchend')}}">
+  <!-- <block wx:if="{{util.hasEvent(item, 'aim')||util.hasEvent(item, 'tap') || util.hasEvent(item, 'longtap') || util.hasEvent(item, 'touchstart') || util.hasEvent(item, 'touchend')}}"> -->
+  <block wx:if="{{util.hasEvent(item)}}">
     <template is="@item" data="{{props: item}}" />
   </block>
   <block wx:else>
@@ -212,7 +213,7 @@
   </block>
   <block wx:else>
     <block wx:if="{{util.isString(item.src)}}">
-      <block wx:if="{{util.isString(item.aim)}}">
+      <block wx:if="{{util.hasEvent(item)}}">
         <template is="img" data="{{item}}" />
       </block>
       <block wx:else>

@@ -85,7 +85,7 @@ export const commonBehavior = (app, mytype) => {
         let properties = this.properties
         let props = (properties.item || properties.list || properties.dataSource)
         let id = properties.id
-        this.mountId = props.$$id ? false : props.id || id  // 如果$$id，则交给
+        this.mountId = props.$$id ? false : id  // 如果$$id，则交给
         props['show'] = props.hasOwnProperty('show') ? props.show : true
         this.setData({uniqId: this.uniqId})
       },
@@ -115,7 +115,7 @@ export const commonBehavior = (app, mytype) => {
     },
     methods: {
       getData: function() {
-        return this.data.$item || this.data.$list || this.data.$dataSource
+        return this.data.$item || this.data.$list || this.data.$dataSource || {}
       },
 
       _getAppVars: function(key) {
@@ -124,6 +124,21 @@ export const commonBehavior = (app, mytype) => {
           return app['_vars'][id] || {}
         }
         return {}
+      },
+
+      _preGetAppVars: function(key, params, son) {
+        const {fn} = params
+        const inst = this._getAppVars(key)
+        if (lib.isEmpty(inst)) {
+          return son || {}
+        } else {
+          if (inst[fn]) return inst
+          if (inst.data.fromComponent) {
+            return this._preGetAppVars(inst.data.fromComponent, params, inst)
+          } else {
+            return inst
+          }
+        }
       },
 
       generateUpdate: function(_keyid, cb) {
@@ -299,33 +314,36 @@ function itemReactFun(e, prefix) {
   const currentTarget = e.currentTarget
   const dataset = currentTarget.dataset
   const activePage = this.activePage
-  let parentInstance = this._getAppVars()
+  
+  const oType = e.type
+  const nType = prefix ? prefix + oType : oType
+  
+  let dsetEvt = nType + '@@' + dataset['evt']
+  const rEvt = rightEvent(dsetEvt)
+  const {fun, param} = rEvt
+  
+  let parentInstance = this._preGetAppVars(null, rEvt)
   if (lib.isEmpty(parentInstance)) {
     parentInstance = undefined
   }
 
-  const oType = e.type
-  const nType = prefix ? prefix + oType : oType
-
-  let dsetEvt = nType + '@@' + dataset['evt']
-  const {fun, param} = rightEvent(dsetEvt)
   e.currentTarget.dataset._query = param
   const evtFun = activePage[fun]
   const thisFun = this[fun]
   const isEvt = lib.isFunction(evtFun)
   let vals = this.hooks.emit('beforeBind', {ctx: this, event: e, funName: fun, param})
   if (parentInstance && lib.isFunction(parentInstance[fun])) {
-    parentInstance[fun].call(parentInstance, e, param)
+    parentInstance[fun].call(parentInstance, e, param, that)
   } else {
     if (vals) {
       vals.forEach(function (val) {
-        if (val !== 0 && isEvt) evtFun.call(activePage, e, param, (parentInstance||that)) // 返回值为0则不透传
+        if (val !== 0 && isEvt) evtFun.call(activePage, e, param, that) // 返回值为0则不透传
       })
     } else {
       if (lib.isFunction(thisFun)) {
         thisFun.call(this, e, param, this)
       } else {
-        if (isEvt) evtFun.call(activePage, e, param, (parentInstance||that))
+        if (isEvt) evtFun.call(activePage, e, param, that)
       }
     }
   }

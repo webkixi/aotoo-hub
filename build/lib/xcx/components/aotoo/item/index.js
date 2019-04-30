@@ -14,11 +14,4 @@ Component({
     addGlobalClass: true
   },
   behaviors: [Core.itemBehavior(app)],
-  lifetimes: {
-    attached: function attached() { //节点树完成，可以用setData渲染节点，但无法操作节点
-      this.setData({
-        "$item": resetItem(this.properties.item)
-      })
-    }
-  },
 });
