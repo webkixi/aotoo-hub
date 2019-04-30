@@ -1,5 +1,6 @@
 //app.js
-require('./envconfigs')()
+const envConfig = require('./envconfigs')()
+wx.CONFIG.env = envConfig
 App({
   onLaunch: function () {
     // 展示本地存储能力
