@@ -38,7 +38,7 @@ const adapterListSs = (data, opts) => {
               },
               {
                 title: ' ',
-                class: 'icon-arrows-a-r color-999  ml-20-r'
+                class: 'icon-arrows-r color-grey  ml-20-r'
               }
             ],
           }
@@ -88,7 +88,7 @@ const adapterList2Ss = (data, opts) => {
             },
             v: {
               title: '19/03/07',
-              class: 'color-999 size12'
+              class: 'color-grey size12'
             },
             kvClass: 'flex-row-between-center',
           },
@@ -100,7 +100,7 @@ const adapterList2Ss = (data, opts) => {
             },
             v: item.isVoice ? {
               title: ' ',
-              class: 'icon-silence color-999 size14 ml-20-r'
+              class: 'icon-silence color-grey size14 ml-20-r'
             } : '',
             kvClass: 'flex-row-between-center mb-20-r',
           }
@@ -153,7 +153,7 @@ const adapterList3Ss = (data, opts) => {
               kvClass: 'ss-relative padding-r-10 ml-10-r'
             }
             : '',
-            {icon: {class: 'icon-arrows-a-r color-999'}}
+            {icon: {class: 'icon-arrows-r color-grey'}}
           ],
           footerClass: footerClass,
           class: itemliClass
@@ -190,7 +190,7 @@ const adapterList4Ss = (data, opts) => {
           },
           {
             title: ' ',
-            class: 'icon-arrows-a-r color-999'
+            class: 'icon-arrows-r color-grey'
           }
         ],
         titleClass: bodyClass,
@@ -278,7 +278,7 @@ const adapterList6Ss = (data, opts) => {
             },
             {
               title: item.productProperties.serviceGuaranteeName ?  centerlineFunc(item.productProperties.serviceGuaranteeName) : '',
-              titleClass: 'color-999 mt-10-r line-li-20'
+              titleClass: 'color-grey mt-10-r line-li-20'
             },
             {
               title: tagFunc(item.productProperties, 'macaohkline'),
@@ -291,9 +291,9 @@ const adapterList6Ss = (data, opts) => {
               },
               v: {
                 title: '实名可见',
-                class: 'color-ff5552'
+                class: 'color-minor'
               },
-              kvClass: 'flex-row color-666'
+              kvClass: 'flex-row color-default'
             }
           ],
           bodyClass: 'flex-1',
@@ -301,9 +301,9 @@ const adapterList6Ss = (data, opts) => {
             {
               title: {
                 title: '',
-                class: 'icon-arrows-a-r mr-8-r-m'
+                class: 'icon-arrows-r mr-8-r-m'
               },
-              class: 'color-999 ml-10-r size16'
+              class: 'color-grey ml-10-r size16'
             }
           ],
           class: 'ml-20-r flex-1 flex-row-between-center size13',
@@ -344,13 +344,13 @@ const adapterList7Ss = (data, opts) => {
             },
             v: {
               title: '实名可见',
-              class: 'color-ff5552'
+              class: 'color-minor'
             },
-            kvClass: 'flex-row color-999 mb-6-r'
+            kvClass: 'flex-row color-grey mb-6-r'
           },
           {
             title: '测试品牌名称测试品牌名称测试品牌名称测试-测试企业全称测试企业全称测试企业全称测试企业全称测试企业全称',
-            class: 'textellipsis-1 color-666'
+            class: 'textellipsis-1 color-default'
           }
         ],
         bodyClass: 'ml-20-r size12 item-body',
@@ -390,7 +390,7 @@ const adapterTreeSs = (data) => {
               title: item.navTitle,
               class: 'hei-p100 flex-row-center'
             },
-            class: (data[idfTitle].length - 1) != ii ? 'title-333 size16 textellipsis-1 ml-20-r flex-1 bb-e3e3e3' : 'title-333 size16 textellipsis-1 ml-20-r flex-1'
+            class: (data[idfTitle].length - 1) != ii ? 'title-333 size16 textellipsis-1 ml-20-r flex-1 bb-default' : 'title-333 size16 textellipsis-1 ml-20-r flex-1'
           },
         ],
         titleClass: 'ss-focus flex-row',

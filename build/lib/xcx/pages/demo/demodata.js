@@ -117,7 +117,7 @@ export const listData = {
           {
             imgClass: 'pic-120-r radius-10-r mtb-20-r',
             titleClass: 'title-333 size16 textellipsis-1',
-            descClass: 'color-999 textellipsis-1 size14',
+            descClass: 'color-grey textellipsis-1 size14',
             bodyClass: 'ml-20-r ptb-20-r flex-1'
           }
         )
@@ -132,7 +132,7 @@ export const listData = {
           {
             imgClass: 'pic-120-r radius-10-r mtb-20-r',
             titleClass: 'title-333 size16 textellipsis-1',
-            descClass: 'color-999 textellipsis-1 size14',
+            descClass: 'color-grey textellipsis-1 size14',
             kvitemClass: 'hei-p100 flex-column-between',
             hbitemClass: 'hei-p100',
             bodyClass: 'ml-20-r ptb-20-r flex-1 flex-row-between-center'
@@ -163,7 +163,7 @@ export const listData = {
           {
             imgClass: 'pic-120-r radius-10-r',
             titleClass: 'title-333 size16 textellipsis-1',
-            descClass: 'color-999 textellipsis-1 size14',
+            descClass: 'color-grey textellipsis-1 size14',
             kvitemClass: 'hkv-around',
           }
         )
@@ -174,7 +174,7 @@ export const listData = {
         body: [
           {
             title: [
-              {title: '', class: 'icon-1 mr-10-r size16 color-227ce1'},
+              {title: '', class: 'icon-1 mr-10-r size16 color-primary'},
               {title: '效果3', class: 'item-titlex'}
             ],
           },
@@ -194,8 +194,8 @@ export const listData = {
           {
             imgClass: 'pic-80-r radius-10-r mtb-20-r',
             titleClass: 'title-333 size16 textellipsis-1',
-            descClass: 'color-999 textellipsis-1 size14',
-            bodyClass: 'flex-1 pt-20-r ml-20-r bb-e3e3e3',
+            descClass: 'color-grey textellipsis-1 size14',
+            bodyClass: 'flex-1 pt-20-r ml-20-r bb-default',
             imgDotClass: 'icon-dot-small ss-absolute-tr'
           }
         )
@@ -206,7 +206,7 @@ export const listData = {
         body: [
           {
             title: [
-              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '', class: 'icon-2 mr-10-r size16 color-primary'},
               {title: '效果4', class: 'item-titlex'}
             ],
           },
@@ -227,7 +227,7 @@ export const listData = {
             imgClass: 'pic-80-r radius-10-r mtb-20-r',
             titleClass: 'title-333 size16 textellipsis-1',
             bodyClass: 'flex-row-center',
-            footerdescClass: 'color-999 size14',
+            footerdescClass: 'color-grey size14',
             footerimgClass: 'pic-40-r',
             footerClass: 'flex-row-center',
             itemliClass: 'flex-row-between-center hei-p100',
@@ -241,7 +241,7 @@ export const listData = {
         body: [
           {
             title: [
-              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '', class: 'icon-2 mr-10-r size16 color-primary'},
               {title: '效果5', class: 'item-titlex'}
             ],
           },
@@ -272,7 +272,7 @@ export const listData = {
         body: [
           {
             title: [
-              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '', class: 'icon-2 mr-10-r size16 color-primary'},
               {title: '效果6', class: 'item-titlex'}
             ],
           },
@@ -304,7 +304,7 @@ export const listData = {
         body: [
           {
             title: [
-              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '', class: 'icon-2 mr-10-r size16 color-primary'},
               {title: '效果7', class: 'item-titlex'}
             ],
           },
@@ -324,7 +324,7 @@ export const listData = {
         body: [
           {
             title: [
-              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '', class: 'icon-2 mr-10-r size16 color-primary'},
               {title: '效果8', class: 'item-titlex'}
             ],
           },
@@ -344,7 +344,7 @@ export const listData = {
     //     body: [
     //       {
     //         title: [
-    //           {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+    //           {title: '', class: 'icon-2 mr-10-r size16 color-primary'},
     //           {title: '效果5', class: 'item-titlex'}
     //         ],
     //       },
@@ -365,11 +365,11 @@ export const listData = {
     //         imgClass: 'pic-80-r radius-10-r mtb-20-r',
     //         titleClass: 'title-333 size16 textellipsis-1',
     //         bodyClass: 'flex-row-center',
-    //         footerdescClass: 'color-999 size14',
+    //         footerdescClass: 'color-grey size14',
     //         footerimgClass: 'pic-40-r',
     //         footerClass: 'flex-row-center',
     //         itemliClass: 'flex-row-between-center hei-p100',
-    //         liClass: 'hei-120-r ml-20-r flex-1 bb-e3e3e3',
+    //         liClass: 'hei-120-r ml-20-r flex-1 bb-default',
     //       }
     //     )
     //   }
@@ -386,7 +386,7 @@ export const treeData = {
         body: [
           {
             title: [
-              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '', class: 'icon-2 mr-10-r size16 color-primary'},
               {title: '效果1', class: 'item-titlex'}
             ],
           },
@@ -430,7 +430,7 @@ export const treeData = {
         body: [
           {
             title: [
-              {title: '', class: 'icon-2 mr-10-r size16 color-227ce1'},
+              {title: '', class: 'icon-2 mr-10-r size16 color-primary'},
               {title: '效果2', class: 'item-titlex'}
             ],
           },
@@ -457,35 +457,35 @@ export const buttonForAs = {
   data: [
     { title: [
         {title: 'fullscreen-right', class: 'item' },
-        {title: '全屏侧弹窗-右侧', aim: 'as-full', class: 'item icon-arrows-a-r'},
+        {title: '全屏侧弹窗-右侧', aim: 'as-full', class: 'item icon-arrows-r'},
     ]},
     { title: [
         {title: 'fullscreen-left', class: 'item' },
-        {title: '全屏侧弹窗-左侧', aim: 'as-full?direction=left', class: 'item icon-arrows-a-r'},
+        {title: '全屏侧弹窗-左侧', aim: 'as-full?direction=left', class: 'item icon-arrows-r'},
     ]},
     { title: [
         {title: 'fullscreen-bottom', class: 'item' },
-        {title: '全屏侧弹窗-底弹', aim: 'as-full?direction=bot', class: 'item icon-arrows-a-r'},
+        {title: '全屏侧弹窗-底弹', aim: 'as-full?direction=bot', class: 'item icon-arrows-r'},
     ]},
     { title: [
         {title: 'fullscreen-top', class: 'item' },
-        {title: '全屏侧弹窗-顶弹', aim: 'as-full?direction=top', class: 'item icon-arrows-a-r'},
+        {title: '全屏侧弹窗-顶弹', aim: 'as-full?direction=top', class: 'item icon-arrows-r'},
     ]},
     { title: [
         {title: 'bar-right', class: 'item' },
-        {title: '弹半框-右侧', aim: 'open-bar', class: 'item icon-arrows-a-r'},
+        {title: '弹半框-右侧', aim: 'open-bar', class: 'item icon-arrows-r'},
     ]},
     { title: [
         {title: 'bar-left', class: 'item' },
-        {title: '弹半框-左侧', aim: 'open-bar?direction=left', class: 'item icon-arrows-a-r'},
+        {title: '弹半框-左侧', aim: 'open-bar?direction=left', class: 'item icon-arrows-r'},
     ]},
     { title: [
         {title: 'bar-bot', class: 'item' },
-        {title: '弹半框-底侧', aim: 'open-bar?direction=bot', class: 'item icon-arrows-a-r'},
+        {title: '弹半框-底侧', aim: 'open-bar?direction=bot', class: 'item icon-arrows-r'},
     ]},
     { title: [
         {title: 'bar-top', class: 'item' },
-        {title: '弹半框-顶侧', aim: 'open-bar?direction=top', class: 'item icon-arrows-a-r'},
+        {title: '弹半框-顶侧', aim: 'open-bar?direction=top', class: 'item icon-arrows-r'},
     ]},
   ],
   itemClass: 'li item-normal',

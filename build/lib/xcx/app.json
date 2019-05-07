@@ -7,27 +7,37 @@
     "pages/logs/logs"
   ],
   "subpackages": [{
-    "root": "demo/",
-    "name": "mydemo",
-    "pages": [
-      "ui/list/index",
-      "ui/swiper/index",
-      "ui/stickybar/index",
-      "ui/sidescroll/index",
-      "form/union/index",
-      "form/checkbox/index",
-      "form/radio/index",
-      "form/input/index",
-      "form/number/index",
-      "form/icon/index",
-      "form/switch/index",
-      "form/slider/index",
-      "form/singlepicker/index",
-      "form/multipypicker/index",
-      "form/dropdown/index",
-      "form/index/index"
-    ]
-  }],
+      "root": "demo/",
+      "name": "mydemo",
+      "pages": [
+        "ui/list/index",
+        "ui/swiper/index",
+        "ui/stickybar/index",
+        "ui/sidescroll/index",
+        "form/union/index",
+        "form/checkbox/index",
+        "form/radio/index",
+        "form/input/index",
+        "form/number/index",
+        "form/icon/index",
+        "form/switch/index",
+        "form/slider/index",
+        "form/singlepicker/index",
+        "form/multipypicker/index",
+        "form/dropdown/index",
+        "form/index/index",
+        "ui/button/index",
+        "ui/utility/index",
+        "ui/tag/index",
+        "ui/article/index",
+        "ui/modal/index",
+        "ui/list/normal/index",
+        "ui/list/wxchat/index",
+        "ui/list/tbpic/index",
+        "ui/list/lrpic/index"
+      ]
+    }
+  ],
   "usingComponents": {
     "ui-item": "/components/aotoo/item/index",
     "ui-list": "/components/aotoo/list/index",
@@ -35,19 +45,12 @@
     "action-side": "/components/actionSide/index",
     "ui-tab": "/components/tab/index",
     "ui-form": "/components/form/index",
-    "ui-collapse": "/components/collapse/index",
-    "ui-uploads": "/components/uploads/index"
-  },
-  "plugins": {
-    "WechatSI": {
-      "version": "0.2.3",
-      "provider": "wx069ba97219f66d99"
-    }
+    "ui-collapse": "/components/collapse/index"
   },
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "what wrong",
+    "navigationBarTitleText": "demo",
     "navigationBarTextStyle":"black"
   }
 }
