@@ -9,20 +9,20 @@ const data = [
     title: '侧弹',
     id: 'default',
     list: [
-      { title: '顶弹', attr: 'top', type: 'primary', size: 'larger', parentId: 'default' },
-      { title: '底弹', attr: 'bot', type: 'primary', size: 'larger', parentId: 'default' },
-      { title: '左弹', attr: 'left', type: 'primary', size: 'larger', parentId: 'default' },
-      { title: '右弹', attr: 'right', type: 'primary', size: 'larger', parentId: 'default' },
+      { title: '顶弹', attrs: 'top', type: 'primary', size: 'larger', parentId: 'default' },
+      { title: '底弹', attrs: 'bot', type: 'primary', size: 'larger', parentId: 'default' },
+      { title: '左弹', attrs: 'left', type: 'primary', size: 'larger', parentId: 'default' },
+      { title: '右弹', attrs: 'right', type: 'primary', size: 'larger', parentId: 'default' },
     ]
   },
   {
     title: '全屏侧弹',
     id: 'full',
     list: [
-      { title: '顶弹', attr: 'top', type: 'fff-primary', size: 'larger', parentId: 'full' },
-      { title: '底弹', attr: 'bot', type: 'fff-primary', size: 'larger', parentId: 'full' },
-      { title: '左弹', attr: 'left', type: 'fff-primary', size: 'larger', parentId: 'full' },
-      { title: '右弹', attr: 'right', type: 'fff-primary', size: 'larger', parentId: 'full' },
+      { title: '顶弹', attrs: 'top', type: 'fff-primary', size: 'larger', parentId: 'full' },
+      { title: '底弹', attrs: 'bot', type: 'fff-primary', size: 'larger', parentId: 'full' },
+      { title: '左弹', attrs: 'left', type: 'fff-primary', size: 'larger', parentId: 'full' },
+      { title: '右弹', attrs: 'right', type: 'fff-primary', size: 'larger', parentId: 'full' },
     ]
   },
 ]
@@ -46,7 +46,7 @@ const adpeteractionSide = (res) => {
           },
         ],
         itemClass: ('mb-20-r btn-' + itemxx.type) + (itemxx.size ? ' btn-' + itemxx.size : ''),
-        aim: 'openBar?direction=' + itemxx.attr,
+        aim: 'openBar?type='+item.id+'&&direction=' + itemxx.attrs,
         parent: item.id
       })
     })
@@ -85,6 +85,7 @@ Pager({
   },
   openBar: function(e, query, inst) {
     const theAim = query.direction.replace(/_/g,"/")
+    const type = query.type
     const aside1 = this.getElementsById('actionSide1')
     if (theAim) {
       switch (theAim) {
@@ -92,7 +93,7 @@ Pager({
           (()=>{
             const direction = theAim || 'right'
             aside1.reset()[direction]({
-            itemClass: 'bar',
+            itemClass: type&&type == 'full' ? '' : 'bar',
             title: [
               {title: '弹窗1', class: 'h2'},
               {title: '支持多弹窗，灵活属性设置可以实现多种弹窗效果', class: 'h6', style: 'margin: 0 0 50rpx 0;'},
