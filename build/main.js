@@ -109,17 +109,16 @@ ${modeDist}
   }
 }
 
-function* proxyServer(compilerConfig, options) {
-  // const vport = yield validPort(options.port)
-  yield devProxy(compilerConfig, options)
+function* proxyServer(compilerConfig, assets) {
+  yield devProxy(compilerConfig, assets)
   yield sleep(3000)
-  checkIsXcx(options)
+  checkIsXcx(assets)
 }
 
-function* wpDevServers(compilerConfig, options) {
-  yield devServer(compilerConfig, options)
+function* wpDevServers(compilerConfig, assets) {
+  yield devServer(compilerConfig, assets)
   yield sleep(3000)
-  checkIsXcx(options)
+  checkIsXcx(assets)
 }
 
 // 启动服务前检查端口 portOccupied
@@ -127,10 +126,11 @@ function* startOneProjectDevServer(startDevQueues) {
   if (startDevQueues.length) {
     for (let ii=0; ii<startDevQueues.length; ii++) {
       let {compilerConfig, options} = startDevQueues[ii]
-      const portUsed = yield portOccupied(options.port)
-      
-      if (!portUsed) {
+      const opts = options.options
+      const xcxcloud = opts.cloud && isMiniapp(options)
 
+      const portUsed = yield portOccupied(options.port)
+      if (!portUsed) {
         /**
          * 设置argv
          * 作为单项目配置的argv参数
@@ -140,7 +140,11 @@ function* startOneProjectDevServer(startDevQueues) {
         const SRC = options.SRC
         const serverPath = path.join(SRC, 'server')
         if (fs.existsSync(serverPath) && options.server) {
-          yield proxyServer(compilerConfig, options)
+          if (xcxcloud) {
+            yield wpDevServers(compilerConfig, options)
+          } else {
+            yield proxyServer(compilerConfig, options)
+          }
         } else {
           yield wpDevServers(compilerConfig, options)
         }
@@ -245,7 +249,7 @@ function *getScenesConfig(asset) {
 // main启动某个有效的项目
 function* buildOneProject(config, build_asset, envAttributs) {
   const {isDev, argv, TYPE} = build_asset
-  if (TYPE == 'mp') {
+  if (isMiniapp(build_asset)) {
     const xcxConfig = configs_wp_main(build_asset, envAttributs, 'xcx')
     yield buildXcxFiles(build_asset, xcxConfig)
   } else {
@@ -419,22 +423,6 @@ module.exports = function* main(assets, opts) {
       continue;
     }
 
-    // if (!build_asset.DIST) {
-    //   const dest = configs_aotoo.dist
-    //   const distEnv = build_asset.isDev ? 'dev' : 'pro'
-    //   const newDist = path.join(dest, build_asset.name, build_asset.version, distEnv)
-    //   build_asset.DIST = newDist
-    // }
-
-    // if (argv_name) {
-    //     build_asset.startup = config.startup
-    //   // if (argv_name.indexOf(config.name) > -1) {
-    //   //   build_asset.startup = true
-    //   // } else {
-    //   //   build_asset.startup = false
-    //   // }
-    // }
-
     // 是否为小程序
     // 是否需要初始化小程序目录
     if (isMiniapp(build_asset)) {
@@ -444,8 +432,15 @@ module.exports = function* main(assets, opts) {
 
     // 生成server目录
     // @aotoo/aotoo-koa-server
-    if (build_asset.startup) {
-      if ((argv_name && Commonds.server) || config.server) {
+    // if (build_asset.startup) {
+    //   if ((argv_name && Commonds.server) || config.server) {
+    //     yield generateServer(build_asset)
+    //   }
+    // }
+    if ((argv_name && Commonds.server) || config.server) {
+      if (isMiniapp(build_asset) && build_asset.options && build_asset.options.cloud) {
+        /** do nothing with xcx cloud development*/
+      } else {
         yield generateServer(build_asset)
       }
     }

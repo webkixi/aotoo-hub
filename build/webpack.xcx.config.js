@@ -4,13 +4,15 @@ var os = require('os')
 var _  = require('lodash')
 var webpack = require('webpack')
 var path = require('path')
+const xcxCloudProjectConfigFile = path.join(__dirname, './lib/xcx_template/project.config.json')
 var MiniCssExtractPlugin = require('mini-css-extract-plugin')
   , HappyPack = require('happypack')
   , happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })  // 构造一个线程池
   , aotooConfigs = process.aotooConfigs
   , globby = require('globby')
   , { ConcatSource, OriginalSource, RawSource } = require("webpack-sources")
-  , CopyPlugin = require('copy-webpack-plugin');
+  , CopyPlugin = require('copy-webpack-plugin')
+  , projectConfig = require(xcxCloudProjectConfigFile)
 
 
 
@@ -29,7 +31,8 @@ class appendCommonFile {
   apply(compiler) {
     const that = this
     const options = this.options
-    const {DIST} = options
+    const opts = options.options
+    const cloud = opts&&opts.cloud
     const windowRegExp = new RegExp('window', 'g');
 
     compiler.hooks.compilation.tap('wpConcatFile', (compilation, params) => {
@@ -69,7 +72,7 @@ class appendCommonFile {
                 }
                 let posixPathFile = posixPath + 'runtime.js'
                 let contentSource = this.contentSource.replace('~~~~', posixPathFile)
-                if (chunk.name == 'runtime') {
+                if (chunk.name.indexOf('runtime') > -1) {
                   posixPathFile = posixPath + 'common.js'
                   if (hasCommon) {
                     contentSource = this.contentSource.replace('~~~~', posixPathFile)
@@ -85,7 +88,7 @@ class appendCommonFile {
                 compilation.assets[file] = new ConcatSource(
                   contentSource,
                   '\n',
-                  '\/**aotoo commonfile**\/',
+                  '\/**auto import common&runtime js**\/',
                   '\n',
                   contentObj,
                 );
@@ -110,12 +113,19 @@ class DoneCompile {
   }
   apply(compiler){
     compiler.hooks.done.tap('xcxCompiler', (stats)=>{
-      const DIST = this.options.DIST
+      const {DIST, options} = this.options
+      const {cloud, appid} = options
       globby.sync([path.join(DIST, '**/*')], {onlyFiles: false}).forEach(filename=>{
         if (filename.indexOf('nobuild__') > -1) {
           fse.removeSync(filename)
         }
       })
+
+      if (cloud) {
+        const projectConfigFile = path.join(DIST, 'project.config.json')
+        projectConfig.appid = appid || ""
+        fse.outputJsonSync(projectConfigFile, projectConfig)
+      }
     })
   }
 }
@@ -123,10 +133,11 @@ class DoneCompile {
 function jsEntries(dir) {
   var jsFiles = {}
   let _partten = /[\/|\\][_](\w)+/;
+  let re_common = /(.*)\/common\//
   const accessExts = ['.wxml', '.wxss', '.styl', '.wxs', '.json', '.png', '.jpg', '.jpeg', '.gif']
   if (fse.existsSync(dir)) {
-    globby.sync([`${dir}/**/*`, '!node_modules', `!${dir}/dist`]).forEach(function (item) {
-      if (item.indexOf('/js/common/') == -1) {
+    globby.sync([`${dir}/**/*`, `!${dir}/js/**/cloudfunctions`, '!node_modules', `!${dir}/dist`]).forEach(function (item) {
+      if (!re_common.test(item)) {
         if (!_partten.test(item)) {
           const fileObj = path.parse(item)
           const xcxSrc = path.join(dir, 'js')
@@ -170,12 +181,14 @@ function fileLoaderConfig(asset, ext) {
 }
 
 function baseConfig(asset, envAttributs) {
-  const {TYPE, DIST, SRC, isDev} = asset
+  let   {TYPE, DIST, SRC, isDev, options} = asset
   const isXcx = TYPE == 'mp'
   const isWechat = isXcx
   const isAli = TYPE == 'ali'
+  const cloud = options.cloud
   const alias = require('./webpack.alias.config')(aotooConfigs, asset)
   const relativeFileLoader = (ext = '[ext]') => fileLoaderConfig(asset, ext)
+  DIST = cloud ? path.join(DIST, 'miniprogram') : DIST
 
   let myEntries = jsEntries(SRC)
 
@@ -206,7 +219,16 @@ function baseConfig(asset, envAttributs) {
       splitChunks: {
         cacheGroups: {
           common: { // 抽离自己写的公共代码，utils这个名字可以随意起
-            test: /\.js(x?)/,
+            // test: /\.js(x?)/,
+            test(module, chunks) {
+              const re = /.js(x?)$/
+              const re_funs = /cloudfunctions/
+              if (cloud) {
+                return re.test(chunks.name) && !re_funs.test(chunks.name)
+              } else {
+                return re.test(chunks.name)
+              }
+            },
             chunks: 'all',
             name: 'common', // 任意命名
             minSize: 50000, // 只要超出0字节就生成一个新包
@@ -288,7 +310,7 @@ function baseConfig(asset, envAttributs) {
       extensions: ['.js', '.styl', '.wxml', '.wxss', '.css', '.json', '.md', '.png', '.jpg', '.jpeg', '.gif']
     },
     plugins: [
-      new appendCommonFile({...asset}),
+      new appendCommonFile(asset),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': isDev ? JSON.stringify('development') : JSON.stringify('production'),
         '__DEV__': true
@@ -317,15 +339,33 @@ function baseConfig(asset, envAttributs) {
         threadPool: happyThreadPool
       }),
       new webpack.optimize.ModuleConcatenationPlugin(),
-      new CopyPlugin([
-        {
+      new CopyPlugin((()=>{
+        let copycfg =  [{
           from: '**/*.json',
           to: DIST,
+          ignore: ['cloudfunctions/**/*', 'project.config.json'],
           context: path.join(SRC, 'js'),
           copyUnmodified: true
+        }]
+        if (cloud) {
+          copycfg = copycfg.concat([
+            {
+              from: 'cloudfunctions/**/*',
+              to: path.join(DIST, '../cloudfunctions'),
+              context: path.join(SRC, 'js'),
+              copyUnmodified: true
+            }, 
+            // {
+            //   from: 'project.config.json',
+            //   to: path.join(DIST, '../'),
+            //   context: path.join(SRC, 'js'),
+            //   copyUnmodified: true
+            // },
+          ])
         }
-      ], { context: SRC }),
-      new DoneCompile({DIST})
+        return copycfg
+      })(), { context: SRC }),
+      new DoneCompile(asset)
     ]
   }
 }

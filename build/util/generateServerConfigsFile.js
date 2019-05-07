@@ -42,6 +42,7 @@ module.exports = function (opts) {
     const sceneConfig = require('${scenePath}')(asset)
     targetConfig = Object.assign({}, targetConfig, sceneConfig)
   }
+  targetConfig.env = asset
   if (typeof wx == 'undefined') {
     global.Configs = global.CONFIG = targetConfig
   } else {
@@ -93,7 +94,7 @@ module.exports = function (opts) {
   return asset
 }
 `
-    fs.writeFileSync(path_config_file, configsContent, 'utf-8')
+    fse.outputFileSync(path_config_file, configsContent)
     return res(true)
   })
 
