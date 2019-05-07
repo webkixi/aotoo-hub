@@ -4,264 +4,132 @@ const app = getApp()
 const Pager = require('components/aotoo/core')
 // import createActionSide from 'components/actionside'
 
-function createActionSide(params) {
-  return params
-}
 
-const aside1 = createActionSide({
-  id: 'aside1',
-  title: [
-    {title: '关闭我', aim: 'close'},
-    {title: '打开新侧弹', aim: 'open_new'},
-  ]
-})
-
-const aside2 = createActionSide({
-  id: 'aside2',
-  title: 'haha modal',
-  aim: 'close_1'
-})
-
-const menuListData = [
+const data = [
   {
-    title: [{
-        img: {
-          src: 'https://img13.360buyimg.com/n7/jfs/t1/3/15/4536/138660/5b997bf8Ed72ebce7/819dcf182d743897.jpg',
-          class: 'item-pic-45 mr10'
-        },
-      },
-      {
-        title: '99',
-        class: 'icon-dot icon-dot-more'
-      }
-    ],
-    li: [{
-      body: [{
-          title: {
-            title: '我是标题',
-            class: 'item-title'
-          }
-        },
-        {
-          title: {
-            title: '12:22',
-            class: 'item-time'
-          }
-        }
-      ],
-      footer: [{
-          title: {
-            title: '简介简介简介简介简介',
-            class: 'item-desc'
-          }
-        },
-        {
-          icon: {
-            class: 'item-icon icon-apptubiao-110'
-          }
-        }
-      ]
-    }]
+    title: 'Basic 基础组件',
+    id: 'basic',
+    list: [
+      { title: 'Button', attr: 'button', littleTitle: '按钮 ' },
+      { title: 'Utility', attr: 'utility', littleTitle: '工具类 ' },
+      { title: 'Tag', attr: 'tag', littleTitle: '标签 ' },
+      { title: 'Article', attr: 'article', littleTitle: '文章 ' },
+    ]
   },
   {
-    img: {
-      src: 'https://img13.360buyimg.com/n7/jfs/t1/3/15/4536/138660/5b997bf8Ed72ebce7/819dcf182d743897.jpg',
-      class: 'item-pic-45 mr10'
-    },
-    li: [{
-      body: [{
-          title: {
-            title: '我是标题',
-            class: 'item-title'
-          }
-        },
-        {
-          title: {
-            title: '12:22',
-            class: 'item-time'
-          }
-        }
-      ],
-      footer: [{
-          title: {
-            title: '简介简介简介简介简介',
-            class: 'item-desc'
-          }
-        },
-        {
-          icon: {
-            class: 'item-icon icon-apptubiao-110'
-          }
-        }
-      ]
-    }],
-    dot: [{
-      title: {
-        title: '99',
-        class: 'icon-dot icon-dot-more'
-      }
-    }]
+    title: 'List 列表',
+    id: 'list',
+    list: [
+      { title: 'Image-text', attr: 'list', littleTitle: '图文列表 ' },
+    ]
   },
   {
-    img: {
-      src: 'https://img13.360buyimg.com/n7/jfs/t1/3/15/4536/138660/5b997bf8Ed72ebce7/819dcf182d743897.jpg',
-      class: 'item-pic-45 mr10'
-    },
-    li: [{
-      body: [{
-          title: {
-            title: '我是标题',
-            class: 'item-title'
-          }
-        },
-        {
-          title: {
-            title: '12:22',
-            class: 'item-time'
-          }
-        }
-      ],
-      footer: [{
-          title: {
-            title: '简介简介简介简介简介',
-            class: 'item-desc'
-          }
-        },
-        {
-          icon: {
-            class: 'item-icon icon-apptubiao-110'
-          }
-        }
-      ]
-    }],
-    dot: [{
-      title: {
-        title: '2',
-        class: 'icon-dot icon-dot-small'
-      }
-    }]
+    title: 'Feedback 操作反馈',
+    id: 'feedback',
+    list: [
+      { title: 'Modal', attr: 'modal', littleTitle: '弹出层 ' },
+    ]
   },
   {
-    img: {
-      src: 'https://img13.360buyimg.com/n7/jfs/t1/3/15/4536/138660/5b997bf8Ed72ebce7/819dcf182d743897.jpg',
-      class: 'item-pic-45 mr10'
-    },
-    li: [{
-      body: [{
-          title: {
-            title: '我是标题',
-            class: 'item-title'
-          }
-        },
-        {
-          title: {
-            title: '12:22',
-            class: 'item-time'
-          }
-        }
-      ],
-      footer: [{
-          title: {
-            title: '简介简介简介简介简介',
-            class: 'item-desc'
-          }
-        },
-        {
-          icon: {
-            class: 'item-icon icon-apptubiao-110'
-          }
-        }
-      ]
-    }],
-    dot: [{
-      title: {
-        title: '',
-        class: 'icon-dot'
-      }
-    }]
+    title: 'Form 表单',
+    id: 'form',
+    list: [
+      { title: 'Input', attr: 'input', littleTitle: '文本类 ' },
+      { title: 'Number', attr: 'number', littleTitle: '数字类 ' },
+      { title: 'Icon', attr: 'icon', littleTitle: 'icon替代标题文字 ' },
+      { title: 'Switch', attr: 'switch', littleTitle: '开关 ' },
+      { title: 'Union', attr: 'union', littleTitle: '联动 ' },
+      { title: 'Checkbox', attr: 'checkbox', littleTitle: '多选择框 ' },
+      { title: 'Radio', attr: 'radio', littleTitle: '单选择框 ' },
+      { title: 'Slider', attr: 'slider', littleTitle: '滑动选取器 ' },
+      { title: 'Single-picker', attr: 'singlepicker', littleTitle: '单层弹层选择器 ' },
+      { title: 'Multipy-picker', attr: 'multipypicker', littleTitle: '多层弹层选择器 ' },
+      { title: 'Dropdown', attr: 'dropdown', littleTitle: '下拉菜单 ' },
+    ]
+  },
+  {
+    title: 'Yc',
+    id: 'yc',
+    list: [
+      { title: 'Swiper', attr: 'swiper', littleTitle: '轮播 ' },
+      { title: 'Sidescroll', attr: 'sidescroll', littleTitle: '滚动 ' },
+      { title: 'Stickybar', attr: 'stickybar', littleTitle: '轮播 ' },
+    ]
   }
 ]
 
+const adapterMenu = (res) => {
+  let output = []
+  res.map( item => {
+    output.push({
+      title: {
+        title: item.title,
+        itemClass: 'bg-title'
+      },
+      idf: item.id,
+      liClass: 'bg-fff list-bb bb-default'
+    })
+    item.list.map( itemxx => {
+      output.push({
+        title: [
+          {title: itemxx.title},
+          {title: itemxx.littleTitle, itemClass: 'icon-arrows-r color-grey'}
+        ],
+        titleClass: 'item-border flex-row-between-center',
+        parent: item.id,
+        itemClass: 'item ss-focus',
+        tap: item.id == 'form' ? 'onTap?demo='+item.id+'_'+itemxx.attr : 'onTap?demo=ui_'+itemxx.attr
+        // tap: 'onTap?demo='+item.id+'/'+itemxx.attr
+      })
+    })
+  })
+  return output
+}
 
 Pager({
   data: {
-    menuData: Pager.list({
-      data: [
-        { title: [
-            {title: 'string', class: 'item' },
-            {title: '简单字符', class: 'item icon-arrows-a-r color-999', aim: 'demo-string'},
-        ]},
-        { title: [
-            {title: 'response', class: 'item' },
-            {title: '响应标签', class: 'item icon-arrows-a-r color-999', aim: 'demo-link'},
-        ]},
-        { title: [
-            {title: 'icon', class: 'item' },
-            {title: '小图标', class: 'item icon-arrows-a-r color-999', aim: 'demo-icon'},
-        ]},
-        { title: [
-            {title: 'longpress', class: 'item' },
-            {title: '长按响应', class: 'item icon-arrows-a-r color-999', aim: 'demo-longpress'},
-        ]},
-        { title: [
-            {title: 'titles', class: 'item' },
-            {title: '一组title', class: 'item icon-arrows-a-r color-999', aim: 'demo-titles'},
-        ]},
-        { title: [
-            {title: 'pic', class: 'item' },
-            {title: '图片', class: 'item icon-arrows-a-r color-999', aim: 'demo-onepic'},
-        ]},
-        { title: [
-            {title: 'pics', class: 'item' },
-            {title: '图片组', class: 'item icon-arrows-a-r color-999', aim: 'demo-pics'},
-        ]},
-        { title: [
-            {title: 'sort', class: 'item' },
-            {title: '自定义排序', class: 'item icon-arrows-a-r color-999', aim: 'demo-sort'},
-        ]},
-        { title: [
-            {title: 'list', class: 'item' },
-            {title: '列表文档', class: 'item icon-arrows-a-r color-999', aim: 'demo-list'},
-        ]},
-        { title: [
-            {title: 'tree', class: 'item' },
-            {title: '树结构', class: 'item icon-arrows-a-r color-999', aim: 'demo-tree'},
-        ]},
-        { title: [
-            {title: 'actionSide', class: 'item' },
-            {title: '侧弹', class: 'item icon-arrows-a-r color-999', aim: 'demo-as'},
-        ]},
-        { title: [
-            {title: 'otherComponent', class: 'item' },
-            {title: '自定义组件', class: 'item icon-arrows-a-r color-999', aim: 'demo-component'},
-        ]},
-        { title: [
-            {title: 'tab', class: 'item' },
-            {title: '自定义组件', class: 'item icon-arrows-a-r color-999', aim: 'demo-tab'},
-        ]},
-        { title: [
-            {title: 'list', class: 'item' },
-            {title: '新列表', class: 'item icon-arrows-a-r color-999', aim: 'demo-newlist'},
-        ]},
-        { title: [
-            {title: 'form', class: 'item' },
-            {title: '表单', class: 'item icon-arrows-a-r color-999', aim: 'demo-form'},
-        ]},
+    headLogo: Pager.item({
+      img: {
+        src: 'http://agzgz.com/myimgs/logo.png',
+        itemClass: 'logo-size'
+      },
+      title: [
+        {
+          title: 'Saui',
+          itemClass: 'size20 color-active mt-10-r'
+        },
+        {
+          title: 'Saui是基于Aotoo而来。如需详细了解，可打开www.agzgz.com',
+          itemClass: 'size12 color-grey'
+        }
       ],
-      itemClass: 'li item-normal',
-      listClass: 'ul'
+      titleClass: 'ss-center plr-default',
+      itemClass: 'flex-column-start-center mtb-20-r'
     }),
-
-    aside1,
-    aside2,
+    menuData: Pager.tree({
+      $$id: 'sstree',
+      type: {
+        is: "scroll"
+      },
+      data: adapterMenu(data)
+    }),
   },
 
   onLongPress: function(e, inst) {
     Pager.alert('我是长按响应')
   },
 
-  onTap: function(e, inst) {
-
+  onTap: function(e, query, inst) {
+    const theTap = query.demo.replace(/_/g,"/")
+    if (theTap) {
+      switch (theTap) {
+        case theTap:
+          wx.navigateTo({
+            url: '../../demo/'+theTap+'/index'
+          })
+        break;
+      }
+    }
   },
 
   oktapme: function(e) {
@@ -285,115 +153,13 @@ Pager({
     const theAim = currentDset.aim
     const aside1 = this.getElementsById('aside1')
     const aside2 = this.getElementsById('aside2')
-    
     if (theAim) {
       switch (theAim) {
-        case 'demo-string':
-          wx.navigateTo({
-            url: '../demo/index?demo=string'
-          })
-          break;
-        case 'demo-link':
-          wx.navigateTo({
-            url: '../demo/index?demo=link'
-          })
-          break;
-        case 'demo-icon':
-          wx.navigateTo({
-            url: '../demo/index?demo=icon'
-          })
-          break;
-        case 'demo-longpress':
-          wx.navigateTo({
-            url: '../demo/index?demo=longpress'
-          })
-          break;
-
-        case 'demo-titles':
-          wx.navigateTo({
-            url: '../demo/index?demo=titles'
-          })
-          break;
-        case 'demo-onepic':
-          wx.navigateTo({
-            url: '../demo/index?demo=pic'
-          })
-          break;
-
-        case 'demo-pics':
-          wx.navigateTo({
-            url: '../demo/index?demo=pics'
-          })
-          break;
-
-        case 'demo-sort':
-          wx.navigateTo({
-            url: '../demo/index?demo=sort'
-          })
-          break;
-
-        case 'demo-list':
-          wx.navigateTo({
-            url: '../demo/index?demo=list'
-          })
-          break;
-
-        case 'demo-tree':
-          wx.navigateTo({
-            url: '../demo/index?demo=tree'
-          })
-          break;
-
-        case 'demo-demo':
-          wx.navigateTo({
-            url: '../demo/index?demo=tree'
-          })
-          break;
-
-        case 'demo-as':
-          wx.navigateTo({
-            url: '../demo/index?demo=actionSide'
-          })
-          break;
-
-        case 'demo-component':
-          wx.navigateTo({
-            url: '../demo/index?demo=component'
-          })
-          break;
-
-        case 'demo-tab':
-          // wx.navigateTo({
-          //   url: '../demo/index?demo=tab'
-          // })
-          wx.navigateTo({
-            url: '../demo/tab/index'
-          })
-          break;
-
-        case 'demo-newlist':
-          wx.navigateTo({
-            url: '../../demo/ui/list/index'
-          })
-          break;
-
-        case 'demo-form':
-          wx.navigateTo({
-            url: '../../demo/form/index/index'
-            // url: '../../demo/form/union/index'
-            // url: '../demo/form/index'
-          })
-          break;
-      
         default:
           aside1.right()
           break;
       }
 
-      // if (theAim == 'open') aside1.right()
-      // if (theAim == 'open_new') aside2.show()
-      // if (theAim == 'close') aside1.hide()
-      // if (theAim == 'close_1') aside2.hide()
     }
   },
   

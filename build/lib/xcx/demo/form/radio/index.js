@@ -15,8 +15,7 @@ const formData = {
           title: '请选择',
           value: '3',
           values: ['1','2','3','4'],
-          titles: ['A', 'B', 'C', 'D'],
-          itemClass: 'mt-8-r'
+          titles: ['篮球', '足球', '羽毛球', '乒乓球'],
         },
         {
           name: 'test_radio1',
@@ -24,8 +23,7 @@ const formData = {
           title: '请选择',
           value: '2',
           values: ['1', '2', '3', '4'],
-          titles: ['A', 'B', 'C', 'D'],
-          itemClass: 'mt-8-r',
+          titles: ['篮球', '足球', '羽毛球', '乒乓球'],
           error: '出错信息',
           desc: '红字是出错提示，这里是提示信息'
         },
@@ -39,7 +37,6 @@ const formData = {
           type: 'text',
           title: '标题',
           placeholder: '响应单选框选中的内容',
-          itemClass: 'mt-8-r'
         },
         {
           name: 'test_radio1',
@@ -47,8 +44,7 @@ const formData = {
           title: '请选择',
           value: '1',
           values: ['1', '2', '3', '4'],
-          titles: ['A', 'B', 'C', 'D'],
-          itemClass: 'mt-8-r',
+          titles: ['篮球', '足球', '羽毛球', '乒乓球'],
           desc: '点击选择触发响应事件',
           bindchange: 'bbb'
         },
@@ -82,24 +78,19 @@ Pager({
   bbb: function (e, param, ctx) {
     if (param){
       const inputData = param.inputData
-      switch (inputData.value) {
-        case '1':
-          ctx.value('test_text', {value: '您选中了A'})
-          break;
-        case '2':
-          ctx.value('test_text', {value: '您选中了B'})
-          break;
-        case '3':
-          ctx.value('test_text', {value: '您选中了C'})
-          break;
-        case '4':
-          ctx.value('test_text', {value: '您选中了D'})
+      const iValue = ['篮球', '足球', '羽毛球', '乒乓球'][inputData.value - 1]
+      console.log(iValue)
+      switch (iValue) {
+        case iValue:
+          ctx.value('test_text', {value: '您选中了'+iValue})
           break;
       }
     }
   },
   setError: function (e, param, ctx) {
+    console.log('---------')
     const tc1 = ctx.value('test_radio1')
+    console.log(tc1.value)
     if (tc1 && tc1.value == "3" ) {
       ctx.removeWarn('test_radio1')
       ctx.addDesc('test_radio1', '您选择了正确答案，试试选择其他答案')

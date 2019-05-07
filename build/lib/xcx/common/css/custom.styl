@@ -1,3 +1,4 @@
+
 /*
   custom.styl
     不知道放在哪个样式表的，
@@ -6,6 +7,7 @@
   -------------------------------------lgh
 */
 
+
 slider
   margin: 0
 
@@ -13,8 +15,59 @@ slider
   &:focus, &:active
     background: #eee
 
+/*
+  next-p100 主要是生成结构时，会产出ui-item 或ui-list等标签去包住具体的结构
+    但是不是所有的都需要去添加 -。-！！！
+*/
+.next-p100  
+  >ui-item     //list/normal 暂定
+    height: 100%
+.next-p100-first 
+  >ui-item
+    &:first-child
+      height: 100%
+
 .flex-1
   flex: 1
+
+.ss-center
+  text-align: center
+
+.pages-wrap-default
+  height: 100vh
+  padding: $padding-default
+
+
+//
+.boxer
+  background: $color-bg
+  color: $color-default
+  font-size: $size-primary
+  height: 100vh
+
+//小程序用到@extens 注意： a:无法引用其它样式表的，b：要不然得放在这个样式表：如下
+
+.title-primary-grey
+  color: $color-grey
+  font-size: $size-primary
+.title-lg-active
+  color: $color-active
+  font-size: $size-lg
+
+.bg-title
+  border-bottom: 2rpx solid $color-border
+  background: $color-bg
+  color: $color-grey
+  line-height: $line-height-title
+  padding: $plr-default
+
+.bg-display
+  border-radius: $br-sm
+  box-sizing: border-box;
+  padding: $padding-default
+  height: 160rpx
+
+
 
 //带背景色标题
 .bg-title-f3f3f3
@@ -39,3 +92,84 @@ slider
 .item-descx
   color: #999
   font-size: 14px
+
+.as-common
+  background-color #FAFAFA
+  width 98vw
+  height 100%
+  // min-height 98vh
+  padding 1vw
+  // padding 10rpx
+  &.moveit
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  &.bar
+    &.moveit
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+
+.actionMask
+  position absolute
+  top: 0;
+  left: 0
+  display none
+  width 100vw
+  height 100vh
+  background-color fade-out(#000,  0.5)
+  &.show
+    display block
+
+.actionSide
+  @extends .as-common
+  position absolute
+  right -100vw
+  top 0
+  transition: all 0.2s ease
+  &.bar
+    width 60vw
+  &.moveit
+    transform: translate3d(-100vw, 0, 0);
+
+.actionSide-left
+  @extends .as-common
+  position absolute
+  left -100vw
+  top 0
+  transition: all 0.2s ease
+  &.bar
+    width 60vw
+  &.moveit
+    transform: translate3d(100vw, 0, 0);
+
+.actionSide-bot
+  @extends .as-common
+  position absolute
+  left 0
+  bottom -100vh
+  transition: all 0.2s ease
+  &.bar
+    height 60vh
+    &.moveit
+      transform: translate3d(0, -60vh, 0);
+  &.moveit
+    transform: translate3d(0, -100vh, 0);
+
+.actionSide-top
+  @extends .as-common
+  position absolute
+  left 0
+  top -100vh
+  transition: all 0.2s ease
+  &.moveit
+    transform: translate3d(0, 100vh, 0);
+  &.bar
+    top -40vh
+    min-height 40vh
+    height 40vh
+    &.moveit
+      transform: translate3d(0, 40vh, 0);
+
+.closeIt
+  position absolute
+  font-size 48rpx
+  top 10rpx
+  right: 10rpx
+  color: #C1CDCD

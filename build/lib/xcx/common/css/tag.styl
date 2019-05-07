@@ -1,6 +1,37 @@
-.tag-fff-ff7e11
-  ss-tag(#fff, 1px solid fade-out(#ff7e11, .7), #ff7e11, 4rpx, 6rpx, 26rpx, 11px, 0, $isflex = true)
-  line-height: 26rpx
-.tag-fff-ff5552
-  ss-tag(#fff, 1px solid fade-out(#ff5552, .7), #ff5552, 4rpx, 6rpx, 26rpx, 11px, 0, $isflex = true)
-  line-height: 26rpx
+
+//背景色，边线色一致，字体默认白色
+.tag-primary
+  ss-tag($tag-primary-color, 1px solid $tag-primary-color, #fff, $tag-br, 0 6rpx, 30rpx, 11px, 30rpx)
+.tag-default
+  @extends .tag-primary
+  background: $tag-default-color
+  border-color: $tag-default-color
+.tag-minor
+  @extends .tag-primary
+  background: $tag-minor-color
+  border-color: $tag-minor-color
+.tag-special
+  @extends .tag-primary
+  background: $tag-special-color
+  border-color: $tag-special-color
+
+//背景色默认白色 边线跟文字统一色
+.tag-fff-primary
+  ss-tag(#fff, 1px solid fade-out($tag-primary-color, .7), $tag-primary-color, $tag-br, 0 6rpx, 30rpx, 11px, 30rpx)
+.tag-fff-default
+  @extends .tag-fff-primary
+  border-color: fade-out($tag-default-color, .7)
+  color: $tag-default-color
+.tag-fff-minor
+  @extends .tag-fff-primary
+  border-color: fade-out($tag-minor-color, .7)
+  color: $tag-minor-color
+.tag-fff-special
+  @extends .tag-fff-primary
+  border-color: fade-out($tag-special-color, .7)
+  color: $tag-special-color
+
+//色值统一， 背景色透明度降 边线透明
+.tag-work-default
+  ss-tag(fade-out($tag-default-color, .9), 1px solid transparent, $tag-default-color, $tag-br, 0 6rpx, 30rpx, 11px, 30rpx)
+  

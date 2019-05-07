@@ -8,6 +8,7 @@ const formData = {
   data: [
     {
       title: '类目3',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'test_switch1',
@@ -20,6 +21,7 @@ const formData = {
           type: 'switch',
           title: '切换按钮',
           value: true,
+          color: '#4b9afc',
           bindchange: 'switchAction'
         },
         {
@@ -30,16 +32,15 @@ const formData = {
         },
       ]
     },
-
     {
       title: '动态表单',
+      itemClass: 'card-bg switch-sm ',
       input: [
         {
           id: 'test_text',
           type: 'text',
           title: '标题',
           placeholder: '单选框选择以动态设置该文本框内容',
-          itemClass: 'mt-8-r'
         },
         {
           id: 'test_switch4',

@@ -1,0 +1,4 @@
+<view class="boxer">
+  <ui-item item="{{motto}}" />
+  <action-side item="{{actionSide}}" />  
+</view>

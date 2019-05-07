@@ -8,8 +8,17 @@ const formData = {
   $$id: 'formInst',
   data: [
     {
-      title: '类目2',
-      itemClass: 'oooo',
+      title: [
+        {
+          title: '类目2',
+        },
+        {
+          title: '为方便供应商及时与您联系，请准确填写联系人信息',
+          itemClass: 'size12 fw-normal'
+        }
+      ],
+      titleClass: 'xxx',
+      itemClass: 'card-bg',
       input: [
         {type: 'number', title: '整数型', placeholder: '数字输入键盘'},
         {type: 'idcard', title: '身份证', placeholder: '身份证输入键盘'},
@@ -19,18 +28,19 @@ const formData = {
     },
     {
       title: '类目3',
+      itemClass: 'card-bg',
       input: [
         {
           type: 'number', placeholder: '数字输入键盘',
           title: {
-            '@icon': {class: 'icon-menu-1 mr-10-r size16 color-227ce1'},
+            '@icon': {class: 'icon-menu-1 mr-10-r size16 color-primary'},
             itemStyle: 'text-align: center; margin-top: -5rpx'
           }
         },
         {
           type: 'idcard', placeholder: '身份证输入键盘',
           title: {
-            '@icon': { class: 'icon-3 mr-10-r size16 color-227ce1' },
+            '@icon': { class: 'icon-3 mr-10-r size16 color-primary' },
             itemStyle: 'text-align: center; margin-top: -5rpx'
           }
         },

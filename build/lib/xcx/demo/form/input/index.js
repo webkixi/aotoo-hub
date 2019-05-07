@@ -9,6 +9,7 @@ const formData = {
   data: [
     {
       title: '文本类表单元素',
+      itemClass: 'card-bg',
       input: [
         {type: 'text', id: 'username', title: '用户名', placeholder: '请输入用户名' },
         {type: 'text', id: 'email', title: '邮  箱', error: '错误提示信息', placeholder: '接收信息的安全邮箱'},
@@ -17,6 +18,7 @@ const formData = {
     },
     {
       title: '动态表单',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'fillit', type: 'text', title: '标题', placeholder: '选择下列列表项内容',
@@ -77,7 +79,8 @@ const formData = {
 
 Pager({
   data: {
-    motto: formData
+    motto: formData,
+    listClass: 'xxxx'
   },
   oktapme: function (e, param={}, ctx) {
     const formInst = this.getElementsById('formInst')

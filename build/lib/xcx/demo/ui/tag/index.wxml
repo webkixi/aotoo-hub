@@ -1,0 +1,3 @@
+<view class="boxer">
+  <ui-item item="{{motto}}" />
+</view>

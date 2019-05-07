@@ -1,14 +1,14 @@
 
-ss-tag($backgroud = #fff, $border = 1px solid #ccc,$color = #333, $border-radius = 0, $padding-left = 8px, $height = 18px, $font-size = 12px, $padding-top = 0, $isflex = true)
+ss-tag($backgroud = #fff, $border = 1px solid #ccc,$color = #333, $border-radius = 0, $padding = 0 8px, $height = 18px, $font-size = 12px, $line-height = 18px, $isflex = true)
   background: $backgroud
   border: $border
+  border-radius: $border-radius
   color: $color
   font-size: $font-size
   font-style: normal
-  padding: $padding-top $padding-left
+  padding: $padding
   height: $height
-  // line-height: $height
-  line-height: normal
+  line-height: $line-height
   box-sizing: initial;        //可使height不等于hei+ padding
   // if ($isflex == true)
   //   ss-display-flex(row nowrap, flex-start, center, center)

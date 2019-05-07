@@ -7,47 +7,47 @@ const listData = Pager.list({
   data: [
     { title: [
         {title: 'input', class: 'item' },
-        {title: '文本类表单', class: 'item icon-arrows-a-r color-999', aim: 'form-input'},
+        {title: '文本类表单', class: 'item icon-arrows-r color-999', aim: 'form-input'},
     ]},
     { title: [
         {title: 'number', class: 'item' },
-        {title: '数字类表单', class: 'item icon-arrows-a-r color-999', aim: 'form-number'},
+        {title: '数字类表单', class: 'item icon-arrows-r color-999', aim: 'form-number'},
     ]},
     { title: [
         {title: 'icon', class: 'item' },
-        {title: '表单头部使用icon', class: 'item icon-arrows-a-r color-999', aim: 'form-icon'},
+        {title: '表单头部使用icon', class: 'item icon-arrows-r color-999', aim: 'form-icon'},
     ]},
     { title: [
         {title: 'switch', class: 'item' },
-        {title: 'switch', class: 'item icon-arrows-a-r color-999', aim: 'form-switch'},
+        {title: 'switch', class: 'item icon-arrows-r color-999', aim: 'form-switch'},
     ]},
     { title: [
         {title: 'union', class: 'item' },
-        {title: '联动表单', class: 'item icon-arrows-a-r color-999', aim: 'form-union'},
+        {title: '联动表单', class: 'item icon-arrows-r color-999', aim: 'form-union'},
     ]},
     { title: [
         {title: 'checkbox', class: 'item' },
-        {title: '多选框选择', class: 'item icon-arrows-a-r color-999', aim: 'form-checkbox'},
+        {title: '多选框选择', class: 'item icon-arrows-r color-999', aim: 'form-checkbox'},
     ]},
     { title: [
         {title: 'radio', class: 'item' },
-        {title: '单选框', class: 'item icon-arrows-a-r color-999', aim: 'form-radio'},
+        {title: '单选框', class: 'item icon-arrows-r color-999', aim: 'form-radio'},
     ]},
     { title: [
         {title: 'slider', class: 'item' },
-        {title: '滑动选取器', class: 'item icon-arrows-a-r color-999', aim: 'form-slider'},
+        {title: '滑动选取器', class: 'item icon-arrows-r color-999', aim: 'form-slider'},
     ]},
     { title: [
         {title: 'single-picker', class: 'item' },
-        {title: '单选择器', class: 'item icon-arrows-a-r color-999', aim: 'form-single-picker'},
+        {title: '单选择器', class: 'item icon-arrows-r color-999', aim: 'form-single-picker'},
     ]},
     { title: [
         {title: 'multipy-picker', class: 'item' },
-        {title: '多选择器', class: 'item icon-arrows-a-r color-999', aim: 'form-multipy-picker'},
+        {title: '多选择器', class: 'item icon-arrows-r color-999', aim: 'form-multipy-picker'},
     ]},
     { title: [
         {title: 'dropdown', class: 'item' },
-        {title: '下拉菜单', class: 'item icon-arrows-a-r color-999', aim: 'form-dropdown'},
+        {title: '下拉菜单', class: 'item icon-arrows-r color-999', aim: 'form-dropdown'},
     ]},
   ],
   itemClass: 'li item-normal',

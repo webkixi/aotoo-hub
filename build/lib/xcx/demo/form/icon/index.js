@@ -13,14 +13,14 @@ const formData = {
         {
           type: 'number', placeholder: '数字输入键盘',
           title: {
-            '@icon': {class: 'icon-menu-1 mr-10-r size16 color-227ce1'},
+            '@icon': {class: 'icon-menu-1 mr-10-r size16 color-primary'},
             itemStyle: 'text-align: center; margin-top: -5rpx'
           }
         },
         {
           type: 'idcard', placeholder: '身份证输入键盘',
           title: {
-            '@icon': { class: 'icon-3 mr-10-r size16 color-227ce1' },
+            '@icon': { class: 'icon-3 mr-10-r size16 color-primary' },
             itemStyle: 'text-align: center; margin-top: -5rpx'
           },
         },
@@ -28,7 +28,7 @@ const formData = {
           type: 'idcard', placeholder: '身份证输入键盘',
           title: '标题',
           eye: {
-            class: 'icon-3 mr-10-r size16 color-227ce1'
+            class: 'icon-3 mr-10-r size16 color-primary'
           }
         },
       ]

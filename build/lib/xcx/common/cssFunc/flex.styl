@@ -29,7 +29,7 @@ ss-flex-column( $justify-content = flex-start, $align-items = initial, $align-co
 
 ss-row-list-x($typex = 1, $isBorder = false, $borderHeight = 12px, $justify-content = flex-start, $align-items = center, $ml = 10rpx, $pl= 10rpx)
   ss-display-flex(row nowrap, $justify-content, $align-items, center)
-  >.item-li:not(:first-of-type)
+  >ui-item:not(:first-of-type)
     if ($isBorder != false)
       &:before
         content: ''
@@ -43,12 +43,12 @@ ss-row-list-x($typex = 1, $isBorder = false, $borderHeight = 12px, $justify-cont
   if ($typex == 1)
     overflow: hidden
     margin-left: -($ml + $pl)
-    >.item-li
+    >ui-item
       margin-left: $ml
       padding-left: $pl
       position: relative
   if ($typex == 2)
-    >.item-li
+    >ui-item
       margin-left: $ml
       padding-left: $pl
       position: relative
