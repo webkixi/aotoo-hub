@@ -303,9 +303,9 @@
 </template>
 
 <template name="@switch">
-  <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch {{input.itemClass}}" wx:if="{{input.value}}" checked />
+  <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch {{input.itemClass}}" color="{{input.color}}" wx:if="{{input.value}}" checked />
   <block wx:else>
-    <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch"/>
+    <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch" color="{{input.color}}"/>
   </block>
 </template>
 
@@ -430,7 +430,7 @@
 
 <!-- profile:{}, input: []/{} -->
 <template name="inputs">
-  <view class="input-item {{tmp.classGroup(profile, input)}} {{props.itemClass}}">
+  <view class="input-item {{tmp.classGroup(profile, input)}} {{profile.itemClass}}">
     <!-- required -->
     <block wx:if="{{profile.required}}">
       <text class="profile-item-required"></text>
