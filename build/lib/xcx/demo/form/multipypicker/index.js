@@ -8,6 +8,7 @@ const formData = {
   data: [
     {
       title: '多选择器-确定后设置值',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'test_pickers',
@@ -83,6 +84,7 @@ const formData = {
     
     {
       title: '多选择器-即时设置值',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'test_pickers',
@@ -113,6 +115,7 @@ const formData = {
 
     {
       title: '动态表单',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'test_text',
@@ -142,7 +145,7 @@ const formData = {
               {title: '英短', id: '108'}
             ]
           ],
-          itemClass: 'mt-8-r',
+          itemClass: 'icon-arrows-r-absolute',
           bindchange: 'pickerAction'
         },
         {
@@ -155,6 +158,7 @@ const formData = {
     },
     {
       title: '联动选择器',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'test_pickers9',
@@ -177,7 +181,7 @@ const formData = {
               {title: '英短', id: '108'}
             ]
           ],
-          itemClass: 'mt-8-r',
+          itemClass: 'icon-arrows-r-absolute',
           bindcolumnchange: 'pickerColumnAction'
         },
         {

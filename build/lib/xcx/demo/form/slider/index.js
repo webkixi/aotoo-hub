@@ -8,6 +8,7 @@ const formData = {
   data: [
     {
       title: '滑动块',
+      itemClass: 'card-bg',
       input: {
         id: 'test_slider',
         type: 'slider',
@@ -17,13 +18,13 @@ const formData = {
 
     {
       title: '动态表单',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'test_text',
           type: 'text',
           title: '标题',
           placeholder: '单选框选择以动态设置该文本框内容',
-          itemClass: 'mt-8-r'
         },
         {
           id: 'test_slider1',

@@ -28,6 +28,19 @@
   &:after
     content: '\e618'
     color: $arrow-default-color
+  
+.icon-arrows-r-absolute
+  @extends .icon-arrows-r
+  ss-display-flex(row nowrap, flex-start, center)
+  height: 100%
+  &:after
+    font-size: 26rpx
+    width: 20rpx
+    margin-left: 20rpx
+    display: block
+    position: absolute
+    right: 0
+
 .icon-arrows-t
   &:before
     content: '\e617'

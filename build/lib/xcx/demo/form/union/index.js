@@ -7,7 +7,7 @@ const formData = {
   data: [
     {
       title: '类目1',
-      itemClass: 'oooo',
+      itemClass: 'card-bg',
       input: [
         {
           type: 'text', id: 'username', title: '标题', placeholder: '动态响应下拉框的值', 
@@ -30,6 +30,7 @@ const formData = {
     },
     {
       title: '类目6',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'ddmenu',

@@ -10,50 +10,50 @@ const data = [
     title: 'Basic 基础组件',
     id: 'basic',
     list: [
-      { title: 'Button', attr: 'button', littleTitle: '按钮 ' },
-      { title: 'Utility', attr: 'utility', littleTitle: '工具类 ' },
-      { title: 'Tag', attr: 'tag', littleTitle: '标签 ' },
-      { title: 'Article', attr: 'article', littleTitle: '文章 ' },
+      { title: 'Button', attrx: 'button', littleTitle: '按钮 ' },
+      { title: 'Utility', attrx: 'utility', littleTitle: '工具类 ' },
+      { title: 'Tag', attrx: 'tag', littleTitle: '标签 ' },
+      { title: 'Article', attrx: 'article', littleTitle: '文章 ' },
     ]
   },
   {
     title: 'List 列表',
     id: 'list',
     list: [
-      { title: 'Image-text', attr: 'list', littleTitle: '图文列表 ' },
+      { title: 'Image-text', attrx: 'list', littleTitle: '图文列表 ' },
     ]
   },
   {
     title: 'Feedback 操作反馈',
     id: 'feedback',
     list: [
-      { title: 'Modal', attr: 'modal', littleTitle: '弹出层 ' },
+      { title: 'Modal', attrx: 'modal', littleTitle: '弹出层 ' },
     ]
   },
   {
     title: 'Form 表单',
     id: 'form',
     list: [
-      { title: 'Input', attr: 'input', littleTitle: '文本类 ' },
-      { title: 'Number', attr: 'number', littleTitle: '数字类 ' },
-      { title: 'Icon', attr: 'icon', littleTitle: 'icon替代标题文字 ' },
-      { title: 'Switch', attr: 'switch', littleTitle: '开关 ' },
-      { title: 'Union', attr: 'union', littleTitle: '联动 ' },
-      { title: 'Checkbox', attr: 'checkbox', littleTitle: '多选择框 ' },
-      { title: 'Radio', attr: 'radio', littleTitle: '单选择框 ' },
-      { title: 'Slider', attr: 'slider', littleTitle: '滑动选取器 ' },
-      { title: 'Single-picker', attr: 'singlepicker', littleTitle: '单层弹层选择器 ' },
-      { title: 'Multipy-picker', attr: 'multipypicker', littleTitle: '多层弹层选择器 ' },
-      { title: 'Dropdown', attr: 'dropdown', littleTitle: '下拉菜单 ' },
+      { title: 'Input', attrx: 'input', littleTitle: '文本类 ' },
+      { title: 'Number', attrx: 'number', littleTitle: '数字类 ' },
+      { title: 'Icon', attrx: 'icon', littleTitle: 'icon替代标题文字 ' },
+      { title: 'Switch', attrx: 'switch', littleTitle: '开关 ' },
+      { title: 'Union', attrx: 'union', littleTitle: '联动 ' },
+      { title: 'Checkbox', attrx: 'checkbox', littleTitle: '多选择框 ' },
+      { title: 'Radio', attrx: 'radio', littleTitle: '单选择框 ' },
+      { title: 'Slider', attrx: 'slider', littleTitle: '滑动选取器 ' },
+      { title: 'Single-picker', attrx: 'singlepicker', littleTitle: '单层弹层选择器 ' },
+      { title: 'Multipy-picker', attrx: 'multipypicker', littleTitle: '多层弹层选择器 ' },
+      { title: 'Dropdown', attrx: 'dropdown', littleTitle: '下拉菜单 ' },
     ]
   },
   {
     title: 'Yc',
     id: 'yc',
     list: [
-      { title: 'Swiper', attr: 'swiper', littleTitle: '轮播 ' },
-      { title: 'Sidescroll', attr: 'sidescroll', littleTitle: '滚动 ' },
-      { title: 'Stickybar', attr: 'stickybar', littleTitle: '轮播 ' },
+      { title: 'Swiper', attrx: 'swiper', littleTitle: '轮播 ' },
+      { title: 'Sidescroll', attrx: 'sidescroll', littleTitle: '滚动 ' },
+      { title: 'Stickybar', attrx: 'stickybar', littleTitle: '轮播 ' },
     ]
   }
 ]
@@ -78,8 +78,8 @@ const adapterMenu = (res) => {
         titleClass: 'item-border flex-row-between-center',
         parent: item.id,
         itemClass: 'item ss-focus',
-        tap: item.id == 'form' ? 'onTap?demo='+item.id+'_'+itemxx.attr : 'onTap?demo=ui_'+itemxx.attr
-        // tap: 'onTap?demo='+item.id+'/'+itemxx.attr
+        tap: item.id == 'form' ? 'onTap?demo='+item.id+'_'+itemxx.attrx : 'onTap?demo=ui_'+itemxx.attrx
+        // tap: 'onTap?demo='+item.id+'/'+itemxx.attrx
       })
     })
   })

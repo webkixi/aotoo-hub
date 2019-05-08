@@ -9,10 +9,10 @@ const data = [
     title: 'List 图文列表',
     id: 'list',
     list: [
-      { title: 'Normal', attr: 'normal', littleTitle: '常规 ' },
-      { title: 'Wxchat', attr: 'wxchat', littleTitle: '聊天列表 ' },
-      { title: 'Macaohkline', attr: 'lrpic', littleTitle: '业务1 ' },
-      { title: 'Diytour', attr: 'tbpic', littleTitle: '业务2 ' },
+      { title: 'Normal', attrx: 'normal', littleTitle: '常规 ' },
+      { title: 'Wxchat', attrx: 'wxchat', littleTitle: '聊天列表 ' },
+      { title: 'Macaohkline', attrx: 'lrpic', littleTitle: '业务1 ' },
+      { title: 'Diytour', attrx: 'tbpic', littleTitle: '业务2 ' },
     ]
   },
 ]
@@ -37,7 +37,7 @@ const adapterMenu = (res) => {
         titleClass: 'item-border flex-row-between-center',
         parent: item.id,
         itemClass: 'item ss-focus',
-        tap: 'onTap?demo='+itemxx.attr 
+        tap: 'onTap?demo='+itemxx.attrx 
       })
     })
   })

@@ -7,6 +7,7 @@ const formData = {
   data: [
     {
       title: '类目6',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'ddmenu',

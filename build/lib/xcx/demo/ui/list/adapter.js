@@ -57,7 +57,7 @@ const adapterList2Ss = (data, opts) => {
           },
           { title: ' ', itemClass: imgDotClass }
         ]
-        : {img: { src: img, itemClass: imgClass || 'mtb-20-r list-img' }},
+        : {img: { src: img, itemClass: 'mtb-20-r ' + imgClass || 'mtb-20-r list-img' }},
         body: [
           {
             title: [

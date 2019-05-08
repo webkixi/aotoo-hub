@@ -8,6 +8,7 @@ const formData = {
   data: [
     {
       title: '单选择器',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'test_picker',
@@ -20,20 +21,20 @@ const formData = {
               {title: '选项三', id: '102'},
             ]
           ],
-          itemClass: 'mt-8-r'
+          itemClass: 'icon-arrows-r-absolute',
         },
       ]
     },
 
     {
       title: '动态表单',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'test_text',
           type: 'text',
           title: '标题',
           placeholder: '单选框选择以动态设置该文本框内容',
-          itemClass: 'mt-8-r'
         },
         {
           id: 'test_picker1',
@@ -46,7 +47,7 @@ const formData = {
               {title: '选项三', id: '102', select: true},
             ]
           ],
-          itemClass: 'mt-8-r',
+          itemClass: 'icon-arrows-r-absolute',
           bindchange: 'pickerAction'
         },
         {

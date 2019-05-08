@@ -19,6 +19,8 @@ $borderColor = #e3e3e3
 $rcSize = 36rpx
 $rcColor = #e3e3e3
 $rcCheckedColor = #4b9afc
+$rcMr = 40rpx
+$rcInputMr = 10rpx
 $radio = '\e76a'
 $radioChecked = '\e624'
 $checkbox = '\e70b'
@@ -77,6 +79,9 @@ input
   .input-item
     // &-switch
     //   width: 82rpx !important
+    &-picker 
+      view
+        flex: 1
     &-dropdown
       font-size 28rpx
     &-dropdown-options
@@ -131,7 +136,7 @@ input
       // left: 0
       // z-index 2
     &-rc-group
-      display flex
+      ss-display-flex(row wrap, flex-start)
       .input-item
         &-rc
           font-size $inputSize
@@ -147,7 +152,7 @@ input
           opacity 0
           z-index 2
         &-checkbox-after, &-radio-after
-          margin-right 6rpx
+          margin-right: $rcInputMr
           order: -1
           &:before
             color: #e3e3e3

@@ -8,6 +8,7 @@ const formData = {
   data: [
     {
       title: 'RADIO表单元素',
+      itemClass: 'card-bg',
       input: [
         {
           name: 'test_radio',
@@ -31,6 +32,7 @@ const formData = {
     },
     {
       title: '动态表单',
+      itemClass: 'card-bg',
       input: [
         {
           id: 'test_text',

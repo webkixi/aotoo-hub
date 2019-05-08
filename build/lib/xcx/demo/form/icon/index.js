@@ -9,6 +9,7 @@ const formData = {
   data: [
     {
       title: '类目3',
+      itemClass: 'card-bg',
       input: [
         {
           type: 'number', placeholder: '数字输入键盘',
