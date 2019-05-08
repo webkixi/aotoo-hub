@@ -47,6 +47,7 @@ function generateData(dataSource) {
 
   if (lib.isObject(dataSource) && lib.isArray(dataSource.data)) {
     dataSource.data.filter((item, ii)=>{
+      if (typeof item == 'string') item = { img: item }
       if (lib.isObject(item)) {
         if (item.img) {
           let img = item.img
