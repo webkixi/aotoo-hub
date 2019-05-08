@@ -26,7 +26,7 @@ const formData = {
               {title: '野狗', id: '105'},
             ],
           ],
-          itemClass: 'mt-8-r'
+          itemClass: 'icon-arrows-r-absolute',
         },
         {
           id: 'test_pickers',
@@ -49,7 +49,7 @@ const formData = {
               {title: '英短', id: '108'}
             ]
           ],
-          itemClass: 'mt-8-r'
+          itemClass: 'icon-arrows-r-absolute',
         },
         {
           id: 'test_pickers',
@@ -77,7 +77,7 @@ const formData = {
               {title: '英短', id: '108'}
             ]
           ],
-          itemClass: 'mt-8-r'
+          itemClass: 'icon-arrows-r-absolute',
         },
       ]
     },
@@ -108,7 +108,7 @@ const formData = {
               {title: '英短', id: '108'}
             ]
           ],
-          itemClass: 'mt-8-r'
+          itemClass: 'icon-arrows-r-absolute',
         },
       ]
     },
@@ -122,7 +122,7 @@ const formData = {
           type: 'text',
           title: '标题',
           placeholder: 'picker的选项将被插入这里',
-          itemClass: 'mt-8-r'
+          itemClass: 'icon-arrows-r-absolute',
         },
         {
           id: 'test_pickers8',
