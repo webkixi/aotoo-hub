@@ -1,0 +1,6 @@
+<view class="boxer">
+  <ui-uploads dataSource="{{uploads}}" />
+  <ui-item item="{{submitButton}}" />
+  <!-- <ui-list list="{{menuData}}" />
+  <ui-item item="{{stickyBottomBar}}" /> -->
+</view>

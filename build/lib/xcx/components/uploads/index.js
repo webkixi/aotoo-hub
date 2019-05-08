@@ -9,7 +9,7 @@ const lib = Core.lib
 
 const defaultConfig = {
   limit: 3, 
-  count: 3,
+  count: 1,
   picker: 5,
   imgSize: 5*1024*1024,
   server: '',
@@ -32,19 +32,6 @@ function addOne(data, props) {
   } else {
     lastOne.tap = 'uploadAction?index=' + (data.length-1)
   }
-
-  // if (props.count > data.length) {
-  //   const diff = props.count - data.length
-  //   for (let ii = data.length; ii < diff + data.length; ii++) {
-  //     let theAddOne = {
-  //       title: '+',
-  //       itemClass: 'uploads-addone',
-  //       tap: 'uploadAction?index=' + ii
-  //     }
-  //     data.push(theAddOne)
-  //   }
-  // }
-
   return data
 }
 
@@ -52,7 +39,7 @@ function generateData(dataSource) {
   let props = {}
   dataSource = Object.assign({}, defaultConfig, dataSource)
   const lsCls = dataSource.listClass
-  dataSource.listClass = lsCls ? 'updates-container ' + lsCls : 'updates-container'
+  dataSource.listClass = lsCls ? 'uploads-container ' + lsCls : 'uploads-container'
 
   Object.keys(dataSource).forEach(key=>{
     if (key!=='data') props[key] = dataSource[key]
@@ -162,7 +149,7 @@ Component({
     }
   },
   methods: {
-    getCountLimit: function () {
+    _getCountLimit: function () {
       const props = this.data.props
       this.existing = this.data.$list.data.filter((item, ii)=> {
         if (!isAddOne(item)){
@@ -178,10 +165,28 @@ Component({
         existing: this.existing
       }
     },
-    upload: function() {
+    upload: function(param) {
       const props = this.data.props
+      const upFiles = param ? param : this._getCountLimit().existing
       if (props.server) {
-        wx.uploadFile()
+        // let postParam = {
+        //   url: url, // 仅为示例，并非真实的接口地址
+        //   type: 'img',
+        //   name: 'file',
+        //   filePath: '',
+        //   header: {
+        //     'content-type': 'application/json' // 默认值
+        //   },
+        //   data: data || {},
+        //   // success(res) {},
+        //   // error: function (e) {}
+        // }
+
+        return Core.upload({
+          url: props.server,
+          type: 'img',
+          filePath: upFiles
+        })
       }
     },
     chooseWxImage: function (type, param) {
@@ -190,7 +195,7 @@ Component({
       let   $list = this.data.$list
       let   mydata = this.data.$list.data
       const select = parseInt(param.index)
-      let   countLimit = this.getCountLimit(param)
+      let   countLimit = this._getCountLimit(param)
 
       wx.chooseImage({
         count: countLimit.picker,
@@ -252,7 +257,7 @@ Component({
     },
 
     showAction: function (e, param) {
-      this.getCountLimit()
+      this._getCountLimit()
       const select = parseInt(param.index)
       let existing = lib.clone(this.existing)
       let selected
@@ -318,130 +323,3 @@ Component({
     }
   }
 })
-
-// joinPicture: function (e) {
-//     var index = e.currentTarget.dataset.index;
-//     var evalList = this.data.evalList;
-//     var that = this;
-//     var imgNumber = evalList[index].tempFilePaths;
-//     if (imgNumber.length >= 3) {
-//       wx.showModal({
-//         title: '',
-//         content: '最多上传三张图片',
-//         showCancel: false,
-//       })
-//       return;
-//     }
-//     wx.showActionSheet({
-//       itemList: ["从相册中选择", "拍照"],
-//       itemColor: "#f7982a",
-//       success: function (res) {
-//         if (!res.cancel) {
-//           if (res.tapIndex == 0) {
-//             that.chooseWxImage("album", imgNumber);
-//           } else if (res.tapIndex == 1) {
-//             that.chooseWxImage("camera", imgNumber);
-//           }
-//         }
-//       }
-//     })
-//   },
-//   chooseWxImage: function (type, list) {
-//     var img = list;
-//     var len = img.length;
-//     var that = this;
-//     var evalList = this.data.evalList;
-//     wx.chooseImage({
-//       count: 3,
-//       sizeType: ["original", "compressed"],
-//       sourceType: [type],
-//       success: function (res) {
-//         var addImg = res.tempFilePaths;
-//         var addLen = addImg.length;
-//         if ((len + addLen) > 3) {
-//           for (var i = 0; i < (addLen - len); i++) {
-//             var str = {};
-//             str.pic = addImg[i];
-//             img.push(str);
-//           }
-//         } else {
-//           for (var j = 0; j < addLen; j++) {
-//             var str = {};
-//             str.pic = addImg[j];
-//             img.push(str);
-//           }
-//         }
-//         that.setData({
-//           evalList: evalList
-//         })
-//         that.upLoadImg(img);
-//       },
-//     })
-//   },
-//   upLoadImg: function (list) {
-//     var that = this;
-//     this.upload(that, list);
-//   },
-//   //多张图片上传
-//   upload: function (page, path) {
-//     var that = this;
-//     var curImgList = [];
-//     for (var i = 0; i < path.length; i++) {
-//       wx.showToast({
-//           icon: "loading",
-//           title: "正在上传"
-//         }),
-//         wx.uploadFile({
-//           url: app.globalData.subDomain + '/API/AppletApi.aspx', //接口处理在下面有写
-//           filePath: path[i].pic,
-//           name: 'file',
-//           header: {
-//             "Content-Type": "multipart/form-data"
-//           },
-//           formData: {
-//             douploadpic: '1'
-//           },
-//           success: function (res) {
-//             curImgList.push(res.data);
-//             var evalList = that.data.evalList;
-//             evalList[0].imgList = curImgList;
-//             that.setData({
-//               evalList: evalList
-//             })
-//             if (res.statusCode != 200) {
-//               wx.showModal({
-//                 title: '提示',
-//                 content: '上传失败',
-//                 showCancel: false
-//               })
-//               return;
-//             }
-//             var data = res.data
-//             page.setData({ //上传成功修改显示头像
-//               src: path[0]
-//             })
-//           },
-//           fail: function (e) {
-//             wx.showModal({
-//               title: '提示',
-//               content: '上传失败',
-//               showCancel: false
-//             })
-//           },
-//           complete: function () {
-//             wx.hideToast(); //隐藏Toast
-//           }
-//         })
-//     }
-//   },
-//   //删除图片
-//   clearImg: function (e) {
-//     var index = e.currentTarget.dataset.index;
-//     var evalList = this.data.evalList;
-//     var img = evalList[0].tempFilePaths;
-//     img.splice(index, 1);
-//     this.setData({
-//       evalList: evalList
-//     })
-//     this.upLoadImg(img);
-//   }

@@ -34,7 +34,8 @@
         "ui/list/normal/index",
         "ui/list/wxchat/index",
         "ui/list/tbpic/index",
-        "ui/list/lrpic/index"
+        "ui/list/lrpic/index",
+        "uploads/index"
       ]
     }
   ],
