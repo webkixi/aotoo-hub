@@ -99,7 +99,8 @@ Component({
       const fromBot = itemClass.indexOf('actionSide-bot') > -1
       const fromTop = itemClass.indexOf('actionSide-top') > -1
       const fromRight = itemClass.indexOf('actionSide-right') > -1
-      const itCls = fromRight ? 'actionSide-right' : fromLeft ? 'actionSide-left' : fromBot ? 'actionSide-bot' : fromTop ? 'actionSide-top' : 'actionSide'
+      // const itCls = fromRight ? 'actionSide-right' : fromLeft ? 'actionSide-left' : fromBot ? 'actionSide-bot' : fromTop ? 'actionSide-top' : 'actionSide'
+      const itCls = 'actionSide'
       this.update({
         itemClass: itCls,
         __actionMask: 'actionMask'
@@ -114,7 +115,7 @@ Component({
         ...myContent,
         itemClass: `actionSide-right ${myclass} moveit`,
         itemStyle: myStyle,
-        __actionMask: myclass ? 'actionMask-right show' : 'actionMask-right',
+        __actionMask: myclass ? 'actionMask show' : 'actionMask',
       }, cb)
     },
     left: function (p, c) {
