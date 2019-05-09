@@ -104,7 +104,7 @@ Pager({
         }
       ],
       titleClass: 'ss-center plr-default',
-      itemClass: 'flex-column-start-center mtb-20-r'
+      itemClass: 'flex-column-start-center padding-default'
     }),
     menuData: Pager.tree({
       $$id: 'sstree',

@@ -5,7 +5,7 @@ const Pager = require('components/aotoo/core')
 
 const data = [
   {
-    title: 'larger',
+    title: '大按钮',
     id: 'larger',
     list: [
       { title: 'Button', type: 'primary', size: 'larger', parentId: 'larger' },
@@ -14,16 +14,17 @@ const data = [
     ]
   },
   {
-    title: 'default',
+    title: '默认按钮',
     id: 'default',
     list: [
+      { title: 'Button', type: 'default', parentId: 'default' },
       { title: 'Button', type: 'primary', parentId: 'default' },
       { title: '业务', type: 'work', parentId: 'default' },
       { title: 'Button', type: 'fff-primary', bgFull: true, parentId: 'default' },
     ]
   },
   {
-    title: 'small',
+    title: '小按钮',
     id: 'small',
     list: [
       { title: 'Button', type: 'primary', size: 'small', parentId: 'small' },
@@ -65,8 +66,12 @@ const buttonData = {
       itemClass: 'title-lg-active'
     },
     {
-      title: '按钮，目前只有一种色值，三种展示效果，三种大小，后期可通过传参的方法，现实各自的需求',
+      title: '按钮',
       itemClass: 'title-primary-grey'
+    },
+    {
+      title: '一种色值，三种展示效果，三种大小。注意：目前小程序border-color的透明度是无效的',
+      itemClass: 'title-sm-grey'
     }
   ],
   '@tree': {
