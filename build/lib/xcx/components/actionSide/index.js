@@ -90,7 +90,7 @@ Component({
       const myContent = content.call(this, param) || {}
       this.update({
         ...myContent,
-        'itemClass': 'actionSide moveit',
+        'itemClass': 'actionSide-right moveit',
       }, cb)
     },
     hide: function (param) {
@@ -98,7 +98,8 @@ Component({
       const fromLeft = itemClass.indexOf('actionSide-left') > -1
       const fromBot = itemClass.indexOf('actionSide-bot') > -1
       const fromTop = itemClass.indexOf('actionSide-top') > -1
-      const itCls = fromLeft ? 'actionSide-left' : fromBot ? 'actionSide-bot' : fromTop ? 'actionSide-top' : 'actionSide'
+      const fromRight = itemClass.indexOf('actionSide-right') > -1
+      const itCls = fromRight ? 'actionSide-right' : fromLeft ? 'actionSide-left' : fromBot ? 'actionSide-bot' : fromTop ? 'actionSide-top' : 'actionSide'
       this.update({
         itemClass: itCls,
         __actionMask: 'actionMask'
@@ -111,9 +112,9 @@ Component({
       let myContent = content.call(this, param, myclass) || {}
       this.update({
         ...myContent,
-        itemClass: `actionSide ${myclass} moveit`,
+        itemClass: `actionSide-right ${myclass} moveit`,
         itemStyle: myStyle,
-        __actionMask: myclass ? 'actionMask show' : 'actionMask',
+        __actionMask: myclass ? 'actionMask-right show' : 'actionMask-right',
       }, cb)
     },
     left: function (p, c) {
