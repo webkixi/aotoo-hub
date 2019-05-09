@@ -348,20 +348,12 @@ function baseConfig(asset, envAttributs) {
           copyUnmodified: true
         }]
         if (cloud) {
-          copycfg = copycfg.concat([
-            {
-              from: 'cloudfunctions/**/*',
-              to: path.join(DIST, '../cloudfunctions'),
-              context: path.join(SRC, 'js'),
-              copyUnmodified: true
-            }, 
-            // {
-            //   from: 'project.config.json',
-            //   to: path.join(DIST, '../'),
-            //   context: path.join(SRC, 'js'),
-            //   copyUnmodified: true
-            // },
-          ])
+          copycfg = copycfg.concat([{
+            from: 'cloudfunctions/**/*',
+            to: path.join(DIST, '../'),
+            context: path.join(SRC, 'js'),
+            copyUnmodified: true
+          }, ])
         }
         return copycfg
       })(), { context: SRC }),
