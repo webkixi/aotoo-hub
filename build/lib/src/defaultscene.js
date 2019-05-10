@@ -10,6 +10,11 @@ const path = require('path');
 module.exports = function (asset) {
   const { name, startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT, options } = asset
   return {
+    // 本地server上传地址
+    upload: {
+      root: path.join(SRC, 'uploads')
+    },
+
     hooks: {
       // aks-globalconfig-set: Array[function] / Object 动态全局CONFIG配置插件，场景比如 appllo配置中心的需求
       // aks-use-set
