@@ -35,6 +35,8 @@
         "ui/list/wxchat/index",
         "ui/list/tbpic/index",
         "ui/list/lrpic/index",
+        "ui/tabs/index",
+        "ui/tabs/normal/index",
         "uploads/index"
       ]
     }
