@@ -10,7 +10,7 @@ Pager({
       $$id: 'myupimg',
       server: 'http://localhost:8600/upimg',
       data: [
-        {img: '/images/gtxhk.png'}
+        {img: '/images/huatong.png'}
       ],
     },
     submitButton: {
