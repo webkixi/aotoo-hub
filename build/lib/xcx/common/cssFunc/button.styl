@@ -2,7 +2,7 @@
  * 注意 +prefix-classes 不能为数字开头，如果颜色以数字开头的话 ，统一在前面加个字母 c 如： .c227ce1
  * @type {[type]}
  */
-ss-btnFunc($border-radius = 3px, $bgc = #ff7e11, $bc = #ff7e11, $color = fff, $min-width = 100rpx, $hover-bg = #ff7e11)
+ss-btnFunc($border-radius = 3px, $bgc = #ff7e11, $bc = #ff7e11, $color = fff, $min-width = 100rpx, $hover-bg = #ff7e11, $disable-bg = false, $disable-bc = false, $disable-c = false, $icon = false)
   border-radius: $border-radius
   border: 1px solid transparent
   background-color: $bgc
@@ -15,18 +15,33 @@ ss-btnFunc($border-radius = 3px, $bgc = #ff7e11, $bc = #ff7e11, $color = fff, $m
   text-decoration: none
   text-align: center
   {btn-default}
+  if ($icon != false)
+    ss-display-flex(row nowrap, center, center, center)
+    &:before
+      content: $icon
+      margin-right: 10rpx
+      font-size: 20rpx
   &:active
-    background: fade-out($hover-bg, .15)
-    border-color: fade-out($bc, .15)
-    color: fade-out($color, .15)
+    background: fade-out($hover-bg, .2)
+    border-color: fade-out($bc, .2)
+    color: fade-out($color, .2)
   &.small
     {btn-sm}
   &.larger
     {btn-lg}
   &.disabled
-    background: fade-out($bgc, .25)
-    border-color: fade-out($bc, .25)
-    color: fade-out($color, .25)
+    if ($disable-bg != false)
+      background: $disable-bg
+    else
+      background: fade-out($bgc, .5)
+    if ($disable-bc != false)
+      border-color: $disable-bc
+    else
+      border-color: transparent
+    if ($disable-c != false)
+      color: $disable-c
+    else
+      color: fade-out($color, .5)
   &.bg-full
     &:active
       background-color: $bc

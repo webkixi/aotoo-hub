@@ -1,20 +1,50 @@
 // tab 组件
-.tab-container 
-  background-color: #fff
-  ss-display-flex(column-reverse, flex-start)
-  .menu-box 
-    ss-display-flex(row nowrap, flex-start, flex-end)
-    background: #f3f3f3
-    color: #333
-    font-size: 10px
-    height: 100rpx
-    .menu-item
-      flex: 1;
-      text-align: center;
-      margin-bottom: 8rpx
-      &.active
-        color: #4caf50
-    .item-icon
-      ss-display-flex(column, center)
-      &:before
-        font-size: 20px
+$Means-bg = #fff
+$Means-hei = 100rpx
+$Means-size = 28rpx
+$Means-color = #333
+$Means-active = #4caf50
+
+
+.tab-container
+  .menu-box
+    ss-display-flex(row nowrap, flex-start)
+    background: $Means-bg
+    color: $Means-color
+    font-size: $Means-size
+    height: $Means-hei 
+  .menu-item
+    text-align: center;
+    position: relative
+    &.active
+      color: $Means-active
+  .content-box
+    padding: $padding-default
+
+.tabs-default
+  .menu-box
+    border-bottom: 1px solid $color-border
+  .menu-item
+    text-align: center;
+    flex: 1
+    ss-display-flex(column, center, center)
+    &:after
+      content: ''
+      left: -100%
+      right: -100%
+      transition: left .2s, right .2s
+      -webkit-transition: left .2s, right .2s
+    &.active
+      position: relative
+      &:after
+        height: 4rpx
+        width: 100%
+        position: absolute
+        bottom: -2rpx
+        left: 0
+        right: initial
+        background: $Means-active
+    &.f-right
+      &:after
+        right: 0
+        left: initial

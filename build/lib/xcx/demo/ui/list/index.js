@@ -56,7 +56,6 @@ Pager({
   },
   onTap: function(e, query, inst) {
     const theTap = query.demo.replace(/_/g,"/")
-    console.log(theTap)
     if (theTap) {
       switch (theTap) {
         case theTap:

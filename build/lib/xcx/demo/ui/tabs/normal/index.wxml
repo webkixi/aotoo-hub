@@ -1,0 +1,3 @@
+<view class="boxer">
+  <ui-tab dataSource="{{motto}}" />
+</view>

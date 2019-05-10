@@ -1,28 +1,6 @@
 <view class="boxer">
-  <!-- <view class="demo-item">
-    <ui-item item="{{title}}" />
-    <ui-item item="{{icon}}" />
-    <ui-item item="{{titleAndAim}}" />
-    <ui-item item="{{titleAndClass}}" />
-    <ui-item item="{{titleAndEvt}}" />
-    <ui-item item="{{titles}}" />
-    <ui-item item="{{titleAndImg}}" />
-    <ui-item item="{{titleAndBody}}" />
-    <ui-item item="{{titleAndFooter}}" />
-    <ui-item item="{{titleAndDot}}" />
-    <ui-item item="{{titleAndLi}}" />
-
-    <ui-list list="{{listData}}" />
-    <ui-tree list="{{treeData}}" />
-
-    <ui-item item="{{modal}}" />
-    <ui-item item="{{pageData}}" />
-  </view> -->
-
-  <!-- <ui-tree list="{{menuData}}" /> -->
-  <ui-item item="{{headLogo}}" />
-  <ui-tree list="{{menuData}}" />
-  <!-- <ui-form dataSource="{{formData}}"/> -->
-  <!-- <action-side item="{{aside1}}" />
-  <action-side item="{{aside2}}" /> -->
+  <scroll-view scroll-y="{{true}}" class="hei-p100">
+    <ui-item item="{{headLogo}}" />
+    <ui-tree list="{{menuData}}" />
+  </scroll-view>
 </view>
