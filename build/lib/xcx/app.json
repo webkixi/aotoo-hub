@@ -46,7 +46,8 @@
     "action-side": "/components/actionSide/index",
     "ui-tab": "/components/tab/index",
     "ui-form": "/components/form/index",
-    "ui-collapse": "/components/collapse/index"
+    "ui-collapse": "/components/collapse/index",
+    "ui-uploads": "/components/uploads/index"
   },
   "window":{
     "backgroundTextStyle":"light",
