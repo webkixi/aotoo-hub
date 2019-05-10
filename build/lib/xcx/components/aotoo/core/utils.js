@@ -1,3 +1,6 @@
+import path from 'path'
+const lib = require('../lib')
+
 export function post(url, data, param={}) {
   return new Promise((resolve, reject)=>{
     let postParam = {
@@ -20,6 +23,13 @@ export function post(url, data, param={}) {
   })
 }
 
+function getImgRealPath(obj) {
+  if (lib.isString(obj)) return obj
+  if (lib.isObject(obj)) {
+    return obj.img&&obj.img.src ? obj.img.src : obj.src ? obj.src : obj.img
+  }
+}
+
 function _up(params) {
   return new Promise((resolve, reject) => {
     const oldSuccess = params.success
@@ -37,17 +47,25 @@ function _up(params) {
     params.fail = params.error
 
     if (Array.isArray(params.filePath)){
-      this.when = function() {
-        
-      }
       const every = params.filePath.map(one=>{
+        one = getImgRealPath(one)
         return new Promise((rs, rj) => {
           let nParams = {}
           Object.keys(params).forEach(key => {
             if (key == 'filePath') {
               nParams[key] = one
             } else {
-              nParams[key] = params[key]
+              if (key == 'formData') {
+                const basename = path.basename(one)
+                const extname = path.extname(basename)
+                if (basename.length > 10) {
+                  nParams[key] = Object.assign(params[key], {name: (lib.uuid('upimg_', 12)+extname)}) // 重命名上传文件名
+                } else {
+                  nParams[key] = params[key]
+                }
+              } else {
+                nParams[key] = params[key]
+              }
             }
           })
           nParams.success = function(res) { rs(res) }
@@ -55,20 +73,16 @@ function _up(params) {
           wx.uploadFile(nParams)
         })
       })
-      // const nEvery = every.splice(1)
-      // nEvery.reduce((p, n) => {
-      //   return p.then(r=>{
-
-      //   })
-      // }, every[0])
+      Promise.all(every).then( res=> resolve(res) )
     } else {
+      params.filePath = getImgRealPath(params.filePath)
       wx.uploadFile(params)
     }
-
   })
 }
 
 export function upload(url, data, param={}) {
+  if (lib.isObject(url)) param = url
   let postParam = {
     url: url, // 仅为示例，并非真实的接口地址
     type: 'img',
@@ -87,6 +101,6 @@ export function upload(url, data, param={}) {
   if (postParam.url && postParam.filePath) {
     return _up(postParam)
   } else {
-    console.log(`url和filePath参数为必填项，url请填写服务器地址, filePath请填写上传图片地址`);
+    return Promise.reject(`url和filePath参数为必填项，url请填写服务器地址, filePath请填写上传图片地址`)
   }
 }

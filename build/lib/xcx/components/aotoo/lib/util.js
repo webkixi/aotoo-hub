@@ -1,3 +1,4 @@
+import md5 from 'md5'
 export function isString(title) {
   return typeof title == 'string'
 }
@@ -79,4 +80,18 @@ export function suid(prefix) {
 
 export function resetSuidCount(){
   if (suidCount > 9999) suidCount = -1
+}
+
+export function uuid(prefix, len) {
+  const mydate = new Date()
+  const randomNum = mydate.getDay() + mydate.getHours() + mydate.getMinutes() + mydate.getSeconds() + mydate.getMilliseconds() + Math.round(Math.random() * 10000);
+  const uuid = (prefix || 'uuid') + md5(randomNum)
+  if (len && typeof len == 'number' && len > 6) {
+    const remainder = len - 4
+    const pre = uuid.substr(0, 4)
+    const aft = uuid.substr(uuid.length - remainder)
+    return pre + aft
+  } else {
+    return uuid
+  }
 }

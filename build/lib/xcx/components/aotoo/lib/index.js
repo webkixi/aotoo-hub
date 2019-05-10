@@ -9,6 +9,7 @@ export {
   isFunction,
   formatQuery,
   suid,
+  uuid,
   resetSuidCount,
   clone,
   isEmpty

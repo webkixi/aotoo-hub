@@ -82,8 +82,8 @@
 <template name="scrollWrap">
   <scroll-view 
     class="hlist {{list.listClass||list.class}}" 
-    scroll-x	="{{ list.type['scroll-x'] }}" 
-    scroll-y	="{{ list.type['scroll-y'] }}" 
+    scroll-x	="{{ list.type['scroll-x'] || false}}" 
+    scroll-y	="{{ list.type['scroll-y'] || true }}"
     upper-threshold="{{ list.type['upper-threshold']||'50' }}" 
     lower-threshold="{{ list.type['lower-threshold']||'50' }}" 
     scroll-top="{{ list.type['scroll-top'] }}" 
