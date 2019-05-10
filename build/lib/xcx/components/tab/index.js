@@ -78,6 +78,7 @@ Component({
   behaviors: [Core.baseBehavior(app, 'tap')],
   lifetimes: {
     created: function () {
+      this.savePrevSelect = []
       this.generateUpdate('$dataSource', function() {
         const $dataSource = this.data.$dataSource
         const {menus, contents} = grabData($dataSource)
@@ -100,16 +101,21 @@ Component({
     ready: function() {
       const ds = this.data.$dataSource
       this.mount((ds.$$id || ds.id))
-    }
+    },
   },
   methods: {
     tabIndex: function(e, param) {
       if (param) {
         const idx = parseInt(param['idx'])
         const $menus = this.data.$menus
+        this.savePrevSelect.length > 1 ? this.savePrevSelect = this.savePrevSelect.slice(1) : this.savePrevSelect
+
         $menus.data = $menus.data.map((item, ii) => {
           if (item.itemClass) item.itemClass = ''
-          if (ii==idx) item.itemClass = 'active'
+          if (ii==idx) {
+            this.savePrevSelect.push(idx)
+            item.itemClass = this.savePrevSelect.length > 1 ? this.savePrevSelect[0] > this.savePrevSelect[1] ? 'f-right active' : 'active' : 'active'
+          }
           return item
         })
 

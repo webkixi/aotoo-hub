@@ -5,7 +5,8 @@
 
 <import src="../aotoo/templates/item.wxml" />
 <block wx:if="{{$dataSource.show}}">
-  <view class="tab-container">
+  <!-- <view class="tab-container"> -->
+  <view class="tab-container {{$dataSource.listClass || ' tabs-default'}}">
     <ui-list list="{{$menus}}" fromComponent="{{uniqId}}"/>
     <block wx:if="{{$dataSource.multipy}}">
       <block wx:for="{{$contents}}" wx:key="" wx:for-item="myitem">
