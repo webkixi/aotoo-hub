@@ -37,6 +37,9 @@
         "ui/list/lrpic/index",
         "ui/tabs/index",
         "ui/tabs/normal/index",
+        "ui/tabs/scroll/index",
+        "ui/tabs/fnormal/index",
+        "ui/tabs/fscroll/index",
         "uploads/index"
       ]
     }
