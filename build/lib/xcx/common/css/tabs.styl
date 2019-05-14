@@ -1,50 +1,60 @@
-// tab 组件
-$Means-bg = #fff
-$Means-hei = 100rpx
-$Means-size = 28rpx
-$Means-color = #333
-$Means-active = #4caf50
+// tab 组件 公用
+$Menu-bg = #fff
+$Menu-hei = 100rpx
+$Menu-size = 28rpx
+$Menu-color = #333
+$Menu-active = #4b9afc
+
+//theme
+$Menu-padding = 0 20rpx
+$Menu-margin = 0 20rpx
+$Menu-hei-2 = 88rpx
+$Menu-size-2 = 32rpx
+$Content-height-2 = calc(100% - 88rpx)
+$Menu-fw = bold
 
 
+//抽出公用部分 适用于除tab组件外的其它组件使用
+.tab-list
+  ss-tabs($Menu-bg, $Menu-color , $Menu-size, $Menu-hei , $Menu-active)
+.tab-list-scroll
+  ss-tabs($Menu-bg, $Menu-color , $Menu-size-2, $Menu-hei-2 , $Menu-active)
+  font-weight: $Menu-fw
+
+.tab-list-theme
+  border-bottom: 1px solid $color-border
+  >.item
+    flex: 1
+    ss-border-ani(4rpx, -2rpx, $Menu-active)
+
+.tab-list-theme-scroll
+  @extends .box-shadow
+  white-space: nowrap
+  padding: $Menu-padding
+  line-height: $Menu-hei-2
+  .item
+    ss-border-ani(6rpx, 0, $Menu-active, $isScroll: true)
+    margin: $Menu-margin
+
+
+
+//tab组件
 .tab-container
   .menu-box
-    ss-display-flex(row nowrap, flex-start)
-    background: $Means-bg
-    color: $Means-color
-    font-size: $Means-size
-    height: $Means-hei 
-  .menu-item
-    text-align: center;
-    position: relative
-    &.active
-      color: $Means-active
+    @extends .tab-list-scroll
   .content-box
     padding: $padding-default
 
 .tabs-default
   .menu-box
-    border-bottom: 1px solid $color-border
-  .menu-item
-    text-align: center;
-    flex: 1
-    ss-display-flex(column, center, center)
-    &:after
-      content: ''
-      left: -100%
-      right: -100%
-      transition: left .2s, right .2s
-      -webkit-transition: left .2s, right .2s
-    &.active
-      position: relative
-      &:after
-        height: 4rpx
-        width: 100%
-        position: absolute
-        bottom: -2rpx
-        left: 0
-        right: initial
-        background: $Means-active
-    &.f-right
-      &:after
-        right: 0
-        left: initial
+    @extends .tab-list-theme-scroll
+
+//tab组件 scroll
+.tabs-default-scroll
+  .menu-box
+    @extends .tab-list-theme-scroll
+  .content-box
+    height: $Content-height-2
+    .content-item
+      height: 800rpx
+      width: auto     //scroll-view 影响
