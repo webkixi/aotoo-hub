@@ -12,6 +12,7 @@ function grabData(dataSource) {
   ds.select = ds.select ? ds.select : 0
   const _menus = []
   const _contents = []
+  const _isScroll = ds.scroll || false
   if (lib.isObject(dataSource) && lib.isArray(dataSource.data)) {
     dataSource.data.forEach((item, ii) => {
       if (item.title && item.content) {
@@ -29,6 +30,11 @@ function grabData(dataSource) {
   }
 
   const menus = {
+    type: _isScroll ? {
+      is: 'scroll',
+      'scroll-x': true,
+      'scroll-y': false
+    } : '',
     data: _menus,
     listClass: 'menu-box',
     itemClass: 'menu-item'
@@ -37,14 +43,22 @@ function grabData(dataSource) {
   const contents = {
     $$id: '__mytabcontent',
     data: _contents,
-    type: {
+    type: ds.multipy ? 
+      {
+        is: 'scroll',
+        'scroll-x': false,
+        'scroll-y': true
+      }  
+    : {
       is: 'swiper',
       current: 0
     },
     listClass: 'content-box',
     itemClass: 'content-item'
   }
-  return {menus, contents}
+
+  dataSource['show'] = dataSource.hasOwnProperty('show') ? dataSource.show : true
+  return {menus, contents, dataSource}
 }
 
 /**
@@ -58,7 +72,9 @@ function grabData(dataSource) {
  * select: 0,
  * multipy: false,
  * singleView: false,
- * show: true
+ * show: true，
+ * isScroll: false
+ * select
  */
 
 // 基于item的组件
@@ -67,8 +83,24 @@ Component({
     multipleSlots: true, // 在组件定义时的选项中启用多slot支持
     addGlobalClass: true
   },
+  
   properties: {
-    dataSource: Object,
+    dataSource: {
+      type: Object,
+      observer: function (params) {
+        if (this.mounted) {
+          if (params) {
+            const {menus, contents, dataSource} = grabData.call(this, params)
+            this.setData({
+              $dataSource: dataSource,
+              $menus: menus,
+              $contents: contents
+            })
+          }
+        }
+      }
+    }
+    // dataSource: Object,
   },
   data: {
     $dataSource: {},
@@ -80,7 +112,6 @@ Component({
     created: function () {
       this.savePrevSelect = []
       this.generateUpdate('$dataSource', function() {
-        const $dataSource = this.data.$dataSource
         const {menus, contents} = grabData($dataSource)
         this.setData({
           $menus: menus,
@@ -124,6 +155,10 @@ Component({
           '$contents.type.current': idx
         })
       }
-    }
+    },
+    bindscroll: function(e, param) {
+    },
+    bindscrolltolower: function(e, param) {},
+    bindscrolltoupper: function(e, param) {},
   }
 })
