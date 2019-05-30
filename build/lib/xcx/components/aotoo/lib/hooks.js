@@ -10,23 +10,36 @@ import {
 } from './util'
 
 class _hooks {
-  constructor(key) {
+  constructor(props={}) {
     this.actions = {}
     this.storeData = {}
+    this.storage = props.storage
   }
   destory() {
     this.actions = null
     this.storeData = null
+    wx.clearStorageSync()
+  }
+  getInfo(){
+    return this.storage ? getStorageInfoSync() : this.storeData
   }
   setItem(key, val){
-    this.storeData[key] = val
+    try {
+      this.storage ?  wx.setStorageSync(key, val) : this.storeData[key] = val
+    } catch (error) {
+      console.warn(error);
+    }
   }
   getItem(key){
-    return this.storeData[key]
+    try {
+      return this.storage ? wx.getStorageSync(key) : this.storeData[key]
+    } catch (error) {
+      console.warn(error);
+    }
   }
   append(key, val){
     if (this.storeData[key]) {
-      let sData = this.storeData[key]
+      let sData = this.getItem(key)
       if (isArray(sData)) {
         sData = sData.concat(val)
       } else if(isObject(sData)) {
@@ -36,15 +49,21 @@ class _hooks {
           sData[suid('random_')] = val
         }
       } else {
-        this.setItem(key, val)
+        sData = val
       }
+      this.setItem(key, sData)
     } else {
       this.setItem(key, val)
     }
   }
   delete(key){
-    this.storeData[key] = null
+    this.storage ? wx.removeStorageSync(key) : this.storeData[key] = null
   }
+  clear(){
+    this.destory()
+  }
+
+  // ========= 下面为钩子方法 ===========
   on(key, cb) {
     let myActions = this.actions
     const hooksActionUniqId = suid('hooks_action_')
@@ -115,10 +134,10 @@ class _hooks {
 }
 
 let myhooks = {}
-export function hooks(idf) {
+export function hooks(idf, storage) {
   if (isString(idf)) {
     if (!myhooks[idf]) {
-      myhooks[idf] = new _hooks()
+      myhooks[idf] = new _hooks({storage})
     }
     return myhooks[idf]
   }

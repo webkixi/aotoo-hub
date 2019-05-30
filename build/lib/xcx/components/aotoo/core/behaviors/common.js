@@ -85,7 +85,8 @@ export const commonBehavior = (app, mytype) => {
         let properties = this.properties
         let props = (properties.item || properties.list || properties.dataSource)
         let id = properties.id
-        this.mountId = props.$$id ? false : id  // 如果$$id，则交给
+        // this.mountId = props.$$id ? false : id  // 如果$$id，则交给
+        this.mountId = id || props.$$id // 如果$$id，则交给
         props['show'] = props.hasOwnProperty('show') ? props.show : true
         this.setData({uniqId: this.uniqId})
       },
@@ -105,13 +106,18 @@ export const commonBehavior = (app, mytype) => {
         if (this.data.fromComponent) {
           this.componentInst = app['_vars'][this.data.fromComponent]
         }
+        this.mount()
       },
 
       //组件实例被移动到树的另一个位置
       moved: function () {},
 
       //组件实例从节点树中移除
-      detached: function () {}
+      detached: function () {
+        setTimeout(() => {
+          app['_vars'][this.uniqId] = null
+        }, 50);
+      }
     },
     methods: {
       getData: function() {

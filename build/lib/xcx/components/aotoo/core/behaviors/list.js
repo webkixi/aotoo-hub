@@ -29,7 +29,7 @@ function updateSelf(params) {
 
     let mylist = list
     const fromTree = this.data.fromTree
-    mylist = fromTree ? lib.listToTree(mylist, fromTree) : reSetList.call(this, list)
+    mylist = fromTree ? lib.listToTree.call(this, mylist, fromTree) : reSetList.call(this, list)
     this.setData({
       $list: mylist,
       props: listProps,
@@ -50,10 +50,16 @@ export const listBehavior = function(app, mytype) {
           }
         } 
       },
+      
       fromTree: {
         type: Boolean|String,  // 来自tree，tree的结构依赖list生成
         value: false   // 来自tree实例的 uniqId
       },
+      
+      fromComponent: {
+        type: String,
+        value: ''
+      }
     },
     data: {
       $list: {}
@@ -69,7 +75,7 @@ export const listBehavior = function(app, mytype) {
       },
 
       ready: function () { //组件布局完成，这时可以获取节点信息，也可以操作节点
-        const fromTree = this.data.$list.fromTree // 来自tree实例的 uniqId
+        const fromTree = this.data.fromTree || this.data.$list.fromTree // 来自tree实例的 uniqId
         const activePage = this.activePage
         if (this.data.$list['$$id']) {
           const $id = this.data.$list['$$id']
@@ -103,13 +109,13 @@ export const listBehavior = function(app, mytype) {
             if (key.indexOf('$list.') == -1) {
               nkey = '$list.' + key
             }
-            target[nkey] = reSetItemAttr.call(this, param[key], this.data.props)
+            target[nkey] = reSetItemAttr.call(this, param[key], this.data.$list)
           })
           param = target
           this.setData(param, cb)
         }
         if (lib.isArray(param)) {
-          let target = Object.assign({data: param}, this.data.props)
+          let target = Object.assign({data: param}, this.data.$list)
           const mylist = reSetList.call(this, target)
           this.setData({ $list: mylist }, cb)
         }

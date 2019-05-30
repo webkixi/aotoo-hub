@@ -72,6 +72,7 @@ const inputAttributs = {
   union: undefined,
   attr: undefined,
   itemClass: 'input-item-input',
+  inputClass: '',
   class: undefined,
   itemStyle: undefined,
   style: undefined,
@@ -250,49 +251,51 @@ function normInput(params, profile) {
       }
     }
     
-    if (params.title) {
-      params.title = resetUIitem(params.title)
-    }
-
-    if (params.desc) {
-      params.desc = resetUIitem(params.desc, 'input-item-desc')
-    }
-
-    if (params.error) {
-      params.error = resetUIitem(params.error, 'input-item-error')
-    }
-
-    if (params.type == 'password') {
-      params.eye = params.hasOwnProperty('eye') ? params.eye : true
-    }
-
-    if (params.type == 'picker') {
-      params = resetPickersValues(params)
-    }
-
-    if (params.type == 'dropdown') {
-      if (lib.isObject(params.titles)){
-        params.eye = 'icon-arrows-b'
-        params.titles.show = false
-        if (lib.isArray(params.titles.data)){
-          params.titles.type = {
-            is: 'scroll',
-            'scroll-y': true,
-            bindscroll: 'inputItemDropdownScroll?abc=123'
+    if (params.type !== 'span') {
+      if (params.title) {
+        params.title = resetUIitem(params.title)
+      }
+  
+      if (params.desc) {
+        params.desc = resetUIitem(params.desc, 'input-item-desc')
+      }
+  
+      if (params.error) {
+        params.error = resetUIitem(params.error, 'input-item-error')
+      }
+  
+      if (params.type == 'password') {
+        params.eye = params.hasOwnProperty('eye') ? params.eye : true
+      }
+  
+      if (params.type == 'picker') {
+        params = resetPickersValues(params)
+      }
+  
+      if (params.type == 'dropdown') {
+        if (lib.isObject(params.titles)){
+          params.eye = 'icon-arrows-b'
+          params.titles.show = false
+          if (lib.isArray(params.titles.data)){
+            params.titles.type = {
+              is: 'scroll',
+              'scroll-y': true,
+              bindscroll: 'inputItemDropdownScroll?abc=123'
+            }
+            params.titles.listClass = "input-item-dropdown-options"
+            params.titles.itemClass = "input-item-dropdown-options-item"
+            params.titles.data = params.titles.data.map((item, ii)=>{
+              if (typeof item == 'string') {
+                item = {title: item}
+              }
+              if (item.parent) {
+                item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
+              } else {
+                item.tap = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
+              }
+              return item
+            })
           }
-          params.titles.listClass = "input-item-dropdown-options"
-          params.titles.itemClass = "input-item-dropdown-options-item"
-          params.titles.data = params.titles.data.map((item, ii)=>{
-            if (typeof item == 'string') {
-              item = {title: item}
-            }
-            if (item.parent) {
-              item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
-            } else {
-              item.tap = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
-            }
-            return item
-          })
         }
       }
     }
@@ -431,7 +434,7 @@ Component({
     dataSource: {
       type: Object,
       observer: function (params) { 
-        if (this.mounted) {
+        if (this.mounted && !this.init) {
           if (params) {
             initForm.call(this, params)
           }
@@ -457,7 +460,8 @@ Component({
       const ds = this.data.$dataSource
       // if (ds.$$id) this.mount((ds.$$id))
       this.mount((ds.$$id))
-      this.parentInstance = this._getAppVars()
+      this.parentInstance = this._getAppVars(ds.fromComponent)
+      this.componentInst = this.parentInstance
       if (lib.isEmpty(this.parentInstance)) {
         this.parentInstance = undefined
       } else {
@@ -792,7 +796,8 @@ function runFormBindFun(fn, res, e, from) {
   const activePage = this.activePage
   if (lib.isString(res.inputData[fn])) {
     const funName = res.inputData[fn]
-    const fun = activePage[funName]
+    const targetObj = this.componentInst || activePage
+    const fun = targetObj[funName]
     if (lib.isFunction(fun)) {
       let resData = ''
       let result = fun(e, res, this)

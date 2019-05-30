@@ -343,6 +343,9 @@
   </block>
 </template>
 
+<template name="@span">
+  <ui-item item="{{input}}" fromComponent="{{uniqId}}"/>
+</template>
 <template name="whatTypeElement">
   <block wx:if="{{tmp.isInput(input.type)}}">
     <template is="@input" data="{{uniqId, input, inputStyle}}" />
@@ -408,21 +411,28 @@
 <!-- profile:{}, input: {} -->
 <template name="inputItem">
   <block wx:if="{{input.show}}">
-    <view class="input-item-content {{input.error? 'error':''}}">
+    <view class="input-item-content {{input.error? 'error':''}} {{input.inputClass}}">
       <!-- required -->
       <block wx:if="{{input.required}}">
         <text class="input-item-required"></text>
       </block>
 
-      <!-- title -->
-      <block wx:if="{{input.title}}">
-        <ui-item item="{{ input.title }}" fromComponent="{{uniqId}}" />
+      <block wx:if="{{input.type && input.type == 'span'}}">
+        <template is="@span" data="{{uniqId, props, profile, input}}" />
+      </block>
+      <block wx:else>
+        <!-- title -->
+        <block wx:if="{{input.title}}">
+          <ui-item item="{{ input.title }}" fromComponent="{{uniqId}}" />
+        </block>
+
+        <!-- content -->
+        <block wx:if="{{input.type}}">
+          <template is="@input-element" data="{{uniqId, props, profile, input}}" />
+        </block>
       </block>
 
-      <!-- content -->
-      <block wx:if="{{input.type}}">
-        <template is="@input-element" data="{{uniqId, props, profile, input}}" />
-      </block>
+
     </view>
   </block>
 </template>

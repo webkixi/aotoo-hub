@@ -59,11 +59,13 @@ function subTree(item, dataAry, deep, index){
 		item['@list'] = {
       $$id: $id,
       data: nsons,
+      type: item.type,
       listClass: item.liClass || 'ul',
       itemClass: treeProps.itemClass||'',
       itemStyle: treeProps.itemStyle||'',
       show: item.hasOwnProperty('show') ? item.show : true,
-      fromTree : fromTree
+      fromComponent : fromTree
+      // fromTree : fromTree
     }
     item['__sort'] = (item['__sort'] || []).concat('@list')
 	}
@@ -93,6 +95,8 @@ export function tree(dataAry, props, fromTree){
   dataAry.forEach( (item, ii) => {
     treeDeep = 1
     if (typeof item == 'object' && !Array.isArray(item)) {
+      // item.fromTree = fromTree
+      item.fromComponent = fromTree
       if (item.idf && !item.parent && idrecode.indexOf(item.idf) == -1) {
         var clsName = item.itemClass || item.class
         clsName = clsName ? clsName.indexOf('level0') == -1 ? clsName + ' level0' : clsName : 'level0'

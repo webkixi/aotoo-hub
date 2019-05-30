@@ -22,7 +22,7 @@ export function objTypeof(obj, type) {
 }
 
 export function isObject(obj) {
-  return objTypeof(obj) == 'object'
+  return objTypeof(obj) == 'object' && !isArray(obj)
 }
 
 export function isArray(obj) {
@@ -67,6 +67,20 @@ export function formatQuery(url) {
     }
   }
   return {url: aim, query}
+}
+
+export function formatToUrl(url, param={}) {
+  if (isString(url) && isObject(param)) {
+    let queryStr = ''
+    Object.keys(param).forEach(key=>{
+      queryStr+=`&${key}=${param[key]}`
+    })
+    if (queryStr) {
+      url += '?'+queryStr
+      url = url.replace('?&', '?').replace('&&', '&')
+    }
+  }
+  return url
 }
 
 let suidCount = -1

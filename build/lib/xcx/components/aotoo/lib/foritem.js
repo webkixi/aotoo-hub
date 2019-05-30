@@ -34,7 +34,7 @@ function setItemSortIdf(item, context) {
 
       if (context) {
         // item.fromComponent = context.data.fromComponent||context.data.uniqId
-        item.fromComponent = context.data.uniqId
+        item.fromComponent = context.data.fromComponent || context.data.uniqId
       }
 
       Object.keys(item).forEach(function (key) {
@@ -74,6 +74,14 @@ export function resetItem(data, context) {
   let incAttrs = []
   if (typeof data == 'string' || typeof data == 'number' || typeof data == 'boolean') {
     return data
+  }
+
+  if (context && data.$$id && data.methods) {
+    const methods = data.methods
+    Object.keys(methods).forEach(key=>{
+      context[key] = methods[key].bind(context)
+    })
+    delete data.methods
   }
   
   Object.keys(data).forEach(function (key) {

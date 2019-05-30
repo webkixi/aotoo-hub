@@ -8,6 +8,7 @@ export {
   isNumber,
   isFunction,
   formatQuery,
+  formatToUrl,
   suid,
   uuid,
   resetSuidCount,

@@ -47,7 +47,7 @@ function pageDataElement(data) {
     
             if (item.methods) {
               if (lib.isObject(item.methods)) {
-                acts[$id] = Object.assign(acts, methods)
+                acts[$id] = Object.assign(acts, item.methods)
                 delete item.methods
               }
             }
