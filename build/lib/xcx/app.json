@@ -4,6 +4,7 @@
     "pages/demo/index",
     "pages/demo/tab/index",
     "pages/empty/index",
+    "pages/my/index",
     "pages/logs/logs"
   ],
   "subpackages": [{
