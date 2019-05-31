@@ -1,85 +1,87 @@
-.as-common
-  background-color #FAFAFA
-  width 98vw
-  height 100%
-  // min-height 98vh
-  padding 1vw
-  // padding 10rpx
-  &.moveit
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-  &.bar
-    &.moveit
-      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+$modalPd-tb = 30rpx
+$modalPd-lr = 30rpx
+$modalBarHei = 60vh
+$modalBarWid = 60vw
 
+//遮盖层
 .actionMask
-  position absolute
+  position fixed
   top: 0;
   left: 0
-  display none
+  opacity 0
   width 100vw
   height 100vh
   background-color fade-out(#000,  0.5)
+  z-index -1
   &.show
-    display block
+    animation: fadeIn ease .3s forwards;
+    z-index: 1
+
+.as-common
+  background-color #FAFAFA
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  position fixed
+  z-index: 2
+//上下弹 公用
+.as-common-tb
+  width calc(100% - 60rpx)    //60rpx = $modalPd-lr * 2
+  max-height calc(100% - 60rpx)     //60rpx = $modalPd-tb * 2
+  padding $modalPd-tb $modalPd-lr
+  left: 0
+  &.bar
+    max-height: $modalBarHei  
+  &.full
+    height: calc(100% - 60rpx)
+//左右弹 公用
+.as-common-lr
+  max-width calc(100% - 60rpx)    //60rpx = $modalPd-lr * 2
+  height calc(100% - 60rpx)     //60rpx = $modalPd-tb * 2
+  padding $modalPd-tb $modalPd-lr
+  top: 0
+  &.bar
+    max-width $modalBarWid
+  &.full
+    width: calc(100% - 60rpx)
+    
+
 
 .actionSide
   position: relative
-//   @extends .as-common
-//   position absolute
 
 .actionSide-right
   @extends .as-common
-  position absolute
-  right -100vw
-  top 0
-  transition: all 0.2s ease
-  &.bar
-    width 60vw
+  @extends .as-common-lr
+  right: 0
   &.moveit
-    transform: translate3d(-100vw, 0, 0);
+    animation: slideRight ease .3s forwards;
+  &.menus-bar
+    max-width $modalBarWid
+    z-index: 2
 
 .actionSide-left
   @extends .as-common
-  position absolute
-  left -100vw
-  top 0
-  transition: all 0.2s ease
-  &.bar
-    width 60vw
+  @extends .as-common-lr
+  left: 0
   &.moveit
-    transform: translate3d(100vw, 0, 0);
+    animation: slideLeft ease .3s forwards;
 
 .actionSide-bot
   @extends .as-common
-  position absolute
-  left 0
-  bottom -100vh
-  transition: all 0.2s ease
-  &.bar
-    height 60vh
-    &.moveit
-      transform: translate3d(0, -60vh, 0);
+  @extends .as-common-tb
+  bottom 0
   &.moveit
-    transform: translate3d(0, -100vh, 0);
+    animation: slideUp ease .3s forwards;
 
 .actionSide-top
   @extends .as-common
-  position absolute
-  left 0
-  top -100vh
-  transition: all 0.2s ease
+  @extends .as-common-tb
+  top 0
   &.moveit
-    transform: translate3d(0, 100vh, 0);
-  &.bar
-    top -40vh
-    min-height 40vh
-    height 40vh
-    &.moveit
-      transform: translate3d(0, 40vh, 0);
+    animation: slideDown ease .3s forwards;
 
 .closeIt
   position absolute
-  font-size 48rpx
+  font-size 28rpx
   top 10rpx
   right: 10rpx
   color: #C1CDCD

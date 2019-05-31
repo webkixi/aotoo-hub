@@ -5,13 +5,21 @@ $Menu-size = 28rpx
 $Menu-color = #333
 $Menu-active = #4b9afc
 
+//content
+$contentPadding = $padding-default
+$contentWidth = calc(100% - 60rpx) //$contentPadding * 2 = 60rpx
+$contentBg = #fff
+
 //theme
+$Menu-width = calc(100% - 40rpx)    //40rpx = $Menu-padding* 2
 $Menu-padding = 0 20rpx
 $Menu-margin = 0 20rpx
 $Menu-hei-2 = 88rpx
 $Menu-size-2 = 32rpx
 $Content-height-2 = calc(100% - 88rpx)
 $Menu-fw = bold
+
+
 
 
 //抽出公用部分 适用于除tab组件外的其它组件使用
@@ -30,6 +38,7 @@ $Menu-fw = bold
 .tab-list-theme-scroll
   @extends .box-shadow
   white-space: nowrap
+  width: $Menu-width
   padding: $Menu-padding
   line-height: $Menu-hei-2
   .item
@@ -39,11 +48,14 @@ $Menu-fw = bold
 
 
 //tab组件
+
 .tab-container
   .menu-box
     @extends .tab-list-scroll
   .content-box
-    padding: $padding-default
+    padding: $contentPadding
+    width: $contentWidth
+
 
 .tabs-default
   .menu-box
@@ -56,5 +68,10 @@ $Menu-fw = bold
   .content-box
     height: $Content-height-2
     .content-item
+      @extends .card-bg 
+      margin-bottom: 20rpx
       height: 800rpx
       width: auto     //scroll-view 影响
+  swiper-item
+    position: relative!important
+    transform: none

@@ -19,8 +19,20 @@
 
 .flex-column
   ss-display-flex(column, flex-start)
+.flex-column-end
+  ss-display-flex(column, flex-end)
 .flex-column-start-center
   ss-display-flex(column, flex-start, center)
 .flex-column-between
   ss-display-flex(column, space-between)
-  
+.flex-column-between-center
+  ss-display-flex(column, space-between, center)
+
+.hlist-flex
+  .hlist
+    @extends .flex-row-wrap
+    margin-left: -1%
+    margin-top: -1%
+    >.item
+      margin-left: 1%
+      margin-top: 1%

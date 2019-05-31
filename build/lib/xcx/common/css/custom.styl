@@ -33,12 +33,24 @@ slider
 .ss-center
   text-align: center
 
+.ss-sizing-border
+  box-sizing: border-box
+
 .pages-wrap-default
   height: 100vh
   padding: $padding-default
 
+.pages-wrap-default-x
+  height: 100%
+  padding: $padding-default
+
+.none
+  display none
 .block
   display block
+
+.scroll-wrap-nav
+  height: calc(100% - 88rpx)
 
 //
 .boxer
@@ -52,6 +64,10 @@ slider
     height: auto
   &.boxer-hei-auto
     height: auto
+
+.demowrap-x
+  padding: 24rpx
+  width: calc(100% - 48rpx)   //48= 24*2
 
 //小程序用到@extens 注意： a:无法引用其它样式表的，b：要不然得放在这个样式表：如下
 
