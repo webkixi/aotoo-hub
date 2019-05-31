@@ -85,7 +85,7 @@ const buttonData = {
   },
   titleClass: 'ml-40-r',
   // liClass: 'mt-40-r',
-  itemClass: 'pages-wrap-default bg-fff'
+  itemClass: 'pages-wrap-default-x'
 }
 
 Pager({

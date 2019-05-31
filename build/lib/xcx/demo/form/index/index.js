@@ -63,47 +63,47 @@ Pager({
     if (theAim) {
       switch (theAim) {
         case 'form-input':
-          wx.navigateTo({ url: '../input/index' })
+          wx.redirectTo({ url: '../input/index' })
           break;
 
         case 'form-number':
-          wx.navigateTo({ url: '../number/index' })
+          wx.redirectTo({ url: '../number/index' })
           break;
 
         case 'form-icon':
-          wx.navigateTo({ url: '../icon/index' })
+          wx.redirectTo({ url: '../icon/index' })
           break;
 
         case 'form-switch':
-          wx.navigateTo({ url: '../switch/index' })
+          wx.redirectTo({ url: '../switch/index' })
           break;
 
         case 'form-union':
-          wx.navigateTo({ url: '../union/index' })
+          wx.redirectTo({ url: '../union/index' })
           break;
 
         case 'form-checkbox':
-          wx.navigateTo({ url: '../checkbox/index' })
+          wx.redirectTo({ url: '../checkbox/index' })
           break;
 
         case 'form-radio':
-          wx.navigateTo({ url: '../radio/index' })
+          wx.redirectTo({ url: '../radio/index' })
           break;
 
         case 'form-slider':
-          wx.navigateTo({ url: '../slider/index' })
+          wx.redirectTo({ url: '../slider/index' })
           break;
 
         case 'form-single-picker':
-          wx.navigateTo({ url: '../singlepicker/index' })
+          wx.redirectTo({ url: '../singlepicker/index' })
           break;
 
         case 'form-multipy-picker':
-          wx.navigateTo({ url: '../multipypicker/index' })
+          wx.redirectTo({ url: '../multipypicker/index' })
           break;
 
         case 'form-dropdown':
-          wx.navigateTo({ url: '../dropdown/index' })
+          wx.redirectTo({ url: '../dropdown/index' })
           break;
       
         default:

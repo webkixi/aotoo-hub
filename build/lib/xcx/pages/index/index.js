@@ -4,6 +4,9 @@ const app = getApp()
 const Pager = require('components/aotoo/core')
 // import createActionSide from 'components/actionside'
 
+//nav 底部导航
+import adapterNav from '../nav/adapter'
+import navData from '../nav/data'
 
 const data = [
   {
@@ -114,13 +117,16 @@ Pager({
       itemClass: 'flex-column-start-center padding-default'
     }),
     menuData: Pager.tree({
-      // $$id: 'sstree',
-      // type: {
-      //   is: "scroll"
-      // },
-      // 'scroll-y': true, 
       data: adapterMenu(data)
     }),
+    nav: Pager.list({
+      // type: {
+      //   is: 'swiper',
+      //   current: '0',
+      // },
+      data: adapterNav(navData, 0),
+      listClass: 'list-nav',
+    })
   },
 
   onLongPress: function(e, inst) {
@@ -134,6 +140,19 @@ Pager({
         case theTap:
           wx.navigateTo({
             url: '../../demo/'+theTap+'/index'
+          })
+        break;
+      }
+    }
+  },
+
+  onNav: function(e, query, inst){
+    const theTap = query.nav.replace(/_/g,"/")
+    if (theTap) {
+      switch (theTap) {
+        case theTap:
+          wx.redirectTo({
+            url: '../'+theTap+'/index'
           })
         break;
       }

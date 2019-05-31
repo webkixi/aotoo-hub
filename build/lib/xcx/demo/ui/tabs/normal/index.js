@@ -4,22 +4,25 @@ const app = getApp()
 const Pager = require('components/aotoo/core')
 
 const tabData = {
-  $$id: 'sstree',
   data: [
     {
       title: '选项一',
-      content: '没什么大不了，死不了就还好。A'
+      content: '如果使用scroll: 1、scrlll对flex是不支持的； 2、scroll-y为true时，要设置高度才能正常滚动'
     },
     {
       title: '选项二',
-      content: '没什么大不了，死不了就还好。B'
+      content: '如果使用scroll: 1、scrlll对flex是不支持的； 2、scroll-y为true时，要设置高度才能正常滚动。B'
     },
     {
       title: '选项三',
-      content: '没什么大不了，死不了就还好。C'
+      content: '如果使用scroll: 1、scrlll对flex是不支持的； 2、scroll-y为true时，要设置高度才能正常滚动。C'
+    },
+    {
+      title: '选项四',
+      content: '如果使用scroll: 1、scrlll对flex是不支持的； 2、scroll-y为true时，要设置高度才能正常滚动。C'
     },
   ],
-  listClass: 'tabs-default hei-p100 bg-fff'
+  listClass: 'tabs-default-scroll hei-p100 bg-fff'
 }
 
 

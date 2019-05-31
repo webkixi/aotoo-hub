@@ -1,0 +1,5 @@
+<view class="boxer">
+  <!-- <scroll-view scroll-y="{{true}}" class="scroll-wrap-nav"> </scroll-view> -->
+  <ui-item item="{{moto}}" />
+  <ui-list list="{{nav}}" />
+</view>

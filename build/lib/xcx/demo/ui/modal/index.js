@@ -3,6 +3,7 @@
 const app = getApp()
 const Pager = require('components/aotoo/core')
 
+import modalData from './data'
 
 const data = [
   {
@@ -87,21 +88,19 @@ Pager({
     const theAim = query.direction.replace(/_/g,"/")
     const type = query.type
     const aside1 = this.getElementsById('actionSide1')
+    console.log(type)
     if (theAim) {
       switch (theAim) {
         case theAim:
           (()=>{
             const direction = theAim || 'right'
             aside1.reset()[direction]({
-            itemClass: type&&type == 'full' ? '' : 'bar',
-            title: [
-              {title: '弹窗1', class: 'h2'},
-              {title: '支持多弹窗，灵活属性设置可以实现多种弹窗效果', class: 'h6', style: 'margin: 0 0 50rpx 0;'},
-              {
-                title: '打开第二个弹窗',
-                aim: 'open-as2'
-              }
-            ],
+            itemClass: type && type == 'full' ? 'full' : 'bar',
+            title: {
+              title: '推荐理由',
+              itemClass: 'size17 fw-bold ss-center'
+            },
+            body: modalData
           })
           })()
         break;

@@ -6,13 +6,22 @@ const Pager = require('components/aotoo/core')
 
 const data = [
   {
-    title: 'Tabs 导航(除了normal, 其它都不是用tabs组件)',
+    title: 'Tabs 组件',
     id: 'tabs',
     list: [
       { title: 'Normal', attrx: 'normal', littleTitle: '常规 ' },
       { title: 'Scroll', attrx: 'scroll', littleTitle: '滚动 ' },
     ]
   },
+  {
+    title: 'Tabs 仿tab组件，用list组件实现',
+    id: 'ftabs',
+    list: [
+      { title: 'Normal', attrx: 'fnormal', littleTitle: '常规 ' },
+      { title: 'Scroll', attrx: 'fscroll', littleTitle: '滚动 ' },
+    ]
+  },
+
 ]
 
 const adapterMenu = (res) => {

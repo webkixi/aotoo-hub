@@ -1,3 +1,5 @@
 <view class="boxer">
-  <ui-item item="{{motto}}" />
+  <scroll-view scroll-y="{{true}}" class='hei-p100 bg-fff'>
+    <ui-item item="{{motto}}" />
+  </scroll-view>
 </view>

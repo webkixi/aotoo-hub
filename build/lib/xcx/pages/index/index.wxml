@@ -1,6 +1,7 @@
 <view class="boxer">
-  <scroll-view scroll-y="{{true}}" class="hei-p100">
+  <scroll-view scroll-y="{{true}}" class="scroll-wrap-nav">
     <ui-item item="{{headLogo}}" />
     <ui-tree list="{{menuData}}" />
   </scroll-view>
+  <ui-list list="{{nav}}" />
 </view>

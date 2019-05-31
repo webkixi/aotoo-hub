@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "我的",
+  "usingComponents": {
+    "ui-item": "/components/aotoo/item/index",
+    "ui-list": "/components/aotoo/list/index",
+    "ui-tree": "/components/aotoo/tree/index",
+    "action-side": "/components/actionSide/index"
+  }
+}
