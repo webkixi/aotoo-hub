@@ -173,7 +173,7 @@
       <block wx:for="{{item['__sort']}}" wx:key="" wx:for-item="tempname">
         <block wx:if="{{tmp.execTemp(tempname, exclude)}}">
           <block wx:if="{{tempname=='title'}}">
-            <template is="make-title" data="{{item: {title: item.title,  itemClass: item.itemClass||item.class, style: item.itemStyle||item.style, aim: item.aim, tap: item.tap, captchtap: item.catchtap, longpress: item.longpress, catchlongpress: item.catchlongpress, touchstart: item.touchstart, touchmove: item.touchmove, touchcancel: item.touchcancel, touchend: item.touchend} }}"/>
+            <template is="make-title" data="{{item: {title: item.title,  itemClass: item.itemClass||item.class, style: item.itemStyle||item.style, aim: item.aim, tap: item.tap, catchtap: item.catchtap, longpress: item.longpress, catchlongpress: item.catchlongpress, touchstart: item.touchstart, touchmove: item.touchmove, touchcancel: item.touchcancel, touchend: item.touchend} }}"/>
           </block>
           <block wx:else>
             <template is="extraTemp" data="{{tempname, item}}" />

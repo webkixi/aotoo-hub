@@ -346,6 +346,7 @@
 <template name="@span">
   <ui-item item="{{input}}" fromComponent="{{uniqId}}"/>
 </template>
+
 <template name="whatTypeElement">
   <block wx:if="{{tmp.isInput(input.type)}}">
     <template is="@input" data="{{uniqId, input, inputStyle}}" />
@@ -474,7 +475,7 @@
     bindreset="formReset"
   >
     <block wx:if="{{util.isArray($validInputs)}}">
-      <view class="input-container">
+      <view class="input-container {{$props.listClass}}">
         <block wx:for="{{$validInputs}}" wx:key="">
           <template is="inputs" data="{{uniqId, props: $props, profile: item.profile, input: item.input}}" />
         </block>
