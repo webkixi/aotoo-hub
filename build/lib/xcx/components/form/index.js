@@ -796,7 +796,7 @@ function runFormBindFun(fn, res, e, from) {
   const activePage = this.activePage
   if (lib.isString(res.inputData[fn])) {
     const funName = res.inputData[fn]
-    const targetObj = this.componentInst || activePage
+    const targetObj = (!lib.isEmpty(this.componentInst) && this.componentInst) || activePage
     const fun = targetObj[funName]
     if (lib.isFunction(fun)) {
       let resData = ''

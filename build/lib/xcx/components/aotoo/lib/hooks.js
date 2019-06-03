@@ -18,21 +18,31 @@ class _hooks {
   destory() {
     this.actions = null
     this.storeData = null
-    wx.clearStorageSync()
+    // wx.clearStorageSync()
   }
   getInfo(){
     return this.storage ? getStorageInfoSync() : this.storeData
   }
   setItem(key, val){
     try {
-      this.storage ?  wx.setStorageSync(key, val) : this.storeData[key] = val
+      if (this.storage) {
+        wx.setStorageSync(key, val)
+      }
+      this.storeData[key] = val
     } catch (error) {
       console.warn(error);
     }
   }
   getItem(key){
     try {
-      return this.storage ? wx.getStorageSync(key) : this.storeData[key]
+      let res
+      if (this.storage) {
+        res = wx.getStorageSync(key)
+      }
+      if (res) {
+        this.storeData[key] = res
+      }
+      return res
     } catch (error) {
       console.warn(error);
     }
@@ -57,10 +67,14 @@ class _hooks {
     }
   }
   delete(key){
-    this.storage ? wx.removeStorageSync(key) : this.storeData[key] = null
+    if (this.storage) {
+      wx.removeStorageSync(key)
+    }
+    this.storeData[key] = null
   }
   clear(){
     this.destory()
+    wx.clearStorageSync()
   }
 
   // ========= 下面为钩子方法 ===========
