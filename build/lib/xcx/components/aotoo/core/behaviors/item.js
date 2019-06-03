@@ -65,11 +65,13 @@ export const itemBehavior = function(app, mytype) {
         if (lib.isObject(param)) {
           let target = {}
           Object.keys(param).forEach(key => {
-            if (key.indexOf('$item.') == -1) {
-              const nkey = '$item.' + key
-              target[nkey] = param[key]
-            } else {
-              target[key] = param[key]
+            if (param[key]) {
+              if (key.indexOf('$item.') == -1) {
+                const nkey = '$item.' + key
+                target[nkey] = param[key]
+              } else {
+                target[key] = param[key]
+              }
             }
           })
           param = target

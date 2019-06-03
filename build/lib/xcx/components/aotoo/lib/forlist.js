@@ -66,10 +66,28 @@ export function reSetItemAttr(item, list){
 }
 
 function reSetArray(data, list) {
-  if (isArray(data)) {
-    list.data = data.map(item => reSetItemAttr.call(this, item, list))
+  const that = this
+  try {
+    if (list.methods && isObject(list.methods)) {
+      const methods = list.methods
+      Object.keys(methods).forEach(key=>{
+        let fun = methods[key]
+        if (isFunction(fun)) {
+          fun = fun.bind(that)
+          that[key] = methods[key]
+        }
+      })
+    }
+    delete list.methods
+
+    if (isArray(data)) {
+      list.data = data.map(item => reSetItemAttr.call(this, item, list))
+    }
+    return list
+    
+  } catch (error) {
+    console.warn('======= lib.reSetArray =======', error);
   }
-  return list
 }
 
 export function reSetList(list) {

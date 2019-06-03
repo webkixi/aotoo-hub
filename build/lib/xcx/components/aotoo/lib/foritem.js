@@ -24,96 +24,114 @@ const accessKey = [
   'header', 'body', 'footer', 'dot', 'li', 'k', 'v'
 ]
 
-function setItemSortIdf(item, context) {
-  if (typeof item == 'string' || typeof item == 'number' || typeof item == 'boolean') return item
-  if (typeof item == 'object') {
-    if (!Array.isArray(item)) {
-      let extAttrs = {}
-      let incAttrs = []
-      item['__sort'] = []
+// function setItemSortIdf(item, context) {
+//   if (typeof item == 'string' || typeof item == 'number' || typeof item == 'boolean') return item
+//   if (typeof item == 'object') {
+//     if (!Array.isArray(item)) {
+//       let extAttrs = {}
+//       let incAttrs = []
+//       item['__sort'] = []
 
-      if (context) {
-        // item.fromComponent = context.data.fromComponent||context.data.uniqId
-        item.fromComponent = context.data.fromComponent || context.data.uniqId
-      }
+//       if (context) {
+//         // item.fromComponent = context.data.fromComponent||context.data.uniqId
+//         item.fromComponent = context.data.fromComponent || context.data.uniqId
+//       }
 
-      Object.keys(item).forEach(function (key) {
-        if (accessKey.indexOf(key) > -1 || (key.indexOf('@')==0 && key.length>1)) {
-          incAttrs.push(key)
-        } else {
-          extAttrs[key] = item[key]
-        }
-      })
+//       Object.keys(item).forEach(function (key) {
+//         if (accessKey.indexOf(key) > -1 || (key.indexOf('@')==0 && key.length>1)) {
+//           incAttrs.push(key)
+//         } else {
+//           if (key == 'aim') {
+//             item.catchtap = item[key]
+//           }
+//           extAttrs[key] = item[key]
+//         }
+//       })
 
-      if (incAttrs.length) {
-        item['__sort'] = incAttrs
-        incAttrs.map(attr => {
-          const oData = item[attr]
-          if (typeof oData == 'object') {
-            if (Array.isArray(oData)) {
-              item[attr] = setSortTemplateName(oData, context)
-            } else {
-              item[attr] = setItemSortIdf(oData, context)
-            }
+//       if (incAttrs.length) {
+//         item['__sort'] = incAttrs
+//         incAttrs.map(attr => {
+//           let oData = item[attr]
+//           if (typeof oData == 'object') {
+//             if (Array.isArray(oData)) {
+//               item[attr] = setSortTemplateName(oData, context)
+//             } else {
+//               if (/^[^@]/.test(attr)) {
+//                 item[attr] = setItemSortIdf(oData, context)
+//               }
+//             }
+//           }
+//         })
+//       }
+//       return item
+//     }
+//   }
+// }
+
+// function setSortTemplateName(data, context) {
+//   if (Array.isArray(data) && data.length) {
+//     return data.map(item => setItemSortIdf(item, context))
+//   }
+// }
+
+export function resetItem(data, context, loop) {
+  if (typeof data == 'string' || typeof data == 'number' || typeof data == 'boolean') return data
+  if (isObject(data)) {
+    let extAttrs = {}
+    let incAttrs = []
+    data['__sort'] = []
+  
+    if (context) {
+      data.fromComponent = context.data.fromComponent || context.data.uniqId
+      if (data.methods || data.itemMethod) {
+        const methods = data.methods || data.itemMethod
+        Object.keys(methods).forEach(key=>{
+          let fun = methods[key]
+          if (isFunction(fun)) {
+            fun = fun.bind(context)
+            context[key] = fun
           }
         })
-      }
-      return item
-    }
-  }
-}
-
-function setSortTemplateName(data, context) {
-  if (Array.isArray(data) && data.length) {
-    return data.map(item => setItemSortIdf(item, context))
-  }
-}
-
-export function resetItem(data, context) {
-  let extAttrs = {}
-  let incAttrs = []
-  if (typeof data == 'string' || typeof data == 'number' || typeof data == 'boolean') {
-    return data
-  }
-
-  if (context && data.$$id && data.methods) {
-    const methods = data.methods
-    Object.keys(methods).forEach(key=>{
-      context[key] = methods[key].bind(context)
-    })
-    delete data.methods
-  }
-  
-  Object.keys(data).forEach(function (key) {
-    if (accessKey.indexOf(key) > -1 || (key.indexOf('@') == 0 && key.length > 1)) {
-      incAttrs.push(key)
-    } else {
-      if (key == 'aim') {
-        data.catchtap = data[key]
-      }
-      extAttrs[key] = data[key]
-    }
-  })
-  
-  data['__sort'] = incAttrs
-  for (var attr in data) {
-    const sonItem = data[attr]
-    if (attr == 'itemMethod') {
-      if (context && isObject(sonItem)) {
-        Object.keys(sonItem).forEach(fn=>{
-          context[fn] = sonItem[fn]
-        })
+        delete data.methods
         delete data.itemMethod
       }
-    } else {
-      if (Array.isArray(sonItem)) {
-        data[attr] = setSortTemplateName(sonItem, context)
+    }
+  
+    
+    Object.keys(data).forEach(function (key) {
+      if (data[key] || data[key]===0) {
+        if (accessKey.indexOf(key) > -1 || (key.indexOf('@') == 0 && key.length > 1)) {
+          incAttrs.push(key)
+        } else {
+          if (key == 'aim') {
+            data.catchtap = data[key]
+            extAttrs['catchtap'] = data[key]
+            delete data.aim
+          } else {
+            extAttrs[key] = data[key]
+          }
+        }
       } else {
-        data[attr] = setItemSortIdf(sonItem, context)
+        delete data[key]
+      }
+    })
+    
+    data['__sort'] = incAttrs
+    // for (var attr in data) {
+    for (var attr of incAttrs) {
+      const sonItem = data[attr]
+      if (isArray(sonItem)) {
+        // data[attr] = setSortTemplateName(sonItem, context)
+        data[attr] = sonItem.filter(item => resetItem(item, context, true))
+      } else {
+        if (/^[^@]/.test(attr) && sonItem) {
+          data[attr] = resetItem(sonItem, context, true)
+          // data[attr] = setItemSortIdf(sonItem, context)
+        } 
       }
     }
+    if (!data.parent && !loop) data.itemDataRoot = true // 标识该item是最顶层item，class style用作容器描述
   }
-  if (!data.parent) data.itemDataRoot = true // 标识该item是最顶层item，class style用作容器描述
 
   // context.props = extAttrs
   return data

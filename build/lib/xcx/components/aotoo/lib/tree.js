@@ -10,6 +10,10 @@ import {
   clone
 } from './util'
 
+import {
+  resetItem
+} from "./foritem";
+
 const filter = function(data, callback) { 
   if (isArray(data)) {
     return data.filter(callback)
@@ -67,8 +71,9 @@ function subTree(item, dataAry, deep, index){
       fromComponent : fromTree
       // fromTree : fromTree
     }
-    item['__sort'] = (item['__sort'] || []).concat('@list')
-	}
+    // item['__sort'] = (item['__sort'] || []).concat('@list')
+  }
+  item = resetItem(item)
 	return item
 }
 
@@ -122,7 +127,7 @@ export function tree(dataAry, props, fromTree){
 export function listToTree(_list, fromTree) {
   let list = clone(_list)
   if (isObject(list) && list.data) {
-    list.data = tree(list.data, list, fromTree)
+    list.data = tree.call(this, list.data, list, fromTree)
   }
   return list
 }
