@@ -4,27 +4,9 @@ const app = getApp()
 const Pager = require('components/aotoo/core')
 const lib = Pager.lib
 
-function initChart(canvas, width, height) {
-  const chart = echarts.init(canvas, null, {
-    width: width,
-    height: height
-  });
-  canvas.setChart(chart);
-
-  var option = {
-    // ...
-  };
-  chart.setOption(option);
-  return chart;
-}
 
 
 Pager({
-  data: {
-    ec: {
-      onInit: initChart
-    }
-  },
   config: {
     element: 'radarCanvas',
     numCount: 8,
