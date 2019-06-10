@@ -41,6 +41,9 @@
         "ui/tabs/scroll/index",
         "ui/tabs/fnormal/index",
         "ui/tabs/fscroll/index",
+        "ui/toast/index",
+        "ui/score/index",
+        "spiderchar/index",
         "uploads/index"
       ]
     }
