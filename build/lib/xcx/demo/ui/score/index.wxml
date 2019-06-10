@@ -1,0 +1,5 @@
+<view class="boxer">
+  <ui-list list="{{score}}"/>
+  <ui-list list="{{pageBtn}}" />
+  <!-- <ui-form dataSource="{{motto}}" /> -->
+</view>

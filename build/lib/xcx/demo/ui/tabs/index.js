@@ -10,7 +10,7 @@ const data = [
     id: 'tabs',
     list: [
       { title: 'Normal', attrx: 'normal', littleTitle: '常规 ' },
-      { title: 'Scroll', attrx: 'scroll', littleTitle: '滚动 ' },
+      { title: 'Scroll', attrx: 'scroll', littleTitle: '滚动 ', isNews: true },
     ]
   },
   {
@@ -38,7 +38,12 @@ const adapterMenu = (res) => {
     item.list.map( itemxx => {
       output.push({
         title: [
-          {title: itemxx.title},
+          !itemxx.isNews
+            ? { title: itemxx.title }
+            : {
+              title: [{title: itemxx.title, itemClass: 'color-minor'}, {title: ' ', itemClass: 'icon-dot-small ss-absolute-r-20-m'}],
+              titleClass: 'ss-relative'
+            },
           {title: itemxx.littleTitle, itemClass: 'icon-arrows-r color-grey'}
         ],
         titleClass: 'item-border flex-row-between-center',
