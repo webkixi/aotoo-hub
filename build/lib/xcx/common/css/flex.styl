@@ -1,16 +1,11 @@
-.flex-betwwen-center-htitles
-  >.htitles
-    ss-display-flex(row nowrap, space-between, center, center)
-.flex-betwwen-center-hkv
-  >.hkv
-    ss-display-flex(row nowrap, space-between, center, center)
-
 .flex-row
   ss-display-flex(row nowrap, flex-start)
 .flex-row-wrap
   ss-display-flex(row wrap, flex-start)
 .flex-row-center
   ss-display-flex(row nowrap, flex-start, center, center)
+.flex-row-center-center
+  ss-display-flex(row nowrap, center, center, center)
 
 .flex-row-between-center
   ss-display-flex(row nowrap, space-between, center, center)
@@ -36,3 +31,10 @@
     >.item
       margin-left: 1%
       margin-top: 1%
+
+.flex-betwwen-center-htitles
+  >.htitles
+    @extends .flex-row-between-center
+.flex-betwwen-center-hkv
+  >.hkv
+    @extends .flex-row-between-center

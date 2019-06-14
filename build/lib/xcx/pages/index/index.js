@@ -31,6 +31,8 @@ const data = [
     id: 'feedback',
     list: [
       { title: 'Modal', attrx: 'modal', littleTitle: '弹出层 ' },
+      // { title: 'Toast', attrx: 'toast', littleTitle: '提示 ' },
+      { title: 'Score', attrx: 'score', littleTitle: '评分 ', isNews: true },
     ]
   },
   {
@@ -54,9 +56,16 @@ const data = [
     title: 'Navigation 导航组件',
     id: 'navigation',
     list: [
-      { title: 'Tabs', attrx: 'tabs', littleTitle: '标签页'}
+      { title: 'Tabs', attrx: 'tabs', littleTitle: '标签页', isNews: true}
     ]
   },
+  // {
+  //   title: 'char 雷达图',
+  //   id: 'spider',
+  //   list: [
+  //     { title: 'Spider', attrx: 'spiderchar', littleTitle: '蜘蛛网图 ' },
+  //   ]
+  // },
   {
     title: 'Yc',
     id: 'yc',
@@ -82,13 +91,18 @@ const adapterMenu = (res) => {
     item.list.map( itemxx => {
       output.push({
         title: [
-          {title: itemxx.title},
+          !itemxx.isNews
+            ? { title: itemxx.title }
+            : {
+              title: [{title: itemxx.title, itemClass: 'color-minor'}, {title: ' ', itemClass: 'icon-dot-small ss-absolute-r-20-m'}],
+              titleClass: 'ss-relative'
+            },
           {title: itemxx.littleTitle, itemClass: 'icon-arrows-r color-grey'}
         ],
         titleClass: 'item-border flex-row-between-center',
         parent: item.id,
         itemClass: 'item ss-focus',
-        tap: item.id == 'form' ? 'onTap?demo='+item.id+'_'+itemxx.attrx : 'onTap?demo=ui_'+itemxx.attrx
+        tap: item.id == 'form' ? 'onTap?demo='+item.id+'_'+itemxx.attrx : item.id == 'spider' ? 'onTap?demo='+itemxx.attrx : 'onTap?demo=ui_'+itemxx.attrx
         // tap: 'onTap?demo='+item.id+'/'+itemxx.attrx
       })
     })

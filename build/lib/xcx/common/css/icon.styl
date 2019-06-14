@@ -119,3 +119,41 @@
   &:before
     content: '\e62b'
     font-size: 18px
+
+.icon-arrow-right-circle
+  width: 100rpx
+  height: @width
+  border-radius: @width
+  border: 1px solid
+  text-align: center
+  line-height: @width
+  font-size: 18px
+  &:before
+    content: '\e618'
+  &.small
+    width: 60rpx
+    height: @width
+    border-radius: @width
+    line-height: @width
+    font-size: 14px
+.icon-arrow-left-circle
+  @extends .icon-arrow-right-circle
+  &:before
+    display: block
+    transform: rotate(180deg)
+
+
+.icon-arror-top-solid
+  &:before
+    content: '\e6b0'
+    color: #999
+    font-size: 12px
+  &.absolute
+    position: absolute
+    top: -14px
+    left: 0 
+    width: calc(100% / 11);
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    text-align: center
+
