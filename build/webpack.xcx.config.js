@@ -14,8 +14,6 @@ var MiniCssExtractPlugin = require('mini-css-extract-plugin')
   , CopyPlugin = require('copy-webpack-plugin')
   , projectConfig = require(xcxCloudProjectConfigFile)
 
-
-
 class appendCommonFile {
   constructor(options) {
     const {DIST, TYPE} = options
@@ -23,9 +21,9 @@ class appendCommonFile {
     const isAli = TYPE == 'ali'
     const globalVar = isXcx ? 'wx' : 'my'
     this.globalVar = globalVar
+    this.regeneratorRuntimeVar = 'wx.regeneratorRuntime'
     this.prePath = '../'
     this.options = options
-    // this.contentSource = `; function webpackJsonp() { require("~~~~"); ${globalVar}.webpackJsonp.apply(null, arguments); }`;
     this.contentSource = `; require("~~~~");`;
   }
   apply(compiler) {
@@ -34,18 +32,13 @@ class appendCommonFile {
     const opts = options.options
     const cloud = opts&&opts.cloud
     const windowRegExp = new RegExp('window', 'g');
+    const regeneratorRuntimeRegExp = new RegExp('regeneratorRuntime', 'g'); // 支持async，替换全局变量regeneratorRuntime为wx.regeneratorRuntime
 
     compiler.hooks.compilation.tap('wpConcatFile', (compilation, params) => {
       compilation.hooks.beforeChunkAssets.tap('wpConcatFile', () => {
         compilation.chunks = compilation.chunks.filter(function (item) {
           return item.name.indexOf('nobuild__') == -1
         })
-        // const assetsChunkIndex = compilation.chunks.findIndex(function(item) {
-        //   return item.name.indexOf('nobuild__')>-1
-        // })
-				// if (assetsChunkIndex > -1) {
-				// 	compilation.chunks.splice(assetsChunkIndex, 1);
-				// }
       })
       compilation.hooks.optimizeChunkAssets.tapAsync('wpConcatFile', (chunks, callback) => {
         let hasCommon = false
@@ -82,7 +75,7 @@ class appendCommonFile {
                 }
                 let contentObj = compilation.assets[file]
                 let code = contentObj.source()
-                code = code.replace(windowRegExp, that.globalVar);
+                code = code.replace(windowRegExp, that.globalVar).replace(regeneratorRuntimeRegExp, this.regeneratorRuntimeVar);
                 contentObj = new RawSource(code)
 
                 compilation.assets[file] = new ConcatSource(
@@ -95,7 +88,7 @@ class appendCommonFile {
               } else {
                 const contentObj = compilation.assets[file]
                 let code = contentObj.source()
-                code = code.replace(windowRegExp, that.globalVar);
+                code = code.replace(windowRegExp, that.globalVar).replace(regeneratorRuntimeRegExp, this.regeneratorRuntimeVar);
                 compilation.assets[file] = new RawSource(code)
               }
             }
@@ -146,7 +139,11 @@ function jsEntries(dir) {
             const relativeFile = item.replace(xcxSrc, '')
             let relativeKey = relativeFile.replace(fileObj.ext, '').substring(1)
             if (fileObj.ext == '.js') {
-              jsFiles[relativeKey] = item
+              if (fileObj.name == 'app') {
+                jsFiles[relativeKey] = ['regenerator-runtime', item]   // 支持async await方法
+              } else {
+                jsFiles[relativeKey] = item
+              }
             }
             else {
               if (accessExts.indexOf(fileObj.ext) > -1) {
@@ -202,7 +199,6 @@ function baseConfig(asset, envAttributs) {
       aggregateTimeout: 300,
       poll: 1000
     },
-    // devtool: isDev ? 'source-map' : false,
     devtool: false,
     output: {
       filename: '[name].js',
@@ -220,19 +216,22 @@ function baseConfig(asset, envAttributs) {
         cacheGroups: {
           common: { // 抽离自己写的公共代码，utils这个名字可以随意起
             // test: /\.js(x?)/,
-            test(module, chunks) {
-              const re = /.js(x?)$/
-              const re_funs = /cloudfunctions/
-              if (cloud) {
-                return re.test(chunks.name) && !re_funs.test(chunks.name)
-              } else {
-                return re.test(chunks.name)
-              }
-            },
+            test: /^((?!cloudfunction).)+\.js$/,
+            // test(module, chunks) {
+            //   const re = /.js(x?)$/
+            //   const re_funs = /cloudfunctions/
+            //   const re_nobuild = /nobuild/
+            //   if (cloud) {
+            //     return re.test(chunks[0].name) && !re_funs.test(chunks[0].name)
+            //   } else {
+            //     return re.test(chunks[0].name)
+            //   }
+            // },
             chunks: 'all',
             name: 'common', // 任意命名
             minSize: 50000, // 只要超出0字节就生成一个新包
             minChunks: 2, // 只要超出0字节就生成一个新包
+            // reuseExistingChunk: true,
             priority: 10
           }
         }
