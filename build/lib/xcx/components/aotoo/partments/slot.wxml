@@ -47,10 +47,6 @@
   <include src="./kv.wxml" />
 </template>
 
-<!-- <template name="@v">
-  <include src="./kv.wxml" />
-</template> -->
-
 <template name="@body">
   <include src="./body.wxml" />
 </template>
@@ -72,7 +68,6 @@
       <block wx:for="{{item['__sort']}}" wx:key="" wx:for-item="tempname">
         <block wx:if="{{tmp.execTemp(tempname)}}">
           <template is="extraTemp" data="{{tempname, item}}" />
-          <!-- <template is="{{'@'+tempname}}" data="{{item}}"/> -->
         </block>
       </block>
     </block>

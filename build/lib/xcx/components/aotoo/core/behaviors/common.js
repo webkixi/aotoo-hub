@@ -30,6 +30,7 @@ function rightEvent(dsetEvt) {
         }
       })
       rightEvt = myQuery[evtType]
+      rightEvt.allParam = myQuery
     } else {
       dsetEvt = dsetEvt.replace('@@', '?').replace(/,/g, '&')
       const evtObj = lib.formatQuery(dsetEvt)
@@ -39,7 +40,11 @@ function rightEvent(dsetEvt) {
       const selObj = lib.formatQuery(evtSelect)
       const selFun = selObj.url
       const selParam = selObj.query
-      rightEvt = {fun: selFun, param: selParam}
+      rightEvt = {
+        fun: selFun, 
+        param: selParam,
+        allParam: evtQuery
+      }
     }
     storeEvts[$id] = rightEvt
     return rightEvt||{}
@@ -265,53 +270,17 @@ export const commonMethodBehavior = (app, mytype) => {
       },
 
       itemMethod: function (e) {
-        itemReactFun.call(this, e)
-
-        // if (this.treeInst) {
-        //   this.treeInst.itemMethod(e)
-        //   return false
-        // }
-        // const that = this
-        // const currentTarget = e.currentTarget
-        // const dataset = currentTarget.dataset
-        // const activePage = this.activePage
-        // const parentInstance = this._getAppVars()
-
-        // const oType = e.type
-        // const nType = oType
-
-        // let dsetEvt = nType + '@@' + dataset['evt']
-        // const {fun, param} = rightEvent(dsetEvt)
-        // e.currentTarget.dataset._query = param
-        // const evtFun = activePage[fun]
-        // const thisFun = this[fun]
-        // const isEvt = lib.isFunction(evtFun)
-        // let vals = this.hooks.emit('beforeBind', {ctx: this, event: e, funName: fun, param})
-        // if (parentInstance && lib.isFunction(parentInstance[fun])) {
-        //   parentInstance[fun].call(parentInstance, e, param)
-        // } else {
-        //   if (vals) {
-        //     vals.forEach(function (val) {
-        //       if (val !== 0 && isEvt) evtFun.call(activePage, e, param, that) // 返回值为0则不透传
-        //     })
-        //   } else {
-        //     if (lib.isFunction(thisFun)) {
-        //       thisFun(e, param, this)
-        //     } else {
-        //       if (isEvt) evtFun.call(activePage, e, param, that)
-        //     }
-        //   }
-        // }
+        itemReactFun.call(this, app, e)
       },
 
       catchItemMethod: function (e) {
-        itemReactFun.call(this, e, 'catch')
+        itemReactFun.call(this, app, e, 'catch')
       },
     }
   })
 }
 
-function itemReactFun(e, prefix) {
+function itemReactFun(app, e, prefix) {
   if (this.treeInst) {
     this.treeInst[(prefix ? 'catchItemMethod' : 'itemMethod')].call(this.treeInst, e, prefix)
     return false
@@ -334,7 +303,7 @@ function itemReactFun(e, prefix) {
   }
 
   e.currentTarget.dataset._query = param
-  const evtFun = activePage[fun]
+  const evtFun = activePage[fun] || app.activePage[fun]
   const thisFun = this[fun]
   const isEvt = lib.isFunction(evtFun)
   let vals = this.hooks.emit('beforeBind', {ctx: this, event: e, funName: fun, param})

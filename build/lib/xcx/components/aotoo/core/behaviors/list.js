@@ -253,7 +253,7 @@ export const listBehavior = function(app, mytype) {
       },
 
       _scrollMethod: function (e) {
-        return listReactFun.call(this, e, 'scroll')
+        return listReactFun.call(this, app, e, 'scroll')
 
         // if (this.treeInst) {
         //   this.treeInst._scrollMethod(e)
@@ -288,13 +288,13 @@ export const listBehavior = function(app, mytype) {
       },
 
       _swiperMethod: function (e) {
-        return listReactFun.call(this, e, 'swiper')
+        return listReactFun.call(this, app, e, 'swiper')
       },
     }
   })
 }
 
-function listReactFun(e, type="list") {
+function listReactFun(app, e, type="list") {
   if (this.treeInst) {
     return type == 'swiper' ? this.treeInst._swiperMethod.call(this.treeInst, e, type) : this.treeInst._scrollMethod.call(this.treeInst, e, type)
   }
@@ -317,7 +317,7 @@ function listReactFun(e, type="list") {
   const activePage = this.activePage
   let parentInstance = this.componentInst
   const {fun, param} = this._rightEvent(e)
-  const evtFun = activePage[fun]
+  const evtFun = activePage[fun] || app.activePage[fun]
   const thisFun = this[fun]
   const isEvt = lib.isFunction(evtFun)
   if (lib.isEmpty(parentInstance)) {

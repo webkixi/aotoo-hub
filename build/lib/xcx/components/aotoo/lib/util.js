@@ -109,3 +109,47 @@ export function uuid(prefix, len) {
     return uuid
   }
 }
+
+// 节流方法
+export function throttle(fn, gapTime) {
+  if (gapTime == null || gapTime == undefined) {
+    gapTime = 1500
+  }
+
+  let _lastTime = null
+  return function () {
+    var context = this
+    let _nowTime = +new Date()
+    if (_nowTime - _lastTime > gapTime || !_lastTime) {
+      fn.apply(context, arguments)
+      _lastTime = _nowTime
+    }
+  }
+}
+// throttle(fn,1000),10)  稳定一秒输出，不会被打断，中途打断无效
+
+// 防抖函数
+export function debounce(fn, wait) {
+  var timer = null;
+  return function () {
+    var context = this
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    timer = setTimeout(function () {
+      fn.apply(context, arguments)
+    }, wait)
+  }
+}
+// (debounce(fn, 500), 1000)  // 1000触发一次，中途触发则阻止上一次的
+
+let _nav = {}
+const navFuns = ['switchTab', 'reLaunch', 'redirectTo', 'navigateTo', 'navigateBack']
+navFuns.forEach(key => {
+  _nav[key] = throttle(function () {
+    wx[key].apply(null, arguments)
+  }, 1200)
+})
+
+export const nav = _nav

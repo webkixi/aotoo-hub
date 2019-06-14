@@ -110,7 +110,7 @@
     placeholder-class="{{input['placeholder-class']}}"
 
     disabled="{{input.disabled}}"
-    maxlength="{{input.maxlength}}"
+    maxlength="{{input.maxlength||20}}"
     cursor-spacing	="{{input.cursor-spacing}}"
     confirm-type ="{{input.confirm-type}}"
     confirm-hold ="{{input.confirm-hold}}"

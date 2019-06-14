@@ -80,10 +80,6 @@ function log(what){
   console.log(JSON.stringify(what))
 }
 
-function mergeItemEvent(key, props, item) {
-  return item[key] || props[key] || ''
-}
-
 function equal(item, equalwhat){
   if (item.title ==  equalwhat) {
     console.log(item)
@@ -144,20 +140,6 @@ function existTemp(item, excludeTmp) {
   } : noopRet
 }
 
-function resetTitleArray(titles) {
-  return titles.map(function(tit) {
-    if (isString(tit)) {
-      return tit
-      // return {title: tit, uniqueKey: suid('parseTitle_')}
-    }
-    if (isObject(tit)) {
-      tit.uniqueKey = suid('parseTitle_')
-      return tit
-    }
-  })
-  
-}
-
 function customCustom(item, key, attrName) {
   var comp = item[key]
   var compOption = comp && comp.option || {}
@@ -180,50 +162,6 @@ function customCustom(item, key, attrName) {
   }
 }
 
-function customScrollView(item, attrName) {
-  return customCustom(item, 'scroll', attrName)
-}
-
-function customSwiperView(item, attrName) {
-  return customCustom(item, 'swiper', attrName)
-}
-
-function customLabelrView(item, attrName) {
-  return customCustom(item, 'label', attrName)
-}
-
-function customMoveView(item, attrName) {
-  return customCustom(item, 'movearea', attrName)
-}
-
-function customForm(item, attrName) {
-  return customCustom(item, 'form', attrName)
-}
-
-function customPicker(item, attrName) {
-  return customCustom(item, 'picker', attrName)
-}
-
-function customPickerView(item, attrName) {
-  return customCustom(item, 'pickerview', attrName)
-}
-
-function customView(item, attrName) {
-  return customCustom(item, 'view', attrName)
-}
-
-function customCoverView(item, attrName) {
-  return customCustom(item, 'coverview', attrName)
-}
-
-function dataOptions(item) {
-  if (item && item['data-options']) {
-    var opts = item['data-options']
-    return JSON.stringify(opts)
-  }
-  return ''
-}
-
 var innerCount = -1
 function suid(prefix) {
   innerCount++
@@ -234,42 +172,8 @@ function suid(prefix) {
   }
 }
 
-var lev = 0
-function recursiveNo(level) {
-  if ((level&&level<8) || level == 0) {
-    return ++lev
-  } else {
-    if (lev >= 8) {
-      console.log('超出最大允许递归数-8')
-      return false
-    }
-    return ++lev
-  }
-}
-
-function getRecursiveNo(prefix, curnumber) {
-  if (lev || lev == 0) {
-    return true
-  }
-}
-
-function useRecursiveNo(prefix, curnumber) {
-  let loopNo = recursiveNo()
-  if (loopNo) {
-    curNo = loopNo
-    if (isString(prefix)) return prefix + loopNo
-  } else {
-    return loopNo
-  }
-}
-
-function clearLevel(){
-  lev = 0
-  used_lev = []
-}
-
 function hasEvent(props, key) {
-  var keys = ['tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchend', 'touchmove', 'touchcancel']
+  var keys = ['url', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchend', 'touchmove', 'touchcancel', 'catchtouchstart', 'catchtouchend', 'catchtouchmove', 'catchtouchcancel']
   if (props) {
     if (key == 'tap') {
       return (props.tap || props.catchtap) ? true : false
@@ -303,7 +207,6 @@ function dataset(item, key) {
   if (item && item.attr && isObject(item.attr)) {
     if (key) {
       if (item.attr[key] || item.attr[key]==0) {
-        // return item.attr[key]
         return true
       }
     } else {
@@ -314,28 +217,17 @@ function dataset(item, key) {
   }
 }
 
-function setItemClass(item, precls, aftcls) {
-  if (newcls) {
-    if (precls) {
-      item.class = item.class ? precls + ' ' + item.class : precls
-    }
-
-    if (aftcls) {
-      item.class = item.class ? item.class + ' ' + aftcls : aftcls
-    }
-  }
-  return item
-}
-
 function dataEvt(item, selects) {
   var evtStr = ''
   if (selects && isArray(selects)) {
     selects.forEach(function(evtName, ii) {
       if (item[evtName]) {
+        var val = item[evtName]
+        if (isArray(val)) val = val.join(';;')
         if ((ii+1)==selects.length) {
-          evtStr += evtName+'='+item[evtName]
+          evtStr += evtName+'='+val
         } else {
-          evtStr += evtName+'='+item[evtName] + ','
+          evtStr += evtName+'='+val + ','
         }
       }
     })
@@ -354,13 +246,337 @@ function getClass(item, prefix){
   return myClass
 }
 
+function formatQuery(url) {
+  let aim = url
+  let query={};
+  if (url) {
+    let urls = url.split('?')
+    aim = urls[0]
+    if (urls[1]) {
+      let params = urls[1].split('&')
+      params.forEach(param => {
+        let attrs = param.split('=')
+        query[attrs[0]] = attrs[1] ? attrs[1] : true
+      })
+    }
+  }
+  return {url: aim, query}
+}
+
+var storeEvts = {}
+function rightEvent(dsetEvt) {
+  if (isString(dsetEvt)) {
+    const _id = suid('rightEvent_')
+
+    // if (storeEvts[_id]) {
+    //   return storeEvts[_id]
+    // }
+
+    var rightEvt
+    if (dsetEvt.indexOf('?') > -1) {
+      var myQuery = {}
+      var params = dsetEvt.split('@@')
+      var evtType = params[0]
+      dsetEvt = params[1]
+      var evts = dsetEvt.split(',')
+      evts.forEach(function (item) {
+        if (item) {
+          var its = item.split('=')
+          var itName = its.splice(0, 1)
+          var itQuery = its.join('=')
+          var evtObj = formatQuery(itQuery)
+          myQuery[itName] = {
+            fun: evtObj.url,
+            param: evtObj.query,
+          }
+        }
+      })
+      rightEvt = myQuery[evtType]
+      rightEvt.allParam = myQuery
+    } else {
+      dsetEvt = dsetEvt.replace('@@', '?').replace(getRegExp(",", "g"), '&')
+      var evtObj = formatQuery(dsetEvt)
+      var evtType = evtObj.url
+      var evtQuery = evtObj.query
+      var evtSelect = evtQuery[evtType]
+      var selObj = formatQuery(evtSelect)
+      var selFun = selObj.url
+      var selParam = selObj.query
+      rightEvt = {
+        fun: selFun,
+        param: selParam,
+        allParam: evtQuery
+      }
+    }
+    // storeEvts[_id] = rightEvt
+    return rightEvt || {}
+  }
+}
+
+
+// slip props
+
+// [20, 'u', 120]
+// [20, 'n', 120]
+// [20, '<', 120]
+// [20, '>', 120]
+// [20, '<>', 120]
+// [20, 'un', 120]
+// [20, 'un<>', 120]
+// [0, '@', 0]
+
+// wsad
+
+
+var touchTimmer
+function chooseTouchFun(e, ins) {
+  // clearTimeout(touchTimmer)
+  var evtType = e.type
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var dsetEvt = e.type + '@@' + dataset['evt']
+  var tmp = rightEvent(dsetEvt)
+  var allParam = tmp.allParam
+  if (allParam.__slip) {
+     var slip = allParam.__slip.split(';;')
+     var slipObj = {
+       direction: slip[0],
+       min: slip[1],
+       max: slip[2],
+       find: slip[3]
+     }
+     e.__query = tmp.param
+     switch (evtType) {
+       case 'touchstart':
+         tStart(e, slipObj, ins)
+         break;
+       case 'touchmove':
+         tMove(e, slipObj, ins)
+         break;
+       case 'touchend':
+         tEnd(e, slipObj, ins)
+        //  storeEvts = {}
+         break;
+       default:
+        //  storeEvts = {}
+         break;
+     }
+  } else {
+    return true
+  }
+}
+
+function iMethod(e, ins) {
+  var res = chooseTouchFun(e, ins)
+  if (res) {
+    ins.callMethod('itemMethod', e)
+  }
+}
+
+function ciMethod(e, ins) {
+  var res = chooseTouchFun(e, ins)
+  if (res) {
+    ins.callMethod('catchItemMethod', e)
+  }
+}
+
+var tpos = {
+  instance: undefined,
+  start: { x: 0, y: 0 },
+  current: undefined
+}
+
+function tStart(e, slip, ins) {
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var treeid = dataset.treeid
+  var param = e.__query
+  var target = e.touches[0] || e.changedTouches[0]
+  var pageX = target.pageX
+  var pageY = target.pageY
+
+  var cb = param.cb
+  var ddd = slip.direction || 'a'
+  var min = slip.min || 30
+  var max = slip.max || 120
+  var find = slip.find || '.move-it'
+  // var inst = ins.selectComponent(find)
+  var inst = e.instance
+  var tmpTarget = tpos.instance
+  if (tmpTarget) {
+    var tmpSlip = tmpTarget.slip
+    var tmpInst = tmpTarget.inst
+    var tmpTreeid = tmpTarget.treeid
+    // 确定是同一组操作对象，所有slip属性一致
+    if (tmpSlip.direction == ddd && tmpSlip.min == min && tmpSlip.max == max && tmpSlip.find == slip.find) {
+      // 是否同一个操作实例
+      if (treeid && tmpTreeid == treeid) {
+      } else {
+        tmpInst.setStyle('transform: translateX(0px)')
+      }
+    }
+  }
+  tpos = {
+    instance: {
+      slip,
+      inst,
+      treeid,
+      direction: ddd
+    },
+    start: {
+      x: pageX,
+      y: pageY
+    },
+  }
+
+  if (cb) {
+    ins.callMethod(cb, e)
+  }
+}
+
+/**
+ * 'a'  左  <-
+ * 's'  下
+ * 'd'  右  ->
+ * 'w'  上
+ * 'ad'  左右
+ * 'ws'  上下
+ * 'wsad' 上下左右
+ * '@'  全方位
+ */
+function tMove(e, slip, ins) {
+  var param = e.__query
+  var cb = param.cb
+  var ddd = slip.direction || 'a'
+  var min = slip.min || 30
+  var max = slip.max || 120
+  var find = slip.find || '.move-it'
+  var absMax = Math.abs(max)
+  var absMin = Math.abs(min)
+
+  // var inst = ins.selectComponent(find)
+  var inst = e.instance
+  var target = e.touches[0] || e.changedTouches[0]
+  var pageX = target.pageX
+  var pageY = target.pageY
+  var startX = tpos.start.x
+  var startY = tpos.start.y
+  var diffX = pageX - startX
+  var diffY = pageY - startY
+  var absDiffx = Math.abs(diffX)
+  
+  if (ddd === 'a') {
+    if (diffX < 0) {
+      if (absDiffx < absMax) {
+        inst.setStyle('transform: translateX(' + diffX + 'px)')
+      } else {
+        inst.setStyle('transform: translateX(-'+absMax+'px)')
+      }
+    } else {
+      if (absDiffx > absMin) {
+        inst.setStyle('transform: translateX(0px)')
+      }
+    }
+  }
+
+  if (ddd === 'd') {
+    if (diffX > 0) {
+      if (absDiffx < absMax) {
+        inst.setStyle('transform: translateX(' + diffX + 'px)')
+      } else {
+        inst.setStyle('transform: translateX('+absMax+'px)')
+      }
+    } else {
+      if (absDiffx > absMin) {
+        inst.setStyle('transform: translateX(0px)')
+      }
+    }
+  }
+
+  if (ddd === 'ad') {
+    if (absDiffx < absMax) {
+      inst.setStyle('transform: translateX(' + diffX + 'px)')
+    } else {
+      inst.setStyle('transform: translateX(' + diffX > 0 ? absMax : -(absMax) + 'px)')
+    }
+    if (absDiffx > absMin) {
+      inst.setStyle('transform: translateX(0px)')
+    }
+  }
+
+  if (cb) {
+    ins.callMethod(cb, e)  // 不要执行本对象setData方法，会中断move方法，但可以执行其他对象的渲染方法
+  }
+}
+
+function tEnd(e, slip, ins) {
+  var param = e.__query
+  var cb = param.cb
+  var ddd = slip.direction || 'a'
+  var min = slip.min || 30
+  var max = slip.max || 120
+  var find = slip.find || '.move-it'
+  var absMin = Math.abs(min)
+  var absMax = Math.abs(max)
+
+  // var inst = ins.selectComponent(find)
+  var inst = e.instance
+  var target = e.touches[0] || e.changedTouches[0]
+  var pageX = target.pageX
+  var pageY = target.pageY
+  var startX = tpos.start.x
+  var startY = tpos.start.y
+  var diffX = pageX - startX
+  var diffY = pageY - startY
+  var absDiffx = Math.abs(diffX)
+  if (ddd === 'a') {
+    if (diffX < 0) {
+      if (absDiffx < absMin) {
+        inst.setStyle('transform: translateX(0px)')
+        tpos.current = {
+          x: 0,
+          y: 0
+        }
+      } else {
+        inst.setStyle('transform: translateX(-' + absMax + 'px)')
+      }
+    }
+  }
+
+  if (ddd === 'd') {
+    if (diffX > 0) {
+      if (absDiffx < absMin) {
+        inst.setStyle('transform: translateX(0px)')
+        tpos.current = {
+          x: 0,
+          y: 0
+        }
+      } else {
+        inst.setStyle('transform: translateX(' + absMax + 'px)')
+      }
+    }
+  }
+
+  if (ddd == 'ad') {
+    if (absDiffx < absMin) {
+      inst.setStyle('transform: translateX(0px)')
+      tpos.current = {
+        x: 0,
+        y: 0
+      }
+    } else {
+      diffX > 0 ? inst.setStyle('transform: translateX(' + absMax + 'px)') : inst.setStyle('transform: translateX(' + -(absMax) + 'px)')
+    }
+  }
+  
+  if (cb) {
+    ins.callMethod(cb, e)
+  }
+}
+
 module.exports = {
   hasEvent,
   dataset,
-  getRecursiveNo,
-  useRecursiveNo,
-  recursiveNo,
-  setItemClass,
   dataEvt,
   getClass,
 
@@ -368,25 +584,18 @@ module.exports = {
   isObject: isObject,
   isArray: isArray,
   log: log,
-  clearLevel:  clearLevel,
-  resetTitleArray: resetTitleArray,
-  csv: customScrollView,
-  cswv: customSwiperView,
-  csmv: customMoveView,
-  cform: customForm,
-  clabel: customLabelrView,
-  cpicker: customPicker,
-  cpickerv: customPickerView,
-  cview: customView,
-  ccview: customCoverView,
-  existTemp: existTemp,
-  getItemClass: getItemClass,
-  getItemStyle: getItemStyle,
-  mergeItemEvent: mergeItemEvent,
-  dataOptions: dataOptions,
-
   isFunction: isFunction,
   isNumber: isNumber,
   sClone: sClone,
-  delItem: delItem
+  delItem: delItem,
+
+  existTemp: existTemp,
+  getItemClass: getItemClass,
+  getItemStyle: getItemStyle,
+
+  iMethod,
+  ciMethod,
+  tStart,
+  tMove,
+  tEnd
 }

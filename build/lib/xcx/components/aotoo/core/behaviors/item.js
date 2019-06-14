@@ -33,7 +33,7 @@ export const itemBehavior = function(app, mytype) {
         this.$$is = 'item'
       },
       attached: function attached() { //节点树完成，可以用setData渲染节点，但无法操作节点
-        const xitem = lib.resetItem(this.properties.item)
+        const xitem = lib.resetItem(this.properties.item, this)
         if (xitem) {
           this.setData({
             "$item": xitem

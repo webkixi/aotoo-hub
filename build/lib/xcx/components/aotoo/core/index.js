@@ -29,13 +29,13 @@ function pageDataElement(data) {
     if (data['$$id']) {
       const $id = data['$$id']
       eles[$id] = $id
-      if (data.methods) {
-        const methods = data.methods
-        if (lib.isObject(methods)) {
-          acts[$id] = Object.assign(acts, methods)
-          delete data.methods
-        }
-      }
+      // if (data.methods) {
+      //   const methods = data.methods
+      //   if (lib.isObject(methods)) {
+      //     acts[$id] = Object.assign(acts, methods)
+      //     delete data.methods
+      //   }
+      // }
     } else {
       nData = {}
       Object.keys(data).forEach(key=>{
@@ -45,20 +45,21 @@ function pageDataElement(data) {
             const $id = item['$$id']
             eles[$id] = key
     
-            if (item.methods) {
-              if (lib.isObject(item.methods)) {
-                acts[$id] = Object.assign(acts, item.methods)
-                delete item.methods
-              }
-            }
+            // if (item.methods) {
+            //   if (lib.isObject(item.methods)) {
+            //     // acts[$id] = Object.assign(acts, item.methods)
+            //     acts[$id] = item.methods
+            //     delete item.methods
+            //   }
+            // }
     
             if (item.data && lib.isArray(item.data)) {
               item.data = item.data.map(sub => {
-                if (lib.isObject(sub) && sub['$$id']) {
-                  const obj = pageDataElement(sub)
-                  eles = Object.assign(eles, obj.eles)  // tree/@list 模式适用,  tree/li模式需要区分是否为idf项
-                  acts = Object.assign(acts, obj.acts)
-                }
+                // if (lib.isObject(sub) && sub['$$id']) {
+                //   const obj = pageDataElement(sub)
+                //   eles = Object.assign(eles, obj.eles)  // tree/@list 模式适用,  tree/li模式需要区分是否为idf项
+                //   acts = Object.assign(acts, obj.acts)
+                // }
                 return sub
               })
             }
@@ -147,6 +148,26 @@ function core(params) {
         setTimeout(() => {
           oldReady.apply(this, arguments)
         }, 150);
+      }
+    }
+
+    const oldSshow = params.onShow
+    params.onShow = function(){
+      if (this.__hide) {
+        app.activePage = this
+        activePage = this
+      }
+      this.__hide = false
+      if (typeof oldSshow == 'function') {
+        oldSshow.apply(this, arguments)
+      }
+    }
+
+    const oldHide = params.onHide
+    params.onHide = function () {
+      this.__hide = true
+      if (typeof oldHide == 'function') {
+        oldHide.apply(this, arguments)
       }
     }
 

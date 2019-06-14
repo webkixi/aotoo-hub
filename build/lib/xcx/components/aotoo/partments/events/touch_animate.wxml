@@ -1,283 +1,60 @@
 <wxs src="../../util.wxs" module="util" />
 
-<block wx:if="{{util.dataset(item, 'data-treeid')}}">
+<!--  -->
+<!--  -->
+<!-- item.longtap item.longpress -->
+<block wx:if="{{item.touchstart||item.touchmove||item.touchend}}">
+  <view 
+    data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
+    data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
+    id="{{item.id || id}}"
+    animation="{{item.animation}}"
+    wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
+    class="{{item.class||item.itemClass}}"  
+    data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
+    bind:tap="itemMethod" catch:tap="catchItemMethod" bind:touchstart="{{util.iMethod}}" bind:touchmove="{{util.iMethod}}" bind:touchend="{{util.iMethod}}" bind:touchcancel="{{util.iMethod}}"
+  >
+    <include src="../slot.wxml" />
+  </view>
+  <block wx:else>
+    <view 
+      data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
+      data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
+      id="{{item.id || id}}" 
+      animation="{{item.animation}}"
+      class="{{item.class||item.itemClass}}"  
+      data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
+      bind:tap="itemMethod" catch:tap="catchItemMethod" bind:touchstart="{{util.iMethod}}" bind:touchmove="{{util.iMethod}}" bind:touchend="{{util.iMethod}}" bind:touchcancel="{{util.iMethod}}"
+    >
+      <include src="../slot.wxml" />
+    </view>
+  </block>
+</block>
 
-
-    <!--  -->
-    <!--  -->
-    <!-- item.longtap item.longpress -->
-    <block wx:if="{{item.touchstart||item.touchend}}">
-      <!--  -->
-      <!--  -->
-      <!-- item.touchstart -->
-      <!-- start一般与end, move等一起使用，所以补全的事件参数包含4个start、move、end、cancel -->
-      <block wx:if="{{item.touchstart}}">
-
-          <!-- item.touchstart item.tap-->
-          <!-- start等事件有可能与tap事件同时使用 -->
-          <block wx:if="{{item.tap}}">
-            <view 
-              data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
-              data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-              id="{{item.id || id}}"
-              animation="{{item.animation}}"
-              wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
-              class="{{item.class||item.itemClass}}"  
-              data-evt="{{util.dataEvt(item, ['tap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-              bind:tap="itemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-            >
-              <include src="../slot.wxml" />
-            </view>
-            <block wx:else>
-              <view 
-                data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
-                data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-                id="{{item.id || id}}" 
-                animation="{{item.animation}}"
-                class="{{item.class||item.itemClass}}"  
-                data-evt="{{util.dataEvt(item, ['tap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-                bind:tap="itemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-              >
-                <include src="../slot.wxml" />
-              </view>
-            </block>
-          </block>
-
-          
-          <!-- item.touchstart item.catchtap -->
-          <!-- start等事件有可能与catchtap事件同时使用 -->
-          <block wx:elif="{{item.catchtap}}">
-            <view 
-              data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
-              data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-              id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
-              animation="{{item.animation}}"
-              class="{{item.class||item.itemClass}}"  
-              style="{{item.style||item.itemStyle}}" 
-              data-evt="{{util.dataEvt(item, ['catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-              catch:tap="catchItemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-            >
-              <include src="../slot.wxml" />
-            </view>
-            <block wx:else>
-              <view 
-                data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
-                data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-                id="{{item.id || id}}" 
-                animation="{{item.animation}}"
-                class="{{item.class||item.itemClass}}"  
-                data-evt="{{util.dataEvt(item, ['catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-                catch:tap="catchItemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-              >
-                <include src="../slot.wxml" />
-              </view>
-            </block>
-          </block>
-
-
-          <!-- item.touchstart ... -->
-          <!-- 只有start等事件参数 -->
-          <block wx:else>
-            <view 
-              data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
-              data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-              id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
-              animation="{{item.animation}}"
-              class="{{item.class||item.itemClass}}"  
-              style="{{item.style||item.itemStyle}}"
-              data-evt="{{util.dataEvt(item, ['touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-              bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-            >
-              <include src="../slot.wxml" />
-            </view>
-            <block wx:else>
-              <view 
-                data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
-                data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-                id="{{item.id || id}}" 
-                animation="{{item.animation}}"
-                class="{{item.class||item.itemClass}}"  
-                data-evt="{{util.dataEvt(item, ['touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-                bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-              >
-                <include src="../slot.wxml" />
-              </view>
-            </block>
-          </block>
-
-      </block>
-
-      <!--  -->
-      <!--  -->
-      <!-- item.touchend -->
-      <!-- touchend可以独立使用，相当于mouseup -->
-      <block wx:elif="{{item.touchend}}">
-        <view 
-          data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
-          data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-          id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
-          animation="{{item.animation}}"
-          class="{{item.class||item.itemClass}}"  
-          style="{{item.style||item.itemStyle}}" 
-          data-evt="{{util.dataEvt(item, ['touchend', 'touchcancel'])}}"
-          bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-        >
-          <include src="../slot.wxml" />
-        </view>
-        <block wx:else>
-          <view 
-            data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
-            data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-            id="{{item.id || id}}" 
-            animation="{{item.animation}}"
-            class="{{item.class||item.itemClass}}"  
-            data-evt="{{util.dataEvt(item, ['touchend', 'touchcancel'])}}"
-            bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-          >
-            <include src="../slot.wxml" />
-          </view>
-        </block>
-      </block>
-
-      
-    </block>
-
-
-</block> <block wx:else>
-
-
-    <!--  -->
-    <!--  -->
-    <!-- item.longtap item.longpress -->
-    <block wx:if="{{item.touchstart||item.touchend}}">
-      <!--  -->
-      <!--  -->
-      <!-- item.touchstart -->
-      <!-- start一般与end, move等一起使用，所以补全的事件参数包含4个start、move、end、cancel -->
-      <block wx:if="{{item.touchstart}}">
-
-          <!-- item.touchstart item.tap-->
-          <!-- start等事件有可能与tap事件同时使用 -->
-          <block wx:if="{{item.tap}}">
-            <view 
-              data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-              id="{{item.id || id}}"
-              animation="{{item.animation}}"
-              wx:if="{{item.style||item.itemStyle}}" 
-              class="{{item.class||item.itemClass}}"  
-              style="{{item.style||item.itemStyle}}" 
-              data-evt="{{util.dataEvt(item, ['tap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-              bind:tap="itemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-            >
-              <include src="../slot.wxml" />
-            </view>
-            <block wx:else>
-              <view 
-                data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-                id="{{item.id || id}}" 
-                animation="{{item.animation}}"
-                class="{{item.class||item.itemClass}}"  
-                data-evt="{{util.dataEvt(item, ['tap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-                bind:tap="itemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-              >
-                <include src="../slot.wxml" />
-              </view>
-            </block>
-          </block>
-
-          
-          <!-- item.touchstart item.catchtap -->
-          <!-- start等事件有可能与catchtap事件同时使用 -->
-          <block wx:elif="{{item.catchtap}}">
-            <view 
-              data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-              id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
-              animation="{{item.animation}}"
-              class="{{item.class||item.itemClass}}"  
-              style="{{item.style||item.itemStyle}}" 
-              data-evt="{{util.dataEvt(item, ['catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-              catch:tap="catchItemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-            >
-              <include src="../slot.wxml" />
-            </view>
-            <block wx:else>
-              <view 
-                data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-                id="{{item.id || id}}" 
-                animation="{{item.animation}}"
-                class="{{item.class||item.itemClass}}"  
-                data-evt="{{util.dataEvt(item, ['catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-                catch:tap="catchItemMethod" bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-              >
-                <include src="../slot.wxml" />
-              </view>
-            </block>
-          </block>
-
-
-          <!-- item.touchstart ... -->
-          <!-- 只有start等事件参数 -->
-          <block wx:else>
-            <view 
-              data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-              id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
-              animation="{{item.animation}}"
-              class="{{item.class||item.itemClass}}"  
-              style="{{item.style||item.itemStyle}}"
-              data-evt="{{util.dataEvt(item, ['touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-              bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-            >
-              <include src="../slot.wxml" />
-            </view>
-            <block wx:else>
-              <view 
-                data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-                id="{{item.id || id}}" 
-                animation="{{item.animation}}"
-                class="{{item.class||item.itemClass}}"  
-                data-evt="{{util.dataEvt(item, ['touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-                bind:touchstart="itemMethod" bind:touchmove="itemMethod" bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-              >
-                <include src="../slot.wxml" />
-              </view>
-            </block>
-          </block>
-
-      </block>
-
-      <!--  -->
-      <!--  -->
-      <!-- item.touchend -->
-      <!-- touchend可以独立使用，相当于mouseup -->
-      <block wx:elif="{{item.touchend}}">
-        <view 
-          data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-          id="{{item.id || id}}" wx:if="{{item.style||item.itemStyle}}" 
-          animation="{{item.animation}}"
-          class="{{item.class||item.itemClass}}"  
-          style="{{item.style||item.itemStyle}}" 
-          data-evt="{{util.dataEvt(item, ['touchend', 'touchcancel'])}}"
-          bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-        >
-          <include src="../slot.wxml" />
-        </view>
-        <block wx:else>
-          <view 
-            data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-            id="{{item.id || id}}" 
-            animation="{{item.animation}}"
-            class="{{item.class||item.itemClass}}"  
-            data-evt="{{util.dataEvt(item, ['touchend', 'touchcancel'])}}"
-            bind:touchend="itemMethod" bind:touchcancel="itemMethod"
-          >
-            <include src="../slot.wxml" />
-          </view>
-        </block>
-      </block>
-
-      
-    </block>
-
-
-
+<block wx:elif="{{item.catchtouchstart||item.catchtouchmove||item.catchtouchend}}">
+  <view 
+    data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
+    data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
+    id="{{item.id || id}}"
+    animation="{{item.animation}}"
+    wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
+    class="{{item.class||item.itemClass}}"  
+    data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
+    bind:tap="itemMethod" catch:tap="catchItemMethod" catch:touchstart="{{util.ciMethod}}" catch:touchmove="{{util.ciMethod}}" catch:touchend="{{util.ciMethod}}" catch:touchcancel="{{util.ciMethod}}"  bind:touchcancel="{{util.iMethod}}"
+  >
+    <include src="../slot.wxml" />
+  </view>
+  <block wx:else>
+    <view 
+      data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
+      data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
+      id="{{item.id || id}}" 
+      animation="{{item.animation}}"
+      class="{{item.class||item.itemClass}}"  
+      data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
+      bind:tap="itemMethod" catch:tap="catchItemMethod" catch:touchstart="{{util.ciMethod}}" catch:touchmove="{{util.ciMethod}}" catch:touchend="{{util.ciMethod}}" catch:touchcancel="{{util.ciMethod}}"  bind:touchcancel="{{util.iMethod}}"
+    >
+      <include src="../slot.wxml" />
+    </view>
+  </block>
 </block>

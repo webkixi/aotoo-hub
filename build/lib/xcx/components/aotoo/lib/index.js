@@ -13,7 +13,10 @@ export {
   uuid,
   resetSuidCount,
   clone,
-  isEmpty
+  isEmpty,
+  debounce,
+  throttle,
+  nav  // wx路由的节流封装 1200毫秒
 } from './util'
 
 export {

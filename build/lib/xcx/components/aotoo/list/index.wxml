@@ -19,8 +19,17 @@
 <import src="../templates/item.wxml" />
 
 <template name="itemContent">
-  <block wx:if="{{item.$$id}}">
-    <ui-item item="{{item}}" fromComponent="{{inner.store('uniqId')}}"/>
+  <block wx:if="{{type && util.isObject(type) && type.is === 'slip'}}">
+    <view class="slip-item"></view>
+    <block wx:if="{{item.$$id}}">
+      <ui-item item="{{ {__slip: type.option, ...item} }}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
+    </block>
+    <block wx:else>
+      <template is="item" data="{{ item: {__slip: type.option, ...item} }}" />
+    </block>
+  </block>
+  <block wx:elif="{{item.$$id}}">
+    <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
   </block>
   <block wx:else>
     <template is="item" data="{{item}}" />
@@ -28,18 +37,18 @@
 </template>
 
 <template name="listWrap">
-  <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class||'class-name'}}" wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}" >
+  <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}" >
     <block wx:if="{{util.isArray(list.data)}}">
       <block wx:for="{{list.data}}" wx:key="">
-        <template is="itemContent" data="{{item}}" />
+        <template is="itemContent" data="{{item, type: list.type}}" />
       </block>
     </block>
   </view>
   <block wx:else>
-    <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class||'class-name'}}" >
+    <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" >
       <block wx:if="{{util.isArray(list.data)}}">
         <block wx:for="{{list.data}}" wx:key="">
-          <template is="itemContent" data="{{item}}" />
+          <template is="itemContent" data="{{item, type: list.type}}" />
         </block>
       </block>
       <!-- <template is="listContent" data="{{collects: list.data, list}}" /> -->
@@ -109,7 +118,8 @@
   <block wx:if="{{list.type && util.isObject(list.type)}}">
     <block wx:if="{{list.type.is}}">
       <block wx:if="{{list.type.is == 'swiper'}}"> <template is="swiperWrap" data="{{list}}" /> </block>
-      <block wx:if="{{list.type.is == 'scroll'}}"> <template is="scrollWrap" data="{{list}}" /> </block>
+      <block wx:elif="{{list.type.is == 'scroll'}}"> <template is="scrollWrap" data="{{list}}" /> </block>
+      <block wx:else> <template is="listWrap" data="{{list}}" /> </block>
     </block>
   </block>
   <block wx:else>

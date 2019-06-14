@@ -82,7 +82,7 @@ export function resetItem(data, context, loop) {
     data['__sort'] = []
   
     if (context) {
-      data.fromComponent = context.data.fromComponent || context.data.uniqId
+      data.fromComponent = context.data.fromComponent || data.fromComponent || context.data.uniqId
       if (data.methods || data.itemMethod) {
         const methods = data.methods || data.itemMethod
         Object.keys(methods).forEach(key=>{

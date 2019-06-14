@@ -10,13 +10,6 @@
   <block wx:elif="{{util.isObject(item)}}">
     <template is="tik" data="{{item}}" />
   </block>
-
-  <!-- <block wx:elif="{{util.isArray(item)}}">
-    <block wx:for="{{item}}" wx:key="" wx:for-item="son">
-      {{util.setItemClass(son, 'hbody-item')}}
-      <template is="tik" data="{{item: son}}" />
-    </block>
-  </block> -->
 </template>
 <!-- 这个key要小心 -->
 
@@ -31,14 +24,4 @@
       <template is="@item" data="{{ props: {...item, itemClass: item.itemClass ?  'hb-item ' + item.itemClass : 'hb-item'} }}" />
     </block>
   </block>
-  <!-- <block wx:for="{{item.body}}" wx:key="">
-    <view id="{{item.id}}" class="hb-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
-      <template is="hb-content" data="{{item}}" />
-    </view>
-    <block wx:else>
-      <view id="{{item.id}}" class="hb-item {{item.itemClass||item.class}}">
-        <template is="hb-content" data="{{item}}" />
-      </view>
-    </block>
-  </block> -->
 </view>
