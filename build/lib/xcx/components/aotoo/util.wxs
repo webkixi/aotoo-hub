@@ -291,7 +291,7 @@ function rightEvent(dsetEvt) {
           }
         }
       })
-      rightEvt = myQuery[evtType]
+      rightEvt = myQuery[evtType] || {fun: '', param: {}}
       rightEvt.allParam = myQuery
     } else {
       dsetEvt = dsetEvt.replace('@@', '?').replace(getRegExp(",", "g"), '&')
@@ -313,7 +313,6 @@ function rightEvent(dsetEvt) {
   }
 }
 
-
 // slip props
 
 // [20, 'u', 120]
@@ -325,27 +324,74 @@ function rightEvent(dsetEvt) {
 // [20, 'un<>', 120]
 // [0, '@', 0]
 
-// wsad
+var tpos = {
+  instance: undefined,
+  start: { x: 0, y: 0 },
+  current: undefined,
+  distance: 0,
+  events: {},
+  timeStamp: {
+    gap: 500,
+    start: 0,
+    end: 0
+  }
+}
 
-
-var touchTimmer
+var touchMethods = ['touchstart', 'touchmove', 'touchend']
 function chooseTouchFun(e, ins) {
-  // clearTimeout(touchTimmer)
   var evtType = e.type
   var currentTarget = e.currentTarget
   var dataset = currentTarget.dataset
   var dsetEvt = e.type + '@@' + dataset['evt']
+  var slipObj = {
+    direction: 'a',
+    min: 20,
+    width: 60,
+    find: '.move-it'
+  }
+
+  tpos.events = {}
+
   var tmp = rightEvent(dsetEvt)
   var allParam = tmp.allParam
-  if (allParam.__slip) {
-     var slip = allParam.__slip.split(';;')
-     var slipObj = {
-       direction: slip[0],
-       min: slip[1],
-       max: slip[2],
-       find: slip[3]
-     }
+  
+  if (allParam) {
+    if (allParam.tap) {
+      tpos.events.tap = true
+    }
+    if (allParam.catchtap) {
+      tpos.events.catchtap = true
+    }
+    if (allParam.longpress) {
+      tpos.events.longpress = true
+    }
+    if (allParam.catchlongpress) {
+      tpos.events.catchlongpress = true
+    }
+
+    if (allParam.__slip) {
+      var slip = allParam.__slip.fun ? allParam.__slip.fun.split(';;') : allParam.__slip.split(';;')
+      slipObj = {
+        direction: slip[0] || slipObj.direction,
+        min: slip[1] || slipObj.min,
+        width: slip[2] || slipObj.width,
+        find: slip[3] || slipObj.find,
+        length: 0
+      }
+
+      if (touchMethods.indexOf(evtType) > -1) {
+        slipObj.find = slipObj.find + '>>> .li-item'
+        var allInst = ins.selectAllComponents(slipObj.find)
+        slipObj.length = allInst.length
+        for (var ii=0; ii<slipObj.length; ii++) {
+          var myInst = allInst[ii]
+          myInst.setStyle('width: ' + slipObj.width + 'px')
+        }
+        slipObj.max = slipObj.width * slipObj.length
+      }
+    }
      e.__query = tmp.param
+     tpos.__allParam = allParam
      switch (evtType) {
        case 'touchstart':
          tStart(e, slipObj, ins)
@@ -368,22 +414,10 @@ function chooseTouchFun(e, ins) {
 
 function iMethod(e, ins) {
   var res = chooseTouchFun(e, ins)
-  if (res) {
-    ins.callMethod('itemMethod', e)
-  }
 }
 
 function ciMethod(e, ins) {
   var res = chooseTouchFun(e, ins)
-  if (res) {
-    ins.callMethod('catchItemMethod', e)
-  }
-}
-
-var tpos = {
-  instance: undefined,
-  start: { x: 0, y: 0 },
-  current: undefined
 }
 
 function tStart(e, slip, ins) {
@@ -391,46 +425,50 @@ function tStart(e, slip, ins) {
   var dataset = currentTarget.dataset
   var treeid = dataset.treeid
   var param = e.__query
+  var allParam = tpos.__allParam
   var target = e.touches[0] || e.changedTouches[0]
   var pageX = target.pageX
   var pageY = target.pageY
+  tpos.timeStamp.start = e.timeStamp
 
   var cb = param.cb
-  var ddd = slip.direction || 'a'
-  var min = slip.min || 30
-  var max = slip.max || 120
-  var find = slip.find || '.move-it'
+  var ddd = slip.direction
+  var min = slip.min
+  var max = slip.max
+  var find = slip.find
   // var inst = ins.selectComponent(find)
   var inst = e.instance
   var tmpTarget = tpos.instance
-  if (tmpTarget) {
-    var tmpSlip = tmpTarget.slip
-    var tmpInst = tmpTarget.inst
-    var tmpTreeid = tmpTarget.treeid
-    // 确定是同一组操作对象，所有slip属性一致
-    if (tmpSlip.direction == ddd && tmpSlip.min == min && tmpSlip.max == max && tmpSlip.find == slip.find) {
-      // 是否同一个操作实例
-      if (treeid && tmpTreeid == treeid) {
-      } else {
-        tmpInst.setStyle('transform: translateX(0px)')
+  if (allParam.__slip) {
+    if (tmpTarget) {
+      var tmpSlip = tmpTarget.slip
+      var tmpInst = tmpTarget.inst
+      var tmpTreeid = tmpTarget.treeid
+      // 确定是同一组操作对象，所有slip属性一致
+      if (tmpSlip.direction == ddd && tmpSlip.min == min && tmpSlip.max == max && tmpSlip.find == find) {
+        if (treeid && tmpTreeid !== treeid) {
+          
+          setStyle(inst, 0)
+        }
       }
     }
-  }
-  tpos = {
-    instance: {
+    tpos.instance = {
       slip,
       inst,
       treeid,
       direction: ddd
-    },
-    start: {
+    }
+  
+    tpos.start = {
       x: pageX,
       y: pageY
-    },
-  }
-
-  if (cb) {
-    ins.callMethod(cb, e)
+    }
+  
+    if (cb) {
+      ins.callMethod(cb, e)
+    }
+  } else {
+    ins.callMethod('itemMethod', e)
   }
 }
 
@@ -446,6 +484,7 @@ function tStart(e, slip, ins) {
  */
 function tMove(e, slip, ins) {
   var param = e.__query
+  var allParam = tpos.__allParam
   var cb = param.cb
   var ddd = slip.direction || 'a'
   var min = slip.min || 30
@@ -454,7 +493,6 @@ function tMove(e, slip, ins) {
   var absMax = Math.abs(max)
   var absMin = Math.abs(min)
 
-  // var inst = ins.selectComponent(find)
   var inst = e.instance
   var target = e.touches[0] || e.changedTouches[0]
   var pageX = target.pageX
@@ -465,52 +503,66 @@ function tMove(e, slip, ins) {
   var diffY = pageY - startY
   var absDiffx = Math.abs(diffX)
   
-  if (ddd === 'a') {
-    if (diffX < 0) {
+  if (allParam.__slip) {
+    if (ddd === 'a') {
+      if (diffX < 0) {
+        if (absDiffx < absMax) {
+          inst.setStyle('transform: translateX(' + diffX + 'px)')
+        } else {
+          inst.setStyle('transform: translateX(-'+absMax+'px)')
+        }
+      } else {
+        if (absDiffx > absMin) {
+          setStyle(inst, 0)
+        }
+      }
+    }
+  
+    if (ddd === 'd') {
+      if (diffX > 0) {
+        if (absDiffx < absMax) {
+          inst.setStyle('transform: translateX(' + diffX + 'px)')
+        } else {
+          inst.setStyle('transform: translateX('+absMax+'px)')
+        }
+      } else {
+        if (absDiffx > absMin) {
+          setStyle(inst, 0)
+        }
+      }
+    }
+  
+    if (ddd === 'ad') {
       if (absDiffx < absMax) {
         inst.setStyle('transform: translateX(' + diffX + 'px)')
       } else {
-        inst.setStyle('transform: translateX(-'+absMax+'px)')
+        inst.setStyle('transform: translateX(' + diffX > 0 ? absMax : -(absMax) + 'px)')
       }
-    } else {
       if (absDiffx > absMin) {
-        inst.setStyle('transform: translateX(0px)')
+        setStyle(inst, 0)
       }
     }
+
+    if (cb) {
+      ins.callMethod(cb, e)  // 不要执行本对象setData方法，会中断move方法，但可以执行其他对象的渲染方法
+    }
+  } else {
+    ins.callMethod('itemMethod', e)
   }
 
-  if (ddd === 'd') {
-    if (diffX > 0) {
-      if (absDiffx < absMax) {
-        inst.setStyle('transform: translateX(' + diffX + 'px)')
-      } else {
-        inst.setStyle('transform: translateX('+absMax+'px)')
-      }
-    } else {
-      if (absDiffx > absMin) {
-        inst.setStyle('transform: translateX(0px)')
-      }
-    }
-  }
+}
 
-  if (ddd === 'ad') {
-    if (absDiffx < absMax) {
-      inst.setStyle('transform: translateX(' + diffX + 'px)')
-    } else {
-      inst.setStyle('transform: translateX(' + diffX > 0 ? absMax : -(absMax) + 'px)')
-    }
-    if (absDiffx > absMin) {
-      inst.setStyle('transform: translateX(0px)')
-    }
+function setStyle(inst, distance) {
+  tpos.distance = distance
+  if (distance == 0) {
+    tpos.current = { x: 0, y: 0 }
   }
-
-  if (cb) {
-    ins.callMethod(cb, e)  // 不要执行本对象setData方法，会中断move方法，但可以执行其他对象的渲染方法
-  }
+  inst.setStyle('transform: translateX(' + distance + 'px)')
 }
 
 function tEnd(e, slip, ins) {
   var param = e.__query
+  var allParam = tpos.__allParam
   var cb = param.cb
   var ddd = slip.direction || 'a'
   var min = slip.min || 30
@@ -518,6 +570,8 @@ function tEnd(e, slip, ins) {
   var find = slip.find || '.move-it'
   var absMin = Math.abs(min)
   var absMax = Math.abs(max)
+  tpos.timeStamp.end = e.timeStamp
+
 
   // var inst = ins.selectComponent(find)
   var inst = e.instance
@@ -529,48 +583,63 @@ function tEnd(e, slip, ins) {
   var diffX = pageX - startX
   var diffY = pageY - startY
   var absDiffx = Math.abs(diffX)
-  if (ddd === 'a') {
-    if (diffX < 0) {
-      if (absDiffx < absMin) {
-        inst.setStyle('transform: translateX(0px)')
-        tpos.current = {
-          x: 0,
-          y: 0
-        }
-      } else {
-        inst.setStyle('transform: translateX(-' + absMax + 'px)')
-      }
-    }
-  }
-
-  if (ddd === 'd') {
-    if (diffX > 0) {
-      if (absDiffx < absMin) {
-        inst.setStyle('transform: translateX(0px)')
-        tpos.current = {
-          x: 0,
-          y: 0
-        }
-      } else {
-        inst.setStyle('transform: translateX(' + absMax + 'px)')
-      }
-    }
-  }
-
-  if (ddd == 'ad') {
-    if (absDiffx < absMin) {
-      inst.setStyle('transform: translateX(0px)')
-      tpos.current = {
-        x: 0,
-        y: 0
-      }
-    } else {
-      diffX > 0 ? inst.setStyle('transform: translateX(' + absMax + 'px)') : inst.setStyle('transform: translateX(' + -(absMax) + 'px)')
-    }
-  }
   
-  if (cb) {
-    ins.callMethod(cb, e)
+  if (allParam.__slip) {
+    if (ddd === 'a') {
+      if (diffX < 0) {
+        if (absDiffx < absMin) {
+          setStyle(inst, 0)
+        } else {
+          setStyle(inst, -(absMax))
+          // inst.setStyle('transform: translateX(-' + absMax + 'px)')
+        }
+      }
+    }
+  
+    if (ddd === 'd') {
+      if (diffX > 0) {
+        if (absDiffx < absMin) {
+          setStyle(inst, 0)
+        } else {
+          setStyle(inst, (absMax))
+          // inst.setStyle('transform: translateX(' + absMax + 'px)')
+        }
+      }
+    }
+  
+    if (ddd == 'ad') {
+      if (absDiffx < absMin) {
+        setStyle(inst, 0)
+      } else {
+        diffX > 0 ? setStyle(inst, (absMax)) : setStyle(inst, -(absMax))
+        // diffX > 0 ? inst.setStyle('transform: translateX(' + absMax + 'px)') : inst.setStyle('transform: translateX(' + -(absMax) + 'px)')
+      }
+    }
+    
+    if (cb) {
+      ins.callMethod(cb, e)
+    }
+  } else {
+    ins.callMethod('itemMethod', e)
+  }
+
+  if (diffX == 0 && diffY == 0) {
+    if (tpos.distance == 0) { // 响应tap和longpress
+      var gapTime = tpos.timeStamp.end - tpos.timeStamp.start
+      if (gapTime > tpos.timeStamp.gap) {
+        if (tpos.events.longpress || tpos.events.catchlongpress) {
+          var newE = JSON.parse(JSON.stringify(e))
+          newE.type = tpos.events.catchlongpress ? 'catchlongpress' : 'longpress'
+          ins.callMethod('itemMethod', newE)
+        }
+      } else {
+        if (tpos.events.tap || tpos.events.catchtap) {
+          var newE = JSON.parse(JSON.stringify(e))
+          newE.type = tpos.events.catchtap ?  'catchtap' : 'tap'
+          ins.callMethod('itemMethod', newE)
+        }
+      }
+    }
   }
 }
 

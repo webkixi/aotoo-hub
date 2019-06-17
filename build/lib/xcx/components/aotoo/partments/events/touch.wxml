@@ -11,8 +11,8 @@
     id="{{item.id || id}}"
     wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
     class="{{item.class||item.itemClass}}"  
-    data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-    bind:tap="itemMethod" catch:tap="catchItemMethod" bind:touchstart="{{util.iMethod}}" bind:touchmove="{{util.iMethod}}" bind:touchend="{{util.iMethod}}" bind:touchcancel="{{util.iMethod}}"
+    data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
+    bind:touchstart="{{util.iMethod}}" bind:touchmove="{{util.iMethod}}" bind:touchend="{{util.iMethod}}" bind:touchcancel="{{util.iMethod}}"
   >
     <include src="../slot.wxml" />
   </view>
@@ -22,8 +22,8 @@
       data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
       id="{{item.id || id}}" 
       class="{{item.class||item.itemClass}}"  
-      data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
-      bind:tap="itemMethod" catch:tap="catchItemMethod" bind:touchstart="{{util.iMethod}}" bind:touchmove="{{util.iMethod}}" bind:touchend="{{util.iMethod}}" bind:touchcancel="{{util.iMethod}}"
+      data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
+      bind:touchstart="{{util.iMethod}}" bind:touchmove="{{util.iMethod}}" bind:touchend="{{util.iMethod}}" bind:touchcancel="{{util.iMethod}}"
     >
       <include src="../slot.wxml" />
     </view>
@@ -37,8 +37,8 @@
     id="{{item.id || id}}"
     wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
     class="{{item.class||item.itemClass}}"  
-    data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
-    bind:tap="itemMethod" catch:tap="catchItemMethod" catch:touchstart="{{util.ciMethod}}" catch:touchmove="{{util.ciMethod}}" catch:touchend="{{util.ciMethod}}" catch:touchcancel="{{util.ciMethod}}"  bind:touchcancel="{{util.iMethod}}"
+    data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
+    catch:touchstart="{{util.ciMethod}}" catch:touchmove="{{util.ciMethod}}" catch:touchend="{{util.ciMethod}}" catch:touchcancel="{{util.ciMethod}}"  bind:touchcancel="{{util.iMethod}}"
   >
     <include src="../slot.wxml" />
   </view>
@@ -48,8 +48,8 @@
       data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
       id="{{item.id || id}}" 
       class="{{item.class||item.itemClass}}"  
-      data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
-      bind:tap="itemMethod" catch:tap="catchItemMethod" catch:touchstart="{{util.ciMethod}}" catch:touchmove="{{util.ciMethod}}" catch:touchend="{{util.ciMethod}}" catch:touchcancel="{{util.ciMethod}}"  bind:touchcancel="{{util.iMethod}}"
+      data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
+      catch:touchstart="{{util.ciMethod}}" catch:touchmove="{{util.ciMethod}}" catch:touchend="{{util.ciMethod}}" catch:touchcancel="{{util.ciMethod}}"  bind:touchcancel="{{util.iMethod}}"
     >
       <include src="../slot.wxml" />
     </view>
