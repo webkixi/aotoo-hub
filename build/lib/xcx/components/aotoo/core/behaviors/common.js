@@ -297,28 +297,33 @@ function itemReactFun(app, e, prefix) {
   const rEvt = rightEvent(dsetEvt)
   const {fun, param} = rEvt
   
-  let parentInstance = this._preGetAppVars(null, rEvt)
-  if (lib.isEmpty(parentInstance)) {
-    parentInstance = undefined
-  }
-
-  e.currentTarget.dataset._query = param
-  const evtFun = activePage[fun] || app.activePage[fun]
-  const thisFun = this[fun]
-  const isEvt = lib.isFunction(evtFun)
-  let vals = this.hooks.emit('beforeBind', {ctx: this, event: e, funName: fun, param})
-  if (parentInstance && lib.isFunction(parentInstance[fun])) {
-    parentInstance[fun].call(parentInstance, e, param, that)
-  } else {
-    if (vals) {
-      vals.forEach(function (val) {
-        if (val !== 0 && isEvt) evtFun.call(activePage, e, param, that) // 返回值为0则不透传
-      })
+  if (fun) {
+    let parentInstance = this._preGetAppVars(null, rEvt)
+    if (lib.isEmpty(parentInstance)) {
+      parentInstance = undefined
+    }
+  
+    e.currentTarget.dataset._query = param
+    const evtFun = activePage[fun] || app.activePage[fun]
+    const thisFun = this[fun]
+    const isEvt = lib.isFunction(evtFun)
+    let vals = this.hooks.emit('beforeBind', {ctx: this, event: e, funName: fun, param})
+    if (parentInstance && lib.isFunction(parentInstance[fun])) {
+      parentInstance[fun].call(parentInstance, e, param, that)
     } else {
-      if (lib.isFunction(thisFun)) {
-        thisFun.call(this, e, param, this)
+      if (vals) {
+        vals.forEach(function (val) {
+          if (val !== 0 && isEvt) evtFun.call(activePage, e, param, that) // 返回值为0则不透传
+        })
       } else {
-        if (isEvt) evtFun.call(activePage, e, param, that)
+        if (lib.isFunction(thisFun)) {
+          thisFun.call(this, e, param, this)
+        } else {
+          if (isEvt) evtFun.call(activePage, e, param, that)
+          else {
+            console.warn(`找不到定义的${fun}方法`);
+          }
+        }
       }
     }
   }

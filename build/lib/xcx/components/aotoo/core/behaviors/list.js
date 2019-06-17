@@ -317,20 +317,26 @@ function listReactFun(app, e, type="list") {
   const activePage = this.activePage
   let parentInstance = this.componentInst
   const {fun, param} = this._rightEvent(e)
-  const evtFun = activePage[fun] || app.activePage[fun]
-  const thisFun = this[fun]
-  const isEvt = lib.isFunction(evtFun)
-  if (lib.isEmpty(parentInstance)) {
-    parentInstance = undefined
-  }
 
-  if (parentInstance && lib.isFunction(parentInstance[fun])) {
-    parentInstance[fun].call(parentInstance, e, param)
-  } else {
-    if (lib.isFunction(thisFun)) {
-      thisFun.call(this, e, param, this)
+  if (fun) {
+    const evtFun = activePage[fun] || app.activePage[fun]
+    const thisFun = this[fun]
+    const isEvt = lib.isFunction(evtFun)
+    if (lib.isEmpty(parentInstance)) {
+      parentInstance = undefined
+    }
+  
+    if (parentInstance && lib.isFunction(parentInstance[fun])) {
+      parentInstance[fun].call(parentInstance, e, param)
     } else {
-      if (isEvt) evtFun.call(activePage, e, param, (parentInstance||that))
+      if (lib.isFunction(thisFun)) {
+        thisFun.call(this, e, param, this)
+      } else {
+        if (isEvt) evtFun.call(activePage, e, param, (parentInstance||that))
+        else {
+          console.warn(`找不到定义的${fun}方法`);
+        }
+      }
     }
   }
 }
