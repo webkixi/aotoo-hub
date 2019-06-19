@@ -382,8 +382,9 @@ function chooseTouchFun(e, ins) {
       if (touchMethods.indexOf(evtType) > -1) {
         slipObj.find = slipObj.find + '>>> .li-item'
         var allInst = ins.selectAllComponents(slipObj.find)
-        slipObj.length = allInst.length
-        for (var ii=0; ii<slipObj.length; ii++) {
+        var liItems = e.instance.selectAllComponents('.li-item')
+        slipObj.length = liItems.length
+        for (var ii = 0; ii < allInst.length; ii++) {
           var myInst = allInst[ii]
           myInst.setStyle('width: ' + slipObj.width + 'px')
         }
@@ -414,10 +415,16 @@ function chooseTouchFun(e, ins) {
 
 function iMethod(e, ins) {
   var res = chooseTouchFun(e, ins)
+  // if (res) {
+  //   ins.callMethod('itemMethod', e)
+  // }
 }
 
 function ciMethod(e, ins) {
   var res = chooseTouchFun(e, ins)
+  // if (res) {
+  //   ins.callMethod('catchItemMethod', e)
+  // }
 }
 
 function tStart(e, slip, ins) {
@@ -434,6 +441,7 @@ function tStart(e, slip, ins) {
   var cb = param.cb
   var ddd = slip.direction
   var min = slip.min
+  var width = slip.width
   var max = slip.max
   var find = slip.find
   // var inst = ins.selectComponent(find)
@@ -445,10 +453,9 @@ function tStart(e, slip, ins) {
       var tmpInst = tmpTarget.inst
       var tmpTreeid = tmpTarget.treeid
       // 确定是同一组操作对象，所有slip属性一致
-      if (tmpSlip.direction == ddd && tmpSlip.min == min && tmpSlip.max == max && tmpSlip.find == find) {
+      if (tmpSlip.direction == ddd && tmpSlip.min == min && tmpSlip.width == width && tmpSlip.find == slip.find) {
         if (treeid && tmpTreeid !== treeid) {
-          
-          setStyle(inst, 0)
+          tmpInst.setStyle('transform: translateX(0px)')
         }
       }
     }
@@ -493,6 +500,7 @@ function tMove(e, slip, ins) {
   var absMax = Math.abs(max)
   var absMin = Math.abs(min)
 
+  // var allInst = ins.selectAllComponents(find)
   var inst = e.instance
   var target = e.touches[0] || e.changedTouches[0]
   var pageX = target.pageX
