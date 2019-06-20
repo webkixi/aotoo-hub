@@ -490,7 +490,8 @@ function tStart(e, slip, ins, stopPropagation) {
       ins.callMethod(cb, e)
     }
   } else {
-    if (tpos.events.touchstart && tpos.events.touchstart !== 'true') {
+    var tevent = tpos.events.touchstart
+    if (tevent && tevent !== 'true' && tevent.fun !== 'true') {
       stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
     }
   }
@@ -572,7 +573,8 @@ function tMove(e, slip, ins, stopPropagation) {
       ins.callMethod(cb, e)  // 不要执行本对象setData方法，会中断move方法，但可以执行其他对象的渲染方法
     }
   } else {
-    if (tpos.events.touchmove && tpos.events.touchmove !== 'true') {
+    var tevent = tpos.events.touchmove
+    if (tevent && tevent !== 'true' && tevent.fun !== 'true') {
       stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
     }
   }
@@ -648,13 +650,14 @@ function tEnd(e, slip, ins, stopPropagation) {
     }
   } 
 
-  if (tpos.events.touchend && tpos.events.touchend !== 'true') {
-    stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
-  }
-
   var isFake = isFakeEvent(allParam)
   var gapTime = tpos.timeStamp.end - tpos.timeStamp.start
   var newE = JSON.parse(JSON.stringify(e))
+  var tevent = tpos.events.touchend
+
+  if (tevent && tevent !== 'true' && tevent.fun !== 'true') {
+    stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
+  }
 
   if (gapTime > tpos.timeStamp.gap) {
     if (tpos.events.longpress || tpos.events.catchlongpress) {
