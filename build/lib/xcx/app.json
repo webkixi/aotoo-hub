@@ -12,6 +12,7 @@
       "name": "mydemo",
       "pages": [
         "ui/list/index",
+        "ui/slip/index",
         "ui/swiper/index",
         "ui/stickybar/index",
         "ui/sidescroll/index",

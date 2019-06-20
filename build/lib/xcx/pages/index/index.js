@@ -24,6 +24,7 @@ const data = [
     id: 'list',
     list: [
       { title: 'Image-text', attrx: 'list', littleTitle: '图文列表 ' },
+      { title: 'slip', attrx: 'slip', littleTitle: '左滑删除 ', isNews: true},
     ]
   },
   {

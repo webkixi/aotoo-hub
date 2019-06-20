@@ -1,0 +1,42 @@
+.boxer
+  width 100vw
+  height 100vh
+  background-color #fff
+  padding-top 20px
+.slip-item
+  position relative
+  height 50px
+  &:before
+    content: ''
+    display block
+    position absolute
+    width 100%
+    height 0
+    padding 0
+    margin 0
+    bottom 0
+    left 60px
+    border-bottom 1px solid #efefef
+    box-shadow: 0px 0px 1px #efefef;
+  .move-it
+    white-space: nowrap
+    height 100%
+    transition: all .5s
+    padding-left 10px
+    .htitle
+      display inline-block
+      vertical-align middle
+      width 100%
+    .ul
+      background-color blue
+      display inline-block
+      white-space nowrap
+      height 100%
+      .li-item
+        color: #fff
+        height 100%
+        line-height 3.5
+        display inline-block
+        vertical-align middle
+        overflow hidden
+        text-align center
