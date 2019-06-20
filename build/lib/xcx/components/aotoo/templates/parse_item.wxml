@@ -7,7 +7,7 @@
 <block wx:if="{{util.hasEvent(item, 'url')}}">
   <include src="../partments/events/normal.wxml" />
 </block>
-<block wx:elif="{{item.touchstart || item.catchtouchstart || item.touchmove || item.catchtouchmove || item.touchend || item.catchtouchend}}">
+<block wx:elif="{{item.fake_tap || item.fake_aim || item.fake_longpress || item.fake_catchlongpress || item.touchstart || item.catchtouchstart || item.touchmove || item.catchtouchmove || item.touchend || item.catchtouchend}}">
   <include src="../partments/events/touch.wxml" />
 </block>
 <!-- <block wx:elif="{{util.hasEvent(item, 'longtap') || util.hasEvent(item, 'longpress') || util.hasEvent(item, 'catchlongtap') || util.hasEvent(item, 'catchlongpress')}}"> -->

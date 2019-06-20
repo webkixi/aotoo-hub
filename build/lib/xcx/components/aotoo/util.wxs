@@ -338,7 +338,31 @@ var tpos = {
 }
 
 var touchMethods = ['touchstart', 'touchmove', 'touchend']
-function chooseTouchFun(e, ins) {
+var catchTouchMethods = ['catchtouchstart', 'catchtouchmove', 'catchtouchend']
+function isFakeEvent(allParam) {
+  var isFake = true
+  for (var ii=0; ii<touchMethods.length; ii++) {
+    var mtd = allParam[ii]
+    if (mtd) {
+      isFake = false
+      break;
+    }
+  }
+  for (var ii = 0; ii < catchTouchMethods.length; ii++) {
+    var mtd = allParam[ii]
+    if (mtd) {
+      isFake = false
+      break;
+    }
+  }
+
+  if (allParam.__slip) {
+    isFake = false
+  }
+  return isFake
+}
+
+function chooseTouchFun(e, ins, stopPropagation) {
   var evtType = e.type
   var currentTarget = e.currentTarget
   var dataset = currentTarget.dataset
@@ -356,18 +380,15 @@ function chooseTouchFun(e, ins) {
   var allParam = tmp.allParam
   
   if (allParam) {
-    if (allParam.tap) {
-      tpos.events.tap = true
-    }
-    if (allParam.catchtap) {
-      tpos.events.catchtap = true
-    }
-    if (allParam.longpress) {
-      tpos.events.longpress = true
-    }
-    if (allParam.catchlongpress) {
-      tpos.events.catchlongpress = true
-    }
+    tpos.events.tap = allParam.fake_tap ? allParam.fake_tap : allParam.tap ? allParam.tap : undefined
+    tpos.events.catchtap = allParam.fake_aim ? allParam.fake_aim : allParam.fake_catchtap ? allParam.fake_catchtap : allParam.catchtap ? allParam.catchtap : undefined
+    tpos.events.longpress = allParam.fake_longpress ? allParam.fake_longpress : allParam.longpress ? allParam.longpress : undefined
+    tpos.events.catchlongpress = allParam.fake_catchlongpress ? allParam.fake_catchlongpress : allParam.catchlongpress ? allParam.catchlongpress : undefined
+
+    tpos.events.touchstart = allParam.touchstart || allParam.catchtouchstart
+    tpos.events.touchmove = allParam.touchmove || allParam.catchtouchmove
+    tpos.events.touchend = allParam.touchend || allParam.catchtouchend
+    tpos.events.touchcancel = allParam.touchcancel || allParam.catchtouchcancel
 
     if (allParam.__slip) {
       var slip = allParam.__slip.fun ? allParam.__slip.fun.split(';;') : allParam.__slip.split(';;')
@@ -395,13 +416,13 @@ function chooseTouchFun(e, ins) {
      tpos.__allParam = allParam
      switch (evtType) {
        case 'touchstart':
-         tStart(e, slipObj, ins)
+         tStart(e, slipObj, ins, stopPropagation)
          break;
        case 'touchmove':
-         tMove(e, slipObj, ins)
+         tMove(e, slipObj, ins, stopPropagation)
          break;
        case 'touchend':
-         tEnd(e, slipObj, ins)
+         tEnd(e, slipObj, ins, stopPropagation)
         //  storeEvts = {}
          break;
        default:
@@ -415,19 +436,13 @@ function chooseTouchFun(e, ins) {
 
 function iMethod(e, ins) {
   var res = chooseTouchFun(e, ins)
-  // if (res) {
-  //   ins.callMethod('itemMethod', e)
-  // }
 }
 
 function ciMethod(e, ins) {
-  var res = chooseTouchFun(e, ins)
-  // if (res) {
-  //   ins.callMethod('catchItemMethod', e)
-  // }
+  var res = chooseTouchFun(e, ins, 'catch')
 }
 
-function tStart(e, slip, ins) {
+function tStart(e, slip, ins, stopPropagation) {
   var currentTarget = e.currentTarget
   var dataset = currentTarget.dataset
   var treeid = dataset.treeid
@@ -475,7 +490,9 @@ function tStart(e, slip, ins) {
       ins.callMethod(cb, e)
     }
   } else {
-    ins.callMethod('itemMethod', e)
+    if (tpos.events.touchstart && tpos.events.touchstart !== 'true') {
+      stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
+    }
   }
 }
 
@@ -489,7 +506,7 @@ function tStart(e, slip, ins) {
  * 'wsad' 上下左右
  * '@'  全方位
  */
-function tMove(e, slip, ins) {
+function tMove(e, slip, ins, stopPropagation) {
   var param = e.__query
   var allParam = tpos.__allParam
   var cb = param.cb
@@ -555,7 +572,9 @@ function tMove(e, slip, ins) {
       ins.callMethod(cb, e)  // 不要执行本对象setData方法，会中断move方法，但可以执行其他对象的渲染方法
     }
   } else {
-    ins.callMethod('itemMethod', e)
+    if (tpos.events.touchmove && tpos.events.touchmove !== 'true') {
+      stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
+    }
   }
 
 }
@@ -568,7 +587,7 @@ function setStyle(inst, distance) {
   inst.setStyle('transform: translateX(' + distance + 'px)')
 }
 
-function tEnd(e, slip, ins) {
+function tEnd(e, slip, ins, stopPropagation) {
   var param = e.__query
   var allParam = tpos.__allParam
   var cb = param.cb
@@ -627,25 +646,39 @@ function tEnd(e, slip, ins) {
     if (cb) {
       ins.callMethod(cb, e)
     }
-  } else {
-    ins.callMethod('itemMethod', e)
+  } 
+
+  if (tpos.events.touchend && tpos.events.touchend !== 'true') {
+    stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
   }
 
-  if (diffX == 0 && diffY == 0) {
-    if (tpos.distance == 0) { // 响应tap和longpress
-      var gapTime = tpos.timeStamp.end - tpos.timeStamp.start
-      if (gapTime > tpos.timeStamp.gap) {
-        if (tpos.events.longpress || tpos.events.catchlongpress) {
-          var newE = JSON.parse(JSON.stringify(e))
-          newE.type = tpos.events.catchlongpress ? 'catchlongpress' : 'longpress'
-          ins.callMethod('itemMethod', newE)
-        }
-      } else {
-        if (tpos.events.tap || tpos.events.catchtap) {
-          var newE = JSON.parse(JSON.stringify(e))
-          newE.type = tpos.events.catchtap ?  'catchtap' : 'tap'
-          ins.callMethod('itemMethod', newE)
-        }
+  var isFake = isFakeEvent(allParam)
+  var gapTime = tpos.timeStamp.end - tpos.timeStamp.start
+  var newE = JSON.parse(JSON.stringify(e))
+
+  if (gapTime > tpos.timeStamp.gap) {
+    if (tpos.events.longpress || tpos.events.catchlongpress) {
+      newE.type = tpos.events.catchlongpress ? 'catchlongpress' : 'longpress'
+    }
+  } else {
+    if (tpos.events.tap || tpos.events.catchtap) {
+      newE.type = tpos.events.catchtap ? 'catchtap' : 'tap'
+    }
+  }
+
+  if (newE.type.indexOf('touch') == -1) {
+    var typeEvt = allParam[newE.type]
+    // if (stopPropagation) {
+    //   if (newE.type.indexOf('catch') == -1) {
+    //     typeEvt = allParam['catch'+newE.type]
+    //   }
+    // }
+  
+    if (isFake) {
+      stopPropagation ? ins.callMethod('catchItemMethod', newE) : ins.callMethod('itemMethod', newE)
+    } else {
+      if (diffX == 0 && diffY == 0 && tpos.distance == 0) {
+        stopPropagation ? ins.callMethod('catchItemMethod', newE) : ins.callMethod('itemMethod', newE)
       }
     }
   }
