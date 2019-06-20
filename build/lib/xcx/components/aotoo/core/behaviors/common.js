@@ -29,7 +29,7 @@ function rightEvent(dsetEvt) {
           myQuery[itName] = {fun: evtObj.url, param: evtObj.query}
         }
       })
-      rightEvt = myQuery[evtType]
+      rightEvt = myQuery[evtType] || {fun: '', param: {}}
       rightEvt.allParam = myQuery
     } else {
       dsetEvt = dsetEvt.replace('@@', '?').replace(/,/g, '&')
@@ -300,9 +300,15 @@ function itemReactFun(app, e, prefix) {
   
   if (!fun && prefix) {
     if (allParam[oType]) {
-      const tmp = lib.formatQuery(allParam[oType])
-      fun = tmp.url
-      param = tmp.query
+      const tmp = allParam[oType]
+      if (typeof tmp == 'object') {
+        fun = tmp.fun
+        param = tmp.param
+      } else {
+        const tmp = lib.formatQuery(allParam[oType])
+        fun = tmp.url
+        param = tmp.query
+      }
     }
   }
 
