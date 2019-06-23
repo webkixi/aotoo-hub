@@ -6,7 +6,11 @@ import {
 
 const {
   reSetItemAttr,
-  reSetList
+  reSetArray,
+  reSetList,
+  isArray,
+  isObject,
+  isString
 } = lib
 
 function updateSelf(params) {
@@ -19,14 +23,14 @@ function updateSelf(params) {
       })
       return props
     })()
-
+    
     if (list.itemMethod && lib.isObject(list.itemMethod)) {
       Object.keys(list.itemMethod).forEach(fn=>{
         this[fn] = list.itemMethod[fn]
       })
       delete list.itemMethod
     }
-
+    
     let mylist = list
     const fromTree = this.data.fromTree
     mylist = fromTree ? lib.listToTree.call(this, mylist, fromTree) : reSetList.call(this, list)
@@ -43,6 +47,15 @@ export const listBehavior = function(app, mytype) {
     behaviors: [commonBehavior(app, mytype), commonMethodBehavior(app, mytype)],
     properties: {
       list: {
+        type: Object, 
+        observer: function (params) {
+          if (!this.init) {
+            updateSelf.call(this, params)
+          }
+        } 
+      },
+
+      dataSource: {
         type: Object, 
         observer: function (params) {
           if (!this.init) {
@@ -70,13 +83,15 @@ export const listBehavior = function(app, mytype) {
       },
       attached: function attached() { //节点树完成，可以用setData渲染节点，但无法操作节点
         const properties = this.properties
-        const list = properties.list
+        const list = properties.list || properties.dataSource
         updateSelf.call(this, list)
       },
 
       ready: function () { //组件布局完成，这时可以获取节点信息，也可以操作节点
+        const uniqId = this.uniqId
         const fromTree = this.data.fromTree || this.data.$list.fromTree // 来自tree实例的 uniqId
         const activePage = this.activePage
+        const $$id = this.data.$list['$$id']
         if (this.data.$list['$$id']) {
           const $id = this.data.$list['$$id']
           if (lib.isString(fromTree)) {
@@ -91,7 +106,13 @@ export const listBehavior = function(app, mytype) {
             }
           }
         }
-        app['_vars'][this.uniqId] = this
+        app['_vars'][uniqId] = this
+        activePage.hooks.on('destory', function () {
+          app['_vars'][uniqId] = null
+          if ($$id) {
+            activePage['elements'][$$id] = null
+          }
+        })
       }
     },
     methods: {
@@ -100,24 +121,95 @@ export const listBehavior = function(app, mytype) {
         return this
       },
 
-      update: function (param, callback) {
-        const cb = lib.isFunction(callback) ? callback : null
-        if (lib.isObject(param)) {
-          let target = {}
-          Object.keys(param).forEach(key => {
-            let nkey = key
-            if (key.indexOf('$list.') == -1) {
-              nkey = '$list.' + key
-            }
-            target[nkey] = reSetItemAttr.call(this, param[key], this.data.$list)
+      addClass: function(listCls) {
+        listCls = lib.isString(listCls) ? listCls.split(' ') : undefined
+        if (listCls) {
+          let $list = this.data.$list
+          let $listClass = $list.listClass && $list.listClass.split(' ') || []
+          listCls = listCls.filter(cls=> $listClass.indexOf(cls) == -1 )
+          $listClass = $listClass.concat(listCls)
+          this.update({
+            listClass: $listClass.join(' ')
           })
-          param = target
-          this.setData(param, cb)
         }
-        if (lib.isArray(param)) {
-          let target = Object.assign({data: param}, this.data.$list)
-          const mylist = reSetList.call(this, target)
-          this.setData({ $list: mylist }, cb)
+
+      },
+
+      hasClass: function (listCls) {
+        listCls = lib.isString(listCls) ? listCls.split(' ') : undefined
+        if (listCls) {
+          let $list = this.data.$list
+          let $listClass = $list.listClass && $list.listClass.split(' ') || []
+          listCls = listCls.filter(cls => $listClass.indexOf(cls) !== -1)
+          return listCls.length ? true : false
+        }
+      },
+
+      removeClass: function (listCls) {
+        listCls = lib.isString(listCls) ? listCls.split(' ') : undefined
+        if (listCls) {
+          let $list = this.data.$list
+          let $listClass = $list.listClass && $list.listClass.split(' ') || []
+          let indexs = []
+          $listClass.forEach((cls, ii)=>{
+            if (listCls.indexOf(cls) !== -1) {
+              indexs.push(ii)
+            }
+          })
+          if (indexs.length) {
+            indexs.forEach(index => $listClass.splice(index, 1))
+          }
+          this.update({
+            listClass: $listClass.join(' ')
+          })
+        }
+
+      },
+
+      update: function (param, callback) {
+        const that = this
+        const cb = lib.isFunction(callback) ? callback : null
+        const updateFun = (opts) => {
+          let param = opts
+          if (lib.isObject(param)) {
+            let target = {}
+            Object.keys(param).forEach(key => {
+              if (param[key] || param[key] === 0) {
+                let nkey = key.indexOf('$list.') == -1 ? '$list.' + key : key
+                let nval = param[key]
+                if (isArray(nval)) {
+                  nval = reSetArray.call(this, param[key], this.data.$list).data
+                } else {
+                  if (key.indexOf('title') > -1 || key.indexOf('img')>-1 || isObject(nval)) {
+                    if (key.indexOf('@') === -1) {
+                      nval = reSetItemAttr.call(this, param[key], this.data.$list)
+                    }
+                  }
+                }
+                target[nkey] = nval
+              }
+            })
+            that.setData(target, cb)
+          }
+  
+          if (lib.isArray(param)) {
+            let target = Object.assign({data: []}, this.data.$list)
+            target.data = param
+            let mylist = reSetList.call(this, target)
+            that.setData({ $list: mylist }, cb)
+          }
+        }
+
+        let result = this.hooks.emit('update', param)
+        if (result && result[0]) {
+          result = result[0]
+          if (lib.isFunction(result.then)) {
+            result.then( res => updateFun(res)).catch(err => err)
+          } else {
+            updateFun(result)
+          }
+        } else {
+          updateFun(param)
         }
         return this
       },
@@ -135,6 +227,15 @@ export const listBehavior = function(app, mytype) {
       findIndex: function (params, bywhat='attr') {
         let $selectIndex
         if (params) {
+          if (params.type && params.currentTarget && params.changedTouches) {
+            const dataset = params.currentTarget.dataset
+            const treeid = dataset.treeid
+            if (treeid) {
+              params = {treeid}
+            } else {
+              return 
+            }
+          }
           let $list = this.data.$list
           let $data = $list.data
           for (let ii = 0; ii < $data.length; ii++) {
@@ -146,12 +247,14 @@ export const listBehavior = function(app, mytype) {
               if (lib.isObject(params)) {
                 Object.keys(params).forEach(function (key, jj) {
                   if (jj == 0) {  // 只匹配params的第一个参数
-                    if (item[key] == params[key]) $selectIndex = ii;
+                    if (item.attr&&(item.attr[key] === params[key]) ||
+                      item[key] == params[key]
+                    ) $selectIndex = ii;
                   }
                 })
                 if ($selectIndex) break;
               } 
-
+              
               if (lib.isString(params)) {
                 if (treeid == params) {
                   $selectIndex = ii;
@@ -160,11 +263,24 @@ export const listBehavior = function(app, mytype) {
               }
             }
 
+
             if (bywhat == 'class') {
               if (lib.isString(params)) {
                 const cls = item.itemClass || item.class
-                if (cls.indexOf(params) > -1) {
+                const _params = params.replace('.', '')
+                if (cls.indexOf(_params) > -1) {
                   $selectIndex = $selectIndex ? $selectIndex.concat(ii) : [ii]
+                }
+              }
+            }
+
+            if (bywhat == 'id') {
+              if (lib.isString(params)) {
+                const id = item.id
+                const _params = params.replace('#', '')
+                if (id === _params) {
+                  $selectIndex = ii;
+                  break;
                 }
               }
             }
@@ -174,7 +290,21 @@ export const listBehavior = function(app, mytype) {
       },
 
       find: function (params, bywhat) {
-        const index = this.findIndex(params, bywhat)
+        let index
+        if (lib.isString(params)) {
+          let strNum = parseInt(params)
+          if (strNum && lib.isNumber(strNum)) {
+            params = strNum
+          }
+        }
+
+        if (lib.isNumber(params)) {
+          let $list = this.data.$list
+          let $data = $list.data
+          return $data[params]
+        } 
+
+        index = this.findIndex(params, bywhat)
         if (index || index === 0) {
           if (lib.isArray(index)) {
             return index.map((idx) => this.data.$list.data[idx])
@@ -185,12 +315,12 @@ export const listBehavior = function(app, mytype) {
         }
       },
 
-      findAndUpdate: function (treeid, cb) {
-        const res = this.find(treeid)
-        const index = res.__realIndex
-        const isFun = lib.isFunction(cb)
-        let result
+      findAndUpdate: function (params, cb) {
+        const res = this.find(params)
         if (res) {
+          const index = res.__realIndex
+          const isFun = lib.isFunction(cb)
+          let result
           if (!isFun) return res
           result = cb(res)
           if (result) {
@@ -199,54 +329,100 @@ export const listBehavior = function(app, mytype) {
         }
       },
 
-      attr: function (treeid) {
-        if (lib.isString(treeid)) {
-          return this.find(treeid).attr
+      attr: function (params) {
+        const res = this.find(params)
+        if (res) {
+          return res.attr
         }
       },
 
       append: function(params) {
+        const that = this
         if (params) {
           let $list = this.data.$list
           let $data = $list.data
-          $list.data = $data.concat(this.__newItem(params))
-          this.setData({$list})
-        }
-      },
+          let appendFun = (opts) => {
+            $list.data = $data.concat(that.__newItem(opts))
+            that.setData({$list})
+          }
 
-      prepend: function(params) {
-        if (params) {
-          let $list = this.data.$list
-          let $data = $list.data
-          $list.data = [].concat(this.__newItem(params)).concat($data)
-          this.setData({$list})
-        }
-      },
-
-      delete: function (treeid) {
-        if (lib.isString(treeid)) {
-          let $list = this.data.$list
-          let $data = $list.data
-          let $selectIndex = this.findIndex(treeid)
-          if ($selectIndex || $selectIndex == 0) {
-            $data.splice($selectIndex, 1)
-            this.setData({ $list })
+          let result = this.hooks.emit('append', params)
+          if (result && result[0]) {
+            result = result[0]
+            if (lib.isFunction(result.then)) {
+              result.then(res=> appendFun(res) ).catch(err=>err)
+            } else {
+              appendFun(result)
+            }
+          } else {
+            appendFun(params)
           }
         }
         return this
       },
 
-      insert: function (treeid, pay) {
-        if (lib.isString(treeid)) {
-          if (pay) {
-            pay = this.__newItem(pay)
-            let $list = this.data.$list
-            let $data = $list.data
-            let $selectIndex = this.findIndex(treeid)
-            if ($selectIndex || $selectIndex == 0) {
-              $data.splice($selectIndex, 0, pay)
-              this.setData({ $list })
+      prepend: function(params) {
+        const that = this
+        if (params) {
+          let $list = this.data.$list
+          let $data = $list.data
+          let prependFun = (opts) => {
+            $list.data = [].concat(this.__newItem(opts)).concat($data)
+            that.setData({$list})
+          }
+
+          let result = this.hooks.emit('prepend', params)
+          if (result && result[0]) {
+            result = result[0]
+            if (lib.isFunction(result.then)) {
+              result.then(res => prependFun(res)).catch(err => err)
+            } else {
+              prependFun(result)
             }
+          } else {
+            prependFun(params)
+          }
+        }
+        return this
+      },
+
+      delete: function (params) {
+        let $list = this.data.$list
+        let $data = $list.data
+        let $selectIndex = this.findIndex(params)
+        if ($selectIndex || $selectIndex == 0) {
+          $data.splice($selectIndex, 1)
+          this.setData({ $list })
+        }
+        return this
+      },
+
+      insert: function (params, pay) {
+        const that = this
+        let $list = this.data.$list
+        let $data = $list.data
+        if (lib.isString(params)) {
+          let $selectIndex = this.findIndex(params)
+          let insertFun = (payload) => {
+            if (payload) {
+              payload = that.__newItem(payload)
+              if ($selectIndex || $selectIndex == 0) {
+                $data.splice($selectIndex, 0, payload)
+                that.setData({ $list })
+              }
+            }
+          }
+
+          let result = this.hooks.emit('insert', pay)
+          if (result && result[0]) {
+            result = result[0]
+            if (lib.isFunction(result.then)) {
+              result.then(res=> insertFun(res) ).catch(err=>err)
+            } else {
+              insertFun(result)
+            }
+          } else {
+            insertFun(pay)
           }
         }
         return this

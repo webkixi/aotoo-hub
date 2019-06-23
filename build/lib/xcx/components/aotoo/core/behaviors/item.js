@@ -41,6 +41,7 @@ export const itemBehavior = function(app, mytype) {
         }
       },
       ready: function () { //组件布局完成，这时可以获取节点信息，也可以操作节点
+        const uniqId = this.uniqId
         const activePage = this.activePage = app.activePage
         const $id = this.data.item['$$id'] || this.properties.id || this.data.item['id']
         if ($id) {
@@ -51,6 +52,14 @@ export const itemBehavior = function(app, mytype) {
             activePage['elements'][$id] = this
           }
         }
+        activePage.hooks.on('destory', function () {
+          app['_vars'][uniqId] = null
+          if ($id) {
+            const itemKey = activePage['eles'][$id]
+            activePage['elements'][$id] = null
+            activePage['elements'][itemKey] = null
+          }
+        })
       }
     },
     methods: {
@@ -61,29 +70,79 @@ export const itemBehavior = function(app, mytype) {
         this.setData({$item: JSON.parse(this.originalDataSource)})
         return this
       },
-      update: function (param, callback) {
-        if (lib.isObject(param)) {
-          let target = {}
-          Object.keys(param).forEach(key => {
-            if (param[key]) {
-              if (key.indexOf('$item.') == -1) {
-                const nkey = '$item.' + key
-                target[nkey] = param[key]
-              } else {
-                target[key] = param[key]
-              }
+      addClass: function(itCls) {
+        itCls = lib.isString(itCls) ? itCls.split(' ') : undefined
+        if (itCls) {
+          let $item = this.data.$item
+          let $itemClass = $item.itemClass && $item.itemClass.split(' ') || []
+          itCls = itCls.filter(cls => $itemClass.indexOf(cls) == -1)
+          $itemClass = $itemClass.concat(itCls)
+          this.update({
+            itemClass: $itemClass.join(' ')
+          })
+        }
+      },
+
+      hasClass: function (itCls) {
+        itCls = lib.isString(itCls) ? itCls.split(' ') : undefined
+        if (itCls) {
+          let $item = this.data.$item
+          let $itemClass = $item.itemClass && $item.itemClass.split(' ') || []
+          itCls = itCls.filter(cls => $itemClass.indexOf(cls) !== -1)
+          return itCls.length ? true : false
+        }
+      },
+
+      removeClass: function(itCls) {
+        itCls = lib.isString(itCls) ? itCls.split(' ') : undefined
+        if (itCls) {
+          let $item = this.data.$item
+          let $itemClass = $item.itemClass && $item.itemClass.split(' ') || []
+          let indexs = []
+          $itemClass.forEach((cls, ii) => {
+            if (itCls.indexOf(cls) !== -1) {
+              indexs.push(ii)
             }
           })
-          param = target
-
-          this.setData(param)
-          const _item = lib.resetItem(this.data.$item, this)
-          const cb = lib.isFunction(callback) ? callback : null
-          this.setData({
-            // item: _item,
-            $item: _item
-          }, cb)
+          if (indexs.length) {
+            indexs.forEach(index => $itemClass.splice(index, 1))
+          }
+          this.update({
+            itemClass: $itemClass.join(' ')
+          })
         }
+      },
+
+      update: function (param, callback) {
+        const that = this
+        const updateFun = (opts) => {
+          let target = {}
+          if (lib.isObject(opts)) {
+            Object.keys(opts).forEach(key => {
+              if (opts[key] || opts[key] === 0) {
+                let nkey = key.indexOf('$item.') == -1 ? '$item.' + key : key
+                target[nkey] = opts[key]
+              }
+            })
+  
+            that.setData(target)
+            const _item = lib.resetItem(that.data.$item, that)
+            that.setData({ $item: _item }, callback)
+          }
+        }
+
+        let result = this.hooks.emit('update', param)
+        if (result && result[0]) {
+          result = result[0] 
+          if (lib.isFunction(result.then)) {
+            result.then( res => updateFun(res) ).catch(err => err)
+          } else {
+            updateFun(result)
+          }
+        } else {
+          updateFun(param)
+        }
+
         return this
       }
     }

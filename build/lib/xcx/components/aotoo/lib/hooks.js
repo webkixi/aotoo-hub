@@ -141,9 +141,16 @@ class _hooks {
   }
   one(key, cb) {
     if (key && typeof cb == 'function') {
-      cb.onlyonetime = true
+      let mycb = function() { return cb.apply(this, arguments) }
+      mycb.onlyonetime = true
     }
     this.on(key, cb)
+  }
+  once(key, cb) {
+    let myActions = this.actions
+    if (isString(key) && isFunction(cb)) {
+      myActions[key] = [cb]
+    }
   }
 }
 

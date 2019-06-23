@@ -123,3 +123,7 @@
     <ui-form class="ui-form" dataSource="{{props}}" />
   </block>
 </template>
+
+<template name="@slip">
+  <ui-slip class="ui-slip" dataSource="{{props}}" />
+</template>

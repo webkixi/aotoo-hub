@@ -34,5 +34,6 @@ export {
 
 export {
   reSetItemAttr,
+  reSetArray,
   reSetList
 } from "./forlist";

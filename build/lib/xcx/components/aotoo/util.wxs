@@ -442,6 +442,14 @@ function ciMethod(e, ins) {
   var res = chooseTouchFun(e, ins, 'catch')
 }
 
+function setStyle(inst, distance) {
+  tpos.distance = distance
+  if (distance == 0) {
+    tpos.current = { x: 0, y: 0 }
+  }
+  inst.setStyle('transform: translateX(' + distance + 'px)')
+}
+
 function tStart(e, slip, ins, stopPropagation) {
   var currentTarget = e.currentTarget
   var dataset = currentTarget.dataset
@@ -470,7 +478,8 @@ function tStart(e, slip, ins, stopPropagation) {
       // 确定是同一组操作对象，所有slip属性一致
       if (tmpSlip.direction == ddd && tmpSlip.min == min && tmpSlip.width == width && tmpSlip.find == slip.find) {
         if (treeid && tmpTreeid !== treeid) {
-          tmpInst.setStyle('transform: translateX(0px)')
+          setStyle(tmpInst, 0)
+          // tmpInst.setStyle('transform: translateX(0px)')
         }
       }
     }
@@ -491,7 +500,7 @@ function tStart(e, slip, ins, stopPropagation) {
     }
   } else {
     var tevent = tpos.events.touchstart
-    if (tevent && tevent !== 'true' && tevent.fun !== 'true') {
+    if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
       stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
     }
   }
@@ -574,19 +583,11 @@ function tMove(e, slip, ins, stopPropagation) {
     }
   } else {
     var tevent = tpos.events.touchmove
-    if (tevent && tevent !== 'true' && tevent.fun !== 'true') {
+    if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
       stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
     }
   }
 
-}
-
-function setStyle(inst, distance) {
-  tpos.distance = distance
-  if (distance == 0) {
-    tpos.current = { x: 0, y: 0 }
-  }
-  inst.setStyle('transform: translateX(' + distance + 'px)')
 }
 
 function tEnd(e, slip, ins, stopPropagation) {
@@ -620,7 +621,6 @@ function tEnd(e, slip, ins, stopPropagation) {
           setStyle(inst, 0)
         } else {
           setStyle(inst, -(absMax))
-          // inst.setStyle('transform: translateX(-' + absMax + 'px)')
         }
       }
     }
@@ -631,7 +631,6 @@ function tEnd(e, slip, ins, stopPropagation) {
           setStyle(inst, 0)
         } else {
           setStyle(inst, (absMax))
-          // inst.setStyle('transform: translateX(' + absMax + 'px)')
         }
       }
     }
@@ -641,7 +640,6 @@ function tEnd(e, slip, ins, stopPropagation) {
         setStyle(inst, 0)
       } else {
         diffX > 0 ? setStyle(inst, (absMax)) : setStyle(inst, -(absMax))
-        // diffX > 0 ? inst.setStyle('transform: translateX(' + absMax + 'px)') : inst.setStyle('transform: translateX(' + -(absMax) + 'px)')
       }
     }
     
@@ -655,36 +653,37 @@ function tEnd(e, slip, ins, stopPropagation) {
   var newE = JSON.parse(JSON.stringify(e))
   var tevent = tpos.events.touchend
 
-  if (tevent && tevent !== 'true' && tevent.fun !== 'true') {
+  if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
     stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
   }
 
   if (gapTime > tpos.timeStamp.gap) {
     if (tpos.events.longpress || tpos.events.catchlongpress) {
-      newE.type = tpos.events.catchlongpress ? 'catchlongpress' : 'longpress'
+      // newE.type = tpos.events.catchlongpress ? 'catchlongpress' : 'longpress'
+      newE.type = 'longpress'
+      newE.__stopPropagation = tpos.events.catchlongpress ? true : false
     }
   } else {
     if (tpos.events.tap || tpos.events.catchtap) {
-      newE.type = tpos.events.catchtap ? 'catchtap' : 'tap'
+      // newE.type = tpos.events.catchtap ? 'catchtap' : 'tap'
+      newE.type = 'tap'
+      newE.__stopPropagation = tpos.events.catchtap ? true : false
     }
   }
 
   if (newE.type.indexOf('touch') == -1) {
-    var typeEvt = allParam[newE.type]
-    // if (stopPropagation) {
-    //   if (newE.type.indexOf('catch') == -1) {
-    //     typeEvt = allParam['catch'+newE.type]
-    //   }
-    // }
-  
     if (isFake) {
-      stopPropagation ? ins.callMethod('catchItemMethod', newE) : ins.callMethod('itemMethod', newE)
+      callMethod(newE, ins)
     } else {
       if (diffX == 0 && diffY == 0 && tpos.distance == 0) {
-        stopPropagation ? ins.callMethod('catchItemMethod', newE) : ins.callMethod('itemMethod', newE)
+        callMethod(newE, ins)
       }
     }
   }
+}
+
+function callMethod(e, ins) {
+  e.__stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
 }
 
 module.exports = {

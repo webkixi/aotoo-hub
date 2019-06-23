@@ -290,13 +290,16 @@ function itemReactFun(app, e, prefix) {
   const dataset = currentTarget.dataset
   const activePage = this.activePage
   
-  const oType = e.type.indexOf('catch') == 0 ? e.type.replace('catch', '') : e.type
-  const nType = prefix ? prefix + oType : oType
+  // const oType = e.type.indexOf('catch') == 0 ? e.type.replace('catch', '') : e.type
+  const oType = e.type
+  let nType = prefix ? prefix + oType : oType
+  nType = nType.replace('catchcatch', 'catch')
   
   let dsetEvtStr = dataset['evt'].replace(/fake_/g, '').replace(/aim/g, 'catchtap')
   let dsetEvt = nType + '@@' + dsetEvtStr
   let rEvt = rightEvent(dsetEvt)
   let {fun, param, allParam} = rEvt
+  if (fun === 'true') return
   
   if (!fun && prefix) {
     if (allParam[oType]) {

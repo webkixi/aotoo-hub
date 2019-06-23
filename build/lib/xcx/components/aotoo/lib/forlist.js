@@ -65,7 +65,7 @@ export function reSetItemAttr(item, list){
   return newItem
 }
 
-function reSetArray(data, list) {
+export function reSetArray(data, list) {
   const that = this
   try {
     if (list.methods && isObject(list.methods)) {
