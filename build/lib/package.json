@@ -67,7 +67,7 @@
     "vue-loader": "^15.4.2",
     "webpack": "^4",
     "webpack-cli": "^3",
-    "webpack-dev-server": "^3",
+    "webpack-dev-server": "3.2.1",
     "write-assets-webpack-plugin": "^1.0.4"
   },
   "dependencies": {
