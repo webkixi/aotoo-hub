@@ -7,6 +7,24 @@ import modalData from './data'
 
 const data = [
   {
+    title: '弹窗',
+    id: 'pop',
+    list: [
+      { title: '中间弹层', attrs: 'pop', type: 'primary', size: 'larger', parentId: 'pop' },
+      { title: '从顶部弹下', attrs: 'pop.top', type: 'primary', size: 'larger', parentId: 'pop' },
+      { title: '从底部弹出', attrs: 'pop.bot', type: 'primary', size: 'larger', parentId: 'pop' },
+    ]
+  },
+  {
+    title: '面包消息',
+    id: 'toast',
+    list: [
+      { title: '底部消息', attrs: 'toast', type: 'fff-primary', size: 'larger', parentId: 'toast' },
+      { title: '中间消息', attrs: 'toast.mid', type: 'fff-primary', size: 'larger', parentId: 'toast' },
+      { title: '自定义延时', attrs: 'countdown', type: 'fff-primary', size: 'larger', parentId: 'toast' },
+    ]
+  },
+  {
     title: '侧弹',
     id: 'default',
     list: [
@@ -84,26 +102,69 @@ Pager({
       ]
     }
   },
+  onReady: function() {
+    const that = this
+    this.insts = {
+      motto: this.getElementsById('motto'),
+      aside1: this.getElementsById('actionSide1'),
+    }
+    this.insts.aside1.hooks.on('hide', function () {
+      that.insts.motto.removeClass('frozen')
+    })
+  },
   openBar: function(e, query, inst) {
     const theAim = query.direction.replace(/_/g,"/")
     const type = query.type
-    const aside1 = this.getElementsById('actionSide1')
+    const motto = this.insts.motto
+    const aside1 = this.insts.aside1
     console.log(type)
-    if (theAim) {
-      switch (theAim) {
-        case theAim:
-          (()=>{
-            const direction = theAim || 'right'
-            aside1.reset()[direction]({
-            itemClass: type && type == 'full' ? 'full' : 'bar',
-            title: {
-              title: '推荐理由',
-              itemClass: 'size17 fw-bold ss-center'
-            },
-            body: modalData
-          })
-          })()
-        break;
+    if (type == 'toast') {
+      if (theAim == 'countdown') {
+        aside1.toast.countdown(10000)
+        aside1.toast.mid({
+          title: '延时10秒自动消失'
+        })
+      } else {
+        const o = theAim.split('.')
+        const reset = aside1.reset()
+        aside1.toast.countdown(3000)
+        const func = o.length > 1 ? reset[o[0]][o[1]] : reset[o[0]].bind(aside1)
+        func({
+          title: '消息框'
+        })
+      }
+    } 
+    else if (type == 'pop') {
+      motto.addClass('frozen')
+      const o = theAim.split('.')
+      const reset = aside1.reset()
+      const func = o.length > 1 ? reset[o[0]][o[1]] : reset[o[0]].bind(aside1)
+      func({
+        title: {
+          title: '推荐理由',
+          itemClass: 'size17 fw-bold ss-center',
+        },
+        itemStyle: 'top: -50px; width: 85%; height: 85%; padding: 10px',
+        body: modalData
+      })
+    } 
+    else {
+      if (theAim) {
+        switch (theAim) {
+          case theAim:
+            (()=>{
+              const direction = theAim || 'right'
+              aside1.reset()[direction]({
+              itemClass: type && type == 'full' ? 'full' : 'bar',
+              title: {
+                title: '推荐理由',
+                itemClass: 'size17 fw-bold ss-center'
+              },
+              body: modalData
+            })
+            })()
+          break;
+        }
       }
     }
   }

@@ -141,7 +141,8 @@ Pager({
       // },
       data: adapterNav(navData, 0),
       listClass: 'list-nav',
-    })
+    }),
+    modal: Pager.item({})
   },
 
   onLongPress: function(e, inst) {
@@ -186,7 +187,23 @@ Pager({
   },
 
   onReady: function () {
-
+    const modal = this.getElementsById('modal')
+    modal.reset()
+    .css({
+      width: '85%',
+      height: '65%',
+      padding: '10px'
+    })
+    .pop.bot({
+      title: '新版更新2019-6.24',
+      "@list": {
+        data: [
+          '新增pop弹层，支持3中弹出方式和自定义结构',
+          '新增toast消息框，允许自定义消息框结构',
+          '新增slip组件，通过简单的配置实现左滑删除列表，参考微信'
+        ]
+      }
+    })
   },
 
   aim: function(e, inst) {

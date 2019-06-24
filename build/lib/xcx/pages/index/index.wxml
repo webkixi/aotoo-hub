@@ -4,4 +4,5 @@
     <ui-tree list="{{menuData}}" />
   </scroll-view>
   <ui-list list="{{nav}}" />
+  <ui-pop item="{{modal}}" />
 </view>
