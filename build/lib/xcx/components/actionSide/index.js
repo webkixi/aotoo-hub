@@ -70,11 +70,11 @@ Component({
   lifetimes: {
     created: function (params) {
       this.toast_countdown = 3000
+      this.toast.countdown = function(p) { this.toast_countdown = lib.isNumber(p) ? p :3000 }.bind(this)
       this.toast.mid = function(p={}, c) {
         p.itemClass = 'toast-mid'
         this.__opration(p, c, 'actionSide-toast')
       }.bind(this)
-      this.toast.countdown = function(p) { this.toast_countdown = lib.isNumber(p) ? p :3000 }.bind(this)
       this.pop.top = function(p={}, c) { this.__opration(p, c, 'actionSide-pop-top') }.bind(this)
       this.pop.bot = function(p={}, c) { this.__opration(p, c, 'actionSide-pop-bottom') }.bind(this)
 
@@ -146,6 +146,7 @@ Component({
       // const fromLeft = itemClass.indexOf('actionSide-left') > -1
       // const itCls = fromRight ? 'actionSide-right' : fromLeft ? 'actionSide-left' : fromBot ? 'actionSide-bot' : fromTop ? 'actionSide-top' : 'actionSide'
       const itCls = 'actionSide'
+      this.hooks.emit('hide')
       this.update({
         show: false,
         class: itCls,
@@ -180,7 +181,7 @@ Component({
         this.update({ ...upContent }, function() {
           if (lib.isFunction(cb)) cb()
           if (op.indexOf('toast') > -1) {
-            setTimeout(() => that.hide(), 3000);
+            setTimeout(() => that.hide(), that.toast_countdown);
           }
         })
       } catch (error) {
