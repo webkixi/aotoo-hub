@@ -54,10 +54,12 @@
     "ui-list": "/components/aotoo/list/index",
     "ui-tree": "/components/aotoo/tree/index",
     "action-side": "/components/actionSide/index",
+    "ui-pop": "/components/actionSide/index",
     "ui-tab": "/components/tab/index",
     "ui-form": "/components/form/index",
     "ui-collapse": "/components/collapse/index",
-    "ui-uploads": "/components/uploads/index"
+    "ui-uploads": "/components/uploads/index",
+    "ui-slip": "/components/slip/index"
   },
   "window":{
     "backgroundTextStyle":"light",

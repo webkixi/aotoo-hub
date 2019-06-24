@@ -129,6 +129,30 @@ export const commonBehavior = (app, mytype) => {
         return this.data.$item || this.data.$list || this.data.$dataSource || {}
       },
 
+      css: function (param = {}) {
+        let cssStr = ''
+        Object.keys(param).forEach(attr => {
+          const val = param[attr]
+          cssStr += `${attr}: ${val};`
+        })
+        if (this.$$is == 'item') {
+          this.setData({
+            '$item.itemStyle': cssStr
+          })
+        } 
+        else if (this.$$is == 'list' || this.$$is == 'tree') {
+          this.setData({
+            '$list.itemStyle': cssStr
+          })
+        }
+        else if (this.data.$dataSource) {
+          this.setData({
+            '$dataSource.itemStyle': cssStr
+          })
+        }
+        return this
+      },
+
       _getAppVars: function(key) {
         const id = key || this.data.fromComponent
         if (id) {
