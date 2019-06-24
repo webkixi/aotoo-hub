@@ -19,6 +19,7 @@ export const treeBehavior = function(app, mytype) {
       ready: function() {
         const activePage = this.activePage
         const uniqId = this.uniqId
+        const $$id = this.data.$list['$$id']
         activePage.hooks.on('destory', function () {
           app['_vars'][uniqId] = null
           if ($$id) {
