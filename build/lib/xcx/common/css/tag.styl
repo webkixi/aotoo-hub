@@ -1,7 +1,14 @@
 
 //背景色，边线色一致，字体默认白色
 .tag-primary
-  ss-tag($tag-primary-color, 1px solid $tag-primary-color, #fff, $tag-br, 0 6rpx, 30rpx, 11px, 30rpx)
+  ss-tag($tag-primary-color, 1px solid $tag-primary-color, #fff, $tag-br, $tag-padding, $tag-height, $tag-fs, $tag-lh)
+  &.other
+    border-radius: $tag-br2
+    padding: $tag-padding2
+    height: $tag-height2
+    font-size: $tag-fs2
+    line-height: $tag-lh2
+
 .tag-default
   @extends .tag-primary
   background: $tag-default-color
@@ -17,7 +24,7 @@
 
 //背景色默认白色 边线跟文字统一色
 .tag-fff-primary
-  ss-tag(#fff, 1px solid fade-out($tag-primary-color, .7), $tag-primary-color, $tag-br, 0 6rpx, 30rpx, 11px, 30rpx)
+  ss-tag(#fff, 1px solid fade-out($tag-primary-color, .7), $tag-primary-color, $tag-br, $tag-padding, $tag-height, $tag-fs, $tag-lh)
 .tag-fff-default
   @extends .tag-fff-primary
   border-color: fade-out($tag-default-color, .7)
@@ -33,5 +40,5 @@
 
 //色值统一， 背景色透明度降 边线透明
 .tag-work-default
-  ss-tag(fade-out($tag-default-color, .9), 1px solid transparent, $tag-default-color, $tag-br, 0 6rpx, 30rpx, 11px, 30rpx)
+  ss-tag(fade-out($tag-default-color, .9), 1px solid transparent, $tag-default-color, $tag-br, $tag-padding, $tag-height, $tag-fs, $tag-lh)
   

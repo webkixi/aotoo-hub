@@ -72,3 +72,15 @@
     font-size: 38rpx
   .item-title
     font-size: 24rpx
+
+//两列  默认间距是3%
+.list-lines-2
+  @extends .flex-row-wrap
+  margin-top: -3%
+  margin-left: @margin-top
+  >.item
+    width: 47%
+    margin-top: 3%
+    margin-left: @margin-top
+    box-sizing: border-box
+

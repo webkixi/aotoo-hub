@@ -1,35 +1,7 @@
-$profileSize = 40rpx
-$profileColor = #333
-$profileHei = 104rpx
-
-$inputSize = 28rpx
-$labelColor = #333
-$labelHeight = 1.34rem
-$labelMr = 24rpx
-$labelMinwidth = 112rpx
-$labelFw = bold
-$inputColor = #333333
-$inputHeight = 1.34rem
-$borderColor = #e3e3e3
-
-
-/**
-  自定义radio checkbox
-*/
-$rcSize = 36rpx
-$rcColor = #e3e3e3
-$rcCheckedColor = #4b9afc
-$rcMr = 40rpx
-$rcInputMr = 10rpx
-$radio = '\e76a'
-$radioChecked = '\e624'
-$checkbox = '\e70b'
-$checkboxChecked = '\e70c'
-
 
 //小程序自带bug 指定的类(.phcolor)目前不能起作用，需要用它的默认值.input-placeholder
 .input-placeholder      
-  color: #ccc
+  color: $placeholderColor
   font-size: $inputSize
 input 
   height: $inputHeight
@@ -48,11 +20,9 @@ input
 
 
 
-.input-container
-  // min-height 400px
+
 .input-item
   display block
-  // margin-bottom 20rpx
   .profile-item
     &-title
       @extends .input-profile-item-title
@@ -71,11 +41,12 @@ input
   ss-display-flex(row nowrap, flex-start)
   position relative
   font-size $inputSize
-  padding 24rpx 0
+  padding: $inputPadding
   border-bottom: 1px solid $borderColor
-  background #fff
-  &:last-child
-    border-bottom: none
+  background: $bgColor
+  if ($lastBorder)
+    &:last-child
+      border-bottom: none
   .input-item
     // &-switch
     //   width: 82rpx !important
@@ -107,19 +78,16 @@ input
     &-label
       position relative
       flex: 1
-      // ss-display-flex(row nowrap, flex-start, center)
-    // &-input
-    //   placeholder(#ccc, $inputSize)
-    //   font-size 28rpx
-    &-title
-      min-width $labelMinwidth
-      color: $labelColor
-      font-weight: $labelFw
-      height: $labelHeight
-      line-height: @height
-      margin-right: $labelMr
-    // &-required
-    //   font-size 30rpx
+    if ($isShowInputTitle)
+      &-title
+        min-width $labelMinwidth
+        color: $labelColor
+        font-weight: $labelFw
+        height: $labelHeight
+        line-height: @height
+        margin-right: $labelMr
+      // &-required
+      //   font-size 30rpx
     &-desc
       flex 1
       font-size 20rpx

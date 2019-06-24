@@ -124,18 +124,20 @@
   width: 100rpx
   height: @width
   border-radius: @width
-  border: 1px solid
+  border: 3rpx solid $color-border-3
+  color: $color-border-3
   text-align: center
   line-height: @width
-  font-size: 18px
+  font-size: 30px
   &:before
-    content: '\e618'
+    content: '\e64a'
   &.small
     width: 60rpx
     height: @width
     border-radius: @width
+    border-color: #ccc
     line-height: @width
-    font-size: 14px
+    font-size: 16px
 .icon-arrow-left-circle
   @extends .icon-arrow-right-circle
   &:before
@@ -146,7 +148,7 @@
 .icon-arror-top-solid
   &:before
     content: '\e6b0'
-    color: #999
+    color: #d4d4d4
     font-size: 12px
   &.absolute
     position: absolute
@@ -157,3 +159,16 @@
     box-sizing: border-box;
     text-align: center
 
+.icon-dw
+  &:before
+    content: '\e63e'
+    display: block
+    font-size: 36rpx
+
+.icon-right
+  &:before
+    content: '\e660'
+
+.icon-star
+  &:before
+    content: '\e676'

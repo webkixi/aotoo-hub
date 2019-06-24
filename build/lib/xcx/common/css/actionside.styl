@@ -22,6 +22,7 @@ $modalBarWid = 60vw
   box-shadow: 0 5px 10px rgba(0,0,0,0.1);
   position fixed
   z-index: 2
+  display: block
 //上下弹 公用
 .as-common-tb
   width calc(100% - 60rpx)    //60rpx = $modalPd-lr * 2
@@ -42,11 +43,84 @@ $modalBarWid = 60vw
     max-width $modalBarWid
   &.full
     width: calc(100% - 60rpx)
+
+.as-common-pop
+  width 50%
+  height 50%
+  padding 0
+  left: 0; top: 0; right: 0; bottom: 0; 
+  margin auto
+  &.bar
+    max-width $modalBarWid
+  &.full
+    width: calc(100% - 60rpx)
+
+.as-common-toast
+  background-color #555555
+  color #fff
+  min-width 35%
+  max-width 55%
+  max-height 80px
+  min-height 40px
+  white-space: nowrap;
+  overflow: hidden;
+  font-size 14px
+  // text-overflow: ellipsis;
+  // left: 0; top: 0; right: 0; bottom: 0; 
+  left 0
+  right 0
+  bottom 100px
+  margin auto
+  border-radius 6px
+  padding 5px
+  &.bar
+    max-width $modalBarWid
+  &.full
+    width: calc(100% - 60rpx)
     
 
 
 .actionSide
   position: relative
+  display: none
+
+.actionSide-pop
+  @extends .as-common
+  @extends .as-common-pop
+  &.moveit
+    animation: scalePop ease .3s forwards;
+  &.menus-bar
+    max-width $modalBarWid
+    z-index: 2
+
+.actionSide-pop-top
+  @extends .as-common
+  @extends .as-common-pop
+  &.moveit
+    animation: slideDown ease .3s forwards;
+  &.menus-bar
+    max-width $modalBarWid
+    z-index: 2
+
+.actionSide-pop-bottom
+  @extends .as-common
+  @extends .as-common-pop
+  &.moveit
+    animation: slideUp ease .3s forwards;
+  &.menus-bar
+    max-width $modalBarWid
+    z-index: 2
+
+.actionSide-toast
+  @extends .as-common
+  @extends .as-common-toast
+  &.toast-mid
+    top: 0
+  &.moveit
+    animation: scalePop ease .3s forwards;
+  &.menus-bar
+    max-width $modalBarWid
+    z-index: 2
 
 .actionSide-right
   @extends .as-common
@@ -81,7 +155,7 @@ $modalBarWid = 60vw
 
 .closeIt
   position absolute
-  font-size 28rpx
-  top 10rpx
-  right: 10rpx
-  color: #C1CDCD
+  top 5rpx
+  right: 5rpx
+  color: #c1cdcd
+  transform: rotate(45deg) scale(0.7);
