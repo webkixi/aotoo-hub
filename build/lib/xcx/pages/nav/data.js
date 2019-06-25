@@ -4,6 +4,10 @@ const data = [
     attrx: 'index'
   },
   {
+    title: '提示',
+    attrx: 'close'
+  },
+  {
     title: '我的',
     attrx: 'my'
   }

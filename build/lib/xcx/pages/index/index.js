@@ -165,12 +165,19 @@ Pager({
   onNav: function(e, query, inst){
     const theTap = query.nav.replace(/_/g,"/")
     if (theTap) {
-      switch (theTap) {
-        case theTap:
-          wx.redirectTo({
-            url: '../'+theTap+'/index'
-          })
-        break;
+      if (theTap == 'close') {
+        const modal = this.getElementsById('modal')
+        modal.hide()
+        console.log(modal)
+      }
+      else {
+        switch (theTap) {
+          case theTap:
+            wx.redirectTo({
+              url: '../'+theTap+'/index'
+            })
+          break;
+        }
       }
     }
   },
@@ -192,16 +199,20 @@ Pager({
     .css({
       width: '85%',
       height: '65%',
-      padding: '10px'
+      padding: '20px'
     })
     .pop.bot({
-      title: '新版更新2019-6.24',
+      title: {
+        title: '新版更新2019-6.24',
+        itemClass: 'size20 mb-40-r',
+      },
       "@list": {
         data: [
           '新增pop弹层，支持3中弹出方式和自定义结构',
           '新增toast消息框，允许自定义消息框结构',
           '新增slip组件，通过简单的配置实现左滑删除列表，参考微信'
-        ]
+        ],
+        listClass: 'color-default'
       }
     })
   },
