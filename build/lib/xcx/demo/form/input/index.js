@@ -9,7 +9,7 @@ const formData = {
   data: [
     {
       title: '文本类表单元素',
-      itemClass: 'card-bg',
+      itemClass: 'card-bg mb-40-r',
       input: [
         {type: 'text', id: 'username', title: '用户名', placeholder: '请输入用户名' },
         {type: 'text', id: 'email', title: '邮  箱', error: '错误提示信息', placeholder: '接收信息的安全邮箱'},

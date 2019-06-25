@@ -8,7 +8,7 @@ const formData = {
   data: [
     {
       title: '单选择器',
-      itemClass: 'card-bg',
+      itemClass: 'card-bg mb-40-r',
       input: [
         {
           id: 'test_picker',

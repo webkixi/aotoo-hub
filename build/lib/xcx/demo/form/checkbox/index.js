@@ -8,7 +8,7 @@ const formData = {
   data: [
     {
       title: 'CHECKBOX表单元素',
-      itemClass: 'card-bg',
+      itemClass: 'card-bg mb-40-r',
       input: [
         {
           name: 'test_checkbox1',

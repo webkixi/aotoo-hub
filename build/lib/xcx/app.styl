@@ -10,17 +10,18 @@
   box-sizing: border-box;
 } 
 
-// tab的默认样式
-.tab-container 
-  background-color red
-  .menu-box 
-    display flex
-    flex-direction: row
-    .menu-item
-      flex:1;
-      background-color:#00f;
-      text-align:center;
-      height:40px;
-      line-height:36px;
-      &.active
-        background-color yellow
+.boxer
+  background: $color-bg
+  color: $color-default
+  font-size: $size-primary
+  height: 100vh
+  width: 100%
+  overflow: hidden
+  &.boxer-hei-auto
+    height: auto
+  &.boxer-hei-auto
+    height: auto
+
+.demowrap-x
+  padding: 24rpx
+  width: calc(100% - 48rpx)   //48= 24*2

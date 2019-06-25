@@ -8,7 +8,7 @@ const formData = {
   data: [
     {
       title: '滑动块',
-      itemClass: 'card-bg',
+      itemClass: 'card-bg mb-40-r',
       input: {
         id: 'test_slider',
         type: 'slider',

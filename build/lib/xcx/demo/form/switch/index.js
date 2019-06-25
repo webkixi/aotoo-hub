@@ -8,7 +8,7 @@ const formData = {
   data: [
     {
       title: '类目3',
-      itemClass: 'card-bg',
+      itemClass: 'card-bg mb-40-r',
       input: [
         {
           id: 'test_switch1',

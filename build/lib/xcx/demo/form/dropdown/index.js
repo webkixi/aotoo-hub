@@ -6,7 +6,7 @@ const Pager = require('components/aotoo/core')
 const formData = {
   data: [
     {
-      title: '类目6',
+      title: '类目1',
       itemClass: 'card-bg',
       input: [
         {

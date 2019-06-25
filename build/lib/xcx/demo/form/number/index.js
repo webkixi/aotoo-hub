@@ -8,17 +8,8 @@ const formData = {
   $$id: 'formInst',
   data: [
     {
-      title: [
-        {
-          title: '类目2',
-        },
-        {
-          title: '为方便供应商及时与您联系，请准确填写联系人信息',
-          itemClass: 'size12 fw-normal'
-        }
-      ],
-      titleClass: 'xxx',
-      itemClass: 'card-bg',
+      title: '类目3',
+      itemClass: 'card-bg mb-40-r',
       input: [
         {type: 'number', title: '整数型', placeholder: '数字输入键盘'},
         {type: 'idcard', title: '身份证', placeholder: '身份证输入键盘'},
