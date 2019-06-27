@@ -57,7 +57,6 @@ export function isEmpty(params) {
       for (var key in params) {
         return false
       };
-      return true
     }
   }
   return true

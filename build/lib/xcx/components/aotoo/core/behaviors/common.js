@@ -171,21 +171,53 @@ export const commonBehavior = (app, mytype) => {
         return {}
       },
 
-      _preGetAppVars: function(key, params, son) {
+      // _preGetAppVars: function(key, params, son) {
+      //   const {fun} = params
+      //   const inst = this._getAppVars(key)
+      //   const $ds = this.data.$item || this.data.$list || this.data.dataSource
+      //   let fromComponent = inst && inst.data && inst.data['fromComponent']
+      //   if (!fromComponent) fromComponent = $ds && $ds['fromComponent']
+      //   if (lib.isEmpty(inst)) {
+      //     return son || {}
+      //   } else {
+      //     if (inst[fun]) return inst
+      //     if (fromComponent) {
+      //       return this._preGetAppVars(fromComponent, params, inst)
+      //     } else {
+      //       return inst
+      //     }
+      //   }
+      // },
+
+      _preGetAppVars(key, params, son) {
         const {fun} = params
-        const inst = this._getAppVars(key)
-        const $ds = this.data.$item || this.data.$list || this.data.dataSource
-        let fromComponent = inst && inst.data && inst.data['fromComponent']
-        if (!fromComponent) fromComponent = $ds && $ds['fromComponent']
-        if (lib.isEmpty(inst)) {
-          return son || {}
-        } else {
-          if (inst[fun]) return inst
-          if (fromComponent) {
-            return this._preGetAppVars(fromComponent, params, inst)
-          } else {
-            return inst
+        let ctx = son || this
+
+        if (!fun) {
+          return ctx
+        }
+
+        function getParent(_key, context){
+          const $ds = context && context.data && (context.data.$item || context.data.$list || context.data.dataSource)
+          if ($ds) {
+            const id = _key || context.data.fromComponent || ($ds && $ds['fromComponent'])
+            return app['_vars'][id]
           }
+        }
+
+        const parent = getParent(key, ctx)
+        if (parent) {
+          const $ds = parent.data.$item || parent.data.$list || parent.data.dataSource
+          const fromComponent = parent.data.fromComponent || ($ds && $ds['fromComponent'])
+          if (parent[fun]) {
+            return parent
+          } 
+          else if (fromComponent) {
+            return this._preGetAppVars(fromComponent, param, parent)
+          }
+          return parent
+        } else {
+          return ctx
         }
       },
 
