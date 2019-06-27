@@ -163,12 +163,16 @@ Pager({
   },
 
   onNav: function(e, query, inst){
+    const modal = this.getElementsById('modal')
     const theTap = query.nav.replace(/_/g,"/")
     if (theTap) {
       if (theTap == 'close') {
-        const modal = this.getElementsById('modal')
-        modal.hide()
-        console.log(modal)
+        if (this.announcement) {
+          modal.hide()
+        } else {
+          this.announcement = true
+          modal.hooks.emit('announc', modal)
+        }
       }
       else {
         switch (theTap) {
@@ -194,43 +198,39 @@ Pager({
   },
 
   onReady: function () {
-    const modal = this.getElementsById('modal')
-    modal.reset()
-    .css({
-      width: '85%',
-      height: '65%',
-      padding: '20px'
+    const that = this
+    this.announcement = true
+    let modal = this.getElementsById('modal')
+    modal.hooks.once('hide', function(){
+      that.announcement = false
     })
-    .pop.bot({
-      title: {
-        title: '新版更新2019-6.24',
-        itemClass: 'size20 mb-40-r',
-      },
-      "@list": {
-        data: [
-          '新增pop弹层，支持3中弹出方式和自定义结构',
-          '新增toast消息框，允许自定义消息框结构',
-          '新增slip组件，通过简单的配置实现左滑删除列表，参考微信'
-        ],
-        listClass: 'color-default'
-      }
+
+    modal.hooks.once('announc', function (md) {
+      md.reset()
+      .css({
+        width: '80%',
+        height: '65%',
+        padding: '20px',
+        top: "-40px",
+        "z-index": "999"
+      })
+      .pop.bot({
+        title: {
+          title: '新版更新2019-6.24',
+          itemClass: 'size20 mb-40-r',
+        },
+        "@list": {
+          data: [
+            '新增pop弹层，支持3中弹出方式和自定义结构',
+            '新增toast消息框，允许自定义消息框结构',
+            '新增slip组件，通过简单的配置实现左滑删除列表，参考微信'
+          ],
+          listClass: 'color-default'
+        }
+      })
     })
-  },
 
-  aim: function(e, inst) {
-    const target = e.currentTarget
-    const currentDset = target.dataset
-    const theAim = currentDset.aim
-    const aside1 = this.getElementsById('aside1')
-    const aside2 = this.getElementsById('aside2')
-    if (theAim) {
-      switch (theAim) {
-        default:
-          aside1.right()
-          break;
-      }
-
-    }
+    modal.hooks.emit('announc', modal) //显示公告
   },
   
   onLoad: function () {

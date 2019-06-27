@@ -4,7 +4,7 @@ const data = [
     attrx: 'index'
   },
   {
-    title: '提示',
+    title: '更新',
     attrx: 'close'
   },
   {
