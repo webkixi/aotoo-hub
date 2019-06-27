@@ -66,53 +66,63 @@ Component({
     multipleSlots: true, // 在组件定义时的选项中启用多slot支持
     addGlobalClass: true
   },
-  behaviors: [Core.itemComponentBehavior(app, 'actionSide')],
+  behaviors: [Core.itemComponentBehavior(app, '_actionSide')],
+  pageLifetimes: {
+    show: function () {
+      this.toast.countdown = (p) => this.toast_countdown = lib.isNumber(p) ? p :3000
+      this.toast.mid = (p={}, c) => {
+        p.itemClass = 'toast-mid'
+        this.__opration(p, c, 'actionSide-toast')
+      }
+      this.pop.bot = (p={}, c) => this.__opration(p, c, 'actionSide-pop-bottom')
+      this.pop.top = (p={}, c) => this.__opration(p, c, 'actionSide-pop-top')
+
+      this.right.full = (p={}, c) => {
+        p.itemClass = 'full'
+        this.__opration(p, c, 'actionSide-right')
+      }
+      this.right.bar = (p={}, c) => {
+        p.itemClass = 'bar'
+        this.__opration(p, c, 'actionSide-right')
+      }
+
+      this.left.full = (p={}, c) => {
+        p.itemClass = 'full'
+        this.__opration(p, c, 'actionSide-left')
+      }
+      this.left.bar = (p={}, c) => {
+        p.itemClass = 'bar'
+        this.__opration(p, c, 'actionSide-left')
+      }
+
+      this.top.full = (p={}, c) => {
+        p.itemClass = 'full'
+        this.__opration(p, c, 'actionSide-top')
+      }
+      this.top.bar = (p={}, c) => {
+        p.itemClass = 'bar'
+        this.__opration(p, c, 'actionSide-top')
+      }
+      
+      this.bot.full = (p={}, c) => {
+        p.itemClass = 'full'
+        this.__opration(p, c, 'actionSide-bot')
+      }
+      this.bot.bar = (p={}, c) => {
+        p.itemClass = 'bar'
+        this.__opration(p, c, 'actionSide-bot')
+      }
+    },
+    hide: function () {
+      // 页面被隐藏
+    },
+    resize: function (size) {
+      // 页面尺寸变化
+    }
+  },
   lifetimes: {
     created: function (params) {
       this.toast_countdown = 3000
-      this.toast.countdown = function(p) { this.toast_countdown = lib.isNumber(p) ? p :3000 }.bind(this)
-      this.toast.mid = function(p={}, c) {
-        p.itemClass = 'toast-mid'
-        this.__opration(p, c, 'actionSide-toast')
-      }.bind(this)
-      this.pop.top = function(p={}, c) { this.__opration(p, c, 'actionSide-pop-top') }.bind(this)
-      this.pop.bot = function(p={}, c) { this.__opration(p, c, 'actionSide-pop-bottom') }.bind(this)
-
-      this.right.full = function(p={}, c) {
-        p.itemClass = 'full'
-        this.__opration(p, c, 'actionSide-right')
-      }.bind(this)
-      this.right.bar = function(p={}, c) {
-        p.itemClass = 'bar'
-        this.__opration(p, c, 'actionSide-right')
-      }.bind(this)
-
-      this.left.full = function(p={}, c) {
-        p.itemClass = 'full'
-        this.__opration(p, c, 'actionSide-left')
-      }.bind(this)
-      this.left.bar = function(p={}, c) {
-        p.itemClass = 'bar'
-        this.__opration(p, c, 'actionSide-left')
-      }.bind(this)
-
-      this.top.full = function(p={}, c) {
-        p.itemClass = 'full'
-        this.__opration(p, c, 'actionSide-top')
-      }.bind(this)
-      this.top.bar = function(p={}, c) {
-        p.itemClass = 'bar'
-        this.__opration(p, c, 'actionSide-top')
-      }.bind(this)
-
-      this.bot.full = function(p={}, c) {
-        p.itemClass = 'full'
-        this.__opration(p, c, 'actionSide-bot')
-      }.bind(this)
-      this.bot.bar = function(p={}, c) {
-        p.itemClass = 'bar'
-        this.__opration(p, c, 'actionSide-bot')
-      }.bind(this)
     },
     
     attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
@@ -177,8 +187,8 @@ Component({
           itemStyle: target.itemStyle,
           __actionMask: target.mask
         })
-
-        this.update({ ...upContent }, function() {
+        
+        this.update(upContent, function () {
           if (lib.isFunction(cb)) cb()
           if (op.indexOf('toast') > -1) {
             setTimeout(() => that.hide(), that.toast_countdown);
