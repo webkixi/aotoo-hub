@@ -13,6 +13,7 @@ export {
   uuid,
   resetSuidCount,
   clone,
+  merge,
   isEmpty,
   debounce,
   throttle,

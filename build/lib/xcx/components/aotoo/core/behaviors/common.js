@@ -88,6 +88,15 @@ export const commonBehavior = (app, mytype) => {
       //节点树完成，可以用setData渲染节点，但无法操作节点
       attached: function () { //节点树完成，可以用setData渲染节点，但无法操作节点
         let properties = this.properties
+        if (lib.isObject(properties.item)) {
+          properties.item = lib.clone(properties.item)
+        }
+        if (lib.isObject(properties.list)) {
+          properties.list = lib.clone(properties.list)
+        }
+        if (lib.isObject(properties.dataSource)) {
+          properties.dataSource = lib.clone(properties.dataSource)
+        }
         let props = (properties.item || properties.list || properties.dataSource)
         let id = properties.id
         // this.mountId = props.$$id ? false : id  // 如果$$id，则交给
@@ -154,7 +163,8 @@ export const commonBehavior = (app, mytype) => {
       },
 
       _getAppVars: function(key) {
-        const id = key || this.data.fromComponent
+        const $ds = this.data.$item || this.data.$list || this.data.dataSource
+        const id = key || this.data.fromComponent || ($ds && $ds['fromComponent'])
         if (id) {
           return app['_vars'][id] || {}
         }
@@ -162,14 +172,17 @@ export const commonBehavior = (app, mytype) => {
       },
 
       _preGetAppVars: function(key, params, son) {
-        const {fn} = params
+        const {fun} = params
         const inst = this._getAppVars(key)
+        const $ds = this.data.$item || this.data.$list || this.data.dataSource
+        let fromComponent = inst && inst.data && inst.data['fromComponent']
+        if (!fromComponent) fromComponent = $ds && $ds['fromComponent']
         if (lib.isEmpty(inst)) {
           return son || {}
         } else {
-          if (inst[fn]) return inst
-          if (inst.data.fromComponent) {
-            return this._preGetAppVars(inst.data.fromComponent, params, inst)
+          if (inst[fun]) return inst
+          if (fromComponent) {
+            return this._preGetAppVars(fromComponent, params, inst)
           } else {
             return inst
           }
@@ -208,6 +221,7 @@ export const commonBehavior = (app, mytype) => {
             this.activePage['elements'][this.mountId] = this
           }
           app['_vars'][this.uniqId] = this
+          this.activePage['vars'][this.uniqId] = this
           this.activePage.hooks.on('destory', function () {
             app['_vars'][that.uniqId] = null
           })
@@ -324,7 +338,6 @@ function itemReactFun(app, e, prefix) {
   let rEvt = rightEvent(dsetEvt)
   let {fun, param, allParam} = rEvt
   if (fun === 'true') return
-  
   if (!fun && prefix) {
     if (allParam[oType]) {
       const tmp = allParam[oType]
@@ -338,13 +351,13 @@ function itemReactFun(app, e, prefix) {
       }
     }
   }
-
+  
   if (fun) {
     let parentInstance = this._preGetAppVars(null, rEvt)
     if (lib.isEmpty(parentInstance)) {
       parentInstance = undefined
     }
-  
+    
     e.currentTarget.dataset._query = param
     const evtFun = activePage[fun] || app.activePage[fun]
     const thisFun = this[fun]

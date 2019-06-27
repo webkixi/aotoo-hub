@@ -115,19 +115,24 @@ export const itemBehavior = function(app, mytype) {
 
       update: function (param, callback) {
         const that = this
+        const $tmp = lib.clone(this.data.$item)
+        this.setData({$tmp})
         const updateFun = (opts) => {
           let target = {}
           if (lib.isObject(opts)) {
             Object.keys(opts).forEach(key => {
               if (opts[key] || opts[key] === 0) {
-                let nkey = key.indexOf('$item.') == -1 ? '$item.' + key : key
+                let nkey = key.indexOf('$tmp.') == -1 ? '$tmp.' + key : key
                 target[nkey] = opts[key]
               }
             })
   
             that.setData(target)
-            const _item = lib.resetItem(that.data.$item, that)
+            const _item = lib.resetItem(that.data.$tmp, that)
             that.setData({ $item: _item }, callback)
+            // that.setData(target)
+            // const _item = lib.resetItem(that.data.$item, that)
+            // that.setData({ $item: _item }, callback)
           }
         }
 

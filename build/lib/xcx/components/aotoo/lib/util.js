@@ -1,4 +1,6 @@
 import md5 from 'md5'
+import deepmerge from 'deepmerge'
+
 export function isString(title) {
   return typeof title == 'string'
 }
@@ -37,17 +39,26 @@ export function isFunction(obj) {
   return objTypeof(obj) == 'function'
 }
 
-export function clone(params) {
-  return JSON.parse(JSON.stringify(params))
+export function clone(params={}) {
+  return deepmerge({}, params)
+  // return JSON.parse(JSON.stringify(params))
+}
+
+export function merge() {
+  return deepmerge.apply(null, arguments)
 }
 
 export function isEmpty(params) {
-  if (isObject(params)) {
-    const len = Object.keys(params).length
-    return len ? false : true
-  }
-  if (isArray(params)) {
-    return params.length ? false : true
+  const $obj = typeof params == 'object' ? true : false
+  if ($obj) {
+    if (Array.isArray(params)) {
+      return params.length ? false : true
+    } else {
+      for (var key in params) {
+        return false
+      };
+      return true
+    }
   }
   return true
 }

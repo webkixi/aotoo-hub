@@ -101,7 +101,9 @@ function core(params) {
       let myData = params.data
       var {eles, acts, nData} = pageDataElement(myData)
       params.data = nData
-      app['_vars'] = {}
+      if (!app['_vars']) {
+        app['_vars'] = {}
+      }
     }
 
     const oldLoad = params.onLoad
