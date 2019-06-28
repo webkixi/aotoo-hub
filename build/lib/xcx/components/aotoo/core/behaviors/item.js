@@ -41,25 +41,6 @@ export const itemBehavior = function(app, mytype) {
         }
       },
       ready: function () { //组件布局完成，这时可以获取节点信息，也可以操作节点
-        const uniqId = this.uniqId
-        const activePage = this.activePage = app.activePage
-        const $id = this.data.item['$$id'] || this.properties.id || this.data.item['id']
-        if ($id) {
-          const itemKey = activePage['eles'][$id]
-          if (itemKey) {
-            activePage['elements'][itemKey] = this
-          } else {
-            activePage['elements'][$id] = this
-          }
-        }
-        activePage.hooks.on('destory', function () {
-          app['_vars'][uniqId] = null
-          if ($id) {
-            const itemKey = activePage['eles'][$id]
-            activePage['elements'][$id] = null
-            activePage['elements'][itemKey] = null
-          }
-        })
       }
     },
     methods: {

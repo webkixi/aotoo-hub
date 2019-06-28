@@ -12,20 +12,9 @@ export const treeBehavior = function(app, mytype) {
     lifetimes: {
       created: function created() {
         this.$$is = 'tree'
-        const uniqId = this.uniqId
         this.children = {}
-        app['_vars'][uniqId] = this // fromTree == uniqId
       },
       ready: function() {
-        const activePage = this.activePage
-        const uniqId = this.uniqId
-        const $$id = this.data.$list['$$id']
-        activePage.hooks.on('destory', function () {
-          app['_vars'][uniqId] = null
-          if ($$id) {
-            activePage['elements'][$$id] = null
-          }
-        })
       }
     }
   })

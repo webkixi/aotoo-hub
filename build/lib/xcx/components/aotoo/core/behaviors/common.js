@@ -84,6 +84,7 @@ export const commonBehavior = (app, mytype) => {
         this.$$type = mytype
         this.init = true // 第一次进入
         this.mounted = false
+        app['_vars'][this.uniqId] = this
       },
       //节点树完成，可以用setData渲染节点，但无法操作节点
       attached: function () { //节点树完成，可以用setData渲染节点，但无法操作节点
@@ -111,15 +112,9 @@ export const commonBehavior = (app, mytype) => {
         const that = this
         this.init = false
         this.mounted = true
-        this.hooks.emit('ready')
         this.activePage = app.activePage
+        this.hooks.emit('ready')
         this.originalDataSource = JSON.stringify((this.data.item || this.data.list || this.data.dataSource))
-        if (this.data.fromTree) {
-          this.treeInst = app['_vars'][this.data.fromTree]
-        }
-        if (this.data.fromComponent) {
-          this.componentInst = app['_vars'][this.data.fromComponent]
-        }
         this.mount()
       },
 
@@ -170,24 +165,6 @@ export const commonBehavior = (app, mytype) => {
         }
         return {}
       },
-
-      // _preGetAppVars: function(key, params, son) {
-      //   const {fun} = params
-      //   const inst = this._getAppVars(key)
-      //   const $ds = this.data.$item || this.data.$list || this.data.dataSource
-      //   let fromComponent = inst && inst.data && inst.data['fromComponent']
-      //   if (!fromComponent) fromComponent = $ds && $ds['fromComponent']
-      //   if (lib.isEmpty(inst)) {
-      //     return son || {}
-      //   } else {
-      //     if (inst[fun]) return inst
-      //     if (fromComponent) {
-      //       return this._preGetAppVars(fromComponent, params, inst)
-      //     } else {
-      //       return inst
-      //     }
-      //   }
-      // },
 
       _preGetAppVars(key, params, son) {
         const {fun} = params
@@ -246,16 +223,58 @@ export const commonBehavior = (app, mytype) => {
         return this
       },
       mount: function(id) {
-        const that = this
-        this.mountId = id||this.mountId
+        let that = this
+        let activePage = this.activePage
+        let uniqId = this.uniqId
         if (!this.init) {
-          if (this.mountId) {
-            this.activePage['elements'][this.mountId] = this
+          if (id) {
+            activePage['elements'][id] = this
           }
-          app['_vars'][this.uniqId] = this
-          this.activePage['vars'][this.uniqId] = this
-          this.activePage.hooks.on('destory', function () {
-            app['_vars'][that.uniqId] = null
+
+          let $is = this.$$is
+          let $id = this.properties.id
+          let $ds = this.data.$item || this.data.$list || this.data.dataSource
+          let fromTree
+          let fromComponent = this.data.fromComponent || ($ds && $ds['fromComponent'])
+
+          if (fromComponent) {
+            this.componentInst = app['_vars'][fromComponent]
+          }
+
+          if ($is == 'list') {
+            fromTree = this.data.fromTree || this.data.$list.fromTree
+            if (lib.isString(fromTree)) {
+              const treeInst = app['_vars'][fromTree]
+              treeInst['children'][$id] = this // ? $id 为随机，有没有办法固定
+              this.treeInst = treeInst
+            }
+          }
+
+          if ($is == 'item') {
+            $id = $id || this.data.item['$$id'] || this.data.item['id']
+          }
+          
+          if ($is == 'list' || $is == 'tree') {
+            $id = $id || this.data.$list['$$id']
+          }
+
+          if ($id) {
+            const itemKey = activePage['eles'][$id]
+            if (itemKey) {
+              activePage['elements'][itemKey] = this
+            } else {
+              activePage['elements'][$id] = this
+            }
+          }
+
+          // 该页面实例销毁时，销毁所有组件实例
+          activePage.hooks.on('destory', function () {
+            app['_vars'][uniqId] = null
+            if ($id) {
+              const itemKey = activePage['eles'][$id]
+              activePage['elements'][$id] = null
+              activePage['elements'][itemKey] = null
+            }
           })
         } else {
           this.hooks.on('ready', function() {

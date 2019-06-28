@@ -88,31 +88,6 @@ export const listBehavior = function(app, mytype) {
       },
 
       ready: function () { //组件布局完成，这时可以获取节点信息，也可以操作节点
-        const uniqId = this.uniqId
-        const fromTree = this.data.fromTree || this.data.$list.fromTree // 来自tree实例的 uniqId
-        const activePage = this.activePage
-        const $$id = this.data.$list['$$id']
-        if (this.data.$list['$$id']) {
-          const $id = this.data.$list['$$id']
-          if (lib.isString(fromTree)) {
-            const treeInst = app['_vars'][fromTree]
-            treeInst['children'][$id] = this   // $id由tree算法定义 一般值为 level1 level2...
-          } else {
-            const listKey = activePage['eles'][$id]
-            if (listKey) {
-              activePage['elements'][listKey] = this
-            } else {
-              activePage['elements'][$id] = this
-            }
-          }
-        }
-        app['_vars'][uniqId] = this
-        activePage.hooks.on('destory', function () {
-          app['_vars'][uniqId] = null
-          if ($$id) {
-            activePage['elements'][$$id] = null
-          }
-        })
       }
     },
     methods: {
