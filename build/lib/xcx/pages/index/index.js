@@ -209,9 +209,9 @@ Pager({
       md.reset()
       .css({
         width: '80%',
-        height: '65%',
+        height: '70%',
         padding: '20px',
-        top: "-40px",
+        top: "-80px",
         "z-index": "999"
       })
       .pop.bot({
@@ -221,11 +221,10 @@ Pager({
         },
         "@list": {
           data: [
-            '新增pop弹层，支持3中弹出方式和自定义结构',
-            '新增toast消息框，允许自定义消息框结构',
-            '新增slip组件，通过简单的配置实现左滑删除列表，参考微信'
+            {title: '新增pop/toash两种弹窗', itemClass: 'mb-20-r btn-fff-primary btn-larger', aim: 'gourl?page=modal'},
+            {title: '新增高性能slip组件(左滑删除)', itemClass: 'mb-20-r btn-fff-primary btn-larger', aim: 'gourl?page=slip'},
           ],
-          listClass: 'color-default'
+          listClass: 'color-default announcement'
         }
       })
     })
@@ -239,5 +238,11 @@ Pager({
   
   getUserInfo: function(e) {
 
+  },
+
+  gourl(e, param){
+    const page = param.page
+    const url = `../../demo/ui/${page}/index`
+    wx.navigateTo({ url })
   }
 })
