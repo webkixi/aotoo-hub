@@ -190,7 +190,7 @@ export const commonBehavior = (app, mytype) => {
             return parent
           } 
           else if (fromComponent) {
-            return this._preGetAppVars(fromComponent, param, parent)
+            return this._preGetAppVars(fromComponent, params, parent)
           }
           return parent
         } else {
