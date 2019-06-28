@@ -149,6 +149,9 @@ Pager({
       })
     } 
     else {
+      if (type == 'default') {
+        motto.addClass('frozen')
+      }
       if (theAim) {
         switch (theAim) {
           case theAim:
