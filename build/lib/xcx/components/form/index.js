@@ -667,6 +667,45 @@ Component({
       }
     },
 
+    inputBtnMethod(e){
+      e.__type = 'bind'+e.type
+      const mytype = e.type
+      const dataset = e.currentTarget.dataset
+      const detail = e.detail
+
+      const address = dataset.address
+      const res = this.getAddressInfo(address)
+      const activePage = this.activePage
+      const {fun, param, allParam} = this._rightEvent(e)
+
+      switch (mytype) {
+        case 'getuserinfo':
+          runFormBindFun.call(this, 'bindgetuserinfo', res, e)
+          break;
+
+        case 'contact':
+          runFormBindFun.call(this, 'bindcontact', res, e)
+          break;
+
+        case 'getphonenumber':
+          runFormBindFun.call(this, 'bindgetphonenumber', res, e)
+          break;
+
+          
+          case 'opensetting':
+            runFormBindFun.call(this, 'bindopensetting', res, e)
+            break;
+            
+        case 'error':
+          runFormBindFun.call(this, 'binderror', res, e)
+          break;
+
+        case 'launchapp':  // e.type == 'error'，这个应该是小程序的bug
+          runFormBindFun.call(this, 'bindlaunchapp', res, e)
+          break;
+      }
+    },
+
     inputItemMethod: function(e) {
       const mytype = e.type
       const dataset = e.currentTarget.dataset
@@ -675,7 +714,7 @@ Component({
       const address = dataset.address
       const res = this.getAddressInfo(address)
       const activePage = this.activePage
-      const {fun, param} = this._rightEvent(e)
+      const {fun, param, allParam} = this._rightEvent(e)
 
       if (res) {
         var id = res.inputData.id || res.inputData.name
@@ -796,7 +835,7 @@ function runFormBindFun(fn, res, e, from) {
   const activePage = this.activePage
   if (lib.isString(res.inputData[fn])) {
     const funName = res.inputData[fn]
-    const targetObj = (!lib.isEmpty(this.componentInst) && this.componentInst) || activePage
+    const targetObj = (this.componentInst && !lib.isEmpty(this.componentInst)) || activePage
     const fun = targetObj[funName]
     if (lib.isFunction(fun)) {
       let resData = ''

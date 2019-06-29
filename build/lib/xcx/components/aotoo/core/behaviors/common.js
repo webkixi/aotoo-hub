@@ -186,9 +186,11 @@ export const commonBehavior = (app, mytype) => {
         if (parent) {
           const $ds = parent.data.$item || parent.data.$list || parent.data.dataSource
           const fromComponent = parent.data.fromComponent || ($ds && $ds['fromComponent'])
-          if (parent[fun]) {
+          if (parent.uniqId === ctx.uniqId) {
+            return ctx
+          } else if (parent[fun]) {
             return parent
-          } 
+          }
           else if (fromComponent) {
             return this._preGetAppVars(fromComponent, params, parent)
           }
@@ -346,7 +348,7 @@ export const commonMethodBehavior = (app, mytype) => {
         const is = this.$$is
         const currentTarget = e.currentTarget
         const dataset = currentTarget.dataset
-        let dsetEvt = e.type+'@@'+dataset['evt']
+        let dsetEvt = (e.__type || e.type)+'@@'+dataset['evt']  // __type，改写原生type，适合不同场景
         if (is == 'list' || is == 'tree') {
           const mytype = this.data.$list.type
           if (mytype && (mytype.is == 'scroll' || mytype.is == 'swiper')) {
@@ -380,7 +382,7 @@ function itemReactFun(app, e, prefix) {
   const activePage = this.activePage
   
   // const oType = e.type.indexOf('catch') == 0 ? e.type.replace('catch', '') : e.type
-  const oType = e.type
+  const oType = e.__type || e.type
   let nType = prefix ? prefix + oType : oType
   nType = nType.replace('catchcatch', 'catch')
   

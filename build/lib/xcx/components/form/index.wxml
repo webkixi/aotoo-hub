@@ -129,7 +129,7 @@
 <template name="@button">
   <block wx:if="{{input['open-type']=='contact'}}">
     <button 
-      type="{{input.type||'default'}}" 
+      type="{{input.typeset||'default'}}" 
       size="{{input.size||'mini'}}"
       plain="{{input.plain}}"
       disabled="{{input.disabled}}"
@@ -140,72 +140,78 @@
       send-message-path="{{input['send-message-path']}}"
       send-message-img="{{input['send-message-img']}}"
       show-message-card	="{{input['show-message-card']}}"
-      bindcontact	="{{input['bindcontact']}}"
+      bindcontact	="inputBtnMethod"
       class="{{input.itemClass}}"
       style="{{input.itemStyle}}"
       id="{{input.id}}"
       data-address="{{input.uAddress}}"
+      data-evt="{{util.dataEvt(input, ['bindcontact'])}}"
     >
     {{input.value}}
     </button>
   </block>
   <block wx:elif="{{input['open-type']=='getPhoneNumber'}}">
     <button 
-      type="{{input.type||'default'}}" 
+      type="{{input.typeset||'default'}}" 
       size="{{input.size||'mini'}}"
       plain="{{input.plain}}"
       disabled="{{input.disabled}}"
       loading="{{input.loading}}"
       open-type="{{input['open-type']}}"
       lang="{{input.lang||'en'}}"
-      bindgetphonenumber="{{input['bindgetphonenumber']}}"
+      bindgetphonenumber="inputBtnMethod"
       class="{{input.itemClass}}"
       style="{{input.itemStyle}}"
       id="{{input.id}}"
       data-address="{{input.uAddress}}"
+      data-evt="{{util.dataEvt(input, ['bindgetphonenumber'])}}"
     >
     {{input.value}}
     </button>
   </block>
   <block wx:elif="{{input['open-type']=='getUserInfo'}}">
     <button 
-      type="{{input.type||'default'}}" 
+      type="{{input.typeset||'default'}}" 
       size="{{input.size||'mini'}}"
       plain="{{input.plain}}"
       disabled="{{input.disabled}}"
       loading="{{input.loading}}"
       open-type="{{input['open-type']}}"
       lang="{{input.lang||'en'}}"
-      bindgetuserinfo="{{input['bindgetuserinfo']}}"
+      bindgetuserinfo="inputBtnMethod"
       class="{{input.itemClass}}"
       style="{{input.itemStyle}}"
       id="{{input.id}}"
       data-address="{{input.uAddress}}"
+      data-evt="{{util.dataEvt(input, ['bindgetuserinfo'])}}"
     >
     {{input.value}}
     </button>
   </block>
   <block wx:elif="{{input['open-type']=='openSetting'}}">
     <button 
-      type="{{input.type||'default'}}" 
+      type="{{input.typeset||'default'}}" 
       size="{{input.size||'mini'}}"
       plain="{{input.plain}}"
       disabled="{{input.disabled}}"
       loading="{{input.loading}}"
       open-type="{{input['open-type']}}"
       lang="{{input.lang||'en'}}"
-      bindopensetting="{{input['bindopensetting']}}"
+      bindopensetting="inputBtnMethod"
       class="{{input.itemClass}}"
       style="{{input.itemStyle}}"
       id="{{input.id}}"
       data-address="{{input.uAddress}}"
+      data-evt="{{util.dataEvt(input, ['bindopensetting'])}}"
     >
     {{input.value}}
     </button>
   </block>
   <block wx:elif="{{input['open-type']=='launchApp'}}">
+    <!-- bindlaunchapp="{{input['bindlaunchapp']}}"
+    binderror="{{input['binderror']}}" -->
     <button 
-      type="{{input.type||'default'}}" 
+      type="{{input.typeset||'default'}}" 
       size="{{input.size||'mini'}}"
       plain="{{input.plain}}"
       disabled="{{input.disabled}}"
@@ -213,19 +219,20 @@
       open-type="{{input['open-type']}}"
       lang="{{input.lang||'en'}}"
       app-parameter	="{{input['app-parameter']}}"
-      bindlaunchapp="{{input['bindlaunchapp']}}"
-      binderror="{{input['binderror']}}"
+      bindlaunchapp="inputBtnMethod"
+      binderror="inputBtnMethod"
       class="{{input.itemClass}}"
       style="{{input.itemStyle}}"
       id="{{input.id}}"
       data-address="{{input.uAddress}}"
+      data-evt="{{util.dataEvt(input, ['bindlaunchapp', 'binderror'])}}"
     >
     {{input.value}}
     </button>
   </block>
   <block wx:else>
     <button 
-      type="{{input.type||'default'}}" 
+      type="{{input.typeset||'default'}}" 
       size="{{input.size||'mini'}}"
       plain="{{input.plain}}"
       disabled="{{input.disabled}}"
