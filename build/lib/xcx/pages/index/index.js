@@ -210,7 +210,8 @@ Pager({
       .css({
         width: '80%',
         height: '70%',
-        padding: '20px',
+        padding: '10px',
+        overflow: 'hidden',
         top: "-80px",
         "z-index": "999"
       })
@@ -221,10 +222,43 @@ Pager({
         },
         "@list": {
           data: [
-            {title: '新增pop/toash两种弹窗', itemClass: 'mb-20-r btn-fff-primary btn-larger', aim: 'gourl?page=modal'},
-            {title: '新增高性能slip组件(左滑删除)', itemClass: 'mb-20-r btn-fff-primary btn-larger', aim: 'gourl?page=slip'},
+            {title: [
+              '更新',
+              '优化demo/modal，新增pop/toast弹窗，可以设置弹层内容，现在支持13中弹出方式'
+            ], itemClass: 'card-notification'},
+            {title: [
+              '更新',
+              '内核优化，简化组件开发，自动回收组件实例'
+            ], itemClass: 'card-notification'},
+            {title: [
+              '更新',
+              '新增slip的demo，简单设置即可生成带左滑菜单的列表'
+            ], itemClass: 'card-notification'},
+            {title: [
+              '更新',
+              '内核优化，原计划引入immatable，考虑到包大小的问题，改为引入deepmerge方法，解决组件数据污染的问题'
+            ], itemClass: 'card-notification'},
+            {title: [
+              '更新',
+              '支持小程序云开发，通过配置项简单设置'
+            ], itemClass: 'card-notification'},
+            {title: [
+              '更新',
+              '优化wxs中的通用touch响应事件'
+            ], itemClass: 'card-notification'},
+            {title: [
+              '更新',
+              {title: 'pop/toash弹窗demo', itemStyle: 'margin-top: 10rpx', itemClass: 'mb-20-r btn-primary btn-small level9', aim: 'gourl?page=modal'}
+            ], itemClass: 'card-notification'},
+            {title: [
+              '更新',
+              {title: 'slip组件(左滑菜单)', itemClass: 'mb-20-r btn-primary btn-small level9', aim: 'gourl?page=slip'}
+            ], itemClass: 'card-notification'},
           ],
-          listClass: 'color-default announcement'
+          listClass: 'color-default announcement',
+          type: {
+            is: 'scroll'
+          }
         }
       })
     })
