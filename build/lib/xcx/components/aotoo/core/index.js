@@ -13,11 +13,12 @@ import {
 } from "./behaviors";
 
 import { 
-  alert 
+  alert
 } from "./ui";
 
 import { 
   post,
+  _get,
   upload
 } from "./utils";
 
@@ -234,6 +235,7 @@ function setItem(item) {
 core.lib = lib
 core.alert = alert
 core.post = post
+core.get = _get
 core.upload = upload
 core.setItem = setItem
 core.commonBehavior = commonBehavior

@@ -21,7 +21,7 @@ class _hooks {
     // wx.clearStorageSync()
   }
   getInfo(){
-    return this.storage ? getStorageInfoSync() : this.storeData
+    return this.storage ? wx.getStorageInfoSync() : this.storeData
   }
   setItem(key, val){
     try {
@@ -115,6 +115,7 @@ class _hooks {
       }
     }
   }
+  
   emit(key, param, ctx=null) {
     if (isString(key)) {
       if (this.actions[key]) {
@@ -139,6 +140,26 @@ class _hooks {
       }
     }
   }
+
+  fire(key, param, ctx=null) {
+    const vals = []
+    function _fire(funcs=[]) {
+      if (funcs.length) {
+        const fun = funcs.shift()
+        const res = fun.call(ctx, param)
+        vals.push(res)
+        _fire(funcs)
+      } else {
+        return vals
+      }
+    }
+
+    if (isString(key) && this.actions[key]) {
+      _fire(this.actions[key])
+      if (vals.length) return vals
+    }
+  }
+
   one(key, cb) {
     if (key && typeof cb == 'function') {
       let mycb = function() { return cb.apply(this, arguments) }
@@ -146,6 +167,7 @@ class _hooks {
     }
     this.on(key, cb)
   }
+
   once(key, cb) {
     let myActions = this.actions
     if (isString(key) && isFunction(cb)) {

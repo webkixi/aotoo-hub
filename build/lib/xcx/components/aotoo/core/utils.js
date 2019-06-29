@@ -1,12 +1,12 @@
 import path from 'path'
 const lib = require('../lib')
 
-export function post(url, data, param={}) {
+export function post(url, data={}, param={}, method='POST') {
   return new Promise((resolve, reject)=>{
     let postParam = {
-      url: url, // 仅为示例，并非真实的接口地址
-      method: 'POST',
-      data: data||{},
+      url, // 仅为示例，并非真实的接口地址
+      method,
+      data,
       header: {
         'content-type': 'application/json' // 默认值
       },
@@ -21,6 +21,10 @@ export function post(url, data, param={}) {
     postParam.fail = postParam.error
     if (postParam.url) wx.request(postParam)
   })
+}
+
+export function _get(url, data, param ) {
+  return post(url, data, param, 'GET')
 }
 
 function getImgRealPath(obj) {
