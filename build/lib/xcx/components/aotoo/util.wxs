@@ -330,6 +330,7 @@ var tpos = {
   current: undefined,
   distance: 0,
   events: {},
+  moving: false,
   timeStamp: {
     gap: 500,
     start: 0,
@@ -371,6 +372,7 @@ function chooseTouchFun(e, ins, stopPropagation) {
     direction: 'a',
     min: 20,
     width: 60,
+    height: 0,
     find: '.move-it'
   }
 
@@ -392,12 +394,16 @@ function chooseTouchFun(e, ins, stopPropagation) {
 
     if (allParam.__slip) {
       var slip = allParam.__slip.fun ? allParam.__slip.fun.split(';;') : allParam.__slip.split(';;')
+      var slip2 = slip[2] && slip[2].split(':')
+      var wid = slip2[0]
+      var hgt = slip2[1]
       slipObj = {
         direction: slip[0] || slipObj.direction,
         min: slip[1] || slipObj.min,
-        width: slip[2] || slipObj.width,
+        width: wid || slipObj.width,
+        height: hgt || slipObj.height,
         find: slip[3] || slipObj.find,
-        length: 0
+        length: slip[4] || 0
       }
 
       if (touchMethods.indexOf(evtType) > -1) {
@@ -499,10 +505,11 @@ function tStart(e, slip, ins, stopPropagation) {
       ins.callMethod(cb, e)
     }
   } else {
-    var tevent = tpos.events.touchstart
-    if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
-      stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
-    }
+    /** */
+  }
+  var tevent = tpos.events.touchstart
+  if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
+    stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
   }
 }
 
@@ -526,6 +533,7 @@ function tMove(e, slip, ins, stopPropagation) {
   var find = slip.find || '.move-it'
   var absMax = Math.abs(max)
   var absMin = Math.abs(min)
+    tpos.moving = true
 
   // var allInst = ins.selectAllComponents(find)
   var inst = e.instance
@@ -582,12 +590,12 @@ function tMove(e, slip, ins, stopPropagation) {
       ins.callMethod(cb, e)  // 不要执行本对象setData方法，会中断move方法，但可以执行其他对象的渲染方法
     }
   } else {
-    var tevent = tpos.events.touchmove
-    if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
-      stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
-    }
+    /** */
   }
-
+  var tevent = tpos.events.touchmove
+  if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
+    stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
+  }
 }
 
 function tEnd(e, slip, ins, stopPropagation) {
@@ -601,6 +609,7 @@ function tEnd(e, slip, ins, stopPropagation) {
   var absMin = Math.abs(min)
   var absMax = Math.abs(max)
   tpos.timeStamp.end = e.timeStamp
+  tpos.moving = false
 
 
   // var inst = ins.selectComponent(find)
