@@ -20,14 +20,14 @@
 
 <template name="itemContent">
   <block wx:if="{{type && util.isObject(type) && type.is === 'slip'}}">
-    <view class="slip-item">
+    <!-- <view class="slip-item"> -->
       <block wx:if="{{item.$$id}}">
         <ui-item item="{{ {__slip: type.option, ...item} }}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
       </block>
       <block wx:else>
         <template is="item" data="{{ item: {__slip: type.option, ...item} }}" />
       </block>
-    </view>
+    <!-- </view> -->
   </block>
   <block wx:elif="{{item.$$id}}">
     <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>

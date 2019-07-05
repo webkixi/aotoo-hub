@@ -33,16 +33,18 @@ class _hooks {
       console.warn(error);
     }
   }
-  getItem(key){
+  getItem(key) {
     try {
       let res
       if (this.storage) {
         res = wx.getStorageSync(key)
+        if (res) {
+          this.storeData[key] = res
+        }
+        return res
+      } else {
+        return this.storeData[key]
       }
-      if (res) {
-        this.storeData[key] = res
-      }
-      return res
     } catch (error) {
       console.warn(error);
     }

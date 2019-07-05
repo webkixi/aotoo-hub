@@ -121,11 +121,7 @@ export function uuid(prefix, len) {
 }
 
 // 节流方法
-export function throttle(fn, gapTime) {
-  if (gapTime == null || gapTime == undefined) {
-    gapTime = 1500
-  }
-
+export function throttle(fn, gapTime=1500) {
   let _lastTime = null
   return function () {
     var context = this
@@ -155,11 +151,12 @@ export function debounce(fn, wait) {
 // (debounce(fn, 500), 1000)  // 1000触发一次，中途触发则阻止上一次的
 
 let _nav = {}
+_nav.gapTime = 1200
 const navFuns = ['switchTab', 'reLaunch', 'redirectTo', 'navigateTo', 'navigateBack']
 navFuns.forEach(key => {
   _nav[key] = throttle(function () {
     wx[key].apply(null, arguments)
-  }, 1200)
+  }, _nav.gapTime)
 })
 
 export const nav = _nav

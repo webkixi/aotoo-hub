@@ -177,7 +177,7 @@ Component({
           itemClass: `${op} ${myclass} moveit`,
           // itemStyle: myStyle || this.__cssStyle,
           itemStyle: myStyle,
-          mask: param.enabalMask ? 'actionMask show' : op.indexOf('toast') > -1 ? 'actionMask' : myContent.__yesCloseBtn ? 'actionMask' : 'actionMask show'
+          mask: param.enableMask ? 'actionMask show' : op.indexOf('toast') > -1 ? 'actionMask' : myContent.__yesCloseBtn ? 'actionMask' : 'actionMask show'
         }
         
         const upContent = Object.assign({}, myContent, {
