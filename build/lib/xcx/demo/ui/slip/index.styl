@@ -18,11 +18,30 @@
     left 60px
     border-bottom 1px solid #efefef
     box-shadow: 0px 0px 1px #efefef;
+
+.hlist
+  border-top 1px solid #efefef
+  border-bottom 1px solid #efefef
+  overflow hidden
+  position relative
+  display flex
+  flex-direction column
+  &:before
+    content: ''
+    height 100%
+    width: 80%
+    background: #efefef
+    position: absolute
+    right 0px
+    top 0px
   .move-it
+    position relative
     white-space: nowrap
+    background-color #fff
     height 100%
     transition: all .5s
     padding-left 10px
+    margin-bottom 1px
     .htitle
       display inline-block
       vertical-align middle
