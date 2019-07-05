@@ -7,6 +7,20 @@ const app = getApp()
 const Core = require('../aotoo/core')
 const lib = Core.lib
 
+let tpos = {
+  instance: undefined,
+  start: { x: 0, y: 0 },
+  current: undefined,
+  distance: 0,
+  events: {},
+  moving: false,
+  timeStamp: {
+    gap: 500,
+    start: 0,
+    end: 0
+  }
+}
+
 function slipParse(dataSource={}) {
   if (lib.isArray(dataSource.data)){
     dataSource.data = dataSource.data.map(item=>{
@@ -14,6 +28,7 @@ function slipParse(dataSource={}) {
         item = {title: item}
       }
       if (lib.isObject(item)) {
+        item.id = lib.suid('slip_')
         item.catchtouchstart = item.catchtouchstart || item.touchstart || true
         item.catchtouchmove = item.catchtouchmove || item.touchmove || true
         item.catchtouchend = item.catchtouchend || item.touchend || true
@@ -43,10 +58,15 @@ function slipParse(dataSource={}) {
       return item
     })
 
+    /**
+     * option: []  [0] => 方向asdw  [1] => 最小移动距离  [2] => 横向按钮的宽度 [3] => item的类名  [4] => data.length有多少条数据
+     */
     dataSource.type = {
       is: 'slip',
       option: dataSource.option || (dataSource.type && dataSource.type.option) || ['a', 10, 60]
     }
+
+    dataSource.type.option.length = dataSource.data.length
   }
   return dataSource
 }
@@ -130,8 +150,18 @@ Component({
       this.setData({ $list: dataSource })
     },
     ready: function() {
-      const ds = this.data.$list
-      this.mount(ds.$$id)
+      const $list = this.data.$list
+      const $type = $list.type
+      const $data = $list.data
+      let _slip = $type.option
+      let slip = {
+        direction: _slip[0] || slipObj.direction,
+        min: _slip[1] || slipObj.min,
+        width: _slip[2] || slipObj.width,
+        find: _slip[3] || slipObj.find,
+        length: $data.length || 0
+      }
+      tpos.slip = slip
     }
   },
   methods: {
@@ -139,6 +169,64 @@ Component({
       let initData = JSON.parse(this.originalDataSource)
       this.setData({$list: slipParse(initData)})
       return this
+    },
+    tstart(e, param, inst) {
+      const changeIt = e.touches[0] || e.changedTouches[0]
+      const target = e.currentTarget
+      const id = target.id
+      const pageX = changeIt.pageX
+      const pageY = changeIt.pageY
+
+      const query = this.createSelectorQuery()
+      const myinst = query.select(`#${id}`)
+      myinst.boundingClientRect()
+      query.exec(function (res) {
+        const _target = res[0]
+        if (tpos.instance) {
+          if (tpos.instance.id == _target.id) {
+
+          } else {
+            // 还原 tpos.instance.id 实例的初始状态
+          }
+          tpos.instance = Object.assign({}, tpos.instance, {
+            top: _target.top,
+            left: _target.left,
+            right: _target.right,
+            bottom: _target.bottom
+          })
+        } else {
+          tpos.instance = {
+            id: target.id,
+            treeid: target.dateset.treeid,
+            top: _target.top,
+            left: _target.left,
+            right: _target.right,
+            bottom: _target.bottom,
+            width: _target.width,
+            height: _target.height
+          }
+        }
+      })
+
+      tpos = {
+        start: {
+          x: pageX,
+          y: pageY
+        },
+        timeStamp: {
+          start: e.timeStamp
+        },
+        instance: {
+          id: target.id,
+          // treeid: target.dateset.treeid
+        }
+      }
+    },
+    tmove() {
+      // console.log('=========== move');
+    },
+    tend(e, param, inst) {
+      // console.log('=========== end');
     }
   }
 })
