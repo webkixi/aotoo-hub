@@ -59,7 +59,9 @@
     "ui-form": "/components/form/index",
     "ui-collapse": "/components/collapse/index",
     "ui-uploads": "/components/uploads/index",
-    "ui-slip": "/components/slip/index"
+    "ui-slip": "/components/slip/index",
+    "ui-markit": "/components/markit/index"
+
   },
   "window":{
     "backgroundTextStyle":"light",
