@@ -98,11 +98,16 @@ export const commonBehavior = (app, mytype) => {
         if (lib.isObject(properties.dataSource)) {
           properties.dataSource = lib.clone(properties.dataSource)
         }
+        
+        // ??? 没有赋值给$item/$list，造成不能通过show/hide来显示隐藏结构
         let props = (properties.item || properties.list || properties.dataSource)
+        if (typeof props == 'object') {
+          props['show'] = props.hasOwnProperty('show') ? props.show : true
+        }
+
         let id = properties.id
         // this.mountId = props.$$id ? false : id  // 如果$$id，则交给
         this.mountId = id || props.$$id // 如果$$id，则交给
-        props['show'] = props.hasOwnProperty('show') ? props.show : true
         this.setData({uniqId: this.uniqId})
       },
 

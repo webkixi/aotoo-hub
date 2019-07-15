@@ -533,7 +533,7 @@ function tMove(e, slip, ins, stopPropagation) {
   var find = slip.find || '.move-it'
   var absMax = Math.abs(max)
   var absMin = Math.abs(min)
-    tpos.moving = true
+  tpos.moving = true
 
   // var allInst = ins.selectAllComponents(find)
   var inst = e.instance

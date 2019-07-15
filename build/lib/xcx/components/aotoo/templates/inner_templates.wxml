@@ -127,3 +127,11 @@
 <template name="@slip">
   <ui-slip class="ui-slip" dataSource="{{props}}" />
 </template>
+
+<template name="@html">
+  <ui-markit dataSource="{{props}}" textType="html" />
+</template>
+
+<template name="@md">
+  <ui-markit dataSource="{{props}}" textType="md" />
+</template>
