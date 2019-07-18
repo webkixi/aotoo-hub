@@ -60,8 +60,8 @@
     "ui-collapse": "/components/collapse/index",
     "ui-uploads": "/components/uploads/index",
     "ui-slip": "/components/slip/index",
-    "ui-markit": "/components/markit/index"
-
+    "ui-markit": "/components/markit/index",
+    "ui-chart": "/components/charts/index"
   },
   "window":{
     "backgroundTextStyle":"light",

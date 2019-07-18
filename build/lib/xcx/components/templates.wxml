@@ -42,3 +42,7 @@
 <template name="uploads">
   <ui-uploads dataSource="{{props}}" />
 </template>
+
+<template name="chart">
+  <ui-chart dataSource="{{props}}" />
+</template>
