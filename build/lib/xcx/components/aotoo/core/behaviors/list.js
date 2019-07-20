@@ -92,7 +92,8 @@ export const listBehavior = function(app, mytype) {
     },
     methods: {
       reset: function() {
-        this.setData({$list: JSON.parse(this.originalDataSource)})
+        // this.setData({$list: JSON.parse(this.originalDataSource)})
+        this.setData({$item: lib.clone(this.originalDataSource)})
         return this
       },
 

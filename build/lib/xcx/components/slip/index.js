@@ -166,7 +166,8 @@ Component({
   },
   methods: {
     reset: function() {
-      let initData = JSON.parse(this.originalDataSource)
+      // let initData = JSON.parse(this.originalDataSource)
+      let initData = lib.clone(this.originalDataSource)
       this.setData({$list: slipParse(initData)})
       return this
     },

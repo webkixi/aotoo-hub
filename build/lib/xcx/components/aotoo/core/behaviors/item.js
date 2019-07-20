@@ -48,7 +48,8 @@ export const itemBehavior = function(app, mytype) {
         return this.data.$item.attr
       },
       reset: function() {
-        this.setData({$item: JSON.parse(this.originalDataSource)})
+        // this.setData({$item: JSON.parse(this.originalDataSource)})
+        this.setData({$item: lib.clone(this.originalDataSource)})
         return this
       },
       addClass: function(itCls) {
