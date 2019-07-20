@@ -206,7 +206,7 @@ export const listBehavior = function(app, mytype) {
             const dataset = params.currentTarget.dataset
             const treeid = dataset.treeid
             if (treeid) {
-              params = {treeid}
+              params = {"data-treeid": treeid}
             } else {
               return 
             }

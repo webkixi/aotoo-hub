@@ -119,7 +119,9 @@ export const commonBehavior = (app, mytype) => {
         this.mounted = true
         this.activePage = app.activePage
         this.hooks.emit('ready')
-        this.originalDataSource = JSON.stringify((this.data.item || this.data.list || this.data.dataSource))
+        let oriData = this.data.item || this.data.list || this.data.dataSource || {}
+        this.originalDataSource = lib.clone(oriData)
+        // this.originalDataSource = JSON.stringify((this.data.item || this.data.list || this.data.dataSource))
         this.mount()
       },
 
