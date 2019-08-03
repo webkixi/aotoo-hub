@@ -51,6 +51,7 @@ function doUpload(param) {
 
 function _up(params) {
   if (Array.isArray(params.filePath)){
+    wx.showLoading({ title: '上传中...' })
     const every = []
     params.filePath.forEach(one=>{
       one = getImgRealPath(one)
@@ -72,7 +73,6 @@ function _up(params) {
           nParams.success = function(res) { rs(res) }
           nParams.error = function(err) { rj(err) }
           nParams.fail = function(err) { rj(err) }
-          // wx.uploadFile(nParams)
           doUpload(nParams)
         })
         every.push(p)
@@ -100,9 +100,7 @@ function _up(params) {
       params.fail = params.error
       params.filePath = getImgRealPath(params.filePath)
       params.formData.name = formDataName(params.filePath)
-      // wx.uploadFile(params)
       doUpload(params)
-  
     })
   }
 }
@@ -125,9 +123,6 @@ export function upload(url, data, param={}) {
   postParam.formData = postParam.data
   delete postParam.data
   if (postParam.url && postParam.filePath) {
-    wx.showLoading({
-      title: '上传中...'
-    })
     return _up(postParam)
   } else {
     return Promise.reject(`url和filePath参数为必填项，url请填写服务器地址, filePath请填写上传图片地址`)

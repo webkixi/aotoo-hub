@@ -128,12 +128,15 @@ class _hooks {
             const res = fun.call(ctx, param)
             if (res) vals.push(res) 
             else {
-              vals.push(undefined)
+              if (typeof res === "boolean") {
+                vals.push(res)
+              } else {
+                vals.push(undefined)
+              }
             }
             if (fun.onlyonetime) {
               this.off(key, fun)
             }
-            // vals.push(fun.call(ctx, param))
           }
         })
         if (vals.length) {

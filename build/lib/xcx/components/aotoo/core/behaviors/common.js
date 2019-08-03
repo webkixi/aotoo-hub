@@ -279,7 +279,8 @@ export const commonBehavior = (app, mytype) => {
           // 该页面实例销毁时，销毁所有组件实例
           activePage.hooks.on('destory', function () {
             app['_vars'][uniqId] = null
-            if ($id) {
+            if (id || $id) {
+              const myid = id || $id
               const itemKey = activePage['eles'][$id]
               activePage['elements'][$id] = null
               activePage['elements'][itemKey] = null

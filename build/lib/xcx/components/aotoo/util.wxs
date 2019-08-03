@@ -327,7 +327,7 @@ function rightEvent(dsetEvt) {
 var tpos = {
   instance: undefined,
   start: { x: 0, y: 0 },
-  current: undefined,
+  current: {x: 0, y: 0, pos: 0},
   distance: 0,
   events: {},
   moving: false,
@@ -335,7 +335,8 @@ var tpos = {
     gap: 500,
     start: 0,
     end: 0
-  }
+  },
+  _siblingIds: []
 }
 
 var touchMethods = ['touchstart', 'touchmove', 'touchend']
@@ -398,26 +399,76 @@ function chooseTouchFun(e, ins, stopPropagation) {
       var wid = slip2[0]
       var hgt = slip2[1]
       slipObj = {
+
+        // 定义移动方向, 有 
+        // a => 允许左移  d => 允许右移  ad => 允许左右移动  
+        // w => 允许上移 s => 允许下移 ws =>允许上下移
+        // wsad/adws/asdw => 允许上下左右移动，
+        // -- 根据手指滑动的位移距离，判断移动方向，
+        // -- 当垂直移动距离 > 水平移动距离时，限定移动为上下
+        // -- 当水平移动距离 > 垂直移动距离时，限定移动为左右
         direction: slip[0] || slipObj.direction,
+
+        // 设置最小位移值，用于触发子元素的移动
         min: slip[1] || slipObj.min,
+
+        // 子菜单的最小宽度
         width: wid || slipObj.width,
-        height: hgt || slipObj.height,
+
+        // 子元素的类名
         find: slip[3] || slipObj.find,
-        length: slip[4] || 0
+
+        // 上下移动时一定需要高度值
+        height: hgt || slipObj.height,  
+
+        // 子菜单的个数，如：删除，关注等
+        length: 0,  
+
+        // 存放treeid的数组
+        siblingIds: [],  
+
+        siblings: {},
       }
 
       if (touchMethods.indexOf(evtType) > -1) {
-        slipObj.find = slipObj.find + '>>> .li-item'
         var allInst = ins.selectAllComponents(slipObj.find)
+
+        // 将每一个子实例及其treeid存放于数组
+        // treeid数组，子实例数组
+        // 可以通过当前操作实例的treeid判定哪些是兄弟节点实例
+        
+        var tmpCount = -1
+        for (var ii = 0; ii < allInst.length; ii++) {
+          var oneInst = allInst[ii]
+          var treeid = oneInst.getDataset().treeid
+          slipObj.siblingIds[ii] = treeid // 将所有子元素的treeid存储于数组，并与实例数组的下标对应
+          slipObj.siblings[treeid] = oneInst // 实例数组，当上下移动时，控制相邻实例的运动
+          if (!tpos._siblingIds[ii]) {
+            tpos._siblingIds[ii] = treeid // 将所有子元素的treeid存储于数组，并与实例数组的下标对应
+          }
+
+          if (tpos._siblingIds.indexOf(treeid) == -1) {
+            tmpCount ++
+          }
+        }
+
+        if (tmpCount > -1) {
+          tpos._siblingIds = slipObj.siblingIds
+        }
+
+        // 批量设置子菜单的宽度
+        var myfind = slipObj.find + '>>> .li-item'
+        var sonsInst = ins.selectAllComponents(myfind)
         var liItems = e.instance.selectAllComponents('.li-item')
         slipObj.length = liItems.length
-        for (var ii = 0; ii < allInst.length; ii++) {
-          var myInst = allInst[ii]
+        for (var ii = 0; ii < sonsInst.length; ii++) {
+          var myInst = sonsInst[ii]
           myInst.setStyle('width: ' + slipObj.width + 'px')
         }
         slipObj.max = slipObj.width * slipObj.length
       }
     }
+    
      e.__query = tmp.param
      tpos.__allParam = allParam
      switch (evtType) {
@@ -429,10 +480,6 @@ function chooseTouchFun(e, ins, stopPropagation) {
          break;
        case 'touchend':
          tEnd(e, slipObj, ins, stopPropagation)
-        //  storeEvts = {}
-         break;
-       default:
-        //  storeEvts = {}
          break;
      }
   } else {
@@ -448,12 +495,9 @@ function ciMethod(e, ins) {
   var res = chooseTouchFun(e, ins, 'catch')
 }
 
-function setStyle(inst, distance) {
+function setStyle(inst, distance, distanceY) {
   tpos.distance = distance
-  if (distance == 0) {
-    tpos.current = { x: 0, y: 0 }
-  }
-  inst.setStyle('transform: translateX(' + distance + 'px)')
+  inst.setStyle('transform: translate3d('+distance+'px, '+distanceY+'px, 0)')
 }
 
 function tStart(e, slip, ins, stopPropagation) {
@@ -468,14 +512,15 @@ function tStart(e, slip, ins, stopPropagation) {
   tpos.timeStamp.start = e.timeStamp
 
   var cb = param.cb
+  var h = parseInt(slip.height)
   var ddd = slip.direction
   var min = slip.min
   var width = slip.width
   var max = slip.max
   var find = slip.find
-  // var inst = ins.selectComponent(find)
   var inst = e.instance
   var tmpTarget = tpos.instance
+
   if (allParam.__slip) {
     if (tmpTarget) {
       var tmpSlip = tmpTarget.slip
@@ -484,16 +529,30 @@ function tStart(e, slip, ins, stopPropagation) {
       // 确定是同一组操作对象，所有slip属性一致
       if (tmpSlip.direction == ddd && tmpSlip.min == min && tmpSlip.width == width && tmpSlip.find == slip.find) {
         if (treeid && tmpTreeid !== treeid) {
-          setStyle(tmpInst, 0)
-          // tmpInst.setStyle('transform: translateX(0px)')
+          if (ddd.indexOf('a')>-1 || ddd.indexOf('d')>-1) {
+            if (tmpTarget.moving) {
+              var siblingIds = slip.siblingIds
+              var _siblingIds = tpos._siblingIds
+              var oIdx = siblingIds.indexOf(tmpTreeid)
+              var cIdx = _siblingIds.indexOf(tmpTreeid)
+              var cpos = (cIdx-oIdx)*h
+              setStyle(tmpInst, 0, cpos)
+            }
+          } else {
+            // if (ddd.indexOf('w')>-1||ddd.indexOf('s') > -1) { }
+          }
         }
+      } else {
+        // 当选择的slip对象不相同时，清空栈数据
+        tpos._siblingIds = slip.siblingIds
       }
     }
     tpos.instance = {
       slip,
       inst,
       treeid,
-      direction: ddd
+      direction: ddd,
+      prev: tmpTarget
     }
   
     tpos.start = {
@@ -524,6 +583,9 @@ function tStart(e, slip, ins, stopPropagation) {
  * '@'  全方位
  */
 function tMove(e, slip, ins, stopPropagation) {
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var treeid = dataset.treeid
   var param = e.__query
   var allParam = tpos.__allParam
   var cb = param.cb
@@ -534,6 +596,7 @@ function tMove(e, slip, ins, stopPropagation) {
   var absMax = Math.abs(max)
   var absMin = Math.abs(min)
   tpos.moving = true
+  tpos.instance.moving = true
 
   // var allInst = ins.selectAllComponents(find)
   var inst = e.instance
@@ -542,47 +605,122 @@ function tMove(e, slip, ins, stopPropagation) {
   var pageY = target.pageY
   var startX = tpos.start.x
   var startY = tpos.start.y
+  var curX = tpos.current.x
+  var curY = tpos.current.y
   var diffX = pageX - startX
   var diffY = pageY - startY
   var absDiffx = Math.abs(diffX)
+  var absDiffy = Math.abs(diffY)
+  var toX = pageX - curX
+  var toY = pageY - curY
   
+  var h = parseInt(slip.height)
+  var oriIndex = slip.siblingIds.indexOf(treeid)
+  var curIndex = tpos._siblingIds.indexOf(treeid)
+  var curPos  = curIndex*h
+
+  var startTime = tpos.timeStamp.start
+  var nowTime = e.timeStamp
+  var gapTime = nowTime - startTime
+
   if (allParam.__slip) {
-    if (ddd === 'a') {
-      if (diffX < 0) {
-        if (absDiffx < absMax) {
-          inst.setStyle('transform: translateX(' + diffX + 'px)')
+    // 纵向移动  
+    if (absDiffy > absDiffx && gapTime > 1000) {
+      if ((ddd.indexOf('w')>-1||ddd.indexOf('s') > -1) && slip.height > 0 && absDiffy > min) {
+        var diffPos = (curIndex - oriIndex) * h
+        var moveY = diffPos + diffY
+        
+        var offY  = curPos + diffY
+        var computIndex = parseInt(offY/h)
+        var threshold = computIndex*h + parseInt(h/2)
+        
+        var nxIndex
+        var nxTreeid
+        var oriNxIndex
+        var diffNx
+        var nxSibling
+        var cPos
+
+        // 向下
+        if (offY > curPos) {
+          inst.setStyle('transform: translateY(' + moveY + 'px)')
+          if (offY >= threshold) {
+            nxIndex = computIndex+1
+            // nxIndex = curIndex + 1
+            nxTreeid = tpos._siblingIds[nxIndex]
+            oriNxIndex = slip.siblingIds.indexOf(nxTreeid)
+            diffNx = (nxIndex - oriNxIndex)*h - h
+            nxSibling = slip.siblings[nxTreeid]
+            cPos = nxIndex*h
+          } else {
+            nxIndex = computIndex + 1
+            nxTreeid = tpos._siblingIds[nxIndex]
+            oriNxIndex = slip.siblingIds.indexOf(nxTreeid)
+            diffNx = (nxIndex - oriNxIndex) * h
+            nxSibling = slip.siblings[nxTreeid]
+            cPos = (nxIndex-1) * h
+          }
+        }
+        
+        // 向上
+        else if (offY < curPos) {
+          if (computIndex != curIndex) {
+            inst.setStyle('transform: translateY(' + moveY + 'px)')
+            if (offY < threshold) {
+              nxIndex = computIndex
+              // nxIndex = curIndex - 1
+              nxTreeid = tpos._siblingIds[nxIndex]
+              oriNxIndex = slip.siblingIds.indexOf(nxTreeid)
+              diffNx = (nxIndex - oriNxIndex) * h + h
+              nxSibling = slip.siblings[nxTreeid]
+              cPos = nxIndex * h
+            } else {
+              nxIndex = computIndex
+              nxTreeid = tpos._siblingIds[nxIndex]
+              oriNxIndex = slip.siblingIds.indexOf(nxTreeid)
+              diffNx = (nxIndex - oriNxIndex) * h
+              nxSibling = slip.siblings[nxTreeid]
+              cPos = (nxIndex+1) * h
+            }
+          }
+        }
+
+        if (nxSibling) {
+          nxSibling.setStyle('transform: translateY(' + diffNx + 'px)')
+          tpos.current.pos = cPos
+        }
+      }
+
+    } 
+    // 横向移动
+    else {
+      var runtimePos = (curIndex-oriIndex)*h
+      if (ddd.indexOf('a') > -1) {
+        if (diffX < 0) {
+          if (absDiffx < absMax) {
+            setStyle(inst, diffX, runtimePos)
+          } else {
+            setStyle(inst, -(absMax), runtimePos)
+          }
         } else {
-          inst.setStyle('transform: translateX(-'+absMax+'px)')
-        }
-      } else {
-        if (absDiffx > absMin) {
-          setStyle(inst, 0)
+          if (absDiffx > absMin) {
+            setStyle(inst, 0, runtimePos)
+          }
         }
       }
-    }
-  
-    if (ddd === 'd') {
-      if (diffX > 0) {
-        if (absDiffx < absMax) {
-          inst.setStyle('transform: translateX(' + diffX + 'px)')
+    
+      if (ddd.indexOf('d')>-1) {
+        if (diffX > 0) {
+          if (absDiffx < absMax) {
+            setStyle(inst, diffX, runtimePos)
+          } else {
+            setStyle(inst, absMax, runtimePos)
+          }
         } else {
-          inst.setStyle('transform: translateX('+absMax+'px)')
+          if (absDiffx > absMin) {
+            setStyle(inst, 0, runtimePos)
+          }
         }
-      } else {
-        if (absDiffx > absMin) {
-          setStyle(inst, 0)
-        }
-      }
-    }
-  
-    if (ddd === 'ad') {
-      if (absDiffx < absMax) {
-        inst.setStyle('transform: translateX(' + diffX + 'px)')
-      } else {
-        inst.setStyle('transform: translateX(' + diffX > 0 ? absMax : -(absMax) + 'px)')
-      }
-      if (absDiffx > absMin) {
-        setStyle(inst, 0)
       }
     }
 
@@ -592,6 +730,8 @@ function tMove(e, slip, ins, stopPropagation) {
   } else {
     /** */
   }
+  tpos.current.x = pageX
+  tpos.current.y = pageY
   var tevent = tpos.events.touchmove
   if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
     stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
@@ -599,56 +739,93 @@ function tMove(e, slip, ins, stopPropagation) {
 }
 
 function tEnd(e, slip, ins, stopPropagation) {
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var treeid = dataset.treeid
+
   var param = e.__query
   var allParam = tpos.__allParam
   var cb = param.cb
   var ddd = slip.direction || 'a'
+  var width = slip.width
   var min = slip.min || 30
   var max = slip.max || 120
   var find = slip.find || '.move-it'
   var absMin = Math.abs(min)
   var absMax = Math.abs(max)
   tpos.timeStamp.end = e.timeStamp
-  tpos.moving = false
+  var gapTime = tpos.timeStamp.end - tpos.timeStamp.start
 
-
-  // var inst = ins.selectComponent(find)
+  var myInst = tpos.instance
   var inst = e.instance
   var target = e.touches[0] || e.changedTouches[0]
   var pageX = target.pageX
   var pageY = target.pageY
   var startX = tpos.start.x
   var startY = tpos.start.y
+  var curX = tpos.current.x
+  var curY = tpos.current.y
+  var curPos = tpos.current.pos
   var diffX = pageX - startX
   var diffY = pageY - startY
   var absDiffx = Math.abs(diffX)
+  var absDiffy = Math.abs(diffY)
   
-  if (allParam.__slip) {
-    if (ddd === 'a') {
-      if (diffX < 0) {
-        if (absDiffx < absMin) {
-          setStyle(inst, 0)
-        } else {
-          setStyle(inst, -(absMax))
+  if (allParam.__slip && tpos.moving) {
+    var h = slip.height  // height
+    var oriIndex = slip.siblingIds.indexOf(treeid)
+    var curIndex = tpos._siblingIds.indexOf(treeid)
+    
+    if (absDiffy > absDiffx) {
+      var _offset = curPos && parseInt(curPos/h)
+      var offset = _offset - curIndex
+      var slipDone = {
+        index: curIndex,
+        offset: _offset || 0
+      }
+      e.currentTarget.dataset.slipDone = slipDone
+      if ((ddd.indexOf('w')>-1 || ddd.indexOf('s')>-1) && slip.height > 0) {
+        if (typeof curPos == 'number') {
+          var rightPos = curPos - oriIndex*h
+          inst.setStyle('transform: translateY(' + rightPos + 'px)')
+          var _s = tpos._siblingIds
+          var __siblingIds = JSON.parse(JSON.stringify(tpos._siblingIds))
+
+          if (offset) {
+            if (offset > 0) {
+              __siblingIds.splice((_offset+1), 0, _s[curIndex])
+              __siblingIds.splice(curIndex, 1)
+            } else {
+              if (offset < 0) {
+                __siblingIds.splice((curIndex + offset), 0, _s[curIndex])
+                __siblingIds.splice((curIndex + 1), 1)
+              }
+            }
+          }
+          
+          tpos._siblingIds = __siblingIds
         }
       }
-    }
-  
-    if (ddd === 'd') {
-      if (diffX > 0) {
-        if (absDiffx < absMin) {
-          setStyle(inst, 0)
-        } else {
-          setStyle(inst, (absMax))
+    } else {
+      var runtimePos = (curIndex - oriIndex)*h
+      if (ddd.indexOf('a') > -1) {
+        if (diffX < 0) {
+          if (absDiffx < absMin) {
+            setStyle(inst, 0, runtimePos)
+          } else {
+            setStyle(inst, -(absMax), runtimePos)
+          }
         }
       }
-    }
   
-    if (ddd == 'ad') {
-      if (absDiffx < absMin) {
-        setStyle(inst, 0)
-      } else {
-        diffX > 0 ? setStyle(inst, (absMax)) : setStyle(inst, -(absMax))
+      if (ddd.indexOf('d') > -1) {
+        if (diffX > 0) {
+          if (absDiffx < absMin) {
+            setStyle(inst, 0, runtimePos)
+          } else {
+            setStyle(inst, absMax, runtimePos)
+          }
+        }
       }
     }
     
@@ -658,7 +835,6 @@ function tEnd(e, slip, ins, stopPropagation) {
   } 
 
   var isFake = isFakeEvent(allParam)
-  var gapTime = tpos.timeStamp.end - tpos.timeStamp.start
   var newE = JSON.parse(JSON.stringify(e))
   var tevent = tpos.events.touchend
 
@@ -666,29 +842,30 @@ function tEnd(e, slip, ins, stopPropagation) {
     stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
   }
 
-  if (gapTime > tpos.timeStamp.gap) {
-    if (tpos.events.longpress || tpos.events.catchlongpress) {
-      // newE.type = tpos.events.catchlongpress ? 'catchlongpress' : 'longpress'
-      newE.type = 'longpress'
-      newE.__stopPropagation = tpos.events.catchlongpress ? true : false
-    }
-  } else {
-    if (tpos.events.tap || tpos.events.catchtap) {
-      // newE.type = tpos.events.catchtap ? 'catchtap' : 'tap'
-      newE.type = 'tap'
-      newE.__stopPropagation = tpos.events.catchtap ? true : false
-    }
-  }
-
-  if (newE.type.indexOf('touch') == -1) {
-    if (isFake) {
-      callMethod(newE, ins)
+  if (!tpos.moving) {
+    if (gapTime > tpos.timeStamp.gap) {
+      if (tpos.events.longpress || tpos.events.catchlongpress) {
+        newE.type = 'longpress'
+        newE.__stopPropagation = tpos.events.catchlongpress ? true : false
+      }
     } else {
-      if (diffX == 0 && diffY == 0 && tpos.distance == 0) {
+      if (tpos.events.tap || tpos.events.catchtap) {
+        newE.type = 'tap'
+        newE.__stopPropagation = tpos.events.catchtap ? true : false
+      }
+    }
+
+    if (newE.type.indexOf('touch') == -1) {
+      if (isFake) {
         callMethod(newE, ins)
+      } else {
+        if (diffX == 0 && diffY == 0 && tpos.distance == 0) {
+          callMethod(newE, ins)
+        }
       }
     }
   }
+  tpos.moving = false
 }
 
 function callMethod(e, ins) {
