@@ -8,42 +8,88 @@ const Core = require('../aotoo/core')
 const lib = Core.lib
 
 const defaultConfig = {
-  limit: 3, 
-  count: 1,
-  picker: 5,
-  imgSize: 5*1024*1024,
-  server: '',
-  addone: {  // add new one
+  limit: 3,   // 限制只能上传3张图片
+  count: 1,   // 默认显示多少个上传按钮
+  picker: 5,  // 一次允许选择的图片数量
+  imgSize: 5*1024*1024,  // 图片大小不能超过这个大小
+  server: '',  // 图片上传的服务器地址，允许值  'cloud'或php、node等服务器地址
+  addone: {  // 添加图片按钮
     title: '+',
     itemClass: 'uploads-addone'
-  }
+  },
+  closeone: {
+    title: 'x', 
+    itemClass: 'uploads-delet'
+  },
+  thumbnail: false
 }
+
+const extKeys = [
+  // 'is',
+  'listClass',
+  'itemClass',
+  'show', 
+  // 'limit', 
+  // 'count', 
+  // 'picker', 
+  // 'imgSize', 
+  // 'server', 
+  // 'addone', 
+  'closeone' 
+]
 
 function isAddOne(param) {
   return param.itemClass && param.itemClass.indexOf('uploads-addone') > -1 ? true : false
 }
 
 // add new one fun
-function addOne(data, props) {
+function addOneButton(data, props) {
   const lastOne = data[data.length-1]
+  let _addone = lib.clone(props.addone)
   if (!lastOne || !isAddOne(lastOne)) {
-    props.addone.tap = 'uploadAction?index=' + data.length
-    data.push(props.addone)
+    _addone.aim = 'uploadAction?index=' + data.length
+    data.push(_addone)
+
+    // props.addone.aim = 'uploadAction?index=' + data.length
+    // data.push(props.addone)
   } else {
-    lastOne.tap = 'uploadAction?index=' + (data.length-1)
+    lastOne.aim = 'uploadAction?index=' + (data.length-1)
   }
   return data
 }
 
-function generateData(dataSource) {
+function generateData(dataSource, cb) {
   let props = {}
-  dataSource = Object.assign({}, defaultConfig, dataSource)
   const lsCls = dataSource.listClass
   dataSource.listClass = lsCls ? 'uploads-container ' + lsCls : 'uploads-container'
 
   Object.keys(dataSource).forEach(key=>{
-    if (key!=='data') props[key] = dataSource[key]
+    if (key!=='data') {
+      let val = dataSource[key]
+      props[key] = val
+      switch (key) {
+        case 'thumbnail':
+          if (val === true) {
+            props[key] = {width: 200, height: 200}
+          }
+          if (lib.isNumber(val)) {
+            props[key] = {width: val, height: 0}
+          }
+          if (lib.isString(val)) {
+            let vals = val.split(':')
+            let wid = parseInt(vals[0])
+            let hgt = vals[1]&&parseInt(vals[1]) || 0
+            props[key] = {width: wid, height: hgt}
+          }
+          break;
+      }
+      if (extKeys.indexOf(key) == -1) {
+        // delete dataSource[key]
+      }
+    }
   })
+
+  if (!dataSource.data) dataSource.data = []
 
   if (lib.isObject(dataSource) && lib.isArray(dataSource.data)) {
     dataSource.data.filter((item, ii)=>{
@@ -59,31 +105,38 @@ function generateData(dataSource) {
           item.img = img
         }
         if (!isAddOne(item)) {
+          let _closeone = lib.clone(props.closeone)
+          _closeone.aim = 'deletAction?index=' + ii
           item.dot = [
-            { title: 'x', tap: 'deletAction?index=' + ii, itemClass: 'uploads-delet'}
+            _closeone
+            // { title: 'x', tap: 'deletAction?index=' + ii, itemClass: 'uploads-delet'}
           ]
           let cls = item.itemClass || item.class
           item.itemClass = cls ? 'uploads-item ' + cls : 'uploads-item'
         } else {
-          item.tap = 'uploadAction?index=' + ii
+          item.aim = 'uploadAction?index=' + ii
         }
       }
       return item
     })
 
     if (dataSource.data.length < props.limit) {
-      dataSource.data = addOne.call(this, dataSource.data, props)
+      dataSource.data = addOneButton.call(this, dataSource.data, props)
     }
 
     if (dataSource.data.length < props.count) {
       const diff = props.count - dataSource.data.length
       const appendOne = []
       for(let ii=0; ii<diff; ii++) {
-        appendOne.push({
-          title: '+',
-          itemClass: 'uploads-addone',
-          tap: 'uploadAction?index=' + (ii + dataSource.data.length)
-        })
+        let _addone = lib.clone(props.addone)
+        _addone.aim = 'uploadAction?index=' + (ii + dataSource.data.length)
+        appendOne.push(_addone)
+        
+        // appendOne.push({
+        //   title: '+',
+        //   itemClass: 'uploads-addone',
+        //   aim: 'uploadAction?index=' + (ii + dataSource.data.length)
+        // })
       }
       dataSource.data = dataSource.data.concat(appendOne)
     }
@@ -92,7 +145,7 @@ function generateData(dataSource) {
   this.setData({ 
     props,
     $list: dataSource
-  })
+  }, cb)
 }
 
 /**
@@ -119,37 +172,70 @@ Component({
     dataSource: Object,
   },
   data: {
-    popshow: {}
+    popshow: {},
+    mycanvasId: lib.suid('canvas_')
   },
-  behaviors: [Core.listComponentBehavior(app, 'uploads')],
+  behaviors: [Core.listBehavior(app, 'uploads')],
   lifetimes: {
     created: function(){
+      const that = this
       this.popid = this.uniqId + '_pop'
+      this.chooseImages = false
+      this._value = undefined
+      this.hooks.once('myupdate', function (param) {
+        let props = that.data.props
+        if (lib.isArray(param)) {
+          let resource = {data: param, ...props}
+          generateData.call(that, resource)
+        } 
+      })
     },
     attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
-      this.$$is = 'uploads'
       let properties = this.properties
-      let dataSource = properties.dataSource
+      let dataSource = lib.clone(properties.dataSource)
+      if (dataSource['$$id']) {
+        this['$$myid'] = dataSource['$$id']
+        delete dataSource['$$id']
+      }
       this.setData({
+        canvasWidth: 100,
+        canvasHeight: 100,
         popshow: {
           $$id: this.popid,
-          title: '图片显示区域的header'
+          title: {title: '图片预览', itemStyle: 'margin-left: 10px'},
         }
       })
+
+      dataSource = Object.assign({}, defaultConfig, dataSource)
       generateData.call(this, dataSource)
     },
     ready: function() {
       const that = this
+      const cavsid = this.data.mycanvasId
       this.existing = []
       const popid = this.popid
-      const ds = this.data.$list
-      this.mount(ds.$$id)
+      this.mount(this['$$myid'])
       this.activePage.hooks.on('onReady', function() {
         that.popView = Core.getElementsById(popid)
       })
+      this.canvas = wx.createCanvasContext(cavsid, that);
     }
   },
   methods: {
+    setExist(param){
+      if (lib.isObject(param)) param = [param]
+      if (lib.isArray(param)) {
+        this.hooks.emit('myupdate', param)
+      }
+    },
+    value(){
+      const props = this._getCountLimit()
+      const existing = this._value || props.existing
+      const result = existing.map(item=>{
+        return {img: item.img}
+      })
+      return result
+    },
     _getCountLimit: function () {
       const props = this.data.props
       this.existing = this.data.$list.data.filter((item, ii)=> {
@@ -162,32 +248,131 @@ Component({
         imgSize: props.imgSize,
         picker: props.picker,
         limit: props.limit,
+        thumbnail: props.thumbnail,
         size: this.existing.length,
         existing: this.existing
       }
     },
-    upload: function(param) {
-      const props = this.data.props
-      const upFiles = param ? param : this._getCountLimit().existing
-      if (props.server) {
-        // let postParam = {
-        //   url: url, // 仅为示例，并非真实的接口地址
-        //   type: 'img',
-        //   name: 'file',
-        //   filePath: '',
-        //   header: {
-        //     'content-type': 'application/json' // 默认值
-        //   },
-        //   data: data || {},
-        //   // success(res) {},
-        //   // error: function (e) {}
-        // }
 
-        return Core.upload({
+    _scalePics(data){
+      const props = this._getCountLimit()
+      const upFiles = data || props.existing
+      let thumbnail = props.thumbnail
+      const realFiles = []
+      upFiles.forEach(item => {
+        if (item && item.img) {
+          if (lib.isString(item)) {
+            realFiles.push(item)
+          }
+          if (lib.isString(item.img)) {
+            realFiles.push(item.img)
+          }
+          if (lib.isString(item.img.src)) {
+            realFiles.push(item.img.src)
+          }
+        }
+      })
+      // thumbnail = true
+      if (thumbnail) {
+        const every = realFiles.map(img => this._scalePicture(img, props))
+        return Promise.all(every).then(res => {
+          return res
+        })
+      } else {
+        return new Promise((resolve, rej) => {
+          const imgfiles = upFiles.map(item=>{
+            if (lib.isString(item.img)) {
+              return {img: item.img}
+            }
+            if (lib.isObject(item.img)) {
+              return {img: item.img.src}
+            }
+          })
+          return resolve(imgfiles)
+        })
+      }
+    },
+    _scalePicture(tempFilePaths, props) {
+      const that = this
+      const theCanvas = this.canvas
+      const thumbnail = props.thumbnail
+      const cavsid = this.data.mycanvasId
+      return new Promise((resolve, rej) => {
+        wx.getImageInfo({
+          src: tempFilePaths,
+          success: function (res) {
+            let ratio = 2;
+            let canvasWidth = res.width
+            let canvasHeight = res.height;
+            // 保证宽高均在200以内
+            while (canvasWidth > 200 || canvasHeight > 200) {
+              //比例取整
+              canvasWidth = Math.trunc(res.width / ratio)
+              canvasHeight = Math.trunc(res.height / ratio)
+              ratio++;
+            }
+
+            that.setData({
+              canvasWidth: canvasWidth,
+              canvasHeight: canvasHeight
+            }) //设置canvas尺寸
+
+            theCanvas.drawImage(tempFilePaths, 0, 0, canvasWidth, canvasHeight)
+            theCanvas.draw(false, setTimeout(() => {
+              wx.canvasToTempFilePath({
+                canvasId: cavsid,
+                success: function (res) {
+                  resolve(res)
+                },
+                fail: function (error) {
+                  console.log(error)
+                  rej(error)
+                }
+              }, that)
+            }, 100))
+            
+            //下载canvas图片
+          },
+          fail: function (error) {
+            console.log(error)
+            rej(error)
+          }
+        })
+      })
+    },
+    upload: async function(param) {
+      let $list = this.data.$list
+      let props = this.data.props
+      let upFiles = param ? param : this._getCountLimit().existing
+
+      if (this.chooseImages) {
+        this.chooseImages = false
+      } else {
+        return upFiles
+      }
+
+      let imgs = await this._scalePics(upFiles)
+      let $imgs = imgs.map((item, ii)=>{
+        return {
+          img: {src: (item.tempFilePath||item.img)},
+          index: ii
+        }
+      })
+      if (props.server) {
+        let _res = await Core.upload({
           url: props.server,
           type: 'img',
-          filePath: upFiles
+          filePath: $imgs
         })
+
+        let res = []
+        _res.forEach(obj=>{
+          if (obj.statusCode == 200 || obj.statusCode == '200'){
+            res.push({img: obj.fileID})
+          }
+        })
+        this._value = res
+        return res
       }
     },
     chooseWxImage: function (type, param) {
@@ -197,7 +382,6 @@ Component({
       let   mydata = this.data.$list.data
       const select = parseInt(param.index)
       let   countLimit = this._getCountLimit(param)
-
       wx.chooseImage({
         count: countLimit.picker,
         sizeType: ["original", "compressed"],
@@ -206,35 +390,37 @@ Component({
           var addImgsPaths = res.tempFilePaths;
           var addImgs = res.tempFiles;
           var addLen = addImgs.length;
-
-          let overNum = select + addLen - countLimit.limit
-          let accessImgs = addImgsPaths
-          let startIndex = select
-          let offset = overNum < 0 ? addLen+1 : countLimit.limit-select
-          if (overNum > 0) {
-            addImgsPaths.splice(addLen - overNum)
-            accessImgs = addImgsPaths
-          }
-          
-          let overImgSize = false
-          for (let ii=0; ii<accessImgs.length; ii++) {
-            let item = accessImgs[ii]
-            let size = addImgs[ii].size
-            if (size > countLimit.imgSize) {
-              overImgSize = true
-              break;
+          if (addLen) {
+            that.chooseImages = true  // 确实选取了图片
+            let overNum = select + addLen - countLimit.limit
+            let accessImgs = addImgsPaths
+            let startIndex = select
+            let offset = overNum < 0 ? addLen+1 : countLimit.limit-select
+            if (overNum > 0) {
+              addImgsPaths.splice(addLen - overNum)
+              accessImgs = addImgsPaths
             }
-            mydata[startIndex] = {img: {src: item}}
-            startIndex++
-          }
+            
+            let overImgSize = false
+            for (let ii=0; ii<accessImgs.length; ii++) {
+              let item = accessImgs[ii]
+              let size = addImgs[ii].size
+              if (size > countLimit.imgSize) {
+                overImgSize = true
+                break;
+              }
+              mydata[startIndex] = {img: {src: item}}
+              startIndex++
+            }
 
-          if (overImgSize) {
-            let xx = countLimit.imgSize/1024/1024
-            xx = 0|xx
-            Core.alert(`图片大小超出`)
-          } else {
-            $list.data = mydata
-            generateData.call(that, $list, props)
+            if (overImgSize) {
+              let xx = countLimit.imgSize/1024/1024
+              xx = 0|xx
+              Core.alert(`图片大小超出`)
+            } else {
+              $list.data = mydata
+              generateData.call(that, $list)
+            }
           }
         },
       })
@@ -268,7 +454,7 @@ Component({
         return item
       })
       if (param) {
-        this.popView.reset().right(
+        this.popView.reset().bot.full(
           {
             '@list': {
               type: {
@@ -277,7 +463,8 @@ Component({
               listClass: 'bs-e3e3e3-list',
               itemClass: 'ss-focus flex-row item padding-normal',
               data: existing
-            }
+            },
+            // itemClass: 'frozen'
           }
         )
         // const data = this.getData().data

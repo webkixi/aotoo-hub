@@ -3,4 +3,8 @@
 <block wx:if="{{$list.show}}">
   <ui-list list="{{$list}}" fromComponent="{{uniqId}}" />
   <action-side item="{{popshow}}" />
+  <canvas 
+    canvas-id="{{mycanvasId}}" 
+    style="width:{{canvasWidth}}px; height:{{canvasHeight}}px; position: absolute;left:-500px; top:-500px;"
+  ></canvas>
 </block>
