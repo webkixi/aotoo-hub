@@ -859,7 +859,8 @@ function tEnd(e, slip, ins, stopPropagation) {
       if (isFake) {
         callMethod(newE, ins)
       } else {
-        if (diffX == 0 && diffY == 0 && tpos.distance == 0) {
+        // if (parseInt(absDiffx) == 0 && parseInt(absDiffy) == 0 && tpos.distance == 0) {
+        if (parseInt(absDiffx) == 0 && parseInt(absDiffy) == 0 ) {
           callMethod(newE, ins)
         }
       }
