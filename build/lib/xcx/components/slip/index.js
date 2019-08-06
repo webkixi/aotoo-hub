@@ -90,7 +90,7 @@ Component({
       observer: function (params) {
         if (!this.init) {
           if (params) {
-            this.update(params)
+            this.reset([]).update(params)
             // let dataSource = slipParse.call(this, params)
             // this.setData({ $list: dataSource })
           }
@@ -158,9 +158,10 @@ Component({
     }
   },
   methods: {
-    reset: function() {
+    reset: function(param) {
       // let initData = JSON.parse(this.originalDataSource)
       let initData = lib.clone(this.originalDataSource)
+      if (param) initData.data = param
       this.setData({$list: slipParse(initData)})
       return this
     },
