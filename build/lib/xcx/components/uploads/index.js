@@ -234,7 +234,7 @@ Component({
       const result = existing.map(item=>{
         return {img: item.img}
       })
-      return result
+      return result.length ? result : undefined
     },
     _getCountLimit: function () {
       const props = this.data.props
@@ -341,9 +341,9 @@ Component({
       })
     },
     upload: async function(param) {
-      let $list = this.data.$list
       let props = this.data.props
-      let upFiles = param ? param : this._getCountLimit().existing
+      let upFiles = this._getCountLimit().existing
+      // let upFiles = param ? param : this._getCountLimit().existing
 
       if (this.chooseImages) {
         this.chooseImages = false
@@ -351,7 +351,12 @@ Component({
         return upFiles
       }
 
-      let imgs = await this._scalePics(upFiles)
+      let imgs = upFiles
+      let thumbnail = (param && param.hasOwnProperty('thumbnail') && param.thumbnail) || props.thumbnail
+      if (thumbnail) {
+        imgs = await this._scalePics(upFiles)
+      }
+
       let $imgs = imgs.map((item, ii)=>{
         return {
           img: {src: (item.tempFilePath||item.img)},
