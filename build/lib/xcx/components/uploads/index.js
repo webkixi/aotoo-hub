@@ -297,6 +297,8 @@ Component({
       const theCanvas = this.canvas
       const thumbnail = props.thumbnail
       const cavsid = this.data.mycanvasId
+      let wid = thumbnail.width
+      let hgt = thumbnail.height
       return new Promise((resolve, rej) => {
         wx.getImageInfo({
           src: tempFilePaths,
@@ -304,8 +306,12 @@ Component({
             let ratio = 2;
             let canvasWidth = res.width
             let canvasHeight = res.height;
+
+            if (wid == 0) wid = canvasWidth
+            if (hgt == 0) hgt = canvasHeight
+
             // 保证宽高均在200以内
-            while (canvasWidth > 200 || canvasHeight > 200) {
+            while (canvasWidth > wid || canvasHeight > hgt) {
               //比例取整
               canvasWidth = Math.trunc(res.width / ratio)
               canvasHeight = Math.trunc(res.height / ratio)

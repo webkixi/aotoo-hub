@@ -90,7 +90,8 @@ Component({
       observer: function (params) {
         if (!this.init) {
           if (params) {
-            this.reset([]).update(params)
+            this.update(params)
+            // this.reset([]).update(params)
             // let dataSource = slipParse.call(this, params)
             // this.setData({ $list: dataSource })
           }
@@ -112,14 +113,15 @@ Component({
         if (lib.isObject(param)) {
           Object.keys(param).forEach(key=>{
             if (key.indexOf('data') != -1) {
-              let val = param[key]
+              let val = [].concat(param[key])
               if (lib.isArray(val)) {
                 const tmp = slipParse({data: param[key]})
                 param[key] = tmp.data
-              } else {
-                const tmp = slipParse({data: [val]})
-                param[key] = tmp.data[0]
-              }
+              } 
+              // else {
+              //   const tmp = slipParse({data: [val]})
+              //   param[key] = tmp.data[0]
+              // }
             }
           })
         }
