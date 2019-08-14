@@ -61,7 +61,8 @@
     "ui-uploads": "/components/uploads/index",
     "ui-slip": "/components/slip/index",
     "ui-markit": "/components/markit/index",
-    "ui-chart": "/components/charts/index"
+    "ui-chart": "/components/charts/index",
+    "ui-switch": "/components/switch/index"
   },
   "window":{
     "backgroundTextStyle":"light",

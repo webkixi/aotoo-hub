@@ -1,0 +1,32 @@
+<!-- 作者：天天修改 -->
+<!-- github: webkixi -->
+<!-- 小程序的模板真是又长又臭 -->
+<!-- <ui-item item="{{$item}}" class-name="{{myClass}}"/> -->
+<wxs src="../aotoo/util.wxs" module="util" />
+<block wx:if="{{$item.show}}">
+  <view class="switch-box {{$item.itemClass}}">
+    <block wx:if="{{$item.title}}">
+      <ui-item item="{{ {title: $item.title, itemClass: 'switch-element switch-title'} }}" />
+    </block>
+    <switch 
+      disabled="{{$item.disabled}}" 
+      bindchange="switchChange" 
+      data-evt="{{util.dataEvt($item, ['bindchange'])}}" 
+      class="switch-element switch-button" 
+      color="{{$item.color}}" 
+      wx:if="{{$item.checked}}" checked 
+    />
+    <block wx:else>
+      <switch 
+        disabled="{{$item.disabled}}" 
+        bindchange="switchChange" 
+        data-evt="{{util.dataEvt($item, ['bindchange'])}}" 
+        class="switch-element switch-button"
+        color="{{$item.color}}" 
+      />
+    </block>
+    <block wx:if="{{$item.desc}}">
+      <ui-item item="{{  {title: $item.desc, itemClass: 'switch-element switch-desc'} }}" />
+    </block>
+  </view>
+</block>
