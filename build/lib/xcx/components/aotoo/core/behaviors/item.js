@@ -1,8 +1,23 @@
 const lib = require('../../lib')
 import {
   commonBehavior,
-  commonMethodBehavior
+  commonMethodBehavior,
+  setPropsHooks
 } from "./common";
+
+
+function _resetItem(data, context) {
+  // if (typeof data.title !== 'object') {
+  //   data.title = {title: data.title}
+  // }
+  // if (typeof data.desc !== 'object') {
+  //   data.desc = {title: data.desc}
+  // }
+  data = setPropsHooks.call(context, data)
+  return lib.resetItem(data, context)
+}
+
+
 
 export const itemBehavior = function(app, mytype) {
   mytype = mytype || 'item'
@@ -15,7 +30,7 @@ export const itemBehavior = function(app, mytype) {
           if (!this.init) {
             if (params) {
               if (params.$$id) {
-                this.setData({$item: lib.resetItem(params, this)})
+                this.setData({$item: _resetItem(params, this)})
               } else {
                 this.update(params)
               }
@@ -33,7 +48,7 @@ export const itemBehavior = function(app, mytype) {
         this.$$is = 'item'
       },
       attached: function attached() { //节点树完成，可以用setData渲染节点，但无法操作节点
-        const xitem = lib.resetItem(this.properties.item, this)
+        const xitem = _resetItem(this.properties.item, this)
         if (xitem) {
           this.setData({
             "$item": xitem
@@ -110,14 +125,15 @@ export const itemBehavior = function(app, mytype) {
             })
   
             that.setData(target)
-            const _item = lib.resetItem(that.data.$tmp, that)
+            const _item = _resetItem(that.data.$tmp, that)
             that.setData({ $item: _item }, callback)
             // that.setData(target)
-            // const _item = lib.resetItem(that.data.$item, that)
+            // const _item = _resetItem(that.data.$item, that)
             // that.setData({ $item: _item }, callback)
           }
         }
 
+        param = setPropsHooks.call(this, param)
         let result = this.hooks.emit('update', param)
         if (result && result[0]) {
           result = result[0] 
@@ -150,7 +166,7 @@ export const itemComponentBehavior = function(app, mytype) {
         if (this.init) {
           if (data && lib.isObject(data)) {
             let myitem = data.$item || data.item || data.dataSource || {}
-            data.$item = lib.resetItem(myitem, this)
+            data.$item = _resetItem(myitem, this)
           }
         }
         const originalSetData = this._originalSetData // 原始 setData

@@ -60,6 +60,7 @@ function _up(params) {
           let nParams = {}
           Object.keys(params).forEach(key => {
             if (key == 'filePath') {
+              one = one.src ? one.src : one
               nParams[key] = one
             } else {
               if (key == 'formData') {

@@ -23,27 +23,55 @@ class _hooks {
   getInfo(){
     return this.storage ? wx.getStorageInfoSync() : this.storeData
   }
-  setItem(key, val){
+  setItem(key, val, expire) {
+    // let expiration = timestamp + 3000000
     try {
+      if (isNumber(expire)) {
+        let expireKey = key+'-expire'
+        let timestamp = Date.parse(new Date())
+        expire = timestamp + expire
+        wx.setStorageSync(expireKey, expire)
+      }
+
+      // 数据存储
       if (this.storage) {
         wx.setStorageSync(key, val)
       }
+
       this.storeData[key] = val
     } catch (error) {
       console.warn(error);
     }
   }
-  getItem(key) {
+
+  getItem(key){
     try {
       let res
-      if (this.storage) {
-        res = wx.getStorageSync(key)
-        if (res) {
-          this.storeData[key] = res
+      let expire
+      let rtn = true
+      let expireKey = key + '-expire'
+      expire = wx.getStorageSync(expireKey)
+      if (expire) {
+        let timestamp = Date.parse(new Date())
+        if (expire > timestamp) {
+          rtn = true
+        } else {
+          rtn = false
+          this.delete(key)
+          this.delete(expireKey)
         }
-        return res
-      } else {
-        return this.storeData[key]
+      }
+      
+      if (rtn) {
+        if (this.storage) {
+          res = wx.getStorageSync(key)
+          if (res) {
+            this.storeData[key] = res
+          }
+          return res
+        } else {
+          return this.storeData[key]
+        }
       }
     } catch (error) {
       console.warn(error);

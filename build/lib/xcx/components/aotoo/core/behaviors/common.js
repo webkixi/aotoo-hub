@@ -98,13 +98,15 @@ export const commonBehavior = (app, mytype) => {
         if (lib.isObject(properties.dataSource)) {
           properties.dataSource = lib.clone(properties.dataSource)
         }
+
+        let oriData = this.data.item || this.data.list || this.data.dataSource || {}
+        this.originalDataSource = lib.clone(oriData)
         
         // ??? 没有赋值给$item/$list，造成不能通过show/hide来显示隐藏结构
         let props = (properties.item || properties.list || properties.dataSource)
         if (typeof props == 'object') {
           props['show'] = props.hasOwnProperty('show') ? props.show : true
         }
-
         let id = properties.id
         // this.mountId = props.$$id ? false : id  // 如果$$id，则交给
         this.mountId = id || props.$$id // 如果$$id，则交给
@@ -119,8 +121,7 @@ export const commonBehavior = (app, mytype) => {
         this.mounted = true
         this.activePage = app.activePage
         this.hooks.emit('ready')
-        let oriData = this.data.item || this.data.list || this.data.dataSource || {}
-        this.originalDataSource = lib.clone(oriData)
+        
         // this.originalDataSource = JSON.stringify((this.data.item || this.data.list || this.data.dataSource))
         this.mount()
       },
@@ -369,17 +370,17 @@ export const commonMethodBehavior = (app, mytype) => {
       },
 
       itemMethod: function (e) {
-        itemReactFun.call(this, app, e)
+        reactFun.call(this, app, e)
       },
 
       catchItemMethod: function (e) {
-        itemReactFun.call(this, app, e, 'catch')
+        reactFun.call(this, app, e, 'catch')
       },
     }
   })
 }
 
-function itemReactFun(app, e, prefix) {
+export function reactFun(app, e, prefix) {
   if (this.treeInst) {
     this.treeInst[(prefix ? 'catchItemMethod' : 'itemMethod')].call(this.treeInst, e, prefix)
     return false
@@ -443,4 +444,29 @@ function itemReactFun(app, e, prefix) {
       }
     }
   }
+}
+
+// 将 item/list元件中配置文件中的hooks属性剥离出来
+// 挂载到该实例的hooks属性上
+export function setPropsHooks(props) {
+  if (props && lib.isObject(props) && props.hooks) {
+    const myHooks = props.hooks
+    const thisHooks = this.hooks
+    Object.keys(myHooks).forEach(key => {
+      let fun = myHooks[key]
+      if (lib.isFunction(fun)) {
+        thisHooks.once(key, fun)
+      }
+
+      if (lib.isArray(fun) && lib.isString(fun[0]) && lib.isFunction(fun[1])) {
+        if (thisHooks[fun[0]]) {
+          // fun[0] => setItem getItem on one once ....
+          // fun[1] => 用户传导过来的自定义方法
+          thisHooks[fun[0]](key, fun[1])
+        }
+      }
+    })
+    delete props.hooks
+  }
+  return props
 }

@@ -135,3 +135,7 @@
 <template name="@md">
   <ui-markit dataSource="{{props}}" textType="md" />
 </template>
+
+<template name="@switch">
+  <ui-switch item="{{props}}" />
+</template>

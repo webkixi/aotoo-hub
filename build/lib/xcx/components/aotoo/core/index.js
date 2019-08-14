@@ -10,6 +10,7 @@ import {
   listComponentBehavior,
   treeBehavior,
   treeComponentBehavior,
+  reactFun
 } from "./behaviors";
 
 import { 
@@ -238,6 +239,7 @@ core.post = post
 core.get = _get
 core.upload = upload
 core.setItem = setItem
+core.reactFun = reactFun
 core.commonBehavior = commonBehavior
 core.commonMethodBehavior = commonMethodBehavior
 core.baseBehavior = baseBehavior

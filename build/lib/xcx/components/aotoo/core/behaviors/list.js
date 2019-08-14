@@ -1,7 +1,8 @@
 const lib = require('../../lib')
 import {
   commonBehavior,
-  commonMethodBehavior
+  commonMethodBehavior,
+  setPropsHooks
 } from "./common";
 
 const {
@@ -14,7 +15,8 @@ const {
 } = lib
 
 function updateSelf(params) {
-  if (params) {
+  if (params && isObject(params)) {
+    params = setPropsHooks.call(this, params)
     let list = params
     let listProps = (() => {
       let props = {}
