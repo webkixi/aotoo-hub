@@ -98,9 +98,6 @@ export const commonBehavior = (app, mytype) => {
         if (lib.isObject(properties.dataSource)) {
           properties.dataSource = lib.clone(properties.dataSource)
         }
-
-        let oriData = this.data.item || this.data.list || this.data.dataSource || {}
-        this.originalDataSource = lib.clone(oriData)
         
         // ??? 没有赋值给$item/$list，造成不能通过show/hide来显示隐藏结构
         let props = (properties.item || properties.list || properties.dataSource)
@@ -121,7 +118,8 @@ export const commonBehavior = (app, mytype) => {
         this.mounted = true
         this.activePage = app.activePage
         this.hooks.emit('ready')
-        
+        let oriData = this.data.item || this.data.list || this.data.dataSource || {}
+        this.originalDataSource = lib.clone(oriData)
         // this.originalDataSource = JSON.stringify((this.data.item || this.data.list || this.data.dataSource))
         this.mount()
       },
