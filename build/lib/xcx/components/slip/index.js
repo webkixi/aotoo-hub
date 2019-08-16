@@ -91,9 +91,6 @@ Component({
         if (!this.init) {
           if (params) {
             this.update(params)
-            // this.reset([]).update(params)
-            // let dataSource = slipParse.call(this, params)
-            // this.setData({ $list: dataSource })
           }
         }
       }
@@ -105,6 +102,7 @@ Component({
   behaviors: [Core.listBehavior(app, 'slip')],
   lifetimes: {
     created: function() {
+      const that = this
       this.startTimmer = ''
       this.hooks.on('update', function(param) {
         if (lib.isArray(param)) {
@@ -118,10 +116,6 @@ Component({
                 const tmp = slipParse({data: param[key]})
                 param[key] = tmp.data
               } 
-              // else {
-              //   const tmp = slipParse({data: [val]})
-              //   param[key] = tmp.data[0]
-              // }
             }
           })
         }
@@ -186,29 +180,6 @@ Component({
         param.itemClass = param.itemClass.replace(' active', '').replace('active', '')
         return param
       })
-      
-      // let that = this
-      // let _data = this.getData().data
-      // let $data = lib.clone(_data)
-
-      // let currentTarget = e.currentTarget
-      // let dataset = currentTarget.dataset
-      // let slipDone = dataset.slipDone
-      // let {index, offset} = slipDone
-      // index = parseInt(index)
-      // offset = parseInt(offset)
-      // if (offset > 0) {
-      //   $data.splice((offset+1), 0, _data[index])
-      //   $data.splice(index, 1)
-      // } else {
-      //   $data.splice((index + offset), 0, _data[index])
-      //   $data.splice((index+1), 1)
-      // }
-
-      // setTimeout(() => {
-      //   that.update($data)
-      // }, 200);
-
       this.hooks.emit('touchend', e)
     },
   }
