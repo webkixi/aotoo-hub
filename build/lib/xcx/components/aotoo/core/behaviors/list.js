@@ -52,6 +52,7 @@ export const listBehavior = function(app, mytype) {
         type: Object, 
         observer: function (params) {
           if (!this.init) {
+            // this.reset()
             updateSelf.call(this, params)
           }
         } 
@@ -61,6 +62,7 @@ export const listBehavior = function(app, mytype) {
         type: Object, 
         observer: function (params) {
           if (!this.init) {
+            this.reset()
             updateSelf.call(this, params)
           }
         } 
@@ -151,6 +153,10 @@ export const listBehavior = function(app, mytype) {
         const cb = lib.isFunction(callback) ? callback : null
         const updateFun = (opts) => {
           let param = opts
+          if (lib.isArray(param)) {
+            param = {data: param}
+          }
+
           if (lib.isObject(param)) {
             let target = {}
             Object.keys(param).forEach(key => {
@@ -169,15 +175,18 @@ export const listBehavior = function(app, mytype) {
                 target[nkey] = nval
               }
             })
+            if (lib.isArray(target['$list.data'])) {
+              that.setData({ '$list.data': [] })
+            }
             that.setData(target, cb)
           }
   
-          if (lib.isArray(param)) {
-            let target = Object.assign({data: []}, this.data.$list)
-            target.data = param
-            let mylist = reSetList.call(this, target)
-            that.setData({ $list: mylist }, cb)
-          }
+          // if (lib.isArray(param)) {
+          //   let target = Object.assign({data: []}, this.data.$list)
+          //   target.data = param
+          //   let mylist = reSetList.call(this, target)
+          //   that.reset([]).setData({ $list: mylist }, cb)
+          // }
         }
 
         let result = this.hooks.emit('update', param)

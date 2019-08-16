@@ -127,9 +127,6 @@ export const itemBehavior = function(app, mytype) {
             that.setData(target)
             const _item = _resetItem(that.data.$tmp, that)
             that.setData({ $item: _item }, callback)
-            // that.setData(target)
-            // const _item = _resetItem(that.data.$item, that)
-            // that.setData({ $item: _item }, callback)
           }
         }
 
