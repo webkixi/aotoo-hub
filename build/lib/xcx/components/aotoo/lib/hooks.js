@@ -16,8 +16,8 @@ class _hooks {
     this.storage = props.storage
   }
   destory() {
-    this.actions = null
-    this.storeData = null
+    this.actions = {}
+    this.storeData = {}
     // wx.clearStorageSync()
   }
   getInfo(){
@@ -97,10 +97,15 @@ class _hooks {
     }
   }
   delete(key){
-    if (this.storage) {
-      wx.removeStorageSync(key)
+    if (key === '*') {
+      this.storeData = {}
+      wx.clearStorageSync()
+    } else {
+      if (this.storage) {
+        wx.removeStorageSync(key)
+      }
+      this.storeData[key] = null
     }
-    this.storeData[key] = null
   }
   clear(){
     this.destory()
@@ -124,6 +129,10 @@ class _hooks {
   }
   off(key, fun) {
     if (isString(key)) {
+      if (key === '*') {
+        this.actions = {}
+        return
+      }
       if (fun) {
         let hooksActionUniqId = fun.hooksActionUniqId
         if (hooksActionUniqId) {
