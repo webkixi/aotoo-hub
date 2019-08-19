@@ -20,7 +20,8 @@ import {
 import { 
   post,
   _get,
-  upload
+  upload,
+  usualKit,
 } from "./utils";
 
 function pageDataElement(data) {
@@ -234,6 +235,7 @@ function setItem(item) {
 }
 
 core.lib = lib
+core.kit = usualKit(null)
 core.alert = alert
 core.post = post
 core.get = _get

@@ -129,3 +129,96 @@ export function upload(url, data, param={}) {
     return Promise.reject(`url和filePath参数为必填项，url请填写服务器地址, filePath请填写上传图片地址`)
   }
 }
+
+
+export function usualKit(ctx, options) {
+  return new UsualKit(ctx, options)
+}
+
+class UsualKit {
+  constructor(ctx, options) {
+    this.ctx = ctx
+    this.options = options
+    this.hooks = lib.hooks(lib.suid('kit_'))
+  }
+
+  post(){
+    return post.apply(this, arguments)
+  }
+
+  get(url, data, param) {
+    return post.call(this, url, data, param, 'GET')
+  }
+
+  // 获取用户是否获得某权限
+  auth(scopeType) {
+    const scopes = ['userInfo', 'userLocation', 'address', 'invoiceTitle', 'invoice', 'werun', 'record', 'writePhotosAlbum', 'camera']
+    if (scopes.indexOf(scopeType) > -1) {
+      return new Promise((resolve, reject) => {
+        wx.getSetting({
+          success: res => {
+            if (!res.authSetting[`scope.${scopeType}`]) {
+              wx.authorize({
+                scope: `scope.${scopeType}`,
+                success: res => resolve(true),
+                fail: err => reject(err)
+              })
+            } else {
+              resolve(true)
+            }
+          },
+          fail: err => reject(err)
+        })
+      })
+    }
+  }
+
+  /**
+   * inst.cloud('one/user/get', {...})  // 获取用户信息  one 云端接口名
+   */
+  cloud(url, param={}) {
+    if (lib.isString(url)) {
+      if (/^[\\\/]/.test(url)) url = url.substr(1)
+      let urls = url.split('/')
+      let api = urls[0]
+      let $url = urls.slice(1)
+      if ($url.length) {
+        $url = $url.join('/')
+      } else {
+        $url = 'index'
+      }
+      param.$url = $url
+
+      return this.c_fun(api, param)
+    }
+  }
+
+  // 调用云方法
+  c_fun(name, param) {
+    const that = this
+    const re = /(add|update|set|delete|remove)/
+    if (name) {
+      return new Promise((resolve, reject) => {
+        wx.cloud.callFunction({
+          name,
+          data: param || {},
+          success: res => {
+            if (re.test(param.$url)) {
+              that.cloud('one/site/upVersion')
+            }
+            resolve(res)
+          },
+          fail: err => {
+            reject(err)
+          }
+        })
+      })
+    }
+  }
+
+  // 销毁该实例
+  destory() {
+    this.ctx = null
+    this.options = null
+  }
+}
