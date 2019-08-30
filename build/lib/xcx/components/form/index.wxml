@@ -257,8 +257,8 @@
     id="{{input.id}}"
     data-address="{{input.uAddress}}"
     value="{{input.value}}"
-    class="input-item-slider {{input.itemClass}}"
-    
+    class="{{input.itemClass}} input-item-slider"
+    style="{{input.itemStyle}}"
     min="{{input.min||0}}"
     max="{{input.max||100}}"
     step="{{input.step||1}}"
