@@ -100,8 +100,8 @@ export const commonBehavior = (app, mytype) => {
         }
         
         // ??? 没有赋值给$item/$list，造成不能通过show/hide来显示隐藏结构
-        let props = (properties.item || properties.list || properties.dataSource)
-        if (typeof props == 'object') {
+        let props = (properties.item || properties.list || properties.dataSource || {})
+        if (lib.isObject(props)) {
           props['show'] = props.hasOwnProperty('show') ? props.show : true
         }
         let id = properties.id
@@ -401,7 +401,7 @@ export function reactFun(app, e, prefix) {
   if (!fun && prefix) {
     if (allParam[oType]) {
       const tmp = allParam[oType]
-      if (typeof tmp == 'object') {
+      if (lib.isObject(tmp)) {
         fun = tmp.fun
         param = tmp.param
       } else {
