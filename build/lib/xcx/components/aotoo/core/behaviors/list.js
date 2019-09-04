@@ -460,6 +460,7 @@ export const listBehavior = function(app, mytype) {
 }
 
 function listReactFun(app, e, type="list") {
+  const that = this
   if (this.treeInst) {
     return type == 'swiper' ? this.treeInst._swiperMethod.call(this.treeInst, e, type) : this.treeInst._scrollMethod.call(this.treeInst, e, type)
   }

@@ -47,7 +47,6 @@ export function reSetItemAttr(item, list){
     }
   }
 
-  // if (this.$$is=='tree' && isObject(item)) {
   if (isObject(item)) {
     if (item['attr']) {
       if (!item['attr']['data-treeid']) item['attr']['data-treeid'] = $ii
@@ -60,7 +59,6 @@ export function reSetItemAttr(item, list){
     }
   }
 
-  // const newItem = item['$$id'] ? item : resetItem(item, this)
   const newItem = resetItem(item, this)
   return newItem
 }

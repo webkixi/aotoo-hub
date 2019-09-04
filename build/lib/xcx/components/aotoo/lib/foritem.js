@@ -24,56 +24,6 @@ const accessKey = [
   'header', 'body', 'footer', 'dot', 'li', 'k', 'v'
 ]
 
-// function setItemSortIdf(item, context) {
-//   if (typeof item == 'string' || typeof item == 'number' || typeof item == 'boolean') return item
-//   if (typeof item == 'object') {
-//     if (!Array.isArray(item)) {
-//       let extAttrs = {}
-//       let incAttrs = []
-//       item['__sort'] = []
-
-//       if (context) {
-//         // item.fromComponent = context.data.fromComponent||context.data.uniqId
-//         item.fromComponent = context.data.fromComponent || context.data.uniqId
-//       }
-
-//       Object.keys(item).forEach(function (key) {
-//         if (accessKey.indexOf(key) > -1 || (key.indexOf('@')==0 && key.length>1)) {
-//           incAttrs.push(key)
-//         } else {
-//           if (key == 'aim') {
-//             item.catchtap = item[key]
-//           }
-//           extAttrs[key] = item[key]
-//         }
-//       })
-
-//       if (incAttrs.length) {
-//         item['__sort'] = incAttrs
-//         incAttrs.map(attr => {
-//           let oData = item[attr]
-//           if (typeof oData == 'object') {
-//             if (Array.isArray(oData)) {
-//               item[attr] = setSortTemplateName(oData, context)
-//             } else {
-//               if (/^[^@]/.test(attr)) {
-//                 item[attr] = setItemSortIdf(oData, context)
-//               }
-//             }
-//           }
-//         })
-//       }
-//       return item
-//     }
-//   }
-// }
-
-// function setSortTemplateName(data, context) {
-//   if (Array.isArray(data) && data.length) {
-//     return data.map(item => setItemSortIdf(item, context))
-//   }
-// }
-
 export function resetItem(data, context, loop) {
   if (typeof data == 'string' || typeof data == 'number' || typeof data == 'boolean') return data
   if (isObject(data)) {
@@ -96,10 +46,10 @@ export function resetItem(data, context, loop) {
         delete data.itemMethod
       }
     }
-  
     
     Object.keys(data).forEach(function (key) {
-      if (data[key] || data[key]===0) {
+      if (data.hasOwnProperty(key)) {
+      // if (data[key] || data[key]===0) {
         if (accessKey.indexOf(key) > -1 || (key.indexOf('@') == 0 && key.length > 1)) {
           incAttrs.push(key)
         } else {
@@ -117,22 +67,17 @@ export function resetItem(data, context, loop) {
     })
     
     data['__sort'] = incAttrs
-    // for (var attr in data) {
     for (var attr of incAttrs) {
       const sonItem = data[attr]
       if (isArray(sonItem)) {
-        // data[attr] = setSortTemplateName(sonItem, context)
         data[attr] = sonItem.filter(item => resetItem(item, context, true))
       } else {
         if (/^[^@]/.test(attr) && sonItem) {
           data[attr] = resetItem(sonItem, context, true)
-          // data[attr] = setItemSortIdf(sonItem, context)
         } 
       }
     }
     if (!data.parent && !loop) data.itemDataRoot = true // 标识该item是最顶层item，class style用作容器描述
   }
-
-  // context.props = extAttrs
   return data
 }
