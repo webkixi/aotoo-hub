@@ -59,6 +59,7 @@
 
 <template name="swiperWrap">
   <swiper 
+    id="{{list.id||list.type.id||''}}"  
     class="hlist {{list.listClass||list.class}}" 
     indicator-dots="{{  list.type['indicator-dots'] }}" 
     indicator-color="{{ list.type['indicator-color'] }}" 
@@ -92,6 +93,7 @@
 <template name="scrollWrap">
   <block wx:if="{{list.type['scroll-top'] && list.type['scroll-left']}}">
     <scroll-view 
+      id="{{list.id||list.type.id||''}}"
       class="hlist {{list.listClass||list.class}}" 
       style="hlist {{list.listStyle||''}}" 
       scroll-x	="{{ list.type['scroll-x'] || false}}" 
@@ -118,6 +120,7 @@
   </block>
   <block wx:elif="{{list.type['scroll-top']}}">
     <scroll-view 
+      id="{{list.id||list.type.id||''}}"
       class="hlist {{list.listClass||list.class}}" 
       style="hlist {{list.listStyle||''}}" 
       scroll-x	="{{ list.type['scroll-x'] || false}}" 
@@ -143,6 +146,7 @@
   </block>
   <block wx:elif="{{list.type['scroll-left']}}">
     <scroll-view 
+      id="{{list.id||list.type.id||''}}"
       class="hlist {{list.listClass||list.class}}" 
       style="hlist {{list.listStyle||''}}" 
       scroll-x	="{{ list.type['scroll-x'] || false}}" 
@@ -168,6 +172,7 @@
   </block>
   <block wx:else>
     <scroll-view 
+      id="{{list.id||list.type.id||''}}"
       class="hlist {{list.listClass||list.class}}" 
       style="hlist {{list.listStyle||''}}" 
       scroll-x	="{{ list.type['scroll-x'] || false}}" 
