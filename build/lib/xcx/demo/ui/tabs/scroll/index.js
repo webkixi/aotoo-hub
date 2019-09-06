@@ -246,14 +246,15 @@ const tabData = {
       },
     }
   ],
-  listClass: 'tabs-default-scroll hei-p100 ',
+  listClass: 'tabs-default-scroll hei-p100 bg-fff',
   // itemClass: 'card-bg'
 }
 
 
 Pager({
   data: {
-    motto: tabData
+    motto: tabData,
+    listClass: 'hei-p100 bg-fff'
   },
   onLoad: function(e){
     console.log(e)

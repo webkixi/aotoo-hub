@@ -18,6 +18,7 @@ const refertowx = {
 Pager({
   data: {
     motto: Pager.list(refertowx),
+    listClass: 'hei-p100 bg-fff'
   },
   savePrevSelect: [],
   onTap2: function(e, param, inst) {

@@ -45,6 +45,7 @@ Pager({
           catchtouchend: true,
         }
       ],
+      listClass: 'slip-item'
     })
   },
   xxx: function (e, param, inst) {

@@ -1,0 +1,10 @@
+<view class="boxer">
+  <view class='hei-p100 bg-default'>
+    <view class='ss-relative'>
+      <!-- 筛选列表 -->
+      <ui-list list="{{screenList}}"/>
+      <!-- 筛选对应的弹出层 -->
+      <!-- <ui-list list="{{screenPop}}"/> -->
+    </view>
+  </view>
+</view>

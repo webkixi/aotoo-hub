@@ -1,5 +1,6 @@
 <view class="boxer">
-  <ui-list list="{{score}}"/>
-  <ui-list list="{{pageBtn}}" />
-  <!-- <ui-form dataSource="{{motto}}" /> -->
+  <view class='bg-default hei-p100'>
+    <ui-list list="{{score}}"/>
+    <ui-list list="{{pageBtn}}" />
+  </view>
 </view>

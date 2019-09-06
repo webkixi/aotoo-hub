@@ -47,11 +47,11 @@ const adapterMenu = (res) => {
 Pager({
   data: {
     menuData: Pager.tree({
-      $$id: 'sstree',
       type: {
         is: "scroll"
       },
-      data: adapterMenu(data)
+      data: adapterMenu(data),
+      listClass: 'hei-p100 bg-fff'
     }),
   },
   onTap: function(e, query, inst) {

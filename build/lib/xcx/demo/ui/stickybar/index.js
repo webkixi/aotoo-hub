@@ -80,7 +80,7 @@ Pager({
         },
       ],
       class: 'd-swiper-item',
-      listClass: 'ul'
+      listClass: 'ul hei-p100 bg-default'
     }),
 
     stickyBottomBar: Pager.item({

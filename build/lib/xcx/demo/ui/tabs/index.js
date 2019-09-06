@@ -59,7 +59,11 @@ const adapterMenu = (res) => {
 Pager({
   data: {
     motto: Pager.tree({
-      data: adapterMenu(data)
+      data: adapterMenu(data),
+      type: {
+        is: 'scroll'
+      },
+      listClass: 'hei-p100 bg-fff'
     }),
   },
   onTap: function(e, query, inst) {

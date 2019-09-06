@@ -13,7 +13,7 @@ Pager({
   data: {
     motto: Pager.list({
       data: tabMenu,
-      listClass: 'tab-list tab-list-theme'
+      listClass: 'tab-list tab-list-theme hei-p100 bg-fff'
     }),
   },
   savePrevSelect: [],

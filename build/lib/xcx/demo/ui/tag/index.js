@@ -43,14 +43,14 @@ const adaptertag = (res, itemClass) => {
         itemClass: 'title-primary-grey mb-20-r'
       },
       idf: item.id,
-      liClass: 'flex-row-wrap-between-center list-mt-30-r mb-40-r'
+      liClass: 'flex-row-wrap-between-center  mb-40-r'
     })
     item.list.map( itemxx => {
       output.push({
         title:  {
           title: itemxx.title,
+          itemClass: itemClass + itemxx.littleTitle,
         },
-        itemClass: itemClass + itemxx.littleTitle,
         parent: item.id
       })
     })

@@ -1,1 +1,5 @@
-{}
+{
+  "enablePullDownRefresh": false,
+  "disableScroll": true,
+  "disableSwipeBack": true
+}

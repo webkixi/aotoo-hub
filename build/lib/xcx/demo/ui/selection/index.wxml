@@ -1,0 +1,6 @@
+<view class="boxer">
+  <!-- <ui-tab dataSource="{{selection}}" /> -->
+  <ui-list list="{{selectionHeader}}"/>
+  <ui-item item="{{selectionBody}}"/>
+  <ui-item item="{{letterToast}}" />
+</view>

@@ -48,7 +48,8 @@ Pager({
       type: {
         is: "scroll"
       },
-      data: gatherList
+      data: gatherList,
+      listClass: 'hei-p100 bg-fff'
     })
   }
 })

@@ -144,12 +144,13 @@ const tabData = {
       },
     },
   ],
-  listClass: 'tabs-default-scroll hei-p100 bg-fff'
+  listClass: 'tabs-default hei-p100 bg-fff'
 }
 
 
 Pager({
   data: {
-    motto: tabData
+    motto: tabData,
+    listClass: 'hei-p100 bg-fff'
   }
 })
