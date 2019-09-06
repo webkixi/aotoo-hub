@@ -1,8 +1,8 @@
 <view class="boxer">
-  <scroll-view scroll-y="{{true}}" class="scroll-wrap-nav">
+  <scroll-view scroll-y="{{isScrollx}}" class="scroll-wrap-nav">
     <ui-item item="{{headLogo}}" />
     <ui-tree list="{{menuData}}" />
   </scroll-view>
   <ui-list list="{{nav}}" />
-  <ui-pop item="{{modal}}" />
+  <ui-item item="{{tipsX}}" />
 </view>
