@@ -1,0 +1,17 @@
+triangle( $border-left = 4px solid transparent, $border-right = 4px solid transparent, $border-top = initial, $border-bottom = 8px solid #fff)
+  width: 0;
+  height: 0;
+  border-left: $border-left
+  border-right: $border-right
+  border-top: $border-top
+  border-bottom: $border-bottom
+
+//有边线
+triangle-hollow($border-left = 1px solid transparent,$border-right = 1px solid #6b6b6b,$border-top = 1px solid #6b6b6b,$border-bottom = 1px solid transparent, $width = 5px, $height = 5px, $transform = rotate(-45deg))
+  border-left: $border-left
+  border-right: $border-right
+  border-top: $border-top
+  border-bottom: $border-bottom
+  height: $width
+  width: $height
+  transform: $transform

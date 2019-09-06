@@ -1,30 +1,32 @@
+.border-radius-p100
+  border-radius: 100%
 
 .border-default
-  border: 2rpx solid $color-border
+  border: 1rpx solid $color-border
   &.active
     border-color: red
 
 .border-primary
-  border: 2rpx solid $color-border-2
+  border: 1rpx solid $color-border-2
 
 
 .bt-default
-  border-top: 2rpx solid $color-border
+  border-top: 1rpx solid $color-border
 .bb-default
-  border-bottom: 2rpx solid $color-border
+  border-bottom: 1rpx solid $color-border
 .bl-default
-  border-left: 2rpx solid $color-border
+  border-left: 1rpx solid $color-border
 
 .bb-e3e3e3-hkv
   .hkv
-    border-bottom: 2rpx solid $color-border
+    border-bottom: 1rpx solid $color-border
 
 .bb-e3e3e3-item
   &:last-child
     .item-line
       border-bottom: none
   >.item-line
-    border-bottom: 1px solid $color-border
+    border-bottom: 1rpx solid $color-border
 
 
 
@@ -44,7 +46,14 @@
 
 
 .box-shadow
-  box-shadow: 0 10rpx 12rpx rgba(21,61,106,0.03)
+  box-shadow: $box-shadow
+  position: relative
+.box-shadow-top
+  box-shadow: $box-shadow-top
+  position: relative
+.box-shadow-bottom
+  box-shadow: $box-shadow-bottom
+  position: relative
 
 .bs-e3e3e3
   @extends .box-shadow
@@ -53,7 +62,7 @@
 
 .bs-e3e3e3-list
   >.item-li
-    box-shadow: 0 10rpx 12rpx rgba(21,61,106,0.03)
+    box-shadow: 0 10rpx 11rpx rgba(21,61,106,0.03)
     &:last-child
       box-shadow: inherit
 

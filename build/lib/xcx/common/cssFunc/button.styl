@@ -2,7 +2,7 @@
  * 注意 +prefix-classes 不能为数字开头，如果颜色以数字开头的话 ，统一在前面加个字母 c 如： .c227ce1
  * @type {[type]}
  */
-ss-btnFunc($border-radius = 3px, $bgc = #ff7e11, $bc = #ff7e11, $color = fff, $min-width = 100rpx, $hover-bg = #ff7e11, $disable-bg = false, $disable-bc = false, $disable-c = false, $icon = false)
+ss-btnFunc($border-radius = 3px, $bgc = #ff7e11, $bc = #ff7e11, $color = fff, $min-width = 100rpx, $hover-bg = #ff7e11, $disable-bg = false, $disable-bc = false, $disable-c = false, $icon = false, $border-radius-small = false)
   border-radius: $border-radius
   border: 1px solid transparent
   background-color: $bgc
@@ -21,6 +21,8 @@ ss-btnFunc($border-radius = 3px, $bgc = #ff7e11, $bc = #ff7e11, $color = fff, $m
       content: $icon
       margin-right: 10rpx
       font-size: 20rpx
+  &.br-small
+    border-radius: $border-radius-small
   &:active
     background: fade-out($hover-bg, .2)
     border-color: fade-out($bc, .2)
@@ -46,6 +48,9 @@ ss-btnFunc($border-radius = 3px, $bgc = #ff7e11, $bc = #ff7e11, $color = fff, $m
     &:active
       background-color: $bc
       color: #fff
+  &[type=default]
+    background-color: $bgc
+    color: $color
 
 
 

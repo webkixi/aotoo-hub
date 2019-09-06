@@ -1,6 +1,6 @@
-//tabs 基础
-ss-tabs($Menu-bg = #fff, $Menu-color = #333, $Menu-size = 28rpx, $Menu-hei = 100rpx, $Menu-active = #4b9afc, $isScroll = false)
-  if ($isScroll == false)
+//tabs 基础   isScroll 需要scroll的时候 flex失效
+ss-tabs($Menu-bg = #fff, $Menu-color = #333, $Menu-size = 28rpx, $Menu-hei = 100rpx, $Menu-active = #4b9afc, $isScrollRow = false)
+  if ($isScrollRow == false)
     ss-display-flex(row wrap, flex-start)
   else 
     line-height: $Menu-hei 
@@ -13,6 +13,19 @@ ss-tabs($Menu-bg = #fff, $Menu-color = #333, $Menu-size = 28rpx, $Menu-hei = 100
     position: relative
     &.active
       color: $Menu-active
+    &.hasCheck
+      .item-title
+        position: relative
+        display: initial
+        &:after
+          content: ''
+          border-radius: 10rpx
+          width: 10rpx
+          height: @width 
+          background: #4b9afc
+          position: absolute
+          top: -4rpx
+          right: -8rpx
 
 //tabs 下线画
 ss-border-ani($lineHei = 4rpx, $lineBot = -2rpx, $lineColor = #4caf50, $isScroll = false)

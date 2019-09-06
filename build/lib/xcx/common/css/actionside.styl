@@ -20,6 +20,7 @@ $modalBarWid = 60vw
 .as-common
   background-color #FAFAFA
   box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  border-radius: $modal-radius
   position fixed
   z-index: 2
   display: block
@@ -45,6 +46,7 @@ $modalBarWid = 60vw
     width: calc(100% - 60rpx)
 
 .as-common-pop
+  border-radius: $modal-radius
   width 50%
   height 50%
   padding 0
@@ -156,3 +158,67 @@ $modalBarWid = 60vw
   right: 5rpx
   color: #c1cdcd
   transform: rotate(45deg) scale(0.7);
+
+
+
+//自定义toast
+.popups-wrap
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  background-color fade-out(#000, .3)
+  ss-display-flex(column, center, center)
+
+//自定义toast 背景 透明
+.popups-wrap-trans
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  ss-display-flex(column, center, center)
+
+.popups-wrap-input
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  background-color transparent
+
+.toast-body
+  background: #fff
+  border-radius: 20rpx
+  padding: 20rpx
+  text-align: center
+
+.pop-body
+  background: #fff
+  border-radius: 10rpx
+  font-size: 28rpx
+  .item-header
+    background: #ececec
+    height: 100rpx
+    color: #666
+    text-align: center
+  .item-footer
+    background: #c10000
+    color: #fff
+    font-weight: bold
+
+.custom-closeIt
+  position: absolute
+  bottom: 90rpx
+  width: 98rpx;
+  height: @width
+  line-height: @width
+  left: calc(50% - 50rpx); //49 + 3
+  font-size: 50rpx;
+  color: #E5E5E5
+  border: 5rpx solid #E5E5E5 
+  border-radius: 100%
+  text-align: center
+  &:before
+    content: '\e606'

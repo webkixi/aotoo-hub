@@ -2,12 +2,14 @@
 //背景色，边线色一致，字体默认白色
 .tag-primary
   ss-tag($tag-primary-color, 1px solid $tag-primary-color, #fff, $tag-br, $tag-padding, $tag-height, $tag-fs, $tag-lh)
+  font-weight: 600
   &.other
     border-radius: $tag-br2
     padding: $tag-padding2
     height: $tag-height2
     font-size: $tag-fs2
     line-height: $tag-lh2
+    font-weight: 500
 
 .tag-default
   @extends .tag-primary
@@ -17,6 +19,7 @@
   @extends .tag-primary
   background: $tag-minor-color
   border-color: $tag-minor-color
+
 .tag-special
   @extends .tag-primary
   background: $tag-special-color

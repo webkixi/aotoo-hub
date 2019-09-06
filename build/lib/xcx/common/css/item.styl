@@ -1,3 +1,8 @@
+$height = 88rpx
+$color = #333
+$padding = 0 20rpx
+
+
 .hkv-between
   height: 100%
   >.hkv
@@ -38,3 +43,17 @@
     margin-left: 20rpx
     padding: 20rpx 0
     flex: 1
+
+
+//选中后 后边出现打勾
+.item-check
+  line-height: $height
+  color: $color
+  padding: $padding
+  &.nopd
+    padding: 0
+  &.active
+    ss-display-flex(row nowrap, space-between, cener)
+    color: $color-primary
+    &:after
+      content: '\e660'

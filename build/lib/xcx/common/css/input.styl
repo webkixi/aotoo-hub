@@ -1,4 +1,4 @@
-
+$inputBC = $placeholderColor
 //小程序自带bug 指定的类(.phcolor)目前不能起作用，需要用它的默认值.input-placeholder
 .input-placeholder      
   color: $placeholderColor
@@ -42,14 +42,18 @@ input
   position relative
   font-size $inputSize
   padding: $inputPadding
-  border-bottom: 1px solid $borderColor
+  border-bottom: 1px solid $inputBC
   background: $bgColor
+  &.noborder
+    border-bottom: none
   if ($lastBorder)
     &:last-child
       border-bottom: none
   .input-item
     // &-switch
     //   width: 82rpx !important
+    &-input
+      color: $inputColor
     &-picker 
       view
         flex: 1
