@@ -1,10 +1,7 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/demo/index",
-    "pages/demo/tab/index",
     "pages/empty/index",
-    "pages/my/index",
     "pages/logs/logs"
   ],
   "subpackages": [{
@@ -43,7 +40,9 @@
         "ui/tabs/fnormal/index",
         "ui/tabs/fscroll/index",
         "ui/toast/index",
+        "ui/screen/index",
         "ui/score/index",
+        "ui/selection/index",
         "spiderchar/index",
         "uploads/index"
       ]
@@ -56,6 +55,7 @@
     "action-side": "/components/actionSide/index",
     "ui-pop": "/components/actionSide/index",
     "ui-tab": "/components/tab/index",
+    "ui-tab2": "/components/tabColumn/index",
     "ui-form": "/components/form/index",
     "ui-collapse": "/components/collapse/index",
     "ui-uploads": "/components/uploads/index",
@@ -65,9 +65,9 @@
     "ui-switch": "/components/switch/index"
   },
   "window":{
-    "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "demo",
-    "navigationBarTextStyle":"black"
+    "backgroundTextStyle":"dark",
+    "navigationBarBackgroundColor": "#2567FF",
+    "navigationBarTitleText": "SAUI",
+    "navigationBarTextStyle": "white"
   }
 }
