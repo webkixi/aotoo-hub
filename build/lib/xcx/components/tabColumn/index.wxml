@@ -1,0 +1,19 @@
+<!-- 作者：天天修改 -->
+<!-- github: webkixi -->
+<!-- 小程序的模板真是又长又臭 -->
+<!-- <ui-item item="{{$item}}" class-name="{{myClass}}"/> -->
+
+<import src="../aotoo/templates/item.wxml" />
+<block wx:if="{{$dataSource.show}}">
+  <!-- <view class="tab-container"> -->
+  <view class="tab-container {{$dataSource.listClass || ' tabs-default'}}">
+    <ui-list list="{{$menus}}" fromComponent="{{uniqId}}"/>
+    <block wx:if="{{$dataSource.multipy}}">
+      <ui-list list="{{$contents}}" fromComponent="{{uniqId}}"/>
+    </block>
+    <block wx:else>
+      <ui-list list="{{$contents}}" fromComponent="{{uniqId}}"/>
+    </block>
+     <!-- <ui-list list="{{$footer}}" fromComponent="{{uniqId}}"/> -->
+  </view>
+</block>
