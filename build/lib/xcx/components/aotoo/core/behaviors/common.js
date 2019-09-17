@@ -351,20 +351,47 @@ export const commonMethodBehavior = (app, mytype) => {
       //   }
       // },
 
-      _rightEvent: function (e) {
-        const is = this.$$is
-        const currentTarget = e.currentTarget
-        const dataset = currentTarget.dataset
-        let dsetEvt = (e.__type || e.type)+'@@'+dataset['evt']  // __type，改写原生type，适合不同场景
+      _rightEvent: function (e, prefix) {
+        // const is = this.$$is
+        // const currentTarget = e.currentTarget
+        // const dataset = currentTarget.dataset
+        // let dsetEvt = (e.__type || e.type)+'@@'+dataset['evt']  // __type，改写原生type，适合不同场景
+        // if (is == 'list' || is == 'tree') {
+        //   const mytype = this.data.$list.type
+        //   if (mytype && (mytype.is == 'scroll' || mytype.is == 'swiper')) {
+        //     dsetEvt = 'bind'+dsetEvt
+        //   }
+        // }
+        // const tmp = rightEvent(dsetEvt)
+        // e.currentTarget.dataset._query = tmp.param
+        // return tmp
+
+
+        let that = this
+        let is = this.$$is
+        let currentTarget = e.currentTarget
+        let dataset = currentTarget.dataset
+        let activePage = this.activePage
+
+        let oType = e.__type || e.type
+        let nType = (prefix ? prefix + oType : oType).replace('catchcatch', 'catch')
+        let dsetEvtStr = dataset['evt'].replace(/fake_/g, '').replace(/aim/g, 'catchtap')
+        let dsetEvt = nType + '@@' + dsetEvtStr
+        
         if (is == 'list' || is == 'tree') {
           const mytype = this.data.$list.type
           if (mytype && (mytype.is == 'scroll' || mytype.is == 'swiper')) {
-            dsetEvt = 'bind'+dsetEvt
+            dsetEvt = 'bind' + dsetEvt
           }
         }
-        const tmp = rightEvent(dsetEvt)
-        e.currentTarget.dataset._query = tmp.param
-        return tmp
+
+        if (is == 'form') {
+          dsetEvt = 'bind' + dsetEvt
+        }
+        
+        let rEvt = rightEvent(dsetEvt)
+        e.currentTarget.dataset._query = rEvt.param
+        return rEvt
       },
 
       itemMethod: function (e) {
@@ -384,18 +411,25 @@ export function reactFun(app, e, prefix) {
     return false
   }
   const that = this
-  const currentTarget = e.currentTarget
-  const dataset = currentTarget.dataset
   const activePage = this.activePage
+
   
-  // const oType = e.type.indexOf('catch') == 0 ? e.type.replace('catch', '') : e.type
-  const oType = e.__type || e.type
-  let nType = prefix ? prefix + oType : oType
-  nType = nType.replace('catchcatch', 'catch')
+  // const that = this
+  // const currentTarget = e.currentTarget
+  // const dataset = currentTarget.dataset
+  // const activePage = this.activePage
   
-  let dsetEvtStr = dataset['evt'].replace(/fake_/g, '').replace(/aim/g, 'catchtap')
-  let dsetEvt = nType + '@@' + dsetEvtStr
-  let rEvt = rightEvent(dsetEvt)
+  // // const oType = e.type.indexOf('catch') == 0 ? e.type.replace('catch', '') : e.type
+  // const oType = e.__type || e.type
+  // let nType = prefix ? prefix + oType : oType
+  // nType = nType.replace('catchcatch', 'catch')
+  
+  // let dsetEvtStr = dataset['evt'].replace(/fake_/g, '').replace(/aim/g, 'catchtap')
+  // let dsetEvt = nType + '@@' + dsetEvtStr
+  // let rEvt = rightEvent(dsetEvt)
+  // let {fun, param, allParam} = rEvt
+
+  let rEvt = this._rightEvent(e, prefix)
   let {fun, param, allParam} = rEvt
   if (fun === 'true') return
   if (!fun && prefix) {

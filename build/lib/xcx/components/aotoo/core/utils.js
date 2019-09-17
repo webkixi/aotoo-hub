@@ -153,24 +153,46 @@ class UsualKit {
   // 获取用户是否获得某权限
   auth(scopeType) {
     const scopes = ['userInfo', 'userLocation', 'address', 'invoiceTitle', 'invoice', 'werun', 'record', 'writePhotosAlbum', 'camera']
-    if (scopes.indexOf(scopeType) > -1) {
-      return new Promise((resolve, reject) => {
-        wx.getSetting({
-          success: res => {
-            if (!res.authSetting[`scope.${scopeType}`]) {
-              wx.authorize({
-                scope: `scope.${scopeType}`,
-                success: res => resolve(true),
-                fail: err => reject(err)
-              })
-            } else {
-              resolve(true)
+    return new Promise((resolve, rej) =>{
+      function erro(err) {
+        console.error(err);
+        return rej(err)
+      }
+      wx.getSetting({
+        success(res){
+          let stat = res.authSetting[`scope.${scopeType}`]
+          if (!stat) {
+            if (scopeType === 'userInfo') {
+              return resolve(stat)
             }
-          },
-          fail: err => reject(err)
-        })
+          }
+          wx.authorize({
+            scope: `scope.${scopeType}`,
+            success: res => resolve(true),
+            fail: err => erro(err)
+          })
+        },
+        fail: err => erro(err)
       })
-    }
+    })
+    // if (scopes.indexOf(scopeType) > -1) {
+    //   return new Promise((resolve, reject) => {
+    //     wx.getSetting({
+    //       success: res => {
+    //         if (!res.authSetting[`scope.${scopeType}`]) {
+    //           wx.authorize({
+    //             scope: `scope.${scopeType}`,
+    //             success: res => resolve(true),
+    //             fail: err => reject(err)
+    //           })
+    //         } else {
+    //           resolve(true)
+    //         }
+    //       },
+    //       fail: err => reject(err)
+    //     })
+    //   })
+    // }
   }
 
   /**
@@ -203,12 +225,14 @@ class UsualKit {
           name,
           data: param || {},
           success: res => {
-            if (re.test(param.$url)) {
-              that.cloud('one/site/upVersion')
-            }
+            // if (re.test(param.$url)) {
+            //   that.cloud('one/site/upVersion')
+            // }
+            that.hooks.emit('cloud')
             resolve(res)
           },
           fail: err => {
+            that.hooks.emit('cloud_fail')
             reject(err)
           }
         })

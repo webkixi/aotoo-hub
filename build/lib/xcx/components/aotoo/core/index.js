@@ -238,6 +238,7 @@ function setItem(item) {
 
 core.lib = lib
 core.kit = usualKit(null)
+core.toolkit = core.kit
 core.alert = alert
 core.post = post
 core.get = _get

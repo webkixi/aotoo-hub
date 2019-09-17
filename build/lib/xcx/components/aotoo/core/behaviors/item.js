@@ -41,7 +41,7 @@ export const itemBehavior = function(app, mytype) {
       id: String,
     },
     data: {
-      $item: {}
+
     },
     lifetimes: {
       created: function() {
