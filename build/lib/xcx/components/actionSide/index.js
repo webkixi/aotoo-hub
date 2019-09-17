@@ -15,13 +15,17 @@ function sty(param) {
   return (param && (param.itemStyle || param.style)) || ''
 }
 
-function content(param, myclass, op) {
+function content(param={}, myclass, op) {
   let $item = this.data.$item
   let dot = (param.dot ? [].concat(param.dot).concat($item.dot) : $item.dot) || []
   let yesCloseBtn = false
 
-  if (myclass == 'full' || op&&op.indexOf('actionSide-pop') > -1 || param.closeBtn) {
+  if (myclass == 'full' || op&&op.indexOf('actionSide-pop') > -1) {
     yesCloseBtn = true
+  }
+
+  if (param && param.hasOwnProperty('closeBtn')) {
+    yesCloseBtn = param.closeBtn
   }
 
   let hasDot = false
@@ -74,14 +78,28 @@ Component({
         p.itemClass = 'toast-mid'
         this.__opration(p, c, 'actionSide-toast')
       }
+      this.toast_mid = (p={}, c) => {
+        p.itemClass = 'toast-mid'
+        this.__opration(p, c, 'actionSide-toast')
+      }
       this.pop.bot = (p={}, c) => this.__opration(p, c, 'actionSide-pop-bottom')
+      this.pop_bot = (p={}, c) => this.__opration(p, c, 'actionSide-pop-bottom')
       this.pop.top = (p={}, c) => this.__opration(p, c, 'actionSide-pop-top')
+      this.pop_top = (p={}, c) => this.__opration(p, c, 'actionSide-pop-top')
 
       this.right.full = (p={}, c) => {
         p.itemClass = 'full'
         this.__opration(p, c, 'actionSide-right')
       }
+      this.right_full = (p={}, c) => {
+        p.itemClass = 'full'
+        this.__opration(p, c, 'actionSide-right')
+      }
       this.right.bar = (p={}, c) => {
+        p.itemClass = 'bar'
+        this.__opration(p, c, 'actionSide-right')
+      }
+      this.right_bar = (p={}, c) => {
         p.itemClass = 'bar'
         this.__opration(p, c, 'actionSide-right')
       }
@@ -90,7 +108,15 @@ Component({
         p.itemClass = 'full'
         this.__opration(p, c, 'actionSide-left')
       }
+      this.left_full = (p={}, c) => {
+        p.itemClass = 'full'
+        this.__opration(p, c, 'actionSide-left')
+      }
       this.left.bar = (p={}, c) => {
+        p.itemClass = 'bar'
+        this.__opration(p, c, 'actionSide-left')
+      }
+      this.left_bar = (p={}, c) => {
         p.itemClass = 'bar'
         this.__opration(p, c, 'actionSide-left')
       }
@@ -99,7 +125,15 @@ Component({
         p.itemClass = 'full'
         this.__opration(p, c, 'actionSide-top')
       }
+      this.top_full = (p={}, c) => {
+        p.itemClass = 'full'
+        this.__opration(p, c, 'actionSide-top')
+      }
       this.top.bar = (p={}, c) => {
+        p.itemClass = 'bar'
+        this.__opration(p, c, 'actionSide-top')
+      }
+      this.top_bar = (p={}, c) => {
         p.itemClass = 'bar'
         this.__opration(p, c, 'actionSide-top')
       }
@@ -108,7 +142,18 @@ Component({
         p.itemClass = 'full'
         this.__opration(p, c, 'actionSide-bot')
       }
+
+      this.bot_full = (p={}, c) => {
+        p.itemClass = 'full'
+        this.__opration(p, c, 'actionSide-bot')
+      }
+
       this.bot.bar = (p={}, c) => {
+        p.itemClass = 'bar'
+        this.__opration(p, c, 'actionSide-bot')
+      }
+
+      this.bot_bar = (p={}, c) => {
         p.itemClass = 'bar'
         this.__opration(p, c, 'actionSide-bot')
       }
@@ -151,7 +196,7 @@ Component({
         'itemClass': 'actionSide-right moveit',
       }, cb)
     },
-    hide: function (param) {
+    hide: function (cb) {
       // const itemClass = this.data.$item.itemClass
       // const fromLeft = itemClass.indexOf('actionSide-left') > -1
       // const itCls = fromRight ? 'actionSide-right' : fromLeft ? 'actionSide-left' : fromBot ? 'actionSide-bot' : fromTop ? 'actionSide-top' : 'actionSide'
@@ -162,7 +207,7 @@ Component({
         class: itCls,
         itemClass: itCls,
         __actionMask: 'actionMask'
-      })
+      }, cb)
     },
     __opration: function(p, c, op) {
       const that = this
