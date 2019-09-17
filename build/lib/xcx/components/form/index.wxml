@@ -123,6 +123,7 @@
     bindfocus ="inputItemMethod"
     bindblur ="inputItemMethod"
     bindconfirm ="inputItemMethod"
+    data-evt="{{util.dataEvt(input, ['bindinput', 'bindfocus', 'bindblur', 'bindconfirm' ])}}"
   />
 </template>
 
@@ -274,11 +275,18 @@
 
     bindchange="rcChange"
     bindchanging="rcChange"
+    data-evt="{{util.dataEvt(input, ['bindchange', 'bindchanging'])}}"
+
   />
 </template>
 
 <template name="@checkbox">
-  <checkbox-group class="input-item-rc-group {{input.itemClass}}" bindchange="rcChange" data-address="{{input.uAddress}}">
+  <checkbox-group 
+    class="input-item-rc-group {{input.itemClass}}" 
+    bindchange="rcChange" 
+    data-address="{{input.uAddress}}"
+    data-evt="{{util.dataEvt(input, ['bindchange'])}}"
+  >
     <block wx:if="{{util.isArray(input.values)}}">
       <label class="input-item-rc" wx:key="" wx:for="{{input.values}}" wx:for-item="val" wx:for-index="vid">
         <text wx:if="{{tmp.validrcp(input, 'titles', vid)}}">{{input.titles[vid]}}</text>
@@ -294,7 +302,12 @@
 </template>
 
 <template name="@radio">
-  <radio-group class="input-item-rc-group {{input.itemClass}}" bindchange="rcChange" data-address="{{input.uAddress}}">
+  <radio-group 
+    class="input-item-rc-group {{input.itemClass}}" 
+    bindchange="rcChange" 
+    data-address="{{input.uAddress}}"
+    data-evt="{{util.dataEvt(input, ['bindchange'])}}"
+  >
     <block wx:if="{{util.isArray(input.values)}}">
       <label class="input-item-rc" wx:key="" wx:for="{{input.values}}" wx:for-item="val" wx:for-index="vid">
         <text wx:if="{{tmp.validrcp(input, 'titles', vid)}}">{{input.titles[vid]}}</text>
@@ -321,10 +334,15 @@
     <!-- <picker mode="multiSelector" bindcolumnchange="{{input.bindcolumnchange ? 'pickersChange': ''}}" bindchange="{{input.bindcolumnchange ? '': 'rcChange'}}" value="{{input.value||[0]}}" range="{{input.titles||[[]]}}" data-address="{{input.uAddress}}"> -->
     <!-- <picker mode="multiSelector" bindcolumnchange="{{input.value.length > 1 ? 'pickersChange' : undefined}}" /> -->
     <picker mode="multiSelector" 
-      bindcolumnchange="{{input['bindcolumnchange'] ? 'pickersChange' : undefined}}" 
+      bindcolumnchange="{{input['bindcolumnchange'] ? 'pickersChange' : ''}}" 
       bindchange="pickersChange"
       bindcancel="pickersChange" 
-      value="{{input.value||[0]}}" range="{{input.titles||[[]]}}" data-address="{{input.uAddress}}" class="input-item-picker {{input.itemClass}}">
+      value="{{input.value||[0]}}" 
+      range="{{input.titles||[[]]}}" 
+      class="input-item-picker {{input.itemClass}}"
+      data-address="{{input.uAddress}}" 
+      data-evt="{{util.dataEvt(input, ['bindchange', 'bindcancel', 'bindcolumnchange'])}}"
+    >
       <view class="picker">
         <block wx:if="{{tmp.plen(input)==1}}">
           {{input.titles[0][input.value[0]]}}
@@ -342,7 +360,13 @@
     </picker>
   </block>
   <block wx:else>
-    <picker bindchange="rcChange" value="{{input.value||0}}" range="{{input.titles||[]}}" data-address="{{input.uAddress}}">
+    <picker 
+      bindchange="rcChange" 
+      value="{{input.value||0}}" 
+      range="{{input.titles||[]}}" 
+      data-address="{{input.uAddress}}"
+      data-evt="{{util.dataEvt(input, ['bindchange', 'bindcancel', 'bindcolumnchange'])}}"
+    >
       <view class="picker">
         {{input.titles[input.value]}}
       </view>
@@ -383,7 +407,7 @@
             <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="icon-eye mr-10-r size16 color-227ce1" style="flex: 1; text-align: center"></text>
           </block>
         </block>
-
+        
         <!-- <block wx:if="{{input.type=='password'||input.type=='text'}}">
           <block wx:if="{{util.isString(input.eye)}}">
             <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="{{input.eye}}" style="flex: 1; text-align: center"></text>
@@ -419,7 +443,7 @@
 <!-- profile:{}, input: {} -->
 <template name="inputItem">
   <block wx:if="{{input.show}}">
-    <view class="input-item-content {{input.error? 'error':''}} {{input.inputClass}}">
+    <view class="input-item-content {{input.error? 'error':''}} {{input.itemClass || input.inputClass}}">
       <!-- required -->
       <block wx:if="{{input.required}}">
         <text class="input-item-required"></text>
@@ -439,8 +463,6 @@
           <template is="@input-element" data="{{uniqId, props, profile, input}}" />
         </block>
       </block>
-
-
     </view>
   </block>
 </template>
@@ -460,14 +482,16 @@
     </block>
 
     <!-- content -->
-    <block wx:if="{{util.isArray(input)}}">
-      <block wx:for="{{input}}" wx:key="" wx:for-item="inputItem">
-        <template is="inputItem" data="{{uniqId, input: inputItem, profile, props}}" />
+    <view class="input-item-area">
+      <block wx:if="{{util.isArray(input)}}">
+        <block wx:for="{{input}}" wx:key="" wx:for-item="inputItem">
+          <template is="inputItem" data="{{uniqId, input: inputItem, profile, props}}" />
+        </block>
       </block>
-    </block>
-    <block wx:elif="{{util.isObject(input)}}">
-      <template is="inputItem" data="{{uniqId, input, profile, props}}" />
-    </block>
+      <block wx:elif="{{util.isObject(input)}}">
+        <template is="inputItem" data="{{uniqId, input, profile, props}}" />
+      </block>
+    </view>
 
     <block wx:if="{{profile.desc}}">
       <ui-item item="{{ profile.desc }}" fromComponent="{{uniqId}}" />

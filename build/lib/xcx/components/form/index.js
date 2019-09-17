@@ -44,7 +44,9 @@ const containerAttributs = { // attrs
   title: undefined,
   desc: undefined,
   itemClass: 'input-item',
+  listClass: '',
   itemStyle: undefined,
+  listStyle: '',
   required: undefined,
   show: true,
   union: undefined
@@ -832,11 +834,14 @@ function setAllocation(res, val) {
 }
 
 function runFormBindFun(fn, res, e, from) {
-  const activePage = this.activePage
+  let activePage = this.activePage
+  let {fun, param, allParam} = this._rightEvent(e)
+  let funNm = fun
+  res.param = param
   if (lib.isString(res.inputData[fn])) {
-    const funName = res.inputData[fn]
-    const targetObj = (this.componentInst && !lib.isEmpty(this.componentInst)) || activePage
-    const fun = targetObj[funName]
+    let funName = res.inputData[fn]
+    let targetObj = (this.componentInst && !lib.isEmpty(this.componentInst)) || activePage
+    let fun = (funNm&&targetObj[funNm]) || targetObj[funName]
     if (lib.isFunction(fun)) {
       let resData = ''
       let result = fun(e, res, this)
@@ -853,7 +858,7 @@ function runFormBindFun(fn, res, e, from) {
       from == 'cancel' ? '' : this.setData({[res.address]: res.inputData})
     }
   } else {
-    const selfUpdate = ['picker', 'pickers', 'dropdown', 'checkbox', 'radio']
+    let selfUpdate = ['picker', 'pickers', 'dropdown', 'checkbox', 'radio']
     if (selfUpdate.indexOf(res.inputData['type'])>-1) {
       from == 'cancel' ? '' : this.setData({[res.address]: res.inputData})
     }
