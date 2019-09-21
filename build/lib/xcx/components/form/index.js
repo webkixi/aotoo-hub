@@ -536,26 +536,47 @@ Component({
         }
       }
     },
+    
     addWarn: function (id, message) {
       this.value(id, { error: message })
     },
+    
     addDesc: function (id, message) {
       this.value(id, { desc: message })
     },
+    
     removeWarn: function(id) {
       this.value(id, {error: null})
     },
+    
     removeDesc: function(id) {
       this.value(id, {desc: null})
     },
-    empty: function(params) {
+
+    disabled: function(id, val) {
+      if (typeof val === 'boolean') {
+        this.value(id, {disabled: val})
+      } else {
+        this.value(id, {disabled: true})
+      }
+    },
+
+    // 清空某个表单的值
+    empty: function(keyid) {
       const allocation = this.allocation
       let willEmpty = {}
-      Object.keys(allocation).forEach(id=>{
-        willEmpty[id] = {value: ''}
-      })
+      if (keyid) {
+        Object.keys(allocation).forEach(id=>{
+          if (id === keyid) willEmpty[id] = {value: ''}
+        })
+      } else {
+        Object.keys(allocation).forEach(id=>{
+          willEmpty[id] = {value: ''}
+        })
+      }
       this.value(willEmpty)
     },
+    
     profile: function (id, val) {
       const allocation = this.allocation
       if (id) {
@@ -575,6 +596,7 @@ Component({
         }
       }
     },
+    
     value: function(id, val) {
       const allocation = this.allocation
       if (id) {
@@ -583,7 +605,7 @@ Component({
             if (allocation[id] && val) {
               const ipData = allocation[id] 
               const address = ipData['uAddress']
-              let willUpdate
+              let willUpdate = {}
               let res = this.getAddressInfo(address)
               if (res) {
                 if (lib.isString(val)) {
@@ -603,6 +625,7 @@ Component({
               }
             }
           }
+        } else {
           if (lib.isObject(id)) {
             let willUpdate = {}
             Object.keys(id).forEach($id=>{
@@ -626,9 +649,9 @@ Component({
               }
             })
             this.setData(willUpdate)
+          } else {
+            return allocation[id]
           }
-        } else {
-          return allocation[id]
         }
       } else {
         return allocation

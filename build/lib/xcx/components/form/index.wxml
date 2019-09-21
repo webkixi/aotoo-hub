@@ -340,6 +340,7 @@
       value="{{input.value||[0]}}" 
       range="{{input.titles||[[]]}}" 
       class="input-item-picker {{input.itemClass}}"
+      disabled="{{input.disabled||''}}"
       data-address="{{input.uAddress}}" 
       data-evt="{{util.dataEvt(input, ['bindchange', 'bindcancel', 'bindcolumnchange'])}}"
     >
@@ -364,6 +365,7 @@
       bindchange="rcChange" 
       value="{{input.value||0}}" 
       range="{{input.titles||[]}}" 
+      disabled="{{input.disabled||''}}"
       data-address="{{input.uAddress}}"
       data-evt="{{util.dataEvt(input, ['bindchange', 'bindcancel', 'bindcolumnchange'])}}"
     >
@@ -407,19 +409,6 @@
             <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="icon-eye mr-10-r size16 color-227ce1" style="flex: 1; text-align: center"></text>
           </block>
         </block>
-        
-        <!-- <block wx:if="{{input.type=='password'||input.type=='text'}}">
-          <block wx:if="{{util.isString(input.eye)}}">
-            <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="{{input.eye}}" style="flex: 1; text-align: center"></text>
-          </block>
-          <block wx:else>
-            <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="icon-eye mr-10-r size16 color-227ce1" style="flex: 1; text-align: center"></text>
-          </block>
-        </block>
-
-        <block wx:if="{{input.type=='dropdown'}}">
-          <text catch:tap="inputItemDropdown" data-eye="{{true}}" data-address="{{input.uAddress}}" class="{{input.eye}} mr-10-r size16 color-227ce1" style="flex: 1; text-align: center"></text>
-        </block> -->
       </view>
     </block>
     <block wx:else>
