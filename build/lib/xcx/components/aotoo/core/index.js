@@ -119,13 +119,18 @@ function core(params) {
       this.hooks = lib.hooks(this.uniqId)
       
       this.getElementsById = function(key) {
-        return this.elements[key] || this.selectComponent('#'+key)
+        if (key) {
+          return this.elements[key] || this.selectComponent('#'+key)
+        } else {
+          return this.elements
+        }
       }
       app.activePage = activePage = this
       if (typeof oldLoad == 'function') {
-        setTimeout(() => {
-          oldLoad.apply(this, arguments)
-        }, 150);
+        oldLoad.apply(this, arguments)
+        // setTimeout(() => {
+        //   oldLoad.apply(this, arguments)
+        // }, 150);
       }
     }
 
@@ -149,10 +154,12 @@ function core(params) {
 
       
       if (typeof oldReady == 'function') {
-        setTimeout(() => {
-          oldReady.apply(this, arguments)
-          this.hooks.emit('onReady')
-        }, 150);
+        oldReady.apply(this, arguments)
+        this.hooks.emit('onReady')
+        // setTimeout(() => {
+        //   oldReady.apply(this, arguments)
+        //   this.hooks.emit('onReady')
+        // }, 150);
       } else {
         this.hooks.emit('onReady')
       }
@@ -180,6 +187,9 @@ function core(params) {
 
     const oldUnload = params.onUnload
     params.onUnload = function() {
+      if (typeof oldUnload == 'function') {
+        oldUnload.apply(this, arguments)
+      }
       app.activePage = undefined
       activePage = null
       resetStoreEvts()
@@ -187,10 +197,6 @@ function core(params) {
       this.hooks.emit('destory')
       lib.resetSuidCount()
       this.hooks.destory()
-
-      if (typeof oldUnload == 'function') {
-        oldUnload.apply(this, arguments)
-      }
     }
 
     Page(params)

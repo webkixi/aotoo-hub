@@ -161,6 +161,8 @@ navFuns.forEach(key => {
 
 export const nav = _nav
 
+
+// 百度 ”JS实现活动精确倒计时“
 class cdd {
   constructor(opts, callback, finaFun){
     let dftConfig = { time: 60000, step: 1000, start: 0, end: 0 }
@@ -332,88 +334,108 @@ export function countdown(opts={}, callback, finaFun) {
   return new cdd(opts, callback, finaFun)
 }
 
-// 百度 ”JS实现活动精确倒计时“
-export function countdown_bak(opts={}, callback, finaFun) {
-  let timeCounter = null
-  let dftConfig = { time: 60000, step: 1000, start: 0, end: 0 }
-  
-  if (isNumber(opts)) {
-    opts = {time: opts}
+// 计时器类
+class ct {
+  constructor(props={}){
+    this.timmer = null
+    this.props = props
+    this.interval = props.interval || props.step || 50
+    if (props && (isFunction(props.callback) || isFunction(props.tick))) {
+      this.cb = props.callback || props.tick
+    }
+    this.stat = {
+      running: null
+    }
+    this.startTime = null
+    this.pauseTime = 0
+    this.gapTime = 0
   }
+  pause(cb){
+    if (this.stat.running === 'running' || this.stat.running === 'continue') {
+      clearInterval(this.timmer)
+      this.stat.running = 'pause'
+      this.pauseTime = new Date().getTime()
+      if (isFunction(cb)) {
+        cb(this.stat.running)
+      }
+    }
+  }
+  stat(){
+    return this.stat.running
+  }
+  continue(cb){
+    this.stat.running = 'continue'
+    this.run()
+    if (isFunction(cb)) {
+      cb(this.stat.running)
+    }
+  }
+  toggle(cb){
+    if (!this.stat.running) {
+      this.run()
+      if (isFunction(cb)) {
+        cb(this.stat.running)
+      }
+      return
+    }
+    if (this.stat.running === 'running' || this.stat.running === 'continue') {
+      this.pause(cb)
+      return
+    }
+    if (this.stat.running === 'pause') {
+      this.continue(cb)
+    }
+  }
+  stop(){
+    if (this.stat.running) {
+      this.stat.running = null
+      this.gapTime = 0
+      this.pauseTime = 0
+      this.startTime = null
+      clearInterval(this.timmer)
+    }
+  }
+  start(param){
+    this.run(param)
+  }
+  run(tick){
+    let that = this
+    let stat = this.stat
+    let interval = this.interval
+    if (isFunction(tick)){
+      this.cb = tick
+    }
+    
+    if (stat.running === 'running') {
+      return
+    }
 
+    if (stat.running === 'pause') {
+
+    }
+    
+    this.stat.running = 'running'
+    if (!this.startTime) {
+      this.startTime = new Date().getTime()
+    }
+
+    let startTime = this.startTime
+    this.gapTime += this.pauseTime ? (new Date().getTime()) - this.pauseTime : 0
+    let gapTime = this.gapTime
+    if (this.cb) {
+      this.timmer = setInterval(() => {
+        let _time = new Date().getTime()
+        let diffTime = _time - startTime - gapTime
+        this.cb(diffTime)
+      }, interval);
+    }
+  }
+}
+
+export function counter(opts) {
   if (isFunction(opts)) {
-    if (isFunction(callback)) {
-      finaFun = callback
-      callback = opts
-    } else {
-      callback = opts
-    }
+    let _cb = opts
+    opts = { callback: _cb }
   }
-
-  let props = Object.assign(dftConfig, opts)
-  let {time, step, start, end} = props
-  if (start && end) {
-    time = end-start
-  }
-
-  let interval = step,
-      ms = time, //从服务器和活动开始时间计算出的时间差，这里测试用50000ms
-      count = 0,
-      startTime = new Date().getTime();
-  if (ms >= 0) {
-    // ms = ms+1000
-    timeCounter = setTimeout(countDownStart, interval);
-  }
-
-  function countEnd() {
-    clearTimeout(timeCounter);
-    if (isFunction(finaFun)) {
-      finaFun()
-    }
-  }
-
-  function countDownStart(){
-    count++;
-    let offset = new Date().getTime() - (startTime + count * interval);
-    let nextTime = interval - offset;
-    let daytohour = 0; 
-    if (nextTime < 0) { 
-      let _count = count
-      if (offset >= 2000) {
-        _count = parseInt(offset / interval)
-      }
-      count = _count
-      nextTime = 0 
-      ms -= (count * interval)
-    } else {
-      ms -= interval;
-    }
-
-    if (typeof callback == 'function') {
-      let res = callback(count, ms)
-      if (typeof res == 'object' && typeof res.then === 'function') {
-        res.then(()=>{
-          if(ms <= 0){
-            countEnd()
-          }else{
-            timeCounter = setTimeout(countDownStart, nextTime);
-          }
-        })
-      } else {
-        // console.log("误差：" + offset + "ms，下一次执行：" + nextTime + "ms后，离活动开始还有：" + ms + "ms");
-        if(ms <= 0){
-          countEnd()
-        }else{
-          timeCounter = setTimeout(countDownStart, nextTime);
-        }
-      }
-    } else {
-      console.log("误差：" + offset + "ms，下一次执行：" + nextTime + "ms后，离活动开始还有：" + ms + "ms");
-      if (ms <= 0) {
-        countEnd()
-      } else {
-        timeCounter = setTimeout(countDownStart, nextTime);
-      }
-    }
-  }
+  return new ct(opts)
 }

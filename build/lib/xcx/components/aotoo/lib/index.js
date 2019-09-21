@@ -45,22 +45,25 @@ export function secondFormat(time, fmt) {
     let _hour = 60 * _min
     let _day = 24 * _hour
     
-    let day = 0, hour=0, min=0, sec=0
+    let day = 0, hour=0, min=0, sec=0, msec=0
     day = parseInt(time / _day) 
     hour = parseInt(time / _hour) - day * 24
     min = parseInt(time / _min) - 60 * (hour + day * 24)
     sec = parseInt(time/1000) - 60*(min + hour*60 + day*24*60)
+    msec = parseInt((time - (sec*1000))/10)
 
     var o = {
       "d+": day, //日
       "h+": hour, //小时
       "m+": min, //分
-      "s+": sec //秒
+      "s+": sec, //秒
+      "S+": msec // 毫秒
     }
     
     for (var k in o)
-      if (new RegExp("(" + k + ")").test(fmt))
+      if (new RegExp("(" + k + ")").test(fmt)){
         fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+      }
     return fmt;
   } catch (error) {
     console.error(error);
@@ -84,13 +87,19 @@ export {
   debounce,
   throttle,
   nav,  // wx路由的节流封装 1200毫秒,
-  countdown,
+  countdown,  // 倒计时器
+  counter  // 计时器，秒表
 } from './util'
 
 export {
   tree,
   listToTree
 } from './tree'
+
+export {
+  vibrateLong,
+  vibrateShort
+} from './vibrate'
 
 export {
   hooks
