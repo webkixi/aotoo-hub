@@ -95,6 +95,7 @@ export function formatToUrl(url, param={}) {
 
 let suidCount = -1
 export function suid(prefix) {
+  if (suidCount >= 9999) resetSuidCount()
   suidCount++
   prefix = prefix || 'normal_'
   if (typeof prefix == 'string') {
@@ -190,19 +191,41 @@ class cdd {
   isCancel(){
     return this.control === 'cancel'
   }
-  pause(cb){
+
+  /**
+   * 小程序被切换到后台时，即onHide状态下，计时逻辑数据会丢失，导致计时失败
+   * 因此需要对计时逻辑数据进行特殊处理
+   * 
+   * pause有两种状态
+   * 1. 忽略间隔时间，暂停后重新开始，将接续暂停的时间，间隔时间为0
+   * 2. 不忽略间隔时间， 暂停后重新开始，将跳跃补上间隔时间并继续
+   * 
+   * isback为true，将运行第二种暂停模式
+   */
+  pause(isback, cb){
+    if (isFunction(isback)) {
+      cb = isback
+      isback = null
+    }
     this.control = 'pause'
+    if (isback) {
+      this._isback = true
+    }
     if (isFunction(cb)) cb(this.control)
   }
   cancel(cb){
     this.control = 'cancel'
     if (isFunction(cb)) cb(this.control)
   }
-  toggle(cb){
+  toggle(isback, cb){
+    if (isFunction(isback)) {
+      cb = isback
+      isback = null
+    }
     if (this.control == 'pause') {
       this.continue()
     } else {
-      this.pause()
+      this.pause(isback)
     }
     if (isFunction(cb)) cb(this.control)
   }
@@ -210,9 +233,14 @@ class cdd {
     if (this.control == 'pause') {
       this.control = 'continue'
       if (this.currentStat) {
-        this.currentStat.startTime = (new Date()).getTime()
+        if (!this._isback) {
+          this.currentStat.startTime = (new Date()).getTime()
+        } else {
+          this.currentStat.startTime = this.currentStat.pauseTime
+        }
         this.run(this.currentStat)
       }
+      this._isback = false
       this.currentStat = null
     }
     if (isFunction(cb)) cb(this.control)
@@ -227,13 +255,13 @@ class cdd {
     this.run()
   }
 
-  countEnd() {
+  countEnd(ms) {
     let final = this.final
     this.stat = false
     this.control = ''
     clearTimeout(this.timeCounter);
     if (isFunction(final)) {
-      final()
+      final(ms)
     }
   }
 
@@ -277,7 +305,7 @@ class cdd {
       let _count = null
       if (nextTime < 0) { 
         _count = count
-        if (offset >= 2000) {
+        if (offset >= 1000) {
           _count = parseInt(offset / interval)
         }
         count = _count
@@ -287,7 +315,6 @@ class cdd {
         ms -= interval;
       }
 
-
       // 暂停倒计时
       if (that.control === 'pause') {
         clearTimeout(timeCounter)
@@ -296,6 +323,7 @@ class cdd {
           ms: _count ? ms+=(count*interval) : ms+=interval,
           count: 0,
           startTime,
+          pauseTime: new Date().getTime()
         }
         return
       }
@@ -305,7 +333,7 @@ class cdd {
         if (typeof res == 'object' && typeof res.then === 'function') {
           res.then(()=>{
             if(ms <= 0){
-              that.countEnd()
+              that.countEnd(ms)
             }else{
               timeCounter = setTimeout(countDownStart, nextTime);
             }
@@ -313,7 +341,7 @@ class cdd {
         } else {
           // console.log("误差：" + offset + "ms，下一次执行：" + nextTime + "ms后，离活动开始还有：" + ms + "ms");
           if(ms <= 0){
-            that.countEnd()
+            that.countEnd(ms)
           }else{
             timeCounter = setTimeout(countDownStart, nextTime);
           }
@@ -321,7 +349,7 @@ class cdd {
       } else {
         console.log("误差：" + offset + "ms，下一次执行：" + nextTime + "ms后，离活动开始还有：" + ms + "ms");
         if (ms <= 0) {
-          that.countEnd()
+          that.countEnd(ms)
         } else {
           timeCounter = setTimeout(countDownStart, nextTime);
         }
@@ -350,11 +378,26 @@ class ct {
     this.pauseTime = 0
     this.gapTime = 0
   }
-  pause(cb){
+
+  /**
+   * 小程序被切换到后台时，即onHide状态下，计时逻辑数据会丢失，导致计时失败
+   * 因此需要对计时逻辑数据进行特殊处理
+   * 
+   * pause有两种状态
+   * 1. 忽略间隔时间，暂停后重新开始，将接续暂停的时间，间隔时间为0
+   * 2. 不忽略间隔时间， 暂停后重新开始，将跳跃补上间隔时间并继续
+   * 
+   * isback为true，将运行第二种暂停模式
+   */
+  pause(isback, cb){
+    if (isFunction(isback)) {
+      cb = isback
+      isback = null
+    }
     if (this.stat.running === 'running' || this.stat.running === 'continue') {
       clearInterval(this.timmer)
       this.stat.running = 'pause'
-      this.pauseTime = new Date().getTime()
+      this.pauseTime = isback ? 0 : new Date().getTime()
       if (isFunction(cb)) {
         cb(this.stat.running)
       }
@@ -370,7 +413,11 @@ class ct {
       cb(this.stat.running)
     }
   }
-  toggle(cb){
+  toggle(isback, cb){
+    if (isFunction(isback)) {
+      cb = isback
+      isback = null
+    }
     if (!this.stat.running) {
       this.run()
       if (isFunction(cb)) {
@@ -379,7 +426,7 @@ class ct {
       return
     }
     if (this.stat.running === 'running' || this.stat.running === 'continue') {
-      this.pause(cb)
+      this.pause(isback, cb)
       return
     }
     if (this.stat.running === 'pause') {
