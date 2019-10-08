@@ -198,8 +198,8 @@ Component({
         delete dataSource['$$id']
       }
       this.setData({
-        canvasWidth: 100,
-        canvasHeight: 100,
+        canvasWidth: 300,
+        canvasHeight: 300,
         popshow: {
           $$id: this.popid,
           title: {title: '图片预览', itemStyle: 'margin-left: 10px'},
@@ -222,12 +222,15 @@ Component({
     }
   },
   methods: {
+    // 设置已经存在的图片
     setExist(param){
       if (lib.isObject(param)) param = [param]
       if (lib.isArray(param)) {
         this.hooks.emit('myupdate', param)
       }
     },
+
+    // 获得已上传的图片
     value(){
       const props = this._getCountLimit()
       const existing = this._value || props.existing
@@ -236,6 +239,7 @@ Component({
       })
       return result.length ? result : undefined
     },
+
     _getCountLimit: function () {
       const props = this.data.props
       this.existing = this.data.$list.data.filter((item, ii)=> {
@@ -254,6 +258,7 @@ Component({
       }
     },
 
+    // 缩放所有上传的图片
     _scalePics(data){
       const props = this._getCountLimit()
       const upFiles = data || props.existing
@@ -272,7 +277,8 @@ Component({
           }
         }
       })
-      // thumbnail = true
+      
+      // 是否缩略图
       if (thumbnail) {
         const every = realFiles.map(img => this._scalePicture(img, props))
         return Promise.all(every).then(res => {
@@ -281,17 +287,26 @@ Component({
       } else {
         return new Promise((resolve, rej) => {
           const imgfiles = upFiles.map(item=>{
-            if (lib.isString(item.img)) {
-              return {img: item.img}
-            }
-            if (lib.isObject(item.img)) {
-              return {img: item.img.src}
-            }
+            return lib.isString(item.img) 
+              // isString(item.img)
+              ? {img: item.img} 
+
+              // isObject(item.img)
+              : {img: item.img.src}  
+
+            // if (lib.isString(item.img)) {
+            //   return {img: item.img}
+            // }
+            // if (lib.isObject(item.img)) {
+            //   return {img: item.img.src}
+            // }
           })
           return resolve(imgfiles)
         })
       }
     },
+
+    // 缩放一张图片
     _scalePicture(tempFilePaths, props) {
       const that = this
       const theCanvas = this.canvas
@@ -318,15 +333,17 @@ Component({
               ratio++;
             }
 
+            //设置canvas尺寸
             that.setData({
               canvasWidth: canvasWidth,
               canvasHeight: canvasHeight
-            }) //设置canvas尺寸
+            }) 
 
             theCanvas.drawImage(tempFilePaths, 0, 0, canvasWidth, canvasHeight)
             theCanvas.draw(false, setTimeout(() => {
               wx.canvasToTempFilePath({
                 canvasId: cavsid,
+                fileType: 'jpg',
                 success: function (res) {
                   resolve(res)
                 },
