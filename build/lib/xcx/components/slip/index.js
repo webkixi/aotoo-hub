@@ -25,20 +25,20 @@ function slipParse(dataSource={}) {
         // item.catchtouchcancel = item.catchtouchcancel || item.touchcancel || true
         if (lib.isArray(item.li)) {
           item.li = item.li.map(itm=>{
-            if (itm.tap || itm.fake_tap) {
-              itm.fake_tap = itm.fake_tap || itm.tap
+            if (itm.tap || itm._tap) {
+              itm._tap = itm._tap || itm.tap
               delete itm.tap
             }
-            if (itm.aim || itm.catchtap || itm.fake_aim) {
-              itm.fake_aim = itm.fake_aim || itm.catchtap || itm.aim
+            if (itm.aim || itm.catchtap || itm._aim) {
+              itm._aim = itm._aim || itm.catchtap || itm.aim
               delete itm.aim
             }
-            if (itm.longpress || itm.fake_longpress) {
-              itm.fake_longpress = itm.fake_longpress || itm.longpress
+            if (itm.longpress || itm._longpress) {
+              itm._longpress = itm._longpress || itm.longpress
               delete itm.longpress
             }
-            if (itm.catchlongpress || itm.catchlongpress || itm.fake_catchlongpress) {
-              itm.fake_catchlongpress = itm.fake_catchlongpress || itm.catchlongpress || itm.catchlongpress
+            if (itm.catchlongpress || itm.catchlongpress || itm._catchlongpress) {
+              itm._catchlongpress = itm._catchlongpress || itm.catchlongpress || itm.catchlongpress
               delete itm.catchlongpress
             }
             return itm

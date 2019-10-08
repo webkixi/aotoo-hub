@@ -383,10 +383,10 @@ function chooseTouchFun(e, ins, stopPropagation) {
   var allParam = tmp.allParam
   
   if (allParam) {
-    tpos.events.tap = allParam.fake_tap ? allParam.fake_tap : allParam.tap ? allParam.tap : undefined
-    tpos.events.catchtap = allParam.fake_aim ? allParam.fake_aim : allParam.fake_catchtap ? allParam.fake_catchtap : allParam.catchtap ? allParam.catchtap : undefined
-    tpos.events.longpress = allParam.fake_longpress ? allParam.fake_longpress : allParam.longpress ? allParam.longpress : undefined
-    tpos.events.catchlongpress = allParam.fake_catchlongpress ? allParam.fake_catchlongpress : allParam.catchlongpress ? allParam.catchlongpress : undefined
+    tpos.events.tap = allParam._tap ? allParam._tap : allParam.tap ? allParam.tap : undefined
+    tpos.events.catchtap = allParam._aim ? allParam._aim : allParam._catchtap ? allParam._catchtap : allParam.catchtap ? allParam.catchtap : undefined
+    tpos.events.longpress = allParam._longpress ? allParam._longpress : allParam.longpress ? allParam.longpress : undefined
+    tpos.events.catchlongpress = allParam._catchlongpress ? allParam._catchlongpress : allParam.catchlongpress ? allParam.catchlongpress : undefined
 
     tpos.events.touchstart = allParam.touchstart || allParam.catchtouchstart
     tpos.events.touchmove = allParam.touchmove || allParam.catchtouchmove
@@ -595,8 +595,6 @@ function tMove(e, slip, ins, stopPropagation) {
   var find = slip.find || '.move-it'
   var absMax = Math.abs(max)
   var absMin = Math.abs(min)
-  tpos.moving = true
-  tpos.instance.moving = true
 
   // var allInst = ins.selectAllComponents(find)
   var inst = e.instance
@@ -613,17 +611,24 @@ function tMove(e, slip, ins, stopPropagation) {
   var absDiffy = Math.abs(diffY)
   var toX = pageX - curX
   var toY = pageY - curY
+
+  tpos.moving = false
+  tpos.instance && (tpos.instance.moving = false)
+  if (absDiffx > 10 || absDiffy > 10) {
+    tpos.moving = true
+    if (allParam.__slip) tpos.instance && (tpos.instance.moving = true)
+  }
   
   var h = parseInt(slip.height)
-  var oriIndex = slip.siblingIds.indexOf(treeid)
-  var curIndex = tpos._siblingIds.indexOf(treeid)
-  var curPos  = curIndex*h
-
-  var startTime = tpos.timeStamp.start
-  var nowTime = e.timeStamp
-  var gapTime = nowTime - startTime
-
   if (allParam.__slip) {
+    var oriIndex = slip.siblingIds.indexOf(treeid)
+    var curIndex = tpos._siblingIds.indexOf(treeid)
+    var curPos  = curIndex*h
+
+    var startTime = tpos.timeStamp.start
+    var nowTime = e.timeStamp
+    var gapTime = nowTime - startTime
+
     // 纵向移动  
     if (absDiffy > absDiffx && gapTime > 1000) {
       if ((ddd.indexOf('w')>-1||ddd.indexOf('s') > -1) && slip.height > 0 && absDiffy > min) {

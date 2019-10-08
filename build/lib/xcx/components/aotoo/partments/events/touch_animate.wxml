@@ -3,7 +3,7 @@
 <!--  -->
 <!--  -->
 <!-- item.longtap item.longpress -->
-<block wx:if="{{item.fake_tap || item.fake_longpress || item.touchstart ||item.touchmove||item.touchend}}">
+<block wx:if="{{item._tap || item._longpress || item.touchstart ||item.touchmove||item.touchend}}">
   <view 
     data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
     data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
@@ -11,7 +11,7 @@
     animation="{{item.animation}}"
     wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
     class="{{item.class||item.itemClass}}"  
-    data-evt="{{util.dataEvt(item, ['__slip', 'fake_tap', 'fake_longpress', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
+    data-evt="{{util.dataEvt(item, ['__slip', '_tap', '_longpress', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
     bind:touchstart="{{util.iMethod}}" bind:touchmove="{{util.iMethod}}" bind:touchend="{{util.iMethod}}" bind:touchcancel="{{util.iMethod}}"
   >
     <include src="../slot.wxml" />
@@ -23,7 +23,7 @@
       id="{{item.id || id}}" 
       animation="{{item.animation}}"
       class="{{item.class||item.itemClass}}"  
-      data-evt="{{util.dataEvt(item, ['__slip', 'fake_tap', 'fake_longpress', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
+      data-evt="{{util.dataEvt(item, ['__slip', '_tap', '_longpress', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
       bind:touchstart="{{util.iMethod}}" bind:touchmove="{{util.iMethod}}" bind:touchend="{{util.iMethod}}" bind:touchcancel="{{util.iMethod}}"
     >
       <include src="../slot.wxml" />
@@ -31,7 +31,7 @@
   </block>
 </block>
 
-<block wx:elif="{{item.fake_aim || item.fake_catchlongpress || item.catchtouchstart || item.catchtouchmove || item.catchtouchend}}">
+<block wx:elif="{{item._aim || item._catchlongpress || item.catchtouchstart || item.catchtouchmove || item.catchtouchend}}">
   <view 
     data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid'])}}" 
     data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
@@ -39,7 +39,7 @@
     animation="{{item.animation}}"
     wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}"
     class="{{item.class||item.itemClass}}"  
-    data-evt="{{util.dataEvt(item, ['__slip', 'fake_aim', 'fake_catchlongpress', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
+    data-evt="{{util.dataEvt(item, ['__slip', '_aim', '_catchlongpress', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
     catch:touchstart="{{util.ciMethod}}" catch:touchmove="{{util.ciMethod}}" catch:touchend="{{util.ciMethod}}" catch:touchcancel="{{util.ciMethod}}"  bind:touchcancel="{{util.iMethod}}"
   >
     <include src="../slot.wxml" />
@@ -51,7 +51,7 @@
       id="{{item.id || id}}" 
       animation="{{item.animation}}"
       class="{{item.class||item.itemClass}}"  
-      data-evt="{{util.dataEvt(item, ['__slip', 'tap', 'fake_aim', 'fake_catchlongpress', 'catchtap', 'longpress', 'catchlongpress', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
+      data-evt="{{util.dataEvt(item, ['__slip', 'tap', '_aim', '_catchlongpress', 'catchtap', 'longpress', 'catchlongpress', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'touchcancel', 'catchtouchcancel'])}}"
       catch:touchstart="{{util.ciMethod}}" catch:touchmove="{{util.ciMethod}}" catch:touchend="{{util.ciMethod}}" catch:touchcancel="{{util.ciMethod}}"  bind:touchcancel="{{util.iMethod}}"
     >
       <include src="../slot.wxml" />
