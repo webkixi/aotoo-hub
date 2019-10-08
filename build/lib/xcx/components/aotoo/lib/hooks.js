@@ -11,105 +11,230 @@ import {
 
 class _hooks {
   constructor(props={}) {
+    let max = 0
+    let expireTime = 0
+    let storage = props.storage
+    if (isObject(storage)) {
+      storage = props.storage.localstorage
+      max = props.storage.max || 0
+      expireTime = props.storage.expire || 0
+      delete props.storage.localstorage
+    }
+    this.storage = storage
+    this.namespace = props.namespace
     this.actions = {}
     this.storeData = {}
-    this.storage = props.storage
+    this.expireData = {}
+    this.expireDataKey = this.namespace + `-expire-data`
+    if (this.storage) {
+      let oldData = wx.getStorageSync(this.namespace)
+      let oldExpireData = wx.getStorageSync(this.expireDataKey)
+      this.storeData = oldData || {}
+      this.expireData = oldExpireData || {}
+    }
+
+    this.syncTimmer = null
+
+    // lru
+    this.max = max
+    this.shadowData = {}
+
+    // 超时，设置所有变量的默认超时时间
+    this.expire = expireTime
   }
+
   destory() {
+    this.syncData(null, 'destory')
     this.actions = {}
     this.storeData = {}
+    this.expireData = {}
     // wx.clearStorageSync()
   }
+
   getInfo(){
     return this.storage ? wx.getStorageInfoSync() : this.storeData
   }
+
   setItem(key, val, expire) {
-    // let expiration = timestamp + 3000000
-    try {
-      if (isNumber(expire)) {
-        let expireKey = key+'-expire'
-        let timestamp = Date.parse(new Date())
-        expire = timestamp + expire
-        wx.setStorageSync(expireKey, expire)
-      }
+    if (!key) return
 
-      // 数据存储
-      if (this.storage) {
-        wx.setStorageSync(key, val)
-      }
-
+    if (val && val.$$value && val.$$timestamp) {
       this.storeData[key] = val
-    } catch (error) {
-      console.warn(error);
+    } else {
+      this.storeData[key] = {
+        $$value: val,
+        $$hit: 1,
+        $$timestamp: (new Date()).getTime()
+      }
     }
+
+    expire = expire || this.expire
+    if (expire && isNumber(expire)) {
+      let timestamp = (new Date()).getTime()
+      let expireTime = timestamp + expire
+      let gapTime = expire
+      expire = {
+        expire: expireTime,
+        gap: gapTime
+      }
+      this.expireData[key] = expire
+    }
+
+    this.syncData(key, 'set')
   }
 
-  getItem(key){
-    try {
-      let res
-      let expire
-      let rtn = true
-      let expireKey = key + '-expire'
-      expire = wx.getStorageSync(expireKey)
-      if (expire) {
-        let timestamp = Date.parse(new Date())
-        if (expire > timestamp) {
-          rtn = true
-        } else {
-          rtn = false
-          this.delete(key)
-          this.delete(expireKey)
+  syncData(key, type){
+    if (this.max) {
+      let shadowData = this.shadowData
+      let storeData = this.storeData
+      let expireData = this.expireData
+
+      if (type === 'set') {
+        let res = this.emit('cache-set', storeData[key].$$value)
+        if (res && res.length) {
+          storeData[key].$$value = res[0]
         }
       }
       
-      if (rtn) {
-        if (this.storage) {
-          res = wx.getStorageSync(key)
-          if (res) {
-            this.storeData[key] = res
+      if (type === 'get') {
+        if (shadowData[key] && !storeData[key]) {
+          storeData[key] = shadowData[key]
+          delete shadowData[key]
+        }
+        let res = this.emit('cache-get', storeData[key].$$value)
+        if (res && res.length) {
+          storeData[key].$$value = res[0]
+        }
+      }
+
+      if (type === 'delete') {
+        this.emit('cache-delete', ((storeData[key] && storeData[key].$$value) || {}))
+        delete shadowData[key]
+        delete storeData[key]
+        delete expireData[key]
+      }
+
+      if (type === 'destory') {
+        let allData = Object.assign(shadowData, storeData)
+        this.emit('cache-destory', allData)
+        this.storeData = {}
+        this.expireData = {}
+      }
+      
+      let max = this.max
+      let len = Object.keys(this.storeData).length
+      if (len > max) {
+        this.emit('cache-switch', shadowData)
+        shadowData = storeData
+        storeData = {[key]: shadowData[key]}
+        delete shadowData[key]
+      }
+
+      this.shadowData = shadowData
+      this.storeData  = storeData
+      this.expireData = expireData
+    }
+
+
+    if (this.storage) {
+      clearTimeout(this.syncTimmer)
+      this.syncTimmer = setTimeout(() => {
+        wx.setStorageSync(this.namespace, this.storeData)
+        wx.setStorageSync(this.expireDataKey, this.expireData)
+      }, 1000);
+    }
+  }
+
+  /**
+   * orin: true: 返回源数据; false: 返回$$value
+   */
+  getItem(key, orin){
+    if (key) {
+      if (key === '*') {
+        return this.storeData
+      }
+      let res
+      let _res = this.storeData[key]
+      if (!_res) {
+        _res = this.shadowData[key]
+      }
+      if (_res) {
+        _res.$$hit += 1
+        res = _res.$$value
+        this.syncData(key, 'get')
+
+        let expire = this.expireData[key]
+        if (expire) {
+          let expireTime = expire.expire
+          let gapTime = expire.gap
+          let nowTime = new Date().getTime()
+          if (expireTime && (expireTime > nowTime)) {
+            return orin ? _res : res
+          } else {
+            this.delete(key)
           }
-          return res
         } else {
-          return this.storeData[key]
+          return orin ? _res : res
         }
       }
-    } catch (error) {
-      console.warn(error);
     }
   }
-  append(key, val){
-    if (this.storeData[key]) {
-      let sData = this.getItem(key)
-      if (isArray(sData)) {
-        sData = sData.concat(val)
-      } else if(isObject(sData)) {
-        if (isObject(val)) {
-          sData = Object.assign(sData, val)
-        } else {
-          sData[suid('random_')] = val
-        }
+
+  append(key, val, expireDate){
+    if (key) {
+      let res, expireTime, gapTime
+      let _res = this.getItem(key, 'full')
+      res = _res && _res.$$value
+      let expire = this.expireData[key]
+      if (isArray(res)) {
+        res = res.concat(val)
+      } else if (isObject(res)) {
+        res = isObject(val) ? Object.assign(res, val) : Object.assign(res, {[suid('val_')]: val})
       } else {
-        sData = val
+        if (isObject(val) || isArray(val)) res = val
+        else {
+          res = {[suid('val_')]: val}
+        }
       }
-      this.setItem(key, sData)
-    } else {
-      this.setItem(key, val)
+
+      if (expire) {
+        expireTime = expire.expire + (new Date()).getTime()
+        gapTime = expire.gap
+        this.expireData[key] = {
+          expire: expireTime,
+          gap: gapTime
+        }
+      }
+      
+      _res = {
+        $$value: res,
+        $$hit: _res ? _res.hit : 1,
+        $$timestamp: (new Date()).getTime()
+      }
+      this.setItem(key, _res, expireDate)
     }
   }
+
   delete(key){
-    if (key === '*') {
-      this.storeData = {}
-      wx.clearStorageSync()
-    } else {
-      if (this.storage) {
-        wx.removeStorageSync(key)
+    if (key) {
+      if (key === '*') {
+        this.clear()
+      } else {
+        this.storeData[key] = null
+        this.expireData[key] = null
+        this.shadowData[key] = null
       }
-      this.storeData[key] = null
+      this.syncData(key, 'delete')
     }
   }
+  
   clear(){
     this.destory()
-    wx.clearStorageSync()
+    if (this.storage) {
+      wx.removeStorage({key: this.namespace})
+      wx.removeStorage({key: this.expireDataKey})
+    }
+    // wx.clearStorageSync()
   }
 
   // ========= 下面为钩子方法 ===========
@@ -219,11 +344,11 @@ class _hooks {
 }
 
 let myhooks = {}
-export function hooks(idf, storage) {
-  if (isString(idf)) {
-    if (!myhooks[idf]) {
-      myhooks[idf] = new _hooks({storage})
+export function hooks(namespace, storage) {
+  if (isString(namespace)) {
+    if (!myhooks[namespace]) {
+      myhooks[namespace] = new _hooks({storage, namespace})
     }
-    return myhooks[idf]
+    return myhooks[namespace]
   }
 }
