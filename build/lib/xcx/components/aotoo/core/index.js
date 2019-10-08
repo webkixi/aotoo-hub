@@ -195,8 +195,10 @@ function core(params) {
       resetStoreEvts()
       app.hooks.emit('destory')
       this.hooks.emit('destory')
-      lib.resetSuidCount()
+      // lib.resetSuidCount()
       this.hooks.destory()
+      core.kit.destory()
+      core.toolkit = null
     }
 
     Page(params)

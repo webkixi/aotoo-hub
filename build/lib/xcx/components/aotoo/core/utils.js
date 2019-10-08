@@ -126,7 +126,7 @@ export function upload(url, data, param={}) {
   if (postParam.url && postParam.filePath) {
     return _up(postParam)
   } else {
-    return Promise.reject(`url和filePath参数为必填项，url请填写服务器地址, filePath请填写上传图片地址`)
+    return Promise.resolve(`url和filePath参数为必填项，url请填写服务器地址, filePath请填写上传图片地址`)
   }
 }
 
@@ -148,6 +148,10 @@ class UsualKit {
 
   get(url, data, param) {
     return post.call(this, url, data, param, 'GET')
+  }
+
+  upload(){
+    return upload.apply(this, arguments)
   }
 
   // 获取用户是否获得某权限
@@ -228,7 +232,7 @@ class UsualKit {
             // if (re.test(param.$url)) {
             //   that.cloud('one/site/upVersion')
             // }
-            that.hooks.emit('cloud')
+            that.hooks.emit('response', param)
             resolve(res)
           },
           fail: err => {

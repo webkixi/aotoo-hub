@@ -253,19 +253,21 @@ export const commonBehavior = (app, mytype) => {
             fromTree = this.data.fromTree || this.data.$list.fromTree
             if (lib.isString(fromTree)) {
               const treeInst = app['_vars'][fromTree]
-              treeInst['children'][$id] = this // ? $id 为随机，有没有办法固定
+              $id ? treeInst['children'][$id] = this : ''
               this.treeInst = treeInst
             }
           }
 
           if ($is == 'item') {
-            $id = $id || this.data.item['$$id'] || this.data.item['id']
+            // $id = $id || this.data.item['$$id'] || this.data.item['id']
+            $id = $id || this.data.item['$$id']
           }
           
           if ($is == 'list' || $is == 'tree') {
             $id = $id || this.data.$list['$$id']
           }
 
+          $id = $id||id
           if ($id) {
             const itemKey = activePage['eles'][$id]
             if (itemKey) {
@@ -375,7 +377,7 @@ export const commonMethodBehavior = (app, mytype) => {
 
         let oType = e.__type || e.type
         let nType = (prefix ? prefix + oType : oType).replace('catchcatch', 'catch')
-        let dsetEvtStr = dataset['evt'].replace(/fake_/g, '').replace(/aim/g, 'catchtap')
+        let dsetEvtStr = dataset['evt'].replace(/_/g, '').replace(/aim/g, 'catchtap')
         let dsetEvt = nType + '@@' + dsetEvtStr
         
         if (is == 'list' || is == 'tree') {
@@ -390,7 +392,20 @@ export const commonMethodBehavior = (app, mytype) => {
         }
         
         let rEvt = rightEvent(dsetEvt)
+        if (!rEvt.fun) {
+          dsetEvt = dsetEvt.replace('bind', '')
+          let _rEvt = rightEvent(dsetEvt)
+          if (_rEvt.fun) rEvt = _rEvt
+        }
         e.currentTarget.dataset._query = rEvt.param
+
+        let attr = this.attr && this.attr()
+        if (lib.isObject(attr)) {
+          let dset = e.currentTarget.dataset
+          Object.keys(attr).forEach(kn => dset[kn] = attr[kn])
+          e.currentTarget.dataset = dset
+        }
+        
         return rEvt
       },
 
@@ -412,6 +427,7 @@ export function reactFun(app, e, prefix) {
   }
   const that = this
   const activePage = this.activePage
+  const oType = e.__type || e.type
 
   
   // const that = this
@@ -424,7 +440,7 @@ export function reactFun(app, e, prefix) {
   // let nType = prefix ? prefix + oType : oType
   // nType = nType.replace('catchcatch', 'catch')
   
-  // let dsetEvtStr = dataset['evt'].replace(/fake_/g, '').replace(/aim/g, 'catchtap')
+  // let dsetEvtStr = dataset['evt'].replace(/_/g, '').replace(/aim/g, 'catchtap')
   // let dsetEvt = nType + '@@' + dsetEvtStr
   // let rEvt = rightEvent(dsetEvt)
   // let {fun, param, allParam} = rEvt
