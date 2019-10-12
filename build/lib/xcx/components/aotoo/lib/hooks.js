@@ -88,9 +88,9 @@ class _hooks {
       let shadowData = this.shadowData
       let storeData = this.storeData
       let expireData = this.expireData
-
+      
       if (type === 'set') {
-        let res = this.emit('cache-set', storeData[key].$$value)
+        let res = this.emit('cache-set', storeData[key].$$value)  // 此时数据已存在
         if (res && res.length) {
           storeData[key].$$value = res[0]
         }
