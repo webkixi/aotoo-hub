@@ -4,10 +4,9 @@ const app = getApp()
 const Pager = require('components/aotoo/core')
 const lib = Pager.lib
 
-import inputTips from '../../../pages/tips/inputtips'
 
 //模拟数据
-import data from './data'
+
 
 //适配方法
 import adapter from './adapter'
@@ -17,25 +16,72 @@ const selectionHeaderData = [
   { title: '海外', tap: 'onTap?idx=1'},
 ]
 
+
+
+
+async function getCloudData(that, name){
+  try {
+    if (name) {
+      const db = wx.cloud.database()
+      const _ = db.command
+      const tabChoose = that.getElementsById('xxoo')
+      
+      let cloudData = []    //承载所有读操作的 promise 的数组
+      //定义每次获取的条数​
+      const MAX_LIMIT = 20;
+      //先取出集合的总数
+      const total = await db.collection('inland').count()
+      //计算需分几次取
+      const batchTimes = Math.ceil(total.total / MAX_LIMIT)
+      const letter = ['a', 'b', 'c', 'd', 'e', 'f', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'x', 'y', 'z']
+      for (let i = 0; i < letter.length; i++) {
+        let x = []
+        let totalx = await db.collection('inland').where({
+          cfrl: letter[i],
+          cityId: _.lt(9999)
+        }).count()
+        const batchTimesx = Math.ceil(totalx.total / MAX_LIMIT)
+        for(let j = 0; j< batchTimesx; j++) {
+          const kk = await db.collection('inland').skip(j * MAX_LIMIT).limit(MAX_LIMIT).where({
+            cfrl: letter[i],
+            cityId: _.lt(9999)
+          }).get()
+          for (let j = 0; j < kk.data.length;j++){
+            x.push(kk.data[j])
+          }
+        }
+        tabChoose.updateItems(adapter.selectionAdapter(x, letter[i]), i)
+      }
+
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 Pager({
   data: {
     selectionHeader: Pager.list({
       data: selectionHeaderData,
       listClass: 'tab-list tab-list-theme bg-fff plr-default box-shadow-bottom'
     }),
-    selectionBody: Pager.item(adapter.selectionAdapter(data.cityData[0])),
-    letterToast: inputTips
+    tabChoose: {
+      $$id: 'xxoo',
+      data: [],
+      listClass: 'selection-body bg-fff'
+    }
   },
   savePrevSelect: [],
-  query: '',      //获取节点需要的
-  d1: [],
-  d2: [],
   onTap:  function(e, param, inst) {
     //点击头部列表，item
-    const $selectionHeader = Pager.getElementsById('selectionHeader')
-    const $selectionBody = Pager.getElementsById('selectionBody')
+    const $selectionHeader = this.getElementsById('selectionHeader')
+    const $selectionBody = this.getElementsById('selectionBody')
+    
     const idx = parseInt(param['idx'])
     const $list = $selectionHeader.getData().data
+
+    wx.showLoading({title: '加载中'})
+
     //为了防止点击一样的item也作更新的问题
     if (this.savePrevSelect.length > 1){
       if (this.savePrevSelect[1] != idx){
@@ -45,9 +91,14 @@ Pager({
     else {
       this.updateDataFunc($selectionHeader, $selectionBody, $list, idx)
     }
+    setTimeout(() => {
+      wx.hideLoading()
+    }, 500);
+    
   },
   updateDataFunc: function($selectionHeader, $selectionBody, $list, idx) {
     //更新头部列表，及更新对应body内容
+    const $scrollcitylist = Pager.getElementsById('scrollcitylist')
     this.savePrevSelect.length > 1 ? this.savePrevSelect = this.savePrevSelect.slice(1) : this.savePrevSelect
       $list.map( (item, ii) => {
         if (item.itemClass) item.itemClass = ''
@@ -58,58 +109,14 @@ Pager({
         return item
       })
       $selectionHeader.update($list)
-      $selectionBody.update(adapter.selectionAdapter(data.cityData[idx]))
+      $scrollcitylist.update({'type.scroll-into-view': 'hot'})
+      $selectionBody.reset().update(adapter.selectionAdapter(data.cityData[idx]))
+      
   },
-  onClickCityMenu: function(e, param, inst) {
-    const $scrollcitylist = Pager.getElementsById('scrollcitylist')
-    const $letterToast = Pager.getElementsById('letterToast')
-    let letter = param['id']
-    $scrollcitylist.update({'type.scroll-into-view': letter})
-    $letterToast.reset().mid({
-      title: {
-        title: letter,
-        itemClass: 'item-circle-solid'
-      },
-      itemClass: 'popups-wrap-trans'
-    })
-  },
-  onScroll: function(e, param) {
-    //滚动时触发 fixed菜单的切换
-    // const $scrollcitylist = this.getElementsById('scrollcitylist')
-    // // $scrollcitylist.update({'type.bindscroll': 'onScroll?'+})
-    // console.log(this.d2);
-    
-  },
+
   onReady: function() {
-    // const $scrollcitylist = this.getElementsById('scrollcitylist')
-    // this.query = wx.createSelectorQuery().in()
-    // $scrollcitylist.getData().data.map(item => {
-    //   if (item.idf){
-    //     this.query.select('#'+item.idf).boundingClientRect(res => {
-    //       res.top
-    //     })
-    //     this.query.selectViewport().scrollOffset(res=>{
-    //      res.scrollTop
-    //     })
-        
-    //     this.query.exec(res => {
-    //       console.log(res)
-    //     })
-    //   }
-    // })
+  },
+  onLoad: function() {
+    getCloudData(this, 'a')
   }
 })
-
-
-// const selectionData = {
-//   scroll: true,
-//   multipy: false,
-//   data: adapter.selectionAdapter(data.cityData),
-//   listClass: 'tabs-default-scroll hei-p100 bg-fff tabs-selection tabs-menu-gird-2',
-// }
-
-// Pager({
-//   data: {
-//     selection: selectionData
-//   },
-// })

@@ -75,7 +75,6 @@ Pager({
     screenList: Pager.list({
       data: screenListData,
       listClass: 'ss-scrore-list color-333',
-      itemClass: 'flex-1'
     })
   },
   storeData: {},
@@ -137,37 +136,32 @@ Pager({
     const $tabsIns = this.getElementsById('test-tabs')
     const $id = e.currentTarget.dataset.id
     if (query.checktype == "radio") {
-      inst.reset().findAndUpdate(e, function(res) {
-        res.itemClass += ' active'
-        return res
-      })
+      console.log(inst);
+      inst.addClass('active')
       wx.setStorageSync('saveScreenListData', $id)
       this.onClosePop()
     }
     else {
       //多选
       const that = this
-      inst.findAndUpdate(e, function(res){
-        const parentId = res.attr['parentId']
-        if (res.itemClass.indexOf('active') < 0){
-          res.itemClass += ' active'
-          if (!that.storeData[parentId] || that.storeData[parentId].length === 0){
-            that.storeData[parentId] = []
-            that.storeData[parentId].push(res.attr['id'])
-            $tabsIns.tabsMenusChecked()
-          }
-          else {
-            that.storeData[parentId].push(res.attr['id'])
-          }
+      const parentId = inst.getData().attr['parentId']
+      if (inst.getData().itemClass.indexOf('active') < 0){
+        inst.addClass('active')
+        if (!that.storeData[parentId] || that.storeData[parentId].length === 0){
+          that.storeData[parentId] = []
+          that.storeData[parentId].push(inst.getData().attr['id'])
+          $tabsIns.tabsMenusChecked()
         }
         else {
-          res.itemClass = ''
-          const index = that.storeData[parentId].indexOf(res.attr['id'])
-          that.storeData[parentId].splice(index, 1)
-          that.storeData[parentId].length === 0 ? $tabsIns.tabsMenusCheckedDel() : ''
+          that.storeData[parentId].push(inst.getData().attr['id'])
         }
-        return res
-      })
+      }
+      else {
+        inst.removeClass('active')
+        const index = that.storeData[parentId].indexOf(inst.getData().attr['id'])
+        that.storeData[parentId].splice(index, 1)
+        that.storeData[parentId].length === 0 ? $tabsIns.tabsMenusCheckedDel() : ''
+      }
     }
   },
   onUpateContent: function(id){

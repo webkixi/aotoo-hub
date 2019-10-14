@@ -4,5 +4,5 @@
     <ui-tree list="{{menuData}}" />
   </scroll-view>
   <ui-list list="{{nav}}" />
-  <ui-item item="{{tipsX}}" />
+  <ui-ss-pop item="{{tipsX}}" />
 </view>

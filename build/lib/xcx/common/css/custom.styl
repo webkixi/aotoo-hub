@@ -57,12 +57,20 @@ view
   height: 100%
   padding: $padding-default
 
+.ss-zindex-m
+  position: relative
+  z-index: -9999
 .none
   display none
+  @extends .ss-zindex-m
 .disN
   display none!important
+  @extends .ss-zindex-m
 .ss-block
   display block
+.ss-i-block
+  display: inline-block
+
 
 .scroll-wrap-nav
   height: calc(100%)
@@ -102,13 +110,14 @@ view
 
 //带背景色标题
 .bg-title-f3f3f3
-  >.htitles
-    height: 100%
-  background: #f3f3f3
-  height: 70rpx
-  padding: 0 20rpx
-  >.htitles
-    ss-display-flex(row nowrap, space-between, center, center)
+  >ui-item
+    >.htitles
+      height: 100%
+    background: #f3f3f3
+    height: 70rpx
+    padding: 0 20rpx
+    >.htitles
+      ss-display-flex(row nowrap, space-between, center, center)
 
 .bg-title-body-f3f3f3
   ss-display-flex(row nowrap, space-between, center, center)

@@ -36,16 +36,19 @@
     @extends .flex-row-wrap
     margin-left: -1%
     margin-top: -1%
-    >.item
-      margin-left: 1%
-      margin-top: 1%
+    >ui-item
+      >.item
+        margin-left: 1%
+        margin-top: 1%
 
 .flex-betwwen-center-htitles
-  >.htitles
-    @extends .flex-row-between-center
+  >ui-item
+    >.htitles
+      @extends .flex-row-between-center
 .flex-betwwen-center-hkv
-  >.hkv
-    @extends .flex-row-between-center
+  >ui-item
+    >.hkv
+      @extends .flex-row-between-center
 
 .al-item-center
   align-items: center

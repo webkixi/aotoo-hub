@@ -1,4 +1,4 @@
-@import '../../../common/commonfunc'
+@import '../../common/commonfunc'
 
 $font-size = 28rpx
 $color = #666
@@ -10,6 +10,11 @@ $bgHeight = calc(100vh - 92rpx)   //90rpx + 2rpx(下边线)== $height
 $arrowSize = 24rpx
 $arrowColor = #999
 $arrrowMl = 8rpx
+
+::-webkit-scrollbar
+  width: 0;
+  height: 0;
+  color: transparent;
 
 .ss-scrore-list
   ss-display-flex(row nowrap, flex-start, center)
@@ -53,29 +58,34 @@ $arrrowMl = 8rpx
 .selection-body
   ss-display-flex(row nowrap, flex-start)
   height: calc(100% - 102rpx)
-  >ui-list
-    &:first-child
-      flex: 1
-  .selection-scroll
-    >ui-item
-      >.item
-        width: 92%
+  >ui-item
+    flex: 1
+
+// .selection-scroll
+//   .xxss
+//     width: 92%
 
 .selectionMenus
   text-align: center
   color: $color-primary
   width: 44rpx
   line-height: @width
-  margin: 0 3rpx
+  margin: 0 10rpx
   >ui-item
     >.item
-      margin-bottom: 6rpx
+      // margin-bottom: 6rpx
       &.active
         background $color-primary
         border-radius 100%
         color: #fff
         width: @width
         height: @width
+
+.tab-choose
+  ss-display-flex(row nowrap, flex-start)
+  >ui-list
+    &:first-child
+      flex: 1
 
 // .ss-scrore-list-pop
 //   .tabs-column-btn

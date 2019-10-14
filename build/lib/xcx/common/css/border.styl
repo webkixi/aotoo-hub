@@ -25,16 +25,19 @@
   &:last-child
     .item-line
       border-bottom: none
-  >.item-line
-    border-bottom: 1rpx solid $color-border
+  >ui-item
+    >.item-line
+      border-bottom: 1rpx solid $color-border
 
 
 
 .br-e3e3e3-li
-  >.item-line
-    border-left: 1rpx solid $color-border
+  >ui-item
+    >.item-line
+      border-left: 1rpx solid $color-border
     &:first-child
-      border-left: none
+      >.item-line
+        border-left: none
 
 .bb-e3e3e3-list-hbody
   >view
@@ -61,10 +64,12 @@
     box-shadow: inherit
 
 .bs-e3e3e3-list
-  >.item-li
-    box-shadow: 0 10rpx 11rpx rgba(21,61,106,0.03)
+  >ui-item
+    >.item-li
+      box-shadow: 0 10rpx 11rpx rgba(21,61,106,0.03)
     &:last-child
-      box-shadow: inherit
+      >.item-li
+        box-shadow: inherit
 
 .bb-e3e3e3-list-hkv
   >view
@@ -76,10 +81,12 @@
 
 .bb-e3e3e3-item-line
   &:last-child
+    >ui-item
+      >.item-line
+        border-bottom: none
+  >ui-item
     >.item-line
-      border-bottom: none
-  >.item-line
-    border-bottom: 1rpx solid $color-border
+      border-bottom: 1rpx solid $color-border
 
 
 .br-10-r

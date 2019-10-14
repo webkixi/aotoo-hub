@@ -257,7 +257,6 @@ Pager({
     listClass: 'hei-p100 bg-fff'
   },
   onLoad: function(e){
-    console.log(e)
   }
   // onLoad(){
   //   setTimeout(() => {

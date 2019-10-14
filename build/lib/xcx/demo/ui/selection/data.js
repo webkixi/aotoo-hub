@@ -4,110 +4,110 @@ const cityData = [
     list: [
       {
         id: 'ax',
-        parentId: 'A',
-        navTitle: "安顺"
+        cfrl: 'A',
+        cname: "安顺"
       },
       {
         id: 'abA',
-        parentId: 'A',
-        navTitle: "阿呗"
+        cfrl: 'A',
+        cname: "阿呗"
       },
       {
         id: 'bj',
-        parentId: 'B',
-        navTitle: "北京"
+        cfrl: 'B',
+        cname: "北京"
       },
       {
         id: 'xz',
-        parentId: 'B',
-        navTitle: "西藏"
+        cfrl: 'B',
+        cname: "西藏"
       },
       {
         id: 'bs',
-        parentId: 'B',
-        navTitle: "白沙"
+        cfrl: 'B',
+        cname: "白沙"
       },
       {
         id: 'bs',
-        parentId: 'B',
-        navTitle: "白山"
+        cfrl: 'B',
+        cname: "白山"
       },
       {
         id: 'bs',
-        parentId: 'B',
-        navTitle: "百色"
+        cfrl: 'B',
+        cname: "百色"
       },
       {
         id: 'bt',
-        parentId: 'B',
-        navTitle: "包头"
+        cfrl: 'B',
+        cname: "包头"
       },
       {
         id: 'bd',
-        parentId: 'B',
-        navTitle: "保定"
+        cfrl: 'B',
+        cname: "保定"
       },
       {
         id: 'bj',
-        parentId: 'B',
-        navTitle: "毕节"
+        cfrl: 'B',
+        cname: "毕节"
       },
       {
         id: 'bj',
-        parentId: 'C',
-        navTitle: "毕节"
+        cfrl: 'C',
+        cname: "毕节"
       },
       {
         id: 'dl',
-        parentId: 'D',
-        navTitle: "大理市"
+        cfrl: 'D',
+        cname: "大理市"
       },
       {
         id: 'fz',
-        parentId: 'F',
-        navTitle: "方正"
+        cfrl: 'F',
+        cname: "方正"
       },
       {
         id: 'gz',
-        parentId: 'G',
-        navTitle: "赣州"
+        cfrl: 'G',
+        cname: "赣州"
       },
       {
         id: 'heb',
-        parentId: 'H',
-        navTitle: "哈尔滨"
+        cfrl: 'H',
+        cname: "哈尔滨"
       },
       {
         id: 'il',
-        parentId: 'I',
-        navTitle: "伊犁"
+        cfrl: 'I',
+        cname: "伊犁"
       },
       {
         id: 'ja',
-        parentId: 'J',
-        navTitle: "吉安"
+        cfrl: 'J',
+        cname: "吉安"
       },
     ],
     hotList: [
       {
         id: 'sh',
-        parentId: 'S',
-        navTitle: "上海"
+        cfrl: 'S',
+        cname: "上海"
       },
       {
         id: 'bj',
-        parentId: 'B',
-        navTitle: "北京"
+        cfrl: 'B',
+        cname: "北京"
       },
       {
         id: 'gz',
-        parentId: 'G',
-        navTitle: "广州"
+        cfrl: 'G',
+        cname: "广州"
       },
       {
         id: 'qy',
-        parentId: 'QQ',
-        navTitle: "清远"
+        cfrl: 'QQ',
+        cname: "清远"
       },
     ]
   },
@@ -116,65 +116,80 @@ const cityData = [
     list: [
       {
         id: 'ablw',
-        parentId: 'A',
-        navTitle: "阿波罗湾"
+        cfrl: 'A',
+        cname: "阿波罗湾"
       },
       {
         id: 'abzb',
-        parentId: 'A',
-        navTitle: "阿布扎比"
+        cfrl: 'A',
+        cname: "阿布扎比"
+      },
+      {
+        id: 'abzb',
+        cfrl: 'A',
+        cname: "阿布扎比"
+      },
+      {
+        id: 'abzb',
+        cfrl: 'A',
+        cname: "阿布扎比"
+      },
+      {
+        id: 'abzb',
+        cfrl: 'A',
+        cname: "阿布扎比"
       },
       {
         id: 'bdd',
-        parentId: 'B',
-        navTitle: "巴淡岛"
+        cfrl: 'B',
+        cname: "巴淡岛"
       },
       {
         id: 'cjd',
-        parentId: 'C',
-        navTitle: "草津町"
+        cfrl: 'C',
+        cname: "草津町"
       },
       {
         id: 'db',
-        parentId: 'D',
-        navTitle: "大阪"
+        cfrl: 'D',
+        cname: "大阪"
       },
       {
         id: 'flkf',
-        parentId: 'F',
-        navTitle: "法兰克福"
+        cfrl: 'F',
+        cname: "法兰克福"
       },
       {
         id: 'glg',
-        parentId: 'G',
-        navTitle: "盖伦格"
+        cfrl: 'G',
+        cname: "盖伦格"
       },
       {
         id: 'gs',
-        parentId: 'G',
-        navTitle: "冈山"
+        cfrl: 'G',
+        cname: "冈山"
       },
       {
         id: 'gs',
-        parentId: 'G',
-        navTitle: "高松"
+        cfrl: 'G',
+        cname: "高松"
       },
       {
         id: 'gbhg',
-        parentId: 'G',
-        navTitle: "哥本哈根"
+        cfrl: 'G',
+        cname: "哥本哈根"
       },
     ],
     hotList: [
       {
         id: 'se',
-        parentId: 'S',
-        navTitle: "首尔"
+        cfrl: 'S',
+        cname: "首尔"
       },
       {
         id: 'mg',
-        parentId: 'M',
-        navTitle: "曼谷"
+        cfrl: 'M',
+        cname: "曼谷"
       },
     ]
   },

@@ -23,62 +23,60 @@ $Menu-fw = bold
 
 
 //抽出公用部分 适用于除tab组件外的其它组件使用
-.tab-list
-  ss-tabs($Menu-bg, $Menu-color , $Menu-size, $Menu-hei , $Menu-active)
-.tab-list-scroll
-  ss-tabs($Menu-bg, $Menu-color , $Menu-size-2, $Menu-hei-2 , $Menu-active)
-  font-weight: $Menu-fw
+ssfunc-tab-list()
+  .tab-list
+    ss-tabs($Menu-bg, $Menu-color , $Menu-size, $Menu-hei , $Menu-active)
+ssfunc-tab-list-scroll()
+  .tab-list-scroll
+    ss-tabs($Menu-bg, $Menu-color , $Menu-size-2, $Menu-hei-2 , $Menu-active)
+    font-weight: $Menu-fw
 
-.tab-list-theme
-  border-bottom: 1px solid $color-border
-  @extends .tab-list
-  >.item
-    flex: 1
-    ss-border-ani(4rpx, -2rpx, $Menu-active)
+ssfunc-tab-list-theme()
+  .tab-list-theme
+    border-bottom: 1px solid $color-border
+    @extends .tab-list
+    >ui-item
+      flex: 1
+      >.item
+        ss-border-ani(4rpx, -2rpx, $Menu-active)
+        height: 100%
 
-.tab-list-theme-scroll
-  @extends .box-shadow-bottom
-  white-space: nowrap
-  width: $Menu-width
-  padding: $Menu-padding
-  line-height: $Menu-hei-2
-  z-index 9
-  .item
-    ss-border-ani(6rpx, 0, $Menu-active, $isScroll: true)
-    margin: $Menu-margin
+ssfunc-tab-list-theme-scroll()
+  .tab-list-theme-scroll
+    @extends .box-shadow-bottom
+    white-space: nowrap
+    width: $Menu-width
+    padding: $Menu-padding
+    line-height: $Menu-hei-2
+    z-index 9
+    ui-item
+      display: inline-block
+      .item
+        ss-border-ani(6rpx, 0, $Menu-active, $isScroll: true)
+        margin: $Menu-margin
 
-
-
-//tab组件
-
-// .tab-container
-//   .menu-box
-//     @extends .tab-list-scroll
-//   .content-box
-//     padding: $contentPadding
-//     width: $contentWidth
-
-
-.tabs-default
-  .menu-box
-    @extends .tab-list-theme
+ssfunc-tabs-default()
+  .tabs-default
+    .menu-box
+      @extends .tab-list-theme
 
 //tab组件 scroll
-.tabs-default-scroll
-  &.tabs-menu-gird-2
+ssfunc-tabs-default-scroll()
+  .tabs-default-scroll
+    &.tabs-menu-gird-2
+      .menu-box
+        .item
+          width: calc(50% - 40rpx) //$Menu-margin*2 = 40rpx
+          text-align center
     .menu-box
-      .item
-        width: calc(50% - 40rpx) //$Menu-margin*2 = 40rpx
-        text-align center
-  .menu-box
-    @extends .tab-list-theme-scroll
-  .content-box
-    height: $Content-height-2
-    .content-item
-      @extends .card-bg 
-      margin-bottom: 20rpx
-      height: 800rpx
-      width: auto     //scroll-view 影响
+      @extends .tab-list-theme-scroll
+    .content-box
+      height: $Content-height-2
+      .content-item
+        @extends .card-bg 
+        margin-bottom: 20rpx
+        height: 800rpx
+        width: auto     //scroll-view 影响
 
 
 
@@ -88,48 +86,46 @@ $tC-meun-wid = 180rpx
 $tC-padding = 0 20rpx
 $tC-btn-padding = 8rpx 20rpx
 
-.tabs-column-btn
-  ss-display-flex(row nowrap, flex-start, center)
-  background: #fff
-  padding: $tC-btn-padding
-  >.item
-    width: $tC-meun-wid
-    margin-right: 20rpx
-    height: 62rpx
-    line-height: @height
-    &:last-child
-      flex: 1
-      margin-right: 0
-
-.tabs-column
-  ss-display-flex(row nowrap, flex-start)
-  // position: relative
-  // padding-bottom: 78rpx
-  >ui-list
-    &:nth-child(2)
-      flex: 1
-  .menu-box
-    ss-tabs($tC-bg, $Menu-color , $Menu-size, 100% , $Menu-active, true)
-    overflow-y: auto
-    .item
-      line-height: $tC-lh
-      min-width: $tC-meun-wid
-      &.active
-        background: #fff
-  .content-box
-    height: auto
-    padding: $tC-padding
-    line-height: $tC-lh
-    text-align: left
+ssfunc-tabs-column-btn()
+  .tabs-column-btn
+    ss-display-flex(row nowrap, flex-start, center)
     background: #fff
-    overflow-y: auto
-    min-height: 100%
-    swiper-item
-      position: relative!important
-  // .footer-box
-  //   position: absolute
-  //   bottom: 0
-  //   left 0
-  //   width: 100%
-  //   @extends .tabs-column-btn
+    padding: $tC-btn-padding
+    >ui-item
+      width: $tC-meun-wid
+      margin-right: 20rpx
+      height: 62rpx
+      line-height: @height
+      &:last-child
+        flex: 1
+        margin-right: 0
+
+ssfunc-tabs-column()
+  .tabs-column
+    ss-display-flex(row nowrap, flex-start)
+    // position: relative
+    // padding-bottom: 78rpx
+    >ui-list
+      &:nth-child(2)
+        flex: 1
+    .menu-box
+      ss-tabs($tC-bg, $Menu-color , $Menu-size, 100% , $Menu-active, true)
+      overflow-y: auto
+      -webkit-overflow-scrolling: touch
+      .item
+        line-height: $tC-lh
+        min-width: $tC-meun-wid
+        &.active
+          background: #fff
+    .content-box
+      -webkit-overflow-scrolling: touch
+      height: auto
+      padding: $tC-padding
+      line-height: $tC-lh
+      text-align: left
+      background: #fff
+      overflow-y: auto
+      min-height: 100%
+      swiper-item
+        position: relative!important
 

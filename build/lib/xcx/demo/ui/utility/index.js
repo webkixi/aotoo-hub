@@ -40,7 +40,7 @@ const adpeterButton = (res) => {
             itemClass:  'size12'
           },
         ],
-        itemClass: 'item-li bg-display wid-p30 color-fff bg-' +itemxx.title,
+        itemClass: 'item-li bg-display wid-190-r color-fff bg-' +itemxx.title,
         parent: item.id
       })
     })

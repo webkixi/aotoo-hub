@@ -1,5 +1,15 @@
 const data = [
   {
+    title: 'Navigation 导航组件',
+    id: 'navigation',
+    list: [
+      { title: 'Tabs', attrx: 'tabs', littleTitle: '标签页'},
+      { title: 'Screen', attrx: 'screen', littleTitle: '筛选', isNews: true},
+      { title: 'Cityselection', attrx: 'selection', littleTitle: '选择城市', isNews: true},
+      { title: 'Car', attrx: 'car', littleTitle: '汽车品牌', isNews: true},
+    ]
+  },
+  {
     title: 'Basic 基础组件',
     id: 'basic',
     list: [
@@ -23,7 +33,7 @@ const data = [
     list: [
       { title: 'Modal', attrx: 'modal', littleTitle: '弹出层 ' },
       // { title: 'Toast', attrx: 'toast', littleTitle: '提示 ' },
-      { title: 'Score', attrx: 'score', littleTitle: '评分 ', isNews: true },
+      { title: 'Score', attrx: 'score', littleTitle: '评分 ' },
     ]
   },
   {
@@ -41,14 +51,6 @@ const data = [
       { title: 'Single-picker', attrx: 'singlepicker', littleTitle: '单层弹层选择器 ' },
       { title: 'Multipy-picker', attrx: 'multipypicker', littleTitle: '多层弹层选择器 ' },
       { title: 'Dropdown', attrx: 'dropdown', littleTitle: '下拉菜单 ' },
-    ]
-  },
-  {
-    title: 'Navigation 导航组件',
-    id: 'navigation',
-    list: [
-      { title: 'Tabs', attrx: 'tabs', littleTitle: '标签页', isNews: true},
-      { title: 'Screen', attrx: 'screen', littleTitle: '仿携程，同程筛选', isNews: true},
     ]
   },
   {
@@ -74,9 +76,9 @@ const actionSideData = [
     title: 'DEMO 更新', 
     id: 'demo',
     list: [
-      {title: '导航组件', desc: '仿携程，同程筛选', type: 'demo'},
+      {title: '导航组件', desc: '选择城市', type: 'demo'},
+      {title: '导航组件', desc: '筛选', type: 'demo'},
       {title: '操作反馈', desc: '评分', type: 'demo'},
-      {title: '列表', desc: '左滑删除', type: 'demo'}
     ]
   },
   {

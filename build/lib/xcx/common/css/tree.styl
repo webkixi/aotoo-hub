@@ -1,18 +1,15 @@
-.ss-title
-  color: #666666
-  display: block
-  font-size: 14px
-  padding: 10rpx 20rpx
+ssfunc-ss-title()
+  .ss-title
+    color: #666666
+    display: block
+    font-size: 14px
+    padding: $dispaly-padding
 
-.ss-title-flex-between
-  @extends .ss-title
-  ss-display-flex(row nowrap, space-between, center, center)
+ssfunc-ss-title-flex-between()
+  .ss-title-flex-between
+    @extends .ss-title
+    @extends .flex-row-between-center
 
-.ss-tree-hierarchy
-  background: #f5f5f5
-  >.level0
-    .hlist
-      background: #fff
 
 //tree 列表 形式一
 $tl-padidng = $plr-default
@@ -20,9 +17,11 @@ $tl-item-mb = 20rpx
 $tl-item-bg = #fff
 $tl-item-br = $list-br
 
-.ss-tree-list
-  padding: $tl-padidng
-  >.level0
-    margin-bottom: $tl-item-mb
-    background: $tl-item-bg 
-    border-radius: $tl-item-br
+ssfunc-ss-tree-list()
+  .ss-tree-list
+    padding: $tl-padidng
+    >ui-item
+      >.level0
+        margin-bottom: $tl-item-mb
+        background: $tl-item-bg 
+        border-radius: $tl-item-br

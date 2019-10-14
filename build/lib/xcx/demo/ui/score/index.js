@@ -132,7 +132,7 @@ Pager({
         {
           title: {
             title: ' ',
-            itemClass: 'icon-arrow-left-circle small score-absolute',
+            itemClass: 'icon-arrow-right-circle icon-left small score-absolute',
           },
           itemClass: 'none',
           tap: 'prevPage'

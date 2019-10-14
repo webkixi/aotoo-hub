@@ -1,0 +1,54 @@
+@import '../../common/commonfunc'
+
+$font-size = 28rpx
+$color = #666
+$activeColor = #227ce1
+$height = 90rpx
+$bgHeight = calc(100vh - 92rpx)   //90rpx + 2rpx(下边线)== $height
+
+
+$arrowSize = 24rpx
+$arrowColor = #999
+$arrrowMl = 8rpx
+
+::-webkit-scrollbar
+  width: 0;
+  height: 0;
+  color: transparent;
+
+
+.selection-body
+  height: calc(100% - 102rpx)
+
+// .selection-scroll
+//   .xxss
+//     width: 92%
+
+.selectionMenus
+  text-align: center
+  color: $color-primary
+  width: 44rpx
+  line-height: @width
+  margin: 0 10rpx
+  >ui-item
+    >.item
+      // margin-bottom: 6rpx
+      &.active
+        background $color-primary
+        border-radius 100%
+        color: #fff
+        width: @width
+        height: @width
+
+.tab-choose
+  ss-display-flex(row nowrap, flex-start)
+  >ui-list
+    &:first-child
+      flex: 1
+
+// .ss-scrore-list-pop
+//   .tabs-column-btn
+//     opacity 0
+//   &.active
+//     .tabs-column-btn
+//       opacity 1

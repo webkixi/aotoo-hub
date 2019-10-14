@@ -19,14 +19,16 @@ $arrrowMl = 8rpx
   font-size: $font-size
   position: relative
   height: $height
-  >.item
-    text-align: center
-    &.active
-      color: $activeColor
-      .item-arrow
-        &:after
-          content: '\e617'
-          color: $activeColor
+  >ui-item
+    flex: 1
+    >.item
+      text-align: center
+      &.active
+        color: $activeColor
+        .item-arrow
+          &:after
+            content: '\e617'
+            color: $activeColor
   .item-arrow
     &:after
       content: '\e616'

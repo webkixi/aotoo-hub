@@ -107,12 +107,14 @@ display-flex($flex-row = row nowrap, $justify-content = flex-start, $align-items
           content: '\e618'
 
 .list-normal
-  >.li
-    font-size 14px
-    padding 6px 0
-    border-bottom 1px solid #d3d3d3
+  >ui-item
+    >.li
+      font-size 14px
+      padding 6px 0
+      border-bottom 1px solid #d3d3d3
     &:last-child
-      border-bottom none
+       >.li
+        border-bottom none
 
 .item-pic
   display-flex(row nowrap, flex-start)
