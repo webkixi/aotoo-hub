@@ -4,7 +4,8 @@
     "pages/empty/index",
     "pages/logs/logs"
   ],
-  "subpackages": [{
+  "subpackages": [
+    {
       "root": "demo/",
       "name": "mydemo",
       "pages": [
@@ -42,9 +43,16 @@
         "ui/toast/index",
         "ui/screen/index",
         "ui/score/index",
-        "ui/selection/index",
         "spiderchar/index",
         "uploads/index"
+      ]
+    },
+    {
+      "root": "demo2/",
+      "name": "city",
+      "pages": [
+        "selection/index",
+        "car/index"
       ]
     }
   ],
@@ -54,8 +62,10 @@
     "ui-tree": "/components/aotoo/tree/index",
     "action-side": "/components/actionSide/index",
     "ui-pop": "/components/actionSide/index",
+    "ui-ss-pop": "/components/ssPop/index",
     "ui-tab": "/components/tab/index",
     "ui-tab2": "/components/tabColumn/index",
+    "ui-tab-choose": "/components/tabChoose/index",
     "ui-form": "/components/form/index",
     "ui-collapse": "/components/collapse/index",
     "ui-uploads": "/components/uploads/index",
