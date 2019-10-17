@@ -47,7 +47,14 @@ function content(param={}, myclass, op) {
   } 
 
   if (yesCloseBtn) {
-    dot.push({ class: 'icono-crossCircle closeIt', aim: 'hide' })
+    let opts = {}
+    if (lib.isObject(yesCloseBtn)) opts = yesCloseBtn
+    let cls = opts.itemClass || opts.class
+    let sty = opts.itemStyle || opts.style
+    let closePart = { class: `icono-crossCircle closeIt`, aim: 'hide' }
+    if (cls) closePart.class += ' ' + cls
+    if (sty) closePart.itemStyle = sty
+    dot.push(closePart)
   }
 
   param.dot = dot
@@ -243,13 +250,13 @@ Component({
         console.error(error);
       }
     },
-    pop: function(p, c) {
+    pop: function(p={}, c) {
       this.__opration(p, c, 'actionSide-pop')
     },
-    toast: function(p, c) {
+    toast: function(p={}, c) {
       this.__opration(p, c, 'actionSide-toast')
     },
-    right: function (p, c) {
+    right: function (p={}, c) {
       this.__opration(p, c, 'actionSide-right')
       // const {param, cb} = paramCb(p, c)
       // let myclass = lib.isString(param) ? param : cls(param)
@@ -262,13 +269,13 @@ Component({
       //   __actionMask: myclass ? 'actionMask show' : 'actionMask',
       // }, cb)
     },
-    left: function (p, c) {
+    left: function (p={}, c) {
       this.__opration(p, c, 'actionSide-left')
     },
-    bot: function (p, c) {
+    bot: function (p={}, c) {
       this.__opration(p, c, 'actionSide-bot')
     },
-    top: function (p, c) {
+    top: function (p={}, c) {
       this.__opration(p, c, 'actionSide-top')
     },
   }

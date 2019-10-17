@@ -330,7 +330,7 @@
 </template>
 
 <template name="@picker">
-  <block wx:if="{{util.isArray(input.value)}}">
+  <block wx:if="{{input.values && util.isArray(input.values)}}">
     <!-- <picker mode="multiSelector" bindcolumnchange="{{input.bindcolumnchange ? 'pickersChange': ''}}" bindchange="{{input.bindcolumnchange ? '': 'rcChange'}}" value="{{input.value||[0]}}" range="{{input.titles||[[]]}}" data-address="{{input.uAddress}}"> -->
     <!-- <picker mode="multiSelector" bindcolumnchange="{{input.value.length > 1 ? 'pickersChange' : undefined}}" /> -->
     <picker mode="multiSelector" 
@@ -361,18 +361,91 @@
     </picker>
   </block>
   <block wx:else>
-    <picker 
-      bindchange="rcChange" 
-      value="{{input.value||0}}" 
-      range="{{input.titles||[]}}" 
+    <block wx:if="{{input.mode == 'time' || input.mode == 'date' }}">
+      <picker 
+        bindchange="pickersChange" 
+        mode="{{input.mode}}"
+        value="{{input.value||''}}" 
+        start="{{input.start||''}}"
+        end="{{input.end||''}}"
+        class="input-item-picker {{input.itemClass||'input-item-picker-time'}}"
+        disabled="{{input.disabled||''}}"
+        data-address="{{input.uAddress}}"
+        data-evt="{{util.dataEvt(input, ['bindchange', 'bindcancel'])}}"
+      >
+        <view class="picker">
+          {{input.value}}
+        </view>
+      </picker>
+    </block>
+    <block wx:elif="{{input.mode == 'region'}}">
+      <picker 
+        bindchange="pickersChange" 
+        mode="region"
+        value="{{input.value||[]}}" 
+        custom-item="{{input['custom-item']||''}}"
+        class="input-item-picker {{input.itemClass||'input-item-picker-region'}}"
+        disabled="{{input.disabled||''}}"
+        data-address="{{input.uAddress}}"
+        data-evt="{{util.dataEvt(input, ['bindchange', 'bindcancel'])}}"
+      >
+        <view class="picker">
+          {{input.value}}
+        </view>
+      </picker>
+    </block>
+    <block wx:else>
+      <picker 
+        bindchange="pickersChange" 
+        value="{{input.value||0}}" 
+        range="{{input.titles||[]}}" 
+        class="input-item-picker {{input.itemClass}}"
+        disabled="{{input.disabled||''}}"
+        data-address="{{input.uAddress}}"
+        data-evt="{{util.dataEvt(input, ['bindchange', 'bindcancel'])}}"
+      >
+        <view class="picker">
+          {{input.value}}
+        </view>
+      </picker>
+    </block>
+  </block>
+</template>
+
+<template name="@picker-view">
+  <block wx:if="{{input.values && util.isArray(input.values)}}">
+    <block wx:if="{{input.header}}">
+      <ui-item item="{{input.header}}" />
+    </block>
+    <block wx:if="{{input.titles}}">
+      <ui-list list="{{ {data: input.titles, listClass: 'input-item-pickerView-theader', itemClass: 'input-item-pickerView-td' } }}" />
+    </block>
+    <picker-view 
+      bindchange="pickerViewEvent" 
+      bindpickstart="pickerViewEvent" 
+      bindpickend="pickerViewEvent"
+      value="{{input.value||[]}}" 
+      indicator-style="{{input['indicator-style']}}"
+      indicator-class="{{input['indicator-class']}}"
+      mask-style="{{input['mask-style']}}"
+      mask-class="{{input['mask-class']}}"
+      class="input-item-pickerView {{input.itemClass}}"
       disabled="{{input.disabled||''}}"
       data-address="{{input.uAddress}}"
-      data-evt="{{util.dataEvt(input, ['bindchange', 'bindcancel', 'bindcolumnchange'])}}"
+      data-evt="{{util.dataEvt(input, ['bindchange', 'bindpickstart', 'bindpickend'])}}"
     >
-      <view class="picker">
-        {{input.titles[input.value]}}
-      </view>
-    </picker>
+      <block wx:for="{{input.values}}" wx:key="">
+        <picker-view-column>
+          <view wx:for="{{item}}" wx:key="" wx:for-item="subitem">
+            <block wx:if="{{util.isObject(subitem)}}">{{subitem.title||subitem.text}}</block>
+            <block wx:if="{{util.isString(subitem)}}">{{subitem}}</block>
+          </view>
+        </picker-view-column>
+      </block>
+    </picker-view>
+    <block wx:if="{{input.footer}}">
+      <ui-item item="{{input.footer}}" />
+    </block>
   </block>
 </template>
 
@@ -432,7 +505,7 @@
 <!-- profile:{}, input: {} -->
 <template name="inputItem">
   <block wx:if="{{input.show}}">
-    <view class="input-item-content {{input.error? 'error':''}} {{input.itemClass || input.inputClass}}">
+    <view class="input-item-content {{input.error? 'error':''}} {{input.inputClass}}">
       <!-- required -->
       <block wx:if="{{input.required}}">
         <text class="input-item-required"></text>

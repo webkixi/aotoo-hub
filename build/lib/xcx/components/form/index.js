@@ -110,7 +110,7 @@ const inputAttributs = {
   'bindlaunchapp': undefined,
   'tap': undefined,
 
-  // sloder
+  // slider
   min: undefined,
   max: undefined,
   step: undefined,
@@ -124,7 +124,7 @@ const inputAttributs = {
 
 
   // picker
-  mode: undefined,
+  'mode': undefined,
   'bindcancel': undefined,
   'bindinput': undefined,
   'bindfocus': undefined,
@@ -133,6 +133,20 @@ const inputAttributs = {
   'bindchange': undefined,
   'bindchanging': undefined,
   'bindcolumnchange': undefined,
+  'start': undefined,
+  'end': undefined,
+  'range': undefined,
+  'customItem': undefined,
+
+  // picker-view
+  'indicator-style': undefined,
+  'indicator-class': undefined,
+  'mask-style': undefined,
+  'mask-class': undefined,
+  'bindpickstart': undefined,
+  'bindpickend': undefined,
+  'header': undefined,
+  'footer': undefined,
   
   'cursor-spacing': undefined,   
   'confirm-type': undefined,
@@ -813,6 +827,22 @@ Component({
       }
     },
 
+    pickerViewEvent(e){
+      const dataset = e.currentTarget.dataset
+      const detail = e.detail
+      const res = this.getAddressInfo(dataset.address)
+      if (res) {
+        const type = e.type
+        if (type === 'change') {
+          res.inputData.value = detail.value
+          setAllocation.call(this, res, {value: detail.value})
+        }
+        runFormBindFun.call(this, 'bindchange', res, e)
+        runFormBindFun.call(this, 'bindpickstart', res, e)
+        runFormBindFun.call(this, 'bindpickend', res, e)
+      }
+    },
+
     pickersChange: function(e) {
       // console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
       const dataset = e.currentTarget.dataset
@@ -881,7 +911,7 @@ function runFormBindFun(fn, res, e, from) {
       from == 'cancel' ? '' : this.setData({[res.address]: res.inputData})
     }
   } else {
-    let selfUpdate = ['picker', 'pickers', 'dropdown', 'checkbox', 'radio']
+    let selfUpdate = ['picker-view', 'picker', 'pickers', 'dropdown', 'checkbox', 'radio']
     if (selfUpdate.indexOf(res.inputData['type'])>-1) {
       from == 'cancel' ? '' : this.setData({[res.address]: res.inputData})
     }
