@@ -36,9 +36,6 @@
   <block wx:elif="{{item.$$id}}">
     <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
   </block>
-  <block wx:elif="{{item.attr}}">
-    <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
-  </block>
   <block wx:else>
     <template is="item" data="{{item}}" />
   </block>
@@ -46,22 +43,31 @@
 </template>
 
 <template name="listWrap">
-  <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}" >
+  <block wx:if="{{ list.type && list.type.is === 'exposed'}}">
     <block wx:if="{{util.isArray(list.data)}}">
       <block wx:for="{{list.data}}" wx:key="">
-        <template is="itemContent" data="{{item, type: list.type}}" />
+        <template is="itemContent" data="{{item}}" />
       </block>
     </block>
-  </view>
+  </block>
   <block wx:else>
-    <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" >
+    <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}" >
       <block wx:if="{{util.isArray(list.data)}}">
         <block wx:for="{{list.data}}" wx:key="">
           <template is="itemContent" data="{{item, type: list.type}}" />
         </block>
       </block>
-      <!-- <template is="listContent" data="{{collects: list.data, list}}" /> -->
     </view>
+    <block wx:else>
+      <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" >
+        <block wx:if="{{util.isArray(list.data)}}">
+          <block wx:for="{{list.data}}" wx:key="">
+            <template is="itemContent" data="{{item, type: list.type}}" />
+          </block>
+        </block>
+        <!-- <template is="listContent" data="{{collects: list.data, list}}" /> -->
+      </view>
+    </block>
   </block>
 </template>
 

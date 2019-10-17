@@ -76,7 +76,6 @@ function sClone(obj) {
 // }
 
 function log(what){
-  console.log('========= log what')
   console.log(JSON.stringify(what))
 }
 
