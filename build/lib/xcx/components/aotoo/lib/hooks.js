@@ -15,7 +15,7 @@ class _hooks {
     let expireTime = 0
     let storage = props.storage
     if (isObject(storage)) {
-      storage = props.storage.localstorage
+      storage = props.storage.localstorage  // 是否启用本地存储
       max = props.storage.max || 0
       expireTime = props.storage.expire || 0
       delete props.storage.localstorage

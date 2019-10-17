@@ -99,7 +99,7 @@ export function tree(dataAry, props, fromTree){
   }
   dataAry.forEach( (item, ii) => {
     treeDeep = 1
-    if (typeof item == 'object' && !Array.isArray(item)) {
+    if (item && typeof item == 'object' && !Array.isArray(item)) {
       // item.fromTree = fromTree
       item.fromComponent = fromTree
       if (item.idf && !item.parent && idrecode.indexOf(item.idf) == -1) {

@@ -57,6 +57,11 @@ export function reSetItemAttr(item, list){
         item['attr'] = {'data-treeid': $ii}
       }
     }
+
+    // let _attr = item.attr||{}
+    // let excludeAttr = ['id', 'treeid', 'data-treeid']
+    // let extraAttr = Object.keys(_attr).filter(kyname => excludeAttr.indexOf(kyname) == -1)
+    // item['__moreAttributs'] = extraAttr.length
   }
 
   const newItem = resetItem(item, this)

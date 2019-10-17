@@ -48,8 +48,8 @@ export function resetItem(data, context, loop) {
     }
     
     Object.keys(data).forEach(function (key) {
-      if (data.hasOwnProperty(key)) {
-      // if (data[key] || data[key]===0) {
+      // if (data.hasOwnProperty(key)) {
+      if (data[key] || data[key]===0) {
         if (accessKey.indexOf(key) > -1 || (key.indexOf('@') == 0 && key.length > 1)) {
           incAttrs.push(key)
         } else {
