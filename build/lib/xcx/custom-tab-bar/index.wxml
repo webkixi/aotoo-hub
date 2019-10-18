@@ -1,0 +1,39 @@
+<!-- miniprogram/custom-tab-bar/index.wxml -->
+<wxs module="tmp">
+  function reddotClass(rd){
+    var len = rd.length
+    if (rd === '00') return 'reddot len0'
+    if (rd === '000') return 'reddot len1 '
+    if (rd === '···') return 'reddot'
+    else if (len === 1) return 'reddot len1'
+    else if (len === 2) return 'reddot len2'
+    else if (len === 3) return 'reddot len3'
+    else return 'reddot'
+  }
+
+  module.exports = {
+    reddotClass: reddotClass
+  }
+
+</wxs>
+<template name="tabbar">
+  <cover-view class="tab-bar {{itemClass}}">
+    <cover-view class="tab-bar-border"></cover-view>
+    <cover-view wx:for="{{list}}" wx:key="index" class="tab-bar-item" data-path="{{item.pagePath}}" data-index="{{index}}" bindtap="switchTab">
+      <block wx:if="{{item.show}}">
+        <cover-image src="{{selected === index ? item.selectedIconPath : item.iconPath}}"></cover-image>
+        <cover-view style="color: {{selected === index ? selectedColor : color}}">
+          {{item.text}}
+        </cover-view>
+        <block wx:if="{{item.reddot !== '0'}}">
+          <cover-view class="{{tmp.reddotClass(item.reddot)}}">{{item.reddot.length >=4 ? '···' : item.reddot == '00' ? '' : item.reddot == '000' ? '0' : item.reddot}}</cover-view>
+        </block>
+      </block>
+    </cover-view>
+  </cover-view>
+</template>
+
+<block wx:if="{{show}}">
+  <template is="tabbar" data="{{list: $list, selected, color, selectedColor, itemClass}}"></template>
+</block>
+  

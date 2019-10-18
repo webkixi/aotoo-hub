@@ -74,6 +74,7 @@
     "ui-chart": "/components/charts/index",
     "ui-switch": "/components/switch/index"
   },
+  "tabBar": { "custom": true, "list": [{ "pagePath": "pages/index/index"}, { "pagePath": "pages/index/index"}] },
   "window":{
     "backgroundTextStyle":"dark",
     "navigationBarBackgroundColor": "#2567FF",
