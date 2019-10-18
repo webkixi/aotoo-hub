@@ -149,58 +149,67 @@ export const listBehavior = function(app, mytype) {
       },
 
       update: function (param, callback) {
-        const that = this
-        const cb = lib.isFunction(callback) ? callback : null
-        const updateFun = (opts) => {
-          let param = opts
-          if (lib.isArray(param)) {
-            param = {data: param}
-          }
+        try {
+          const that = this
+          const cb = lib.isFunction(callback) ? callback : null
+          const updateFun = (opts) => {
+            let param = opts
+            if (lib.isArray(param)) {
+              param = {data: param}
+            }
 
-          if (lib.isObject(param)) {
-            let target = {}
-            Object.keys(param).forEach(key => {
-              if (param[key] || param[key] === 0) {
-                let nkey = key.indexOf('$list.') == -1 ? '$list.' + key : key
-                let nval = param[key]
-                if (isArray(nval)) {
-                  nval = reSetArray.call(this, param[key], this.data.$list).data
-                } else {
-                  if (key.indexOf('title') > -1 || key.indexOf('img')>-1 || isObject(nval)) {
-                    if (key.indexOf('@') === -1) {
-                      nval = reSetItemAttr.call(this, param[key], this.data.$list)
+            if (param.data) {
+              let tmp = reSetArray(param.data, that.data.props)
+              param.data = tmp.data
+            }
+
+            if (lib.isObject(param)) {
+              let target = {}
+              Object.keys(param).forEach(key => {
+                if (param[key] || param[key] === 0) {
+                  let nkey = key.indexOf('$list.') == -1 ? '$list.' + key : key
+                  let nval = param[key]
+                  if (isArray(nval)) {
+                    nval = reSetArray.call(this, param[key], this.data.$list).data
+                  } else {
+                    if (key.indexOf('title') > -1 || key.indexOf('img')>-1 || isObject(nval)) {
+                      if (key.indexOf('@') === -1) {
+                        nval = reSetItemAttr.call(this, param[key], this.data.$list)
+                      }
                     }
                   }
+                  target[nkey] = nval
                 }
-                target[nkey] = nval
+              })
+              if (lib.isArray(target['$list.data'])) {
+                that.setData({ '$list.data': [] })
               }
-            })
-            if (lib.isArray(target['$list.data'])) {
-              that.setData({ '$list.data': [] })
+              that.setData(target, cb)
             }
-            that.setData(target, cb)
+    
+            // if (lib.isArray(param)) {
+            //   let target = Object.assign({data: []}, this.data.$list)
+            //   target.data = param
+            //   let mylist = reSetList.call(this, target)
+            //   that.reset([]).setData({ $list: mylist }, cb)
+            // }
           }
-  
-          // if (lib.isArray(param)) {
-          //   let target = Object.assign({data: []}, this.data.$list)
-          //   target.data = param
-          //   let mylist = reSetList.call(this, target)
-          //   that.reset([]).setData({ $list: mylist }, cb)
-          // }
-        }
 
-        let result = this.hooks.emit('update', param)
-        if (result && result[0]) {
-          result = result[0]
-          if (lib.isFunction(result.then)) {
-            result.then( res => updateFun(res)).catch(err => err)
+          let result = this.hooks.emit('update', param)
+          if (result && result[0]) {
+            result = result[0]
+            if (lib.isFunction(result.then)) {
+              result.then( res => updateFun(res)).catch(err => err)
+            } else {
+              updateFun(result)
+            }
           } else {
-            updateFun(result)
+            updateFun(param)
           }
-        } else {
-          updateFun(param)
+          return this
+        } catch (error) {
+          console.log(error);
         }
-        return this
       },
       
       __newItem: function(params) {
@@ -236,12 +245,12 @@ export const listBehavior = function(app, mytype) {
               if (lib.isObject(params)) {
                 Object.keys(params).forEach(function (key, jj) {
                   if (jj == 0) {  // 只匹配params的第一个参数
-                    if (item.attr&&(item.attr[key] === params[key]) ||
+                    if (attr&&(attr[key] === params[key]) ||
                       item[key] == params[key]
                     ) $selectIndex = ii;
                   }
                 })
-                if ($selectIndex) break;
+                if ($selectIndex || $selectIndex === 0) break;
               } 
               
               if (lib.isString(params)) {
