@@ -6,7 +6,7 @@
 const app = getApp()
 const Core = require('../aotoo/core')
 const lib = Core.lib
-const WxParse = require('./wxParse/wxParse.js');
+import {html, markdown} from './htmlparser'
 
 Component({
   options: {
@@ -21,9 +21,7 @@ Component({
       type: String,
     }
   },
-  data: {
-    article: {}
-  },
+  data: {},
   behaviors: [Core.baseBehavior(app, 'markit')],
   lifetimes: {
     created: function() {
@@ -32,37 +30,53 @@ Component({
     attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
       let that = this
       let dataSource = this.properties.dataSource
-      let textType = this.properties.textType
+      let textType = this.properties.textType || 'html'
 
       if (lib.isString(dataSource)) {
         dataSource = {
           content: dataSource, 
-          type: (textType||'html')
+          type: textType
         }
       }
 
+      // <ui-markit dataSource="{{content: '', type: '', itemClass: '', itemStyle: ''  }}" textType="html"/>
       if (lib.isObject(dataSource)) {
-        WxParse.wxParse('article', (dataSource.type||'html'), dataSource.content, that);
-      }
-    },
-    
-    ready: function() {
+        dataSource.type = dataSource.type || textType
+        if (textType === 'html') {
+          let cnt = dataSource.content
+          let type = dataSource.type
+          delete dataSource.content
+          delete dataSource.type
+          let props = dataSource
+          this.html(cnt, props)
+        }
 
+        if (textType === 'md' || textType === 'markdown') {
+          let cnt = dataSource.content
+          let type = dataSource.type
+          delete dataSource.content
+          delete dataSource.type
+          let props = dataSource
+          this.md(cnt, props)
+        }
+      }
     }
   },
   methods: {
-    md(param){
+    md(content, param){
       const that = this
-      if (lib.isString(param)) {
-        WxParse.wxParse('article', 'md', param, that);
-      }
+      markdown(content, param).then(cnt => doneHtml(cnt, that))
     },
 
-    html(param){
+    html(content, param) {
       const that = this
-      if (lib.isString(param)) {
-        WxParse.wxParse('article', 'html', param, that);
-      }
+      html(content, param).then(cnt => doneHtml(cnt, that))
     }
   }
 })
+
+function doneHtml(cnt, context) {
+  let that = context
+  cnt = lib.reSetList.call(null, cnt)
+  that.setData({ $list: cnt })
+}
