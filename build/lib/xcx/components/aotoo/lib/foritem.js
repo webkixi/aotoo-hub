@@ -30,6 +30,7 @@ export function resetItem(data, context, loop) {
     let extAttrs = {}
     let incAttrs = []
     data['__sort'] = []
+    data.show = data.hasOwnProperty('show') ? data.show : true
   
     if (context) {
       data.fromComponent = context.data.fromComponent || data.fromComponent || context.data.uniqId

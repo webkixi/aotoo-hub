@@ -70,6 +70,10 @@ export function secondFormat(time, fmt) {
   }
 }
 
+export function timestampFormat(time, fmt) {
+  return secondFormat(time, fmt)
+}
+
 export {
   isString,
   isObject,

@@ -97,8 +97,11 @@ export const listBehavior = function(app, mytype) {
     methods: {
       reset: function(param) {
         // this.setData({$list: JSON.parse(this.originalDataSource)})
+        this.setData({'$list.data': []})
         let oriData = lib.clone(this.originalDataSource)
-        if (param) oriData.data = param
+        if (lib.isArray(param)) {
+          oriData.data = param
+        }
         this.setData({$list: oriData})
         return this
       },
@@ -181,9 +184,11 @@ export const listBehavior = function(app, mytype) {
                   target[nkey] = nval
                 }
               })
-              if (lib.isArray(target['$list.data'])) {
-                that.setData({ '$list.data': [] })
-              }
+
+              // 如果要重置，在reset中传入数组重置整个list.data
+              // if (lib.isArray(target['$list.data'])) {
+              //   that.setData({ '$list.data': [] })
+              // }
               that.setData(target, cb)
             }
     

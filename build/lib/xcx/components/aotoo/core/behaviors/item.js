@@ -62,9 +62,13 @@ export const itemBehavior = function(app, mytype) {
       attr: function (params) {
         return this.data.$item.attr
       },
-      reset: function() {
+      reset: function(param) {
         // this.setData({$item: JSON.parse(this.originalDataSource)})
-        this.setData({$item: lib.clone(this.originalDataSource)})
+        if (lib.isObject(param)) {
+          this.setData({$item: _resetItem(param, this)})
+        } else {
+          this.setData({$item: lib.clone(this.originalDataSource)})
+        }
         return this
       },
       addClass: function(itCls) {
