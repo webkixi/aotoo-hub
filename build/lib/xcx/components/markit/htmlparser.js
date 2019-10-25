@@ -56,7 +56,8 @@ class htmlparser {
       ontext: that.ontext.bind(that),
       onclosetag: that.onclosetag.bind(that)
     }, {
-      decodeEntities: false
+      decodeEntities: false,
+      recognizeSelfClosing: true
     })
   }
 
@@ -112,6 +113,8 @@ class htmlparser {
       tags.push(tag);
     } else {
       if (this._code) {
+        tag.decode = true
+        tag.space = true
         tag.text = ' '
         this._codes.push(tag)
       }
@@ -123,25 +126,23 @@ class htmlparser {
     let tags = this.tags
     let _html = this._html
     let _codes = this._codes
-    text = htmlDecodeByRegExp(text)
-
+    
     if (this._code) {
+      text = text.replace(/ /g, '&nbsp;')
       if (this._open && _codes.length) {
         let curTag = _codes[_codes.length - 1]
         curTag.text = text || ''
       } else {
-        _codes.push({text})
+        _codes.push({text, decode: true, space: true})
       }
     }
     else {
+      text = text.trim()
       if (tags.length && /[\w\u4e00-\u9fa5]/g.test(text)) {
         let curTag = tags[tags.length - 1];
-        if (this._open) curTag.title = text;
-        else {
-          curTag.dot = (curTag.dot||[]).concat({title: text})
-        }
+        curTag.title = text;
       } else {
-        if (text && text.length) {
+        if (text) {
           _html.push({ title: text });
         }
       }
