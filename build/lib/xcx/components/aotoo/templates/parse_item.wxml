@@ -3,8 +3,22 @@
   并为该容器补全干净的属性，避免小程序冗长的属性设置，当然这样的操作会牺牲一点点性能
   补全的属性为 style class data-id data-treeid及view属性对应的事件 touch tap longpress的冒泡及非冒泡事件
   touch > longtap > tap -->
-
-<block wx:if="{{util.hasEvent(item, 'url')}}">
+<block wx:if="{{item.text}}">
+  <text 
+    class="{{item.itemClass||''}}"
+    style="{{item.itemStyle||''}}"
+    id="{{item.id||''}}" 
+    data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid']||item.attr['treeid']||'')}}"
+    data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
+    catch:tap="{{(item.aim||item.catchtap)?'catchItemMethod':''}}"
+    selectable="{{item.selectable||''}}"
+    space="{{item.space||''}}"
+    decode="{{item.decode||''}}"
+    bind:tap="{{item.tap?'itemMethod':''}}"
+    data-evt="{{util.dataEvt(item, ['tap','catchtap'])}}"
+  >{{item.text}}</text>
+</block>
+<block wx:elif="{{util.hasEvent(item, 'url')}}">
   <include src="../partments/events/normal.wxml" />
 </block>
 <block wx:elif="{{item._tap || item._aim || item._longpress || item._catchlongpress || item.touchstart || item.catchtouchstart || item.touchmove || item.catchtouchmove || item.touchend || item.catchtouchend}}">

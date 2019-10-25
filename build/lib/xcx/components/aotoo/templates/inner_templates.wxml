@@ -51,7 +51,22 @@
 
 <template name="@item">
   <block wx:if="{{util.isObject(props)}}">
-    <block wx:if="{{props.fromComponent}}">
+    <block wx:if="{{props.text}}">
+      <text 
+        class="{{props.itemClass||''}}"
+        style="{{props.itemStyle||''}}"
+        id="{{props.id||''}}" 
+        data-treeid="{{props && util.isObject(props.attr) && (props.attr['data-treeid']||props.attr['treeid']||'')}}"
+        data-id="{{(props && util.isObject(props.attr) && (props.attr['id'] || props.attr['data-id']) || '')}}"
+        selectable="{{props.selectable||''}}"
+        space="{{props.space||''}}"
+        decode="{{props.decode||''}}"
+        catch:tap="{{(props.aim||props.catchtap)?'catchItemMethod':''}}"
+        bind:tap="{{props.tap?'itemMethod':''}}"
+        data-evt="{{util.dataEvt(props, ['tap','catchtap'])}}"
+      >{{props.text}}</text>
+    </block>
+    <block wx:elif="{{props.fromComponent}}">
       <ui-item class="ui-item" item="{{props}}" fromComponent="{{props.fromComponent}}"/>
     </block>
     <block wx:else>
