@@ -100,7 +100,8 @@ export const listBehavior = function(app, mytype) {
         this.setData({'$list.data': []})
         let oriData = lib.clone(this.originalDataSource)
         if (lib.isArray(param)) {
-          oriData.data = param
+          let tmp = reSetArray(param, this.data.props)
+          oriData.data = tmp.data
         }
         this.setData({$list: oriData})
         return this
