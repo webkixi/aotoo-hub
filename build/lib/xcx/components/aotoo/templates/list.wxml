@@ -25,13 +25,16 @@
       <ui-item item="{{ {__slip: type.option, ...item} }}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
     </block>
     <block wx:else>
-      <block wx:if="{{item.attr}}">
+      <!-- <block wx:if="{{item.attr}}">
         <ui-item item="{{ {__slip: type.option, ...item} }}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}" />
-      </block>
+      </block> -->
       <block wx:else>
         <template is="item" data="{{ item: {__slip: type.option, ...item} }}" />
       </block>
     </block>
+  </block>
+  <block wx:if="{{type && util.isObject(type) && type.isItem}}">
+    <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
   </block>
   <block wx:elif="{{item.$$id}}">
     <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
@@ -46,7 +49,7 @@
   <block wx:if="{{ list.type && list.type.is === 'exposed'}}">
     <block wx:if="{{util.isArray(list.data)}}">
       <block wx:for="{{list.data}}" wx:key="">
-        <template is="itemContent" data="{{item}}" />
+        <template is="itemContent" data="{{item, type: list.type}}" />
       </block>
     </block>
   </block>
@@ -74,24 +77,24 @@
 <template name="swiperWrap">
   <swiper 
     id="{{list.id||list.type.id||''}}"  
-    class="hlist {{list.listClass||list.class}}" 
-    indicator-dots="{{  list.type['indicator-dots'] }}" 
-    indicator-color="{{ list.type['indicator-color'] }}" 
-    indicator-active-color="{{ list.type['indicator-active-color'] }}" 
-    autoplay="{{ list.type['autoplay'] }}" 
-    current="{{ list.type['current'] }}" 
-    current-item-id	="{{ list.type['current-item-id'] }}" 
-    interval	="{{ list.type['interval'] }}" 
-    duration	="{{ list.type['duration'] }}" 
-    circular	="{{ list.type['circular'] || false}}" 
-    vertical	="{{ list.type['vertical'] }}" 
-    previous-margin	="{{ list.type['previous-margin'] }}" 
-    next-margin	="{{ list.type['next-margin'] }}" 
-    display-multiple-items="{{ list.type['display-multiple-items'] }}" 
-    skip-hidden-item-layout="{{ list.type['skip-hidden-item-layout'] }}" 
-    bindchange="_swiperMethod" 
-    bindtransition="_swiperMethod"
-    bindanimationfinish	="_swiperMethod" 
+    class="hlist {{list.listClass||list.class||''}}" 
+    indicator-dots="{{  list.type['indicator-dots']||'' }}" 
+    indicator-color="{{ list.type['indicator-color']||'' }}" 
+    indicator-active-color="{{ list.type['indicator-active-color']||'' }}" 
+    autoplay="{{ list.type['autoplay']||'' }}" 
+    current="{{ list.type['current']||'' }}" 
+    current-item-id	="{{ list.type['current-item-id']||'' }}" 
+    interval	="{{ list.type['interval']||'' }}" 
+    duration	="{{ list.type['duration']||'' }}" 
+    circular	="{{ list.type['circular']||''}}" 
+    vertical	="{{ list.type['vertical']||'' }}" 
+    previous-margin	="{{ list.type['previous-margin']||'' }}" 
+    next-margin	="{{ list.type['next-margin']||'' }}" 
+    display-multiple-items="{{ list.type['display-multiple-items']||'' }}" 
+    skip-hidden-item-layout="{{ list.type['skip-hidden-item-layout']||'' }}" 
+    bindchange="{{list.type&&list.type.bindchange ? '_swiperMethod' : ''}}" 
+    bindtransition="{{list.type&&list.type.bindtransition ? '_swiperMethod' : ''}}" 
+    bindanimationfinish="{{list.type&&list.type.bindanimationfinish ? '_swiperMethod' : ''}}" 
     data-evt="{{util.dataEvt(list.type, ['bindchange', 'bindtransition', 'bindanimationfinish'])}}"
   >
     <block wx:if="{{util.isArray(list.data)}}">
