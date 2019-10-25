@@ -28,9 +28,7 @@
       <!-- <block wx:if="{{item.attr}}">
         <ui-item item="{{ {__slip: type.option, ...item} }}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}" />
       </block> -->
-      <block wx:else>
-        <template is="item" data="{{ item: {__slip: type.option, ...item} }}" />
-      </block>
+      <template is="item" data="{{ item: {__slip: type.option, ...item} }}" />
     </block>
   </block>
   <block wx:if="{{type && util.isObject(type) && type.isItem}}">
