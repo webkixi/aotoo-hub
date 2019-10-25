@@ -105,7 +105,32 @@
 </template>
 
 <template name="scrollWrap">
-  <block wx:if="{{list.type['scroll-top'] && list.type['scroll-left']}}">
+  <scroll-view 
+    id="{{list.id||list.type.id||''}}"
+    class="hlist {{list.listClass||list.class||''}}" 
+    style="{{list.listStyle||''}}" 
+    scroll-x="{{ list.type['scroll-x']||''}}" 
+    scroll-y="{{ list.type['scroll-y']||'' }}"
+    upper-threshold="{{ list.type['upper-threshold']||'' }}" 
+    lower-threshold="{{ list.type['lower-threshold']||'' }}" 
+    scroll-top="{{ list.type['scroll-top']||'' }}" 
+    scroll-left="{{ list.type['scroll-left']||'' }}" 
+    scroll-into-view="{{ list.type['scroll-into-view']||''}}" 
+    scroll-with-animation	="{{ list.type['scroll-with-animation']||'' }}" 
+    enable-back-to-top="{{ list.type['enable-back-to-top']||'' }}" 
+    bindscrolltoupper="{{list.type&&list.type.bindscrolltoupper ? '_scrollMethod' : ''}}"
+    bindscrolltolower="{{list.type&&list.type.bindscrolltolower ? '_scrollMethod' : ''}}"  
+    bindscroll="{{list.type&&list.type.bindscroll ? '_scrollMethod' : ''}}"
+    aria-label="{{ list.type['aria-label']||'' }}" 
+    data-evt="{{util.dataEvt(list.type, ['bindscroll', 'bindscrolltolower', 'bindscrolltoupper'])}}"
+  >
+    <block wx:if="{{util.isArray(list.data)}}">
+      <block wx:for="{{list.data}}" wx:key="">
+        <template is="itemContent" data="{{item}}" />
+      </block>
+    </block>
+  </scroll-view>
+  <!-- <block wx:if="{{list.type['scroll-top'] && list.type['scroll-left']}}">
     <scroll-view 
       id="{{list.id||list.type.id||''}}"
       class="hlist {{list.listClass||list.class}}" 
@@ -208,7 +233,7 @@
         </block>
       </block>
     </scroll-view>
-  </block>
+  </block> -->
 </template>
 
 <template name="mylist">
