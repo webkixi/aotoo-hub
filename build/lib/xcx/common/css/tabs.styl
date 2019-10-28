@@ -35,11 +35,10 @@ ssfunc-tab-list-theme()
   .tab-list-theme
     border-bottom: 1px solid $color-border
     @extends .tab-list
-    >ui-item
+    >.item
       flex: 1
-      >.item
-        ss-border-ani(4rpx, -2rpx, $Menu-active)
-        height: 100%
+      ss-border-ani(4rpx, -2rpx, $Menu-active)
+      height: 100%
 
 ssfunc-tab-list-theme-scroll()
   .tab-list-theme-scroll
@@ -49,11 +48,10 @@ ssfunc-tab-list-theme-scroll()
     padding: $Menu-padding
     line-height: $Menu-hei-2
     z-index 9
-    ui-item
-      display: inline-block
-      .item
-        ss-border-ani(6rpx, 0, $Menu-active, $isScroll: true)
-        margin: $Menu-margin
+    .item
+      // display: inline-block
+      ss-border-ani(6rpx, 0, $Menu-active, $isScroll: true)
+      margin: $Menu-margin
 
 ssfunc-tabs-default()
   .tabs-default

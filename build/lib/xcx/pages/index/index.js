@@ -96,12 +96,12 @@ Pager({
       switch (theTap) {
         case 'selection':
           wx.navigateTo({
-            url: '../../cityselect/selection/index'
+            url: '../../demo2/selection/index'
           })
         break;
         case 'car':
           wx.navigateTo({
-            url: '../../cityselect/car/index'
+            url: '../../demo2/car/index'
           })
         break;
         case theTap:
