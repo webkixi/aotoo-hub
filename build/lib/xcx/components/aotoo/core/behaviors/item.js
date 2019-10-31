@@ -116,18 +116,24 @@ export const itemBehavior = function(app, mytype) {
           itCls = lib.isString(itCls) ? itCls.split(' ') : []
           let $item = this.data.$item
           let $itemClass = $item.itemClass && $item.itemClass.split(' ') || []
-          let indexs = []
-          $itemClass.forEach((cls, ii) => {
-            if (itCls.indexOf(cls) !== -1) {
-              indexs.push(ii)
-            }
-          })
-          if (indexs.length) {
-            indexs.forEach(index => $itemClass.splice(index, 1))
-          }
+          let _cls = itCls.filter(cls => $itemClass.indexOf(cls) === -1)
+          $itemClass = _cls
           this.update({
-            itemClass: ($itemClass.join(' ')||' ')
+            itemClass: ($itemClass.join(' ') || ' ')
           })
+
+          // let indexs = []
+          // $itemClass.forEach((cls, ii) => {
+          //   if (itCls.indexOf(cls) !== -1) {
+          //     indexs.push(ii)
+          //   }
+          // })
+          // if (indexs.length) {
+          //   indexs.forEach(index => $itemClass.splice(index, 1))
+          // }
+          // this.update({
+          //   itemClass: ($itemClass.join(' ')||' ')
+          // })
         }
       },
 

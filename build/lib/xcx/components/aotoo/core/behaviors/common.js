@@ -65,6 +65,7 @@ function listInstDelegate(treeid, listInst){
       addClass(params) {
         let upData = {}
         if (data) {
+          // key = key + '.itemClass'
           let cls = params.split(' ')
           let itCls = (data.itemClass || ' ').split(' ')
           let _cls = cls.filter(c => itCls.indexOf(c) === -1)
@@ -79,7 +80,7 @@ function listInstDelegate(treeid, listInst){
         if (data) {
           let cls = params.split(' ')
           let itCls = (data.itemClass || ' ').split(' ')
-          let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+          let _cls = itCls.filter(c => cls.indexOf(c) === -1)
           itCls = _cls
           data.itemClass = (itCls.join(' ') || ' ')
           upData[key] = data
@@ -172,10 +173,13 @@ function listInstDelegate(treeid, listInst){
               let data = tmpData[key]
               let cls = (params || ' ').split(' ')
               let itCls = (data.itemClass || ' ').split(' ')
-              let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+              let _cls = itCls.filter(c => cls.indexOf(c) === -1)
               itCls = _cls
-              data.itemClass = (itCls.join(' ') || ' ')
-              tmpData[key] = data
+              let mykey = key+'.itemClass'
+              tmpData[mykey] = (itCls.join(' ') || ' ')
+
+              // data.itemClass = (itCls.join(' ') || ' ')
+              // tmpData[key] = data
             })
             listInst.update(tmpData)
           },

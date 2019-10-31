@@ -36,6 +36,16 @@ export function reSetItemAttr(item, list){
   let myClass = item['itemClass'] || item['class'] || item['className'] || ''
   item['itemClass'] = myClass ? itmc + ' ' + myClass : itmc
   item['itemClass'] = item.idf ? 'item itemroot ' + item['itemClass'] : 'item ' + item['itemClass']
+  let cls = item['itemClass'].split(' ')
+  // 去重
+  for(var i=0;i<cls.length-1;i++){
+    for(var j=i+1;j<cls.length;j++){
+      if(cls[i]==cls[j]){
+        cls.splice(j,1);
+      }
+    }
+  }
+  item['itemClass'] = cls.join(' ') || ' '
 
   if (list.itemStyle || list.style) {
     var itsy = list.itemStyle || list.style

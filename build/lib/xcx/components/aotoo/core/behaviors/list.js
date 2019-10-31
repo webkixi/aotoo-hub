@@ -141,18 +141,25 @@ export const listBehavior = function(app, mytype) {
           listCls = lib.isString(listCls) ? listCls.split(' ') : []
           let $list = this.data.$list
           let $listClass = $list.listClass && $list.listClass.split(' ') || []
-          let indexs = []
-          $listClass.forEach((cls, ii)=>{
-            if (listCls.indexOf(cls) !== -1) {
-              indexs.push(ii)
-            }
-          })
-          if (indexs.length) {
-            indexs.forEach(index => $listClass.splice(index, 1))
-          }
+          // let _cls = listCls.filter(cls => $listClass.indexOf(cls) === -1)
+          let _cls = $listClass.filter(cls => listCls.indexOf(cls) === -1)
+          $listClass = _cls
           this.update({
-            listClass: ($listClass.join(' ')||' ')
+            listClass: ($listClass.join(' ') || ' ')
           })
+
+          // let indexs = []
+          // $listClass.forEach((cls, ii)=>{
+          //   if (listCls.indexOf(cls) !== -1) {
+          //     indexs.push(ii)
+          //   }
+          // })
+          // if (indexs.length) {
+          //   indexs.forEach(index => $listClass.splice(index, 1))
+          // }
+          // this.update({
+          //   listClass: ($listClass.join(' ')||' ')
+          // })
         }
 
       },
@@ -182,6 +189,9 @@ export const listBehavior = function(app, mytype) {
                     nval = reSetArray.call(this, param[key], this.data.$list).data
                   } else {
                     if (key.indexOf('title') > -1 || key.indexOf('img')>-1 || isObject(nval)) {
+                      if (isObject(nval)) {
+                        nval = reSetItemAttr.call(this, param[key], this.data.$list)
+                      }
                       if (key.indexOf('@') === -1) {
                         nval = reSetItemAttr.call(this, param[key], this.data.$list)
                       }

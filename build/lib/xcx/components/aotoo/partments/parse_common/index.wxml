@@ -173,7 +173,7 @@
       <block wx:for="{{item['__sort']}}" wx:key="" wx:for-item="tempname">
         <block wx:if="{{tmp.execTemp(tempname, exclude)}}">
           <block wx:if="{{tempname=='title'}}">
-            <template is="make-title" data="{{item: {id: item.id, $$id: item.$$id, fromParent: item.fromParent, fromComponent: item.fromComponent, fromTree: item.fromTree, title: item.title,  itemClass: item.itemClass||item.class, style: item.itemStyle||item.style, aim: item.aim, tap: item.tap, catchtap: item.catchtap, longpress: item.longpress, catchlongpress: item.catchlongpress, touchstart: item.touchstart, touchmove: item.touchmove, touchcancel: item.touchcancel, touchend: item.touchend} }}"/>
+            <template is="make-title" data="{{item: {id: item.id, $$id: item.$$id, treeid: treeid, __fromParent: item.__fromParent, fromComponent: item.fromComponent, fromTree: item.fromTree, title: item.title,  itemClass: item.itemClass||item.class, style: item.itemStyle||item.style, aim: item.aim, tap: item.tap, catchtap: item.catchtap, longpress: item.longpress, catchlongpress: item.catchlongpress, touchstart: item.touchstart, touchmove: item.touchmove, touchcancel: item.touchcancel, touchend: item.touchend} }}"/>
           </block>
           <block wx:else>
             <template is="extraTemp" data="{{tempname, item}}" />
@@ -194,11 +194,11 @@
     <template is="mytemp" data="{{item}}" />
   </block>
   <block wx:else>
-    <block wx:if="{{util.isString(item.title)}}">
+    <block wx:if="{{util.isString(item.title) ||  util.isNumber(item.title)}}">
       <template is="for-title-obj-string" data="{{item}}"/>
     </block>
     <block wx:elif="{{util.isObject(item.title)}}">
-      <template is="for-title-obj-object" data="{{item: item.title}}" />      
+      <template is="for-title-obj-object" data="{{item: item.title, treeid: util.treeid(item)}}" />      
     </block>
     <block wx:else>
       <template is="for-title-obj-object" data="{{item}}"/>
