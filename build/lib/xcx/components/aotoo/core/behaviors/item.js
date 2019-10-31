@@ -60,20 +60,33 @@ export const itemBehavior = function(app, mytype) {
     },
     methods: {
       attr: function (params) {
-        return this.data.$item.attr
+        if (lib.isString(params)){
+          return this.data.$item.attr[params]
+        } else {
+          if (lib.isObject(params)) {
+            let $attr = this.data.$item.attr||{}
+            let keys = Object.keys[params]
+            let key0 = keys[0]
+            let val0 = params[key0]
+            if (val0 === $attr[key0]) return $attr
+          } else {
+            return this.data.$item.attr
+          }
+        }
       },
       reset: function(param) {
         // this.setData({$item: JSON.parse(this.originalDataSource)})
         if (lib.isObject(param)) {
           this.setData({$item: _resetItem(param, this)})
         } else {
-          this.setData({$item: lib.clone(this.originalDataSource)})
+          this.setData({$item: _resetItem(lib.clone(this.originalDataSource))})
         }
         return this
       },
       addClass: function(itCls) {
-        itCls = lib.isString(itCls) ? itCls.split(' ') : undefined
         if (itCls) {
+          itCls = itCls.replace(/\./g, '')
+          itCls = lib.isString(itCls) ? itCls.split(' ') : []
           let $item = this.data.$item
           let $itemClass = $item.itemClass && $item.itemClass.split(' ') || []
           itCls = itCls.filter(cls => $itemClass.indexOf(cls) == -1)
@@ -85,18 +98,22 @@ export const itemBehavior = function(app, mytype) {
       },
 
       hasClass: function (itCls) {
-        itCls = lib.isString(itCls) ? itCls.split(' ') : undefined
         if (itCls) {
+          itCls = itCls.replace(/\./g, '')
+          itCls = lib.isString(itCls) ? itCls.split(' ') : []
+          let len = itCls.length
           let $item = this.data.$item
           let $itemClass = $item.itemClass && $item.itemClass.split(' ') || []
           itCls = itCls.filter(cls => $itemClass.indexOf(cls) !== -1)
-          return itCls.length ? true : false
+          return len === itCls.length ? true : false
+          // return itCls.length ? true : false
         }
       },
 
       removeClass: function(itCls) {
-        itCls = lib.isString(itCls) ? itCls.split(' ') : undefined
         if (itCls) {
+          itCls = itCls.replace(/\./g, '')
+          itCls = lib.isString(itCls) ? itCls.split(' ') : []
           let $item = this.data.$item
           let $itemClass = $item.itemClass && $item.itemClass.split(' ') || []
           let indexs = []
@@ -109,7 +126,7 @@ export const itemBehavior = function(app, mytype) {
             indexs.forEach(index => $itemClass.splice(index, 1))
           }
           this.update({
-            itemClass: $itemClass.join(' ')
+            itemClass: ($itemClass.join(' ')||' ')
           })
         }
       },
@@ -122,7 +139,7 @@ export const itemBehavior = function(app, mytype) {
           let target = {}
           if (lib.isObject(opts)) {
             Object.keys(opts).forEach(key => {
-              if (opts[key] || opts[key] === 0) {
+              if (opts[key] || opts[key] === 0 || typeof opts[key] === 'boolean') {
                 let nkey = key.indexOf('$tmp.') == -1 ? '$tmp.' + key : key
                 target[nkey] = opts[key]
               }

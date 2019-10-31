@@ -31,7 +31,7 @@
       <template is="item" data="{{ item: {__slip: type.option, ...item} }}" />
     </block>
   </block>
-  <block wx:if="{{type && util.isObject(type) && type.isItem}}">
+  <block wx:elif="{{type && util.isObject(type) && type.isItem}}">
     <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
   </block>
   <block wx:elif="{{item.$$id}}">
@@ -242,11 +242,9 @@
     <ui-item item="{{list.header}}" />
   </block>
   <block wx:if="{{list.type && util.isObject(list.type)}}">
-    <block wx:if="{{list.type.is}}">
-      <block wx:if="{{list.type.is == 'swiper'}}"> <template is="swiperWrap" data="{{list}}" /> </block>
-      <block wx:elif="{{list.type.is == 'scroll'}}"> <template is="scrollWrap" data="{{list}}" /> </block>
-      <block wx:else> <template is="listWrap" data="{{list}}" /> </block>
-    </block>
+    <block wx:if="{{list.type.is == 'swiper'}}"> <template is="swiperWrap" data="{{list}}" /> </block>
+    <block wx:elif="{{list.type.is == 'scroll'}}"> <template is="scrollWrap" data="{{list}}" /> </block>
+    <block wx:else> <template is="listWrap" data="{{list}}" /> </block>
   </block>
   <block wx:else>
     <template is="listWrap" data="{{list}}" />

@@ -13,14 +13,14 @@
 </template>
 
 <!-- 这个key要小心 -->
-<block wx:for="{{item.dot}}" wx:key="">
-  <block wx:if="{{util.isString(item)}}">
+<block wx:for="{{item.dot}}" wx:key="" wx:for-item="son">
+  <block wx:if="{{util.isString(son)}}">
     <view class="hdot-item">
-      <text>{{item}}</text>
+      <text>{{son}}</text>
     </view>
   </block>
   <block wx:else>
-    <template is="@item" data="{{ props: {...item, itemClass: item.itemClass ?  'hdot-item ' + item.itemClass : 'hdot-item'} }}" />
+    <template is="@item" data="{{ props: {...son, treeid: util.treeid(item), itemClass: son.itemClass ?  'hdot-item ' + son.itemClass : 'hdot-item'} }}" />
   </block>
 </block>
 <!-- <block wx:for="{{item.dot}}" wx:key="">

@@ -99,6 +99,9 @@ export function tree(dataAry, props, fromTree){
   }
   dataAry.forEach( (item, ii) => {
     treeDeep = 1
+    if (typeof item === 'number' || typeof item === 'string') {
+      menus.push(item.toString())
+    }
     if (item && typeof item == 'object' && !Array.isArray(item)) {
       // item.fromTree = fromTree
       item.fromComponent = fromTree
@@ -114,12 +117,12 @@ export function tree(dataAry, props, fromTree){
         menus.push(item)
       }
     }
-    if (Array.isArray(item)) {
-      var _tmp = owerTree(item)
-			if (_tmp) {
-        menus.push(_tmp)
-			}
-		}
+    // if (Array.isArray(item)) {
+    //   var _tmp = owerTree(item)
+		// 	if (_tmp) {
+    //     menus.push(_tmp)
+		// 	}
+		// }
   })
   return menus
 }

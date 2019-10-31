@@ -10,12 +10,9 @@
     id="{{item.id||''}}" 
     data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid']||item.attr['treeid']||'')}}"
     data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
-    catch:tap="{{(item.aim||item.catchtap)?'catchItemMethod':''}}"
     selectable="{{item.selectable||''}}"
     space="{{item.space||''}}"
     decode="{{item.decode||''}}"
-    bind:tap="{{item.tap?'itemMethod':''}}"
-    data-evt="{{util.dataEvt(item, ['tap','catchtap'])}}"
   >{{item.text}}</text>
 </block>
 <block wx:elif="{{util.hasEvent(item, 'url')}}">

@@ -51,6 +51,148 @@ function rightEvent(dsetEvt) {
   }
 }
 
+function listInstDelegate(treeid, listInst){
+  let index = listInst.findIndex(treeid)
+  if (index || index === 0) {
+    let data = (listInst.getData()).data[index]
+    let key = `data[${index}]`
+    return {
+      treeid,
+      data: lib.clone(data),
+      parent(){
+        return listInst
+      },
+      addClass(params) {
+        let upData = {}
+        if (data) {
+          let cls = params.split(' ')
+          let itCls = (data.itemClass || ' ').split(' ')
+          let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+          itCls = itCls.concat(_cls)
+          data.itemClass = (itCls.join(' ') || ' ')
+          upData[key] = data
+          listInst.update(upData)
+        }
+      },
+      removeClass(params) {
+        let upData = {}
+        if (data) {
+          let cls = params.split(' ')
+          let itCls = (data.itemClass || ' ').split(' ')
+          let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+          itCls = _cls
+          data.itemClass = (itCls.join(' ') || ' ')
+          upData[key] = data
+          listInst.update(upData)
+        }
+      },
+      hasClass(params) {
+        if (data) {
+          let cls = params.split(' ')
+          let itCls = (data.itemClass || ' ').split(' ')
+          let _cls = cls.filter(c => itCls.indexOf(c) !== -1)
+          return cls.length === _cls.length
+        }
+      },
+      update(params) {
+        let upData = {}
+        if (data) {
+          data = Object.assign({}, data, params)
+          upData[key] = data
+          listInst.update(upData)
+        }
+      },
+      show() {
+        let upData = {}
+        if (data) {
+          data.show = true
+          upData[key] = data
+          listInst.update(upData)
+        }
+      },
+      hide() {
+        let upData = {}
+        if (data) {
+          data.show = false
+          upData[key] = data
+          listInst.update(upData)
+        }
+      },
+      remove() {
+        listInst.delete(treeid)
+      },
+      delete() {
+        listInst.delete(treeid)
+      },
+      siblings(param) { // 只针对class进行筛选
+        let tmpData = {};
+        ((listInst.getData()).data || []).forEach((item, ii) => {
+          if (ii !== index) {
+            let key = `data[${ii}]`
+            if (lib.isString(param)) {
+              let cls = param.split(' ')
+              let itCls = (item.itemClass || ' ').split(' ')
+              let _cls = cls.filter(c => itCls.indexOf(c) > -1)
+              if (cls.length === _cls.length) tmpData[key] = item
+            } else {
+              tmpData[key] = item
+            }
+          }
+        })
+        return {
+          length: tmpData.length,
+          data: lib.clone(tmpData),
+          forEach(cb){
+            Object.keys(this.data).forEach((key, ii)=>{
+              let _data = {[key]: this.data[key]}
+              if (lib.isFunction(cb)) {
+                let context = {
+                  update(param){
+                    listInst.update(param)
+                  }
+                }
+                cb.call(context, _data, ii)
+              }
+            })
+          },
+          addClass(params) {
+            Object.keys(tmpData).forEach(key => {
+              let data = tmpData[key]
+              let cls = (params || ' ').split(' ')
+              let itCls = (data.itemClass || ' ').split(' ')
+              let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+              itCls = itCls.concat(_cls)
+              data.itemClass = (itCls.join(' ') || ' ')
+              tmpData[key] = data
+            })
+            listInst.update(tmpData)
+          },
+          removeClass(params) {
+            Object.keys(tmpData).forEach(key => {
+              let data = tmpData[key]
+              let cls = (params || ' ').split(' ')
+              let itCls = (data.itemClass || ' ').split(' ')
+              let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+              itCls = _cls
+              data.itemClass = (itCls.join(' ') || ' ')
+              tmpData[key] = data
+            })
+            listInst.update(tmpData)
+          },
+          update(params) {
+            Object.keys(tmpData).forEach(key => {
+              let data = tmpData[key]
+              data = Object.assign({}, data, params)
+              tmpData[key] = data
+            })
+            listInst.update(tmpData)
+          }
+        }
+      }
+    }
+  }
+}
+
 export const commonBehavior = (app, mytype) => {
   mytype = mytype || 'behavior'
   return Behavior({
@@ -84,30 +226,78 @@ export const commonBehavior = (app, mytype) => {
         this.$$type = mytype
         this.init = true // 第一次进入
         this.mounted = false
+        this.children = []
         app['_vars'][this.uniqId] = this
       },
       //节点树完成，可以用setData渲染节点，但无法操作节点
       attached: function () { //节点树完成，可以用setData渲染节点，但无法操作节点
-        let properties = this.properties
-        if (lib.isObject(properties.item)) {
-          properties.item = lib.clone(properties.item)
-        }
-        if (lib.isObject(properties.list)) {
-          properties.list = lib.clone(properties.list)
-        }
-        if (lib.isObject(properties.dataSource)) {
-          properties.dataSource = lib.clone(properties.dataSource)
-        }
+        // let properties = this.properties
+        // if (lib.isObject(properties.item)) {
+        //   properties.item = lib.clone(properties.item)
+        // }
+        // if (lib.isObject(properties.list)) {
+        //   properties.list = lib.clone(properties.list)
+        // }
+        // if (lib.isObject(properties.dataSource)) {
+        //   properties.dataSource = lib.clone(properties.dataSource)
+        // }
         
-        // ??? 没有赋值给$item/$list，造成不能通过show/hide来显示隐藏结构
-        let props = (properties.item || properties.list || properties.dataSource || {})
-        if (lib.isObject(props)) {
-          props['show'] = props.hasOwnProperty('show') ? props.show : true
+        // // ??? 没有赋值给$item/$list，造成不能通过show/hide来显示隐藏结构
+        // let props = (properties.item || properties.list || properties.dataSource || {})
+        // if (lib.isObject(props)) {
+        //   props['show'] = props.hasOwnProperty('show') ? props.show : true
+        // }
+        // let id = properties.id
+        // // this.mountId = props.$$id ? false : id  // 如果$$id，则交给
+        // this.mountId = id || props.$$id // 如果$$id，则交给
+        // this.setData({uniqId: this.uniqId})
+
+        let properties = this.properties
+        let ds = (properties.item || properties.list || properties.dataSource || {})
+        if (lib.isObject(ds) || lib.isArray(ds)) this.originalDataSource = lib.clone(ds)
+        else this.originalDataSource = ds
+
+        let preSet = {
+          uniqId: this.uniqId,
+          show: true,
+          fromComponent: this.data.fromComponent
         }
-        let id = properties.id
-        // this.mountId = props.$$id ? false : id  // 如果$$id，则交给
-        this.mountId = id || props.$$id // 如果$$id，则交给
-        this.setData({uniqId: this.uniqId})
+        if (lib.isObject(ds)) {
+          ds['show'] = ds.hasOwnProperty('show') ? ds.show : true
+          preSet.show = ds['show']
+          preSet.fromComponent = ds.fromComponent
+
+          /**
+           * 设置this.data.fromParent为自身
+           * ds数据需要传递给其子组件使用，子组件需要知道来源组件 
+           */
+          preSet.__fromParent = this.uniqId
+          preSet.id = properties.id || ds.id
+
+          /**
+           * 只有继承了列表类，数据项中才会有treeid，普通的item类数据没有
+           * 所有列表项都有treeid，但列表项的(body,footer..)的子项无法定位到列表项上
+           * 列表项的treeid设置在item.attr['data-treeid']上
+           * (body, footer)的子项由item组件实现，treeid由父级数据(列表项)传递过来，在item.treeid上
+           * 列表项数据
+           * {
+           *  title: '',
+           *  attr: {'data-treeid': 'hash'}
+           * }
+           * 
+           * 列表子项数据解析后结构
+           * {
+           *  title: '',
+           *  body: [   {title: '', treeid: 'hash 来自上一级传递attr'}  ]
+           * }
+           */
+          if (ds.treeid) {
+            this.treeid = ds.treeid
+          }
+        }
+        if (!preSet.fromComponent) delete preSet.fromComponent
+        if (!preSet.id) delete preSet.id
+        this.setData(preSet)
       },
 
 
@@ -118,10 +308,26 @@ export const commonBehavior = (app, mytype) => {
         this.mounted = true
         this.activePage = app.activePage
         this.hooks.emit('ready')
-        let oriData = this.data.item || this.data.list || this.data.dataSource || {}
-        this.originalDataSource = lib.clone(oriData)
-        // this.originalDataSource = JSON.stringify((this.data.item || this.data.list || this.data.dataSource))
+        // let oriData = this.data.item || this.data.list || this.data.dataSource || {}
+        // this.originalDataSource = lib.clone(oriData)
         this.mount()
+
+        let ods = this.originalDataSource
+        if (ods && lib.isObject(ods) && ods.__fromParent) {
+          this.parentInst = app['_vars'][ods.__fromParent]
+          this.parentInst.children.push(this)
+        }
+
+        // let activePage = this.activePage
+        // let proto = activePage.__prototype
+        // let uniqId = this.uniqId
+        // let fcid = this.data.fromComponent || this.originalDataSource.fromComponent
+        // if (fcid) {
+        //   proto[fcid] = (proto[fcid]||[fcid]).concat(uniqId)
+        // } else {
+        //   proto[uniqId] = [uniqId]
+        // }
+        // activePage.__prototype = proto
       },
 
       //组件实例被移动到树的另一个位置
@@ -135,8 +341,99 @@ export const commonBehavior = (app, mytype) => {
       }
     },
     methods: {
+      __getAppVers(param){
+        if (lib.isString(param)) {
+          return app['_vars'][param]
+        }
+      },
+
+      parent(param, ctx){
+        if (!ctx) ctx = this
+        let res
+        if (!param) {
+          if (ctx.treeid && ctx.parentInst.$$is === 'list') {
+            return listInstDelegate(ctx.treeid, ctx.parentInst)
+          }
+          else res = ctx.parentInst
+        }
+
+        if (lib.isString(param)) {
+          param = param.replace('.', '')
+          if (lib.isFunction(ctx.hasClass)) {
+            if (ctx.hasClass(param)) res = ctx
+          }
+        }
+
+        if (!res && ctx.parentInst) {
+          return ctx.parent(param, ctx.parentInst)
+        }
+        
+        return res
+      },
+
+      siblings(param){
+        let tmp = []
+        let $is = this.$$is
+        let itemPropertyPrefix = [
+          ['hb-item', 'body'], 
+          ['hdot-item', 'dot'], 
+          ['hf-item', 'footer'], 
+          ['li-item', 'li'], 
+          ['t-item', 'title']
+        ]
+        if (this.parentInst) {
+          let clstype = null
+          let datatype = null
+          for (let ii=0; ii<itemPropertyPrefix.length; ii++) {
+            let cls = itemPropertyPrefix[ii][0]
+            let dt = itemPropertyPrefix[ii][1]
+            if (this.hasClass(cls)) { 
+              clstype = cls;
+              datatype = dt
+              break;
+            }
+          }
+          if (this.parentInst.$$is === 'item') {
+            tmp = clstype ? this.parentInst.children.filter(
+              item => lib.isFunction(item.hasClass) && item.hasClass(clstype) && item.uniqId !== this.uniqId
+            ) : []
+          }
+          if (this.parentInst.$$is === 'list') {
+            let parentInst = this.parentInst
+            if (this.treeid) {  // 存在this.treeid，表明该数据为(body, dot...)数据 正常父级应该是item，为list表明是混合结构
+              tmp = clstype ? this.parentInst.children.filter(
+                item => (item.treeid === this.treeid && item.uniqId !== this.uniqId)
+              ) : []
+            } else {
+              tmp = this.parentInst.children.filter( item => (
+                lib.isFunction(item.attr) && 
+                item.attr() && 
+                item.uniqId !== this.uniqId
+              ))
+            }
+          }
+        }
+
+        tmp = lib.isString(param) ? tmp.filter(item => item.hasClass(param)) : tmp
+        return tmp.length === 1 ? tmp[0] : {
+          addClass: params => tmp.forEach($inst => $inst.addClass(params)),
+          removeClass: params => tmp.forEach($inst => $inst.removeClass(params)),
+          update: params => tmp.forEach($inst => $inst.update(params)),
+          // setData: params => tmp.forEach($inst => $inst.setData(params)),
+          forEach(cb){
+            tmp.forEach(item=>{
+              if (lib.isFunction(cb)) {
+                cb.call(item, item.getData())
+              }
+            })
+          },
+          length: data.length,
+          data: tmp
+        }
+      },
+
       getData: function() {
-        return this.data.$item || this.data.$list || this.data.$dataSource || {}
+        return this.data.$item || this.data.$list || this.data.$dataSource || this.data.dataSource || {}
       },
 
       css: function (param = {}) {
@@ -240,7 +537,8 @@ export const commonBehavior = (app, mytype) => {
           }
 
           let $is = this.$$is
-          let $id = this.properties.id
+          // let $id = this.data.id || this.properties.id
+          let $id = ''
           let $ds = this.data.$item || this.data.$list || this.data.dataSource
           let fromTree
           let fromComponent = this.data.fromComponent || ($ds && $ds['fromComponent'])
@@ -267,6 +565,8 @@ export const commonBehavior = (app, mytype) => {
             $id = $id || this.data.$list['$$id']
           }
 
+          let $$$id = this.data.id
+
           $id = $id||id
           if ($id) {
             const itemKey = activePage['eles'][$id]
@@ -275,6 +575,10 @@ export const commonBehavior = (app, mytype) => {
             } else {
               activePage['elements'][$id] = this
             }
+          }
+
+          if ($$$id) {
+            activePage['elements'][$$$id] = this
           }
 
           // 该页面实例销毁时，销毁所有组件实例
@@ -286,6 +590,7 @@ export const commonBehavior = (app, mytype) => {
               activePage['elements'][$id] = null
               activePage['elements'][itemKey] = null
             }
+            activePage['elements'] = null
           })
         } else {
           this.hooks.on('ready', function() {
@@ -377,7 +682,8 @@ export const commonMethodBehavior = (app, mytype) => {
 
         let oType = e.__type || e.type
         let nType = (prefix ? prefix + oType : oType).replace('catchcatch', 'catch')
-        let dsetEvtStr = dataset['evt'].replace(/_/g, '').replace(/aim/g, 'catchtap')
+        let dsetEvtStr = dataset['evt'].replace(/_(tap|aim|catchtap|longpress|catchlongpress)/g, '$1').replace(/aim/g, 'catchtap')
+        // let dsetEvtStr = dataset['evt'].replace(/_/g, '').replace(/aim/g, 'catchtap')
         let dsetEvt = nType + '@@' + dsetEvtStr
         
         if (is == 'list' || is == 'tree') {
@@ -461,6 +767,15 @@ export function reactFun(app, e, prefix) {
       }
     }
   }
+
+  let currentTarget = e.currentTarget
+  let dataset = currentTarget.dataset
+  let is = this.$$is
+  let context = this
+  if (dataset && dataset['treeid'] && is === 'list') {
+    let treeid = dataset['treeid']
+    context = listInstDelegate(treeid, this)
+  }
   
   if (fun) {
     let parentInstance = this._preGetAppVars(null, rEvt)
@@ -472,25 +787,41 @@ export function reactFun(app, e, prefix) {
     const evtFun = activePage[fun] || app.activePage[fun]
     const thisFun = this[fun]
     const isEvt = lib.isFunction(evtFun)
-    let vals = this.hooks.emit('beforeBind', {ctx: this, event: e, funName: fun, param})
-    if (parentInstance && lib.isFunction(parentInstance[fun])) {
-      parentInstance[fun].call(parentInstance, e, param, that)
+    let vals = this.hooks.emit('instBindBefore', {ctx: this, event: e, funName: fun, param})
+    
+    if (vals) {
+
     } else {
-      if (vals) {
-        vals.forEach(function (val) {
-          if (val !== 0 && isEvt) evtFun.call(activePage, e, param, that) // 返回值为0则不透传
-        })
+      if (lib.isFunction(thisFun)) {
+        thisFun.call(this, e, param, context)
+      } else if (parentInstance && lib.isFunction(parentInstance[fun])) {
+        parentInstance[fun].call(parentInstance, e, param, context)
       } else {
-        if (lib.isFunction(thisFun)) {
-          thisFun.call(this, e, param, this)
-        } else {
-          if (isEvt) evtFun.call(activePage, e, param, that)
-          else {
-            console.warn(`找不到定义的${fun}方法`);
-          }
+        if (isEvt) evtFun.call(activePage, e, param, context)
+        else {
+          console.warn(`找不到定义的${fun}方法`);
         }
       }
     }
+
+    // if (parentInstance && lib.isFunction(parentInstance[fun])) {
+    //   parentInstance[fun].call(parentInstance, e, param, that)
+    // } else {
+    //   if (vals) {
+    //     vals.forEach(function (val) {
+    //       if (val !== 0 && isEvt) evtFun.call(activePage, e, param, that) // 返回值为0则不透传
+    //     })
+    //   } else {
+    //     if (lib.isFunction(thisFun)) {
+    //       thisFun.call(this, e, param, this)
+    //     } else {
+    //       if (isEvt) evtFun.call(activePage, e, param, that)
+    //       else {
+    //         console.warn(`找不到定义的${fun}方法`);
+    //       }
+    //     }
+    //   }
+    // }
   }
 }
 

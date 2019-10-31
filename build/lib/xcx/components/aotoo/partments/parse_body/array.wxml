@@ -14,14 +14,14 @@
 <!-- 这个key要小心 -->
 
 <view class="hbody {{item.bodyClass||''}}">
-  <block wx:for="{{item.body}}" wx:key="">
-    <block wx:if="{{util.isString(item)}}">
+  <block wx:for="{{item.body}}" wx:key="" wx:for-item="son">
+    <block wx:if="{{util.isString(son)}}">
       <view class="hb-item">
-        <text>{{item}}</text>
+        <text>{{son}}</text>
       </view>
     </block>
     <block wx:else>
-      <template is="@item" data="{{ props: {...item, itemClass: item.itemClass ?  'hb-item ' + item.itemClass : 'hb-item'} }}" />
+      <template is="@item" data="{{ props: {...son, treeid: util.treeid(item), itemClass: son.itemClass ?  'hb-item ' + son.itemClass : 'hb-item'} }}" />
     </block>
   </block>
 </view>

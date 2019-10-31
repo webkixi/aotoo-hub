@@ -6,12 +6,12 @@
   <block wx:if="{{item.v}}">
     <text wx:if="{{util.isString(item.k)}}">{{item.k}}</text>
     <block wx:elif="{{util.isObject(item.k)}}">
-      <template is="@item" data="{{ props: item.k}}" />
+      <template is="@item" data="{{ props: {...item.k, treeid: util.treeid(item)} }}" />
       <!-- <template is="@ti" data="{{item: item.k, exclude: ['k', 'v'] }}" /> -->
     </block>
     <text wx:if="{{util.isString(item.v)}}">{{item.v}}</text>
     <block wx:elif="{{util.isObject(item.v)}}">
-      <template is="@item" data="{{ props: item.v}}" />
+      <template is="@item" data="{{ props: {...item.v, treeid: util.treeid(item)} }}" />
       <!-- <template is="@ti" data="{{item: item.v, exclude: ['k', 'v'] }}" /> -->
     </block>
   </block>
@@ -24,7 +24,7 @@
       </block>
     </block>
     <block wx:elif="{{util.isObject(item.k)}}">
-      <template is="@item" data="{{ props: item.k}}" />
+      <template is="@item" data="{{ props: {...item.k, treeid: util.treeid(item)} }}" />
       <!-- <template is="@ti" data="{{item: item.k, exclude: ['k', 'v'] }}" /> -->
     </block>
   </block>

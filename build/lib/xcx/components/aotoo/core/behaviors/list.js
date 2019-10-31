@@ -79,7 +79,7 @@ export const listBehavior = function(app, mytype) {
       }
     },
     data: {
-      $list: {}
+
     },
     lifetimes: {
       created: function() {
@@ -100,7 +100,7 @@ export const listBehavior = function(app, mytype) {
         this.setData({'$list.data': []})
         let oriData = lib.clone(this.originalDataSource)
         if (lib.isArray(param)) {
-          let tmp = reSetArray(param, this.data.props)
+          let tmp = reSetArray.call(this, param, this.data.props)
           oriData.data = tmp.data
         }
         this.setData({$list: oriData})
@@ -108,8 +108,9 @@ export const listBehavior = function(app, mytype) {
       },
 
       addClass: function(listCls) {
-        listCls = lib.isString(listCls) ? listCls.split(' ') : undefined
         if (listCls) {
+          listCls = listCls.replace(/\./g, '')
+          listCls = lib.isString(listCls) ? listCls.split(' ') : []
           let $list = this.data.$list
           let $listClass = $list.listClass && $list.listClass.split(' ') || []
           listCls = listCls.filter(cls=> $listClass.indexOf(cls) == -1 )
@@ -118,22 +119,26 @@ export const listBehavior = function(app, mytype) {
             listClass: $listClass.join(' ')
           })
         }
-
+        
       },
 
       hasClass: function (listCls) {
-        listCls = lib.isString(listCls) ? listCls.split(' ') : undefined
         if (listCls) {
+          listCls = listCls.replace(/\./g, '')
+          listCls = lib.isString(listCls) ? listCls.split(' ') : []
+          let len = listCls.length
           let $list = this.data.$list
           let $listClass = $list.listClass && $list.listClass.split(' ') || []
           listCls = listCls.filter(cls => $listClass.indexOf(cls) !== -1)
-          return listCls.length ? true : false
+          return len === listCls.length ? true : false
+          // return listCls.length ? true : false
         }
       },
 
       removeClass: function (listCls) {
-        listCls = lib.isString(listCls) ? listCls.split(' ') : undefined
         if (listCls) {
+          listCls = listCls.replace(/\./g, '')
+          listCls = lib.isString(listCls) ? listCls.split(' ') : []
           let $list = this.data.$list
           let $listClass = $list.listClass && $list.listClass.split(' ') || []
           let indexs = []
@@ -146,7 +151,7 @@ export const listBehavior = function(app, mytype) {
             indexs.forEach(index => $listClass.splice(index, 1))
           }
           this.update({
-            listClass: $listClass.join(' ')
+            listClass: ($listClass.join(' ')||' ')
           })
         }
 
@@ -163,14 +168,14 @@ export const listBehavior = function(app, mytype) {
             }
 
             if (param.data) {
-              let tmp = reSetArray(param.data, that.data.props)
+              let tmp = reSetArray.call(this, param.data, that.data.props)
               param.data = tmp.data
             }
 
             if (lib.isObject(param)) {
               let target = {}
               Object.keys(param).forEach(key => {
-                if (param[key] || param[key] === 0) {
+                if (param[key] || param[key] === 0 || typeof param[key] === 'boolean') {
                   let nkey = key.indexOf('$list.') == -1 ? '$list.' + key : key
                   let nval = param[key]
                   if (isArray(nval)) {

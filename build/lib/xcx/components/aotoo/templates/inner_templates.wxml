@@ -61,9 +61,6 @@
         selectable="{{props.selectable||''}}"
         space="{{props.space||''}}"
         decode="{{props.decode||''}}"
-        catch:tap="{{(props.aim||props.catchtap)?'catchItemMethod':''}}"
-        bind:tap="{{props.tap?'itemMethod':''}}"
-        data-evt="{{util.dataEvt(props, ['tap','catchtap'])}}"
       >{{props.text}}</text>
     </block>
     <block wx:elif="{{props.fromComponent}}">

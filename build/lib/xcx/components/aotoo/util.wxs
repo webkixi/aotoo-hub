@@ -877,6 +877,11 @@ function callMethod(e, ins) {
   e.__stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
 }
 
+// 获取item的treeid属性
+function treeid(item) {
+  return item&&item.attr&&(item.attr['data-treeid']||item.attr['treeid'])
+}
+
 module.exports = {
   hasEvent,
   dataset,
@@ -900,5 +905,7 @@ module.exports = {
   ciMethod,
   tStart,
   tMove,
-  tEnd
+  tEnd,
+
+  treeid
 }

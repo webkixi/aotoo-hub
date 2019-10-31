@@ -23,14 +23,14 @@
 
 <!-- 这个key要小心 -->
 <view class="htitles {{item.titleClass||''}}">
-  <block wx:for="{{item.title}}" wx:key="">
-    <block wx:if="{{util.isString(item)}}">
+  <block wx:for="{{item.title}}" wx:key="" wx:for-item="son">
+    <block wx:if="{{util.isString(son)}}">
       <view class="t-item">
-        <text class="htitle">{{item}}</text>
+        <text class="htitle">{{son}}</text>
       </view>
     </block>
     <block wx:else>
-      <template is="@item" data="{{ props: {...item, itemClass: item.itemClass ?  't-item ' + item.itemClass : 't-item'} }}" />
+      <template is="@item" data="{{ props: {...son, treeid: util.treeid(item), itemClass: son.itemClass ?  't-item ' + son.itemClass : 't-item'} }}" />
     </block>
   </block>
   <!-- <block wx:for="{{item.title}}" wx:key="" wx:for-item="tItem">

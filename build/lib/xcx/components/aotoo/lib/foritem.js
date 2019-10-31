@@ -34,6 +34,7 @@ export function resetItem(data, context, loop) {
   
     if (context) {
       data.fromComponent = context.data.fromComponent || data.fromComponent || context.data.uniqId
+      data.__fromParent = context.data.__fromParent
       if (data.methods || data.itemMethod) {
         const methods = data.methods || data.itemMethod
         Object.keys(methods).forEach(key=>{
@@ -50,7 +51,7 @@ export function resetItem(data, context, loop) {
     
     Object.keys(data).forEach(function (key) {
       // if (data.hasOwnProperty(key)) {
-      if (data[key] || data[key]===0) {
+      if (data[key] || data[key]===0 || typeof data[key] === 'boolean') {
         if (accessKey.indexOf(key) > -1 || (key.indexOf('@') == 0 && key.length > 1)) {
           incAttrs.push(key)
         } else {
@@ -73,9 +74,10 @@ export function resetItem(data, context, loop) {
       if (isArray(sonItem)) {
         data[attr] = sonItem.filter(item => resetItem(item, context, true))
       } else {
-        if (/^[^@]/.test(attr) && sonItem) {
-          data[attr] = resetItem(sonItem, context, true)
-        } 
+        data[attr] = resetItem(sonItem, context, true)
+        // if (/^[^@]/.test(attr) && sonItem) {
+        //   data[attr] = resetItem(sonItem, context, true)
+        // } 
       }
     }
     if (!data.parent && !loop) data.itemDataRoot = true // 标识该item是最顶层item，class style用作容器描述
