@@ -104,6 +104,7 @@
     type="{{input.type||'text'}}" 
     id="{{input.id}}"
     data-address="{{input.uAddress}}"
+    data-eye = "{{input.type === 'dropdown' ? true : ''}}"
     
     value="{{input.value}}"
     placeholder="{{input.placeholder}}"
@@ -119,10 +120,11 @@
     class="{{tmp.isDropdown(input) ? 'item-input-dropdown' :'input-item-input' }} {{input.itemClass||input.class}}"
     style="{{inputStyle}} {{input.itemStyle||input.style}}"
 
-    bindinput ="inputItemMethod"
-    bindfocus ="inputItemMethod"
-    bindblur ="inputItemMethod"
-    bindconfirm ="inputItemMethod"
+    bind:tap = "inputItemMethod"
+    bindinput = "inputItemMethod"
+    bindfocus = "inputItemMethod"
+    bindblur = "inputItemMethod"
+    bindconfirm = "inputItemMethod"
     data-evt="{{util.dataEvt(input, ['bindinput', 'bindfocus', 'bindblur', 'bindconfirm' ])}}"
   />
 </template>
@@ -134,6 +136,7 @@
       size="{{input.size||'mini'}}"
       plain="{{input.plain}}"
       disabled="{{input.disabled}}"
+      loading="{{input.loading}}"      
       open-type="{{input['open-type']}}"
       lang="{{input.lang||'en'}}"
       session-from="{{input['session-from']}}"
@@ -457,7 +460,7 @@
   <block wx:if="{{tmp.isInput(input.type)}}">
     <template is="@input" data="{{uniqId, input, inputStyle}}" />
     <block wx:if="{{input.type=='dropdown'}}">
-      <ui-tree list="{{input.titles}}" fromComponent="{{uniqId}}"/>
+      <ui-list list="{{input.options || input.titles}}"  fromComponent="{{uniqId}}"/>
     </block>
   </block>
   <block wx:else>
@@ -473,13 +476,32 @@
         <template is="whatTypeElement" data="{{uniqId, props, profile, input, inputStyle: 'flex: 3'}}"/>
         <block wx:if="{{tmp.isInput(input.type)}}">
           <block wx:if="{{input.type=='dropdown'}}">
-            <text catch:tap="inputItemDropdown" data-eye="{{true}}" data-address="{{input.uAddress}}" class="{{input.eye}} mr-10-r size16 color-227ce1" style="flex: 1; text-align: center"></text>
+            <text 
+              catch:tap="inputItemDropdown" 
+              data-eye="{{true}}" 
+              data-address="{{input.uAddress}}" 
+              class="{{input.eye}} mr-10-r size16 color-227ce1" 
+              style="flex: 1; text-align: center"
+              data-evt="{{util.dataEvt(input, ['catchtap'])}}"
+            ></text>
           </block>
           <block wx:elif="{{util.isString(input.eye)}}">
-            <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="{{input.eye}}" style="flex: 1; text-align: center"></text>
+            <text 
+              catch:tap="openCloseEey" 
+              data-address="{{input.uAddress}}" 
+              class="{{input.eye}}" 
+              style="flex: 1; text-align: center"
+              data-evt="{{util.dataEvt(input, ['catchtap'])}}"
+            ></text>
           </block>
           <block wx:else>
-            <text catch:tap="openCloseEey" data-address="{{input.uAddress}}" class="icon-eye mr-10-r size16 color-227ce1" style="flex: 1; text-align: center"></text>
+            <text 
+              catch:tap="openCloseEey" 
+              data-address="{{input.uAddress}}" 
+              class="icon-eye mr-10-r size16 color-227ce1" 
+              style="flex: 1; text-align: center"
+              data-evt="{{util.dataEvt(input, ['catchtap'])}}"
+            ></text>
           </block>
         </block>
       </view>

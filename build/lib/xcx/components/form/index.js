@@ -289,26 +289,29 @@ function normInput(params, profile) {
       }
   
       if (params.type == 'dropdown') {
+        if (lib.isArray(params.titles)){
+          params.titles = { data: params.titles }
+        }
         if (lib.isObject(params.titles)){
-          params.eye = 'icon-arrows-b'
-          params.titles.show = false
+          params.eye = 'icon-arrows-r'
           if (lib.isArray(params.titles.data)){
-            params.titles.type = {
-              is: 'scroll',
-              'scroll-y': true,
-              bindscroll: 'inputItemDropdownScroll?abc=123'
-            }
-            params.titles.listClass = "input-item-dropdown-options"
-            params.titles.itemClass = "input-item-dropdown-options-item"
+            // params.titles.type = {
+            //   is: 'scroll',
+            //   'scroll-y': true,
+            //   isItem: true,
+            //   bindscroll: 'inputItemDropdownScroll'
+            // }
+            params.titles.show = false
+            params.titles.listClass = params.titles.listClass ? `input-item-dropdown-options ${params.titles.listClass}` : 'input-item-dropdown-options'
+            params.titles.itemClass = params.titles.itemClass ? `input-item-dropdown-options-item ${params.titles.itemClass}` : 'input-item-dropdown-options-item'
             params.titles.data = params.titles.data.map((item, ii)=>{
-              if (typeof item == 'string') {
-                item = {title: item}
-              }
-              if (item.parent) {
-                item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
-              } else {
-                item.tap = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
-              }
+              if (typeof item == 'string') item = {title: item}
+              item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
+              // if (item.parent) {
+              //   item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
+              // } else {
+              //   item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
+              // }
               return item
             })
           }
@@ -610,6 +613,20 @@ Component({
         }
       }
     },
+
+    getValue(id, forData){
+      let val = this.value(id)
+      if (val) {
+        if (val.type === 'dropdown') {
+          return forData ? {type: val.type, id: (val.id||val.name), text: val.text, value: val.value} : val.value
+        }
+        return forData ? val : val.value
+      }
+    },
+
+    setValue(id, val){
+      this.value(id, val)
+    },
     
     value: function(id, val) {
       const allocation = this.allocation
@@ -691,12 +708,19 @@ Component({
         if (dataset.eye) {
           const state = !res.inputData.titles.show
           res.inputData.titles.show = state
-          res.inputData.eye = state ? 'icon-arrows-t' :'icon-arrows-b'
+          res.inputData.eye = state ? 'icon-arrows-b' : 'icon-arrows-r'
+          // setAllocation.call(this, res, {value: detail.value})
+          // runFormBindFun.call(this, 'tap', res, e)
+
+          // const state = !res.inputData.titles.show
+          // res.inputData.titles.show = state
+          // res.inputData.eye = state ? 'icon-arrows-t' :'icon-arrows-b'
         } else {
           if (text) {
             res.inputData.titles.show = false
+            res.inputData.eye = 'icon-arrows-r'
           }
-          setAllocation.call(this, res, {value: (value||'') })
+          setAllocation.call(this, res, {value: (value||''), text })
           res.inputData.value = text||''
           res.param = param
         }
@@ -764,35 +788,35 @@ Component({
           break;
           
         case 'focus':
-          if (res.inputData.type == 'dropdown') {
-            res.inputData.titles.show = true
-            res.inputData.eye = 'icon-arrows-t'
-          }
           runFormBindFun.call(this, 'bindfocus', res, e)
           break;
 
         case 'blur':
-          if (res.inputData.type == 'dropdown') {
-            // res.inputData.titles.show = false
-            // res.inputData.eye = 'icon-arrows-b'
-          }
           setAllocation.call(this, res, {value: detail.value})
           runFormBindFun.call(this, 'bindblur', res, e)
           break;
 
         case 'input':
-          setAllocation.call(this, res, {value: detail.value})
-          if (!res.inputData.readonly) {
+          if (!res.inputData.readonly && detail.value) {
+            setAllocation.call(this, res, {value: detail.value})
             res.inputData.value = detail.value
+            runFormBindFun.call(this, 'bindinput', res, e)
           }
-          runFormBindFun.call(this, 'bindinput', res, e)
           break;
 
         case 'tap':
-          const targetFun = this.parentInstance&&this.parentInstance[fun] || activePage[fun]
-          if (lib.isFunction(targetFun)) {
-            const tapctx = this.parentInstance || activePage
-            targetFun.call(tapctx, e, param, this)
+          if (res.inputData.type == 'dropdown') {
+            this.inputItemDropdown(e)
+            // res.inputData.titles.show = !res.inputData.titles.show
+            // res.inputData.eye = 'icon-arrows-t'
+            // setAllocation.call(this, res, {value: detail.value})
+            // runFormBindFun.call(this, 'tap', res, e)
+          } else {
+            const targetFun = this.parentInstance&&this.parentInstance[fun] || activePage[fun]
+            if (lib.isFunction(targetFun)) {
+              const tapctx = this.parentInstance || activePage
+              targetFun.call(tapctx, e, param, this)
+            }
           }
           break;
       
