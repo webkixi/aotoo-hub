@@ -59,8 +59,15 @@ function listInstDelegate(treeid, listInst){
     return {
       treeid,
       data: lib.clone(data),
-      parent(){
-        return listInst
+      parent(param){
+        if (!param) return listInst
+        else {
+          let res = listInst.hasClass(param)
+          if (!res && listInst.parentInst) {
+            return listInst.parent(param)
+          }
+          return listInst
+        }
       },
       addClass(params) {
         let upData = {}
@@ -354,11 +361,13 @@ export const commonBehavior = (app, mytype) => {
       parent(param, ctx){
         if (!ctx) ctx = this
         let res
+
+        if (ctx.treeid && ctx.parentInst && ctx.parentInst.$$is === 'list') {
+          return listInstDelegate(ctx.treeid, ctx.parentInst)
+        }
+
         if (!param) {
-          if (ctx.treeid && ctx.parentInst.$$is === 'list') {
-            return listInstDelegate(ctx.treeid, ctx.parentInst)
-          }
-          else res = ctx.parentInst
+          res = ctx.parentInst
         }
 
         if (lib.isString(param)) {
