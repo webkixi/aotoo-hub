@@ -179,6 +179,18 @@ export const listBehavior = function(app, mytype) {
               param.data = tmp.data
             }
 
+            if (param.methods && lib.isObject(param.methods)) {
+              const methods = param.methods
+              Object.keys(methods).forEach(key => {
+                let fun = methods[key]
+                if (lib.isFunction(fun)) {
+                  fun = fun.bind(that)
+                  that[key] = methods[key]
+                }
+              })
+            }
+            delete param.methods
+
             if (lib.isObject(param)) {
               let target = {}
               Object.keys(param).forEach(key => {

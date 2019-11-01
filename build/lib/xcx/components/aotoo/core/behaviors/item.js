@@ -144,6 +144,21 @@ export const itemBehavior = function(app, mytype) {
         const updateFun = (opts) => {
           let target = {}
           if (lib.isObject(opts)) {
+            if (opts.methods || opts.itemMethod) {
+              const methods = opts.methods || opts.itemMethod
+              if (lib.isObject(methods)) {
+                Object.keys(methods).forEach(key => {
+                  let fun = methods[key]
+                  if (isFunction(fun)) {
+                    fun = fun.bind(that)
+                    that[key] = fun
+                  }
+                })
+              }
+              delete opts.methods
+              delete opts.itemMethod
+            }
+
             Object.keys(opts).forEach(key => {
               if (opts[key] || opts[key] === 0 || typeof opts[key] === 'boolean') {
                 let nkey = key.indexOf('$tmp.') == -1 ? '$tmp.' + key : key
