@@ -480,8 +480,7 @@
               catch:tap="inputItemDropdown" 
               data-eye="{{true}}" 
               data-address="{{input.uAddress}}" 
-              class="{{input.eye}} mr-10-r size16 color-227ce1" 
-              style="flex: 1; text-align: center"
+              class="{{input.eye}}" 
               data-evt="{{util.dataEvt(input, ['catchtap'])}}"
             ></text>
           </block>
@@ -490,7 +489,6 @@
               catch:tap="openCloseEey" 
               data-address="{{input.uAddress}}" 
               class="{{input.eye}}" 
-              style="flex: 1; text-align: center"
               data-evt="{{util.dataEvt(input, ['catchtap'])}}"
             ></text>
           </block>
@@ -498,8 +496,7 @@
             <text 
               catch:tap="openCloseEey" 
               data-address="{{input.uAddress}}" 
-              class="icon-eye mr-10-r size16 color-227ce1" 
-              style="flex: 1; text-align: center"
+              class="form-eye" 
               data-evt="{{util.dataEvt(input, ['catchtap'])}}"
             ></text>
           </block>

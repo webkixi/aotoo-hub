@@ -293,7 +293,7 @@ function normInput(params, profile) {
           params.titles = { data: params.titles }
         }
         if (lib.isObject(params.titles)){
-          params.eye = 'icon-arrows-r'
+          params.eye = 'form-arrows'
           if (lib.isArray(params.titles.data)){
             // params.titles.type = {
             //   is: 'scroll',
@@ -708,7 +708,7 @@ Component({
         if (dataset.eye) {
           const state = !res.inputData.titles.show
           res.inputData.titles.show = state
-          res.inputData.eye = state ? 'icon-arrows-b' : 'icon-arrows-r'
+          res.inputData.eye = state ? 'form-arrows-x' : 'form-arrows'
           // setAllocation.call(this, res, {value: detail.value})
           // runFormBindFun.call(this, 'tap', res, e)
 
@@ -718,7 +718,7 @@ Component({
         } else {
           if (text) {
             res.inputData.titles.show = false
-            res.inputData.eye = 'icon-arrows-r'
+            res.inputData.eye = 'form-arrows'
           }
           setAllocation.call(this, res, {value: (value||''), text })
           res.inputData.value = text||''
@@ -832,7 +832,7 @@ Component({
       // console.log(res.address, res.inputData);
       if (res) {
         res.inputData.type = res.inputData.type == 'password' ? 'text' : 'password'
-        res.inputData.eye && (res.inputData.eye = typeof res.inputData.eye == 'boolean' ? 'icon-close-eye mr-10-r size16 color-227ce1' : true)
+        res.inputData.eye && (res.inputData.eye = typeof res.inputData.eye == 'boolean' ? 'form-close-eye' : true)
         this.setData({ [res.address]: res.inputData })
       }
     },
