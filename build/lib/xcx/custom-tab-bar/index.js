@@ -3,7 +3,7 @@ const Core = require('components/aotoo/core')
 const lib = Core.lib
 
 Component({
-  behaviors: [Core.baseBehavior(app, '_Pop')],
+  behaviors: [Core.baseBehavior(app, '_tabbar')],
   data: require('./config').config(),
   lifetimes: {
     attached(){
@@ -17,10 +17,17 @@ Component({
     switchTab(e) {
       const data = e.currentTarget.dataset
       const url = data.path
-      wx.switchTab({url})
-      this.setData({
-        selected: data.index
+      app.hooks.once('activePage', function(page) {
+        if (lib.isFunction(page.getTabBar) && page.getTabBar()) {
+          page.getTabBar().setData({
+            selected: data.index
+          })
+        }
       })
+      wx.switchTab({url})
+      // this.setData({
+      //   selected: data.index
+      // })
     },
     // 小红点
     /**
