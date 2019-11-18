@@ -16,7 +16,7 @@
  }
  */
  
-const app = getApp()
+const app = null //getApp()
 const Core = require('../core')
 const lib = Core.lib
 Component({

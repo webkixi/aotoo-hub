@@ -19,28 +19,30 @@
 <import src="./item.wxml" />
 
 <template name="itemContent">
-  <slot name="top"></slot>
-  <block wx:if="{{type && util.isObject(type) && type.is === 'slip'}}">
-    <block wx:if="{{item.$$id}}">
-      <ui-item item="{{ {__slip: type.option, ...item} }}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
+  <block wx:if="{{item.show}}">
+    <slot name="top"></slot>
+    <block wx:if="{{type && util.isObject(type) && type.is === 'slip'}}">
+      <block wx:if="{{item.$$id}}">
+        <ui-item item="{{ {__slip: type.option, ...item} }}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
+      </block>
+      <block wx:else>
+        <!-- <block wx:if="{{item.attr}}">
+          <ui-item item="{{ {__slip: type.option, ...item} }}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}" />
+        </block> -->
+        <template is="item" data="{{ item: {__slip: type.option, ...item} }}" />
+      </block>
+    </block>
+    <block wx:elif="{{type && util.isObject(type) && type.isItem}}">
+      <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
+    </block>
+    <block wx:elif="{{item.$$id}}">
+      <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
     </block>
     <block wx:else>
-      <!-- <block wx:if="{{item.attr}}">
-        <ui-item item="{{ {__slip: type.option, ...item} }}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}" />
-      </block> -->
-      <template is="item" data="{{ item: {__slip: type.option, ...item} }}" />
+      <template is="item" data="{{item}}" />
     </block>
+    <slot></slot>
   </block>
-  <block wx:elif="{{type && util.isObject(type) && type.isItem}}">
-    <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
-  </block>
-  <block wx:elif="{{item.$$id}}">
-    <ui-item item="{{item}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
-  </block>
-  <block wx:else>
-    <template is="item" data="{{item}}" />
-  </block>
-  <slot></slot>
 </template>
 
 <template name="listWrap">
@@ -105,10 +107,11 @@
   </swiper>
 </template>
 
+    <!-- class="hlist {{list.listClass||list.class||''}}"  -->
 <template name="scrollWrap">
   <scroll-view 
     id="{{list.id||list.type.id||''}}"
-    class="hlist {{list.listClass||list.class||''}}" 
+    class="{{list.type.container ? '' : 'hlist '+(list.listClass||list.class) }}"
     style="{{list.listStyle||''}}" 
     scroll-x="{{ list.type['scroll-x']||''}}" 
     scroll-y="{{ list.type['scroll-y']||'' }}"
@@ -126,8 +129,17 @@
     data-evt="{{util.dataEvt(list.type, ['bindscroll', 'bindscrolltolower', 'bindscrolltoupper'])}}"
   >
     <block wx:if="{{util.isArray(list.data)}}">
-      <block wx:for="{{list.data}}" wx:key="">
-        <template is="itemContent" data="{{item}}" />
+      <block wx:if="{{list.type.container}}">
+        <view class="hlist {{list.listClass||list.class}}">
+          <block wx:for="{{list.data}}" wx:key="">
+            <template is="itemContent" data="{{item}}" />
+          </block>
+        </view>
+      </block>
+      <block wx:else>
+        <block wx:for="{{list.data}}" wx:key="">
+          <template is="itemContent" data="{{item}}" />
+        </block>
       </block>
     </block>
   </scroll-view>
@@ -239,7 +251,7 @@
 
 <template name="mylist">
   <block wx:if="{{list.header}}">
-    <ui-item item="{{list.header}}" />
+    <ui-item item="{{list.header}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
   </block>
   <block wx:if="{{list.type && util.isObject(list.type)}}">
     <block wx:if="{{list.type.is == 'swiper'}}"> <template is="swiperWrap" data="{{list}}" /> </block>
@@ -250,7 +262,7 @@
     <template is="listWrap" data="{{list}}" />
   </block>
   <block wx:if="{{list.footer}}">
-    <ui-item item="{{list.footer}}" />
+    <ui-item item="{{list.footer}}" fromComponent="{{ item.fromComponent || inner.store('fromComponent') || inner.store('uniqId')}}"/>
   </block>
 </template>
 

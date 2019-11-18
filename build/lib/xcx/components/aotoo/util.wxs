@@ -56,7 +56,7 @@ function isFunction(obj) {
 
 function delItem(ary, target) {
   const willAry = []
-  ary.forEach(item => {
+  ary.forEach(function (item){
     if (item !== target) {
       willAry.push(item)
     }
@@ -253,13 +253,13 @@ function formatQuery(url) {
     aim = urls[0]
     if (urls[1]) {
       let params = urls[1].split('&')
-      params.forEach(param => {
+      params.forEach(function (param) {
         let attrs = param.split('=')
         query[attrs[0]] = attrs[1] ? attrs[1] : true
       })
     }
   }
-  return {url: aim, query}
+  return {url: aim, query: query}
 }
 
 var storeEvts = {}
@@ -547,9 +547,9 @@ function tStart(e, slip, ins, stopPropagation) {
       }
     }
     tpos.instance = {
-      slip,
-      inst,
-      treeid,
+      slip: slip,
+      inst: inst,
+      treeid: treeid,
       direction: ddd,
       prev: tmpTarget
     }
@@ -883,10 +883,10 @@ function treeid(item) {
 }
 
 module.exports = {
-  hasEvent,
-  dataset,
-  dataEvt,
-  getClass,
+  hasEvent: hasEvent,
+  dataset: dataset,
+  dataEvt: dataEvt,
+  getClass: getClass,
 
   isString: isString,
   isObject: isObject,
@@ -901,11 +901,11 @@ module.exports = {
   getItemClass: getItemClass,
   getItemStyle: getItemStyle,
 
-  iMethod,
-  ciMethod,
-  tStart,
-  tMove,
-  tEnd,
+  iMethod: iMethod,
+  ciMethod: ciMethod,
+  tStart: tStart,
+  tMove: tMove,
+  tEnd: tEnd,
 
-  treeid
+  treeid: treeid
 }

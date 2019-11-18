@@ -24,10 +24,20 @@
 
 <template name="extraTemp">
   <block wx:if="{{tmp.isExtraTemp(tempname)}}">
-    <template is="{{tempname}}" data="{{props: item[tempname], keyword: tempname }}" />
+    <block wx:if="{{util.isObject(item[tempname]) || util.isArray(item[tempname]) }}">
+      <template is="{{tempname}}" data="{{props: {...item[tempname], treeid: util.treeid(item)}, keyword: tempname }}" />
+    </block>
+    <block wx:else>
+      <template is="{{tempname}}" data="{{props: item[tempname], keyword: tempname }}" />
+    </block>
   </block>
   <block wx:else>
-    <template is="{{'@'+tempname}}" data="{{item, props: item[tempname], keyword: tempname }}" />
+    <block wx:if="{{util.isObject(item[tempname]) || util.isArray(item[tempname]) }}">
+      <template is="{{'@'+tempname}}" data="{{item, props: {...item[tempname], treeid: util.treeid(item)}, keyword: tempname }}" />
+    </block>
+    <block wx:else>
+      <template is="{{'@'+tempname}}" data="{{item, props: item[tempname], keyword: tempname }}" />
+    </block>
   </block>
 </template>
 

@@ -24,7 +24,7 @@ const accessKey = [
   'header', 'body', 'footer', 'dot', 'li', 'k', 'v'
 ]
 
-export function resetItem(data, context, loop) {
+export function resetItem(data, context, loop, attrkey) {
   if (typeof data == 'string' || typeof data == 'number' || typeof data == 'boolean') return data
   if (isObject(data)) {
     let extAttrs = {}
@@ -36,16 +36,20 @@ export function resetItem(data, context, loop) {
       data.fromComponent = context.data.fromComponent || data.fromComponent || context.data.uniqId
       data.__fromParent = context.data.__fromParent
       if (data.methods || data.itemMethod) {
-        const methods = data.methods || data.itemMethod
-        Object.keys(methods).forEach(key=>{
-          let fun = methods[key]
-          if (isFunction(fun)) {
-            fun = fun.bind(context)
-            context[key] = fun
-          }
-        })
-        delete data.methods
-        delete data.itemMethod
+        if (attrkey&&attrkey.indexOf('@')>-1) {
+          /** 不处理 @组件的methods */
+        } else {
+          const methods = data.methods || data.itemMethod
+          Object.keys(methods).forEach(key=>{
+            let fun = methods[key]
+            if (isFunction(fun)) {
+              fun = fun.bind(context)
+              context[key] = fun
+            }
+          })
+          delete data.methods
+          delete data.itemMethod
+        }
       }
     }
     
@@ -74,7 +78,12 @@ export function resetItem(data, context, loop) {
       if (isArray(sonItem)) {
         data[attr] = sonItem.filter(item => resetItem(item, context, true))
       } else {
-        data[attr] = resetItem(sonItem, context, true)
+        if (attrkey && attrkey.indexOf('@') > -1) {
+          /** 不去污染内部的父级链，只做表层 */
+        }
+        else {
+          data[attr] = resetItem(sonItem, context, true, attr)
+        }
         // if (/^[^@]/.test(attr) && sonItem) {
         //   data[attr] = resetItem(sonItem, context, true)
         // } 

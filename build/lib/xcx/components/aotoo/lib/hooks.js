@@ -329,10 +329,10 @@ class _hooks {
 
   one(key, cb) {
     if (key && typeof cb == 'function') {
-      let mycb = function() { return cb.apply(this, arguments) }
+      function mycb() { return cb.apply(this, arguments) }
       mycb.onlyonetime = true
+      this.on(key, mycb)
     }
-    this.on(key, cb)
   }
 
   once(key, cb) {

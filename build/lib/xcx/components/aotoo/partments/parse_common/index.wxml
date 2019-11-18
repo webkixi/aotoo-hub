@@ -28,10 +28,20 @@
 
 <template name="extraTemp">
   <block wx:if="{{tmp.isExtraTemp(tempname)}}">
-    <template is="{{tempname}}" data="{{props: item[tempname], keyword: tempname }}" />
+    <block wx:if="{{util.isObject(item[tempname]) || util.isArray(item[tempname]) }}">
+      <template is="{{tempname}}" data="{{props: {...item[tempname], treeid: util.treeid(item)}, keyword: tempname }}" />
+    </block>
+    <block wx:else>
+      <template is="{{tempname}}" data="{{props: item[tempname], keyword: tempname }}" />
+    </block>
   </block>
   <block wx:else>
-    <template is="{{'@'+tempname}}" data="{{item, props: item[tempname], keyword: tempname }}" />
+    <block wx:if="{{util.isObject(item[tempname]) || util.isArray(item[tempname]) }}">
+      <template is="{{'@'+tempname}}" data="{{item, props: {...item[tempname], treeid: util.treeid(item)}, keyword: tempname }}" />
+    </block>
+    <block wx:else>
+      <template is="{{tempname}}" data="{{props: item[tempname], keyword: tempname }}" />
+    </block>
   </block>
 </template>
 
@@ -151,16 +161,20 @@
 
 <template name="make-title">
   <!-- <block wx:if="{{util.hasEvent(item, 'aim')||util.hasEvent(item, 'tap') || util.hasEvent(item, 'longtap') || util.hasEvent(item, 'touchstart') || util.hasEvent(item, 'touchend')}}"> -->
-  <block wx:if="{{util.hasEvent(item)}}">
+  <block wx:if="{{util.hasEvent(item) || item.$$id}}">
     <template is="@item" data="{{props: item}}" />
   </block>
   <block wx:else>
-    <view class="htitle {{item.itemClass||item.class}}" wx:if="{{item.itemStyle||item.style}}" style="{{item.itemStyle||item.style}}">
+    <view 
+      class="htitle {{item.itemClass||item.class||''}}"
+      style="{{item.itemStyle||item.style||''}}"
+    >{{item.title}}</view>
+    <!-- <view class="htitle {{item.itemClass||item.class}}" wx:if="{{item.itemStyle||item.style}}" style="{{item.itemStyle||item.style}}">
       {{item.title}}
     </view>
     <block wx:else>
       <view class="htitle {{item.itemClass||item.class}}">{{item.title}}</view>
-    </block>
+    </block> -->
   </block>
 </template>
 

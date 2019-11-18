@@ -2,10 +2,17 @@ const lib = require('../../lib')
 import {
   commonBehavior,
   commonMethodBehavior,
-  setPropsHooks
+  setPropsHooks,
+
+  _addClass,
+  _removeClass,
+  _hasClass,
+  listInstDelegate,
+  fakeListInstance
 } from "./common";
 
 const {
+  resetItem,
   reSetItemAttr,
   reSetArray,
   reSetList,
@@ -32,6 +39,11 @@ function updateSelf(params) {
       })
       delete list.itemMethod
     }
+
+    if (list.header || list.footer) {
+      list.header = list.header && resetItem(list.header, this)
+      list.footer = list.footer && resetItem(list.footer, this)
+    }
     
     let mylist = list
     const fromTree = this.data.fromTree
@@ -44,6 +56,7 @@ function updateSelf(params) {
 }
 
 export const listBehavior = function(app, mytype) {
+  app = app || getApp()
   mytype = mytype || 'list'
   return Behavior({
     behaviors: [commonBehavior(app, mytype), commonMethodBehavior(app, mytype)],
@@ -107,6 +120,41 @@ export const listBehavior = function(app, mytype) {
         return this
       },
 
+      forEach(cb){
+        let that = this
+        let upData = {}
+        let data = this.getData().data
+        data.forEach(function(item, ii){
+          let attr = item.attr || {}
+          let treeid = attr.treeid || attr['data-treeid']
+          let it = listInstDelegate(treeid, that)
+          cb(it, ii)
+          // let key = `data[${ii}]`
+          // if (lib.isFunction(cb)) {
+          //   let context = {
+          //     data: item,
+          //     addClass(cls) {
+          //       let clsData = _addClass(key, cls, item)
+          //       upData = Object.assign(upData, clsData)
+          //     },
+          //     removeClass(cls) {
+          //       let clsData = _removeClass(key, cls, item)
+          //       upData = Object.assign(upData, clsData)
+          //     },
+          //     hasClass(cls) {
+          //       return _hasClass(cls, item)
+          //     },
+          //     update(param) {
+          //       let keyData = {[key]: param}
+          //       upData = Object.assign(upData, keyData)
+          //     }
+          //   }
+          //   cb(context, ii)
+          // }
+        })
+        // this.update(upData)
+      },
+
       addClass: function(listCls) {
         if (listCls) {
           listCls = listCls.replace(/\./g, '')
@@ -119,7 +167,6 @@ export const listBehavior = function(app, mytype) {
             listClass: $listClass.join(' ')
           })
         }
-        
       },
 
       hasClass: function (listCls) {
@@ -337,9 +384,20 @@ export const listBehavior = function(app, mytype) {
 
         index = this.findIndex(params, bywhat)
         if (index || index === 0) {
+          if (!lib.isArray(index)) index = [index]
           if (lib.isArray(index)) {
-            return index.map((idx) => this.data.$list.data[idx])
+            // listInstDelegate
+            // return index.map((idx) => this.data.$list.data[idx])
+
+            let datas = {}
+            index.forEach(idx => {
+              let item = this.data.$list.data[idx]
+              datas[`data[${idx}]`] = item
+            })
+            let tmpData = lib.clone(datas)
+            return fakeListInstance(tmpData, this)
           }
+
           let res = this.data.$list.data[index]
           res.__realIndex = index
           return res

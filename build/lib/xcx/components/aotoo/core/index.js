@@ -126,6 +126,8 @@ function core(params) {
         }
       }
       app.activePage = activePage = this
+      app.hooks.emit('activePage', activePage)
+      app.hooks.emit('changeActivePage', activePage)
       if (typeof oldLoad == 'function') {
         oldLoad.apply(this, arguments)
         // setTimeout(() => {

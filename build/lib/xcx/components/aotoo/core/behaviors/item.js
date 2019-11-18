@@ -79,10 +79,11 @@ export const itemBehavior = function(app, mytype) {
         if (lib.isObject(param)) {
           this.setData({$item: _resetItem(param, this)})
         } else {
-          this.setData({$item: _resetItem(lib.clone(this.originalDataSource))})
+          this.setData({$item: _resetItem(lib.clone(this.originalDataSource), this)})
         }
         return this
       },
+      
       addClass: function(itCls) {
         if (itCls) {
           itCls = itCls.replace(/\./g, '')
@@ -116,7 +117,7 @@ export const itemBehavior = function(app, mytype) {
           itCls = lib.isString(itCls) ? itCls.split(' ') : []
           let $item = this.data.$item
           let $itemClass = $item.itemClass && $item.itemClass.split(' ') || []
-          let _cls = itCls.filter(cls => $itemClass.indexOf(cls) === -1)
+          let _cls = $itemClass.filter(cls => itCls.indexOf(cls) === -1)
           $itemClass = _cls
           this.update({
             itemClass: ($itemClass.join(' ') || ' ')

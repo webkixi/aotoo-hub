@@ -51,7 +51,137 @@ function rightEvent(dsetEvt) {
   }
 }
 
-function listInstDelegate(treeid, listInst){
+export function _addClass(key, params, data) {
+  if (!lib.isString(params)) return
+  let upData = {}
+  if (data) {
+    params = params.replace(/\./g, '')
+    let cls = params.split(' ')
+    let itCls = (data.itemClass || ' ').split(' ')
+    let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+    itCls = itCls.concat(_cls)
+    data.itemClass = (itCls.join(' ') || ' ')
+    upData[key] = data
+    return upData
+  }
+}
+
+export function _removeClass(key, params, data) {
+  if (!lib.isString(params)) return
+  let upData = {}
+  if (data) {
+    params = params.replace(/\./g, '')
+    let cls = params.split(' ')
+    let itCls = (data.itemClass || ' ').split(' ')
+    let _cls = itCls.filter(c => cls.indexOf(c) === -1)
+    itCls = _cls
+    data.itemClass = (itCls.join(' ') || ' ')
+    upData[key] = data
+    return upData
+  }
+}
+
+export function _hasClass(params, data) {
+  if (data) {
+    let cls = params.split(' ')
+    let itCls = (data.itemClass || ' ').split(' ')
+    let _cls = cls.filter(c => itCls.indexOf(c) !== -1)
+    return cls.length === _cls.length
+  }
+}
+
+// tmpData 数据格式 {"data[1]": {}, "data[2]": {}}
+export function fakeListInstance(tmpData, listInst) {
+  return {
+    length: Object.keys(tmpData).length,
+    data: tmpData,
+    getData() {
+      return tmpData
+    },
+    forEach(cb) {
+      let forEachTmp = {}
+      let datas = Object.keys(this.data)
+      datas.forEach((key, ii) => {
+        // let _data = {[key]: this.data[key]}
+        let _data = this.data[key]
+        if (lib.isFunction(cb)) {
+          let context = {
+            data: _data,
+            addClass(cls) {
+              let clsData = _addClass(key, cls, _data)
+              forEachTmp = Object.assign(forEachTmp, clsData)
+            },
+            removeClass(cls) {
+              let clsData = _removeClass(key, cls, _data)
+              forEachTmp = Object.assign(forEachTmp, clsData)
+            },
+            hasClass(cls) {
+              return _hasClass(cls, _data)
+            },
+            update(param) {
+              let keyData = {
+                [key]: param
+              }
+              forEachTmp = Object.assign(forEachTmp, keyData)
+            }
+          }
+          cb(context, ii)
+          // cb.call(context, _data, ii)
+        }
+        // if ((ii + 1) === datas.length) {
+        //   listInst.update(forEachTmp)
+        // }
+      })
+      listInst.update(forEachTmp)
+    },
+    addClass(params) {
+      if (!lib.isString(params)) return
+      Object.keys(tmpData).forEach(key => {
+        let data = tmpData[key]
+        let clsData = _addClass(key, params, data)
+        tmpData = Object.assign(tmpData, clsData)
+
+        // let data = tmpData[key]
+        // params = params.replace(/\./g, '')
+        // let cls = (params || ' ').split(' ')
+        // let itCls = (data.itemClass || ' ').split(' ')
+        // let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+        // itCls = itCls.concat(_cls)
+        // data.itemClass = (itCls.join(' ') || ' ')
+        // tmpData[key] = data
+      })
+      listInst.update(tmpData)
+    },
+    removeClass(params) {
+      if (!lib.isString(params)) return
+      Object.keys(tmpData).forEach(key => {
+        let data = tmpData[key]
+        let clsData = _removeClass(key, params, data)
+        tmpData = Object.assign(tmpData, clsData)
+
+        // let data = tmpData[key]
+        // params = params.replace(/\./g, '')
+        // let cls = (params || ' ').split(' ')
+        // let itCls = (data.itemClass || ' ').split(' ')
+        // let _cls = itCls.filter(c => cls.indexOf(c) === -1)
+        // itCls = _cls
+        // let mykey = key+'.itemClass'
+        // tmpData[mykey] = (itCls.join(' ') || ' ')
+      })
+      listInst.update(tmpData)
+    },
+    update(params) {
+      Object.keys(tmpData).forEach(key => {
+        let data = tmpData[key]
+        data = Object.assign({}, data, params)
+        tmpData[key] = data
+      })
+      listInst.update(tmpData)
+    }
+  }
+}
+
+export function listInstDelegate(treeid, listInst){
   let index = listInst.findIndex(treeid)
   if (index || index === 0) {
     let data = (listInst.getData()).data[index]
@@ -59,6 +189,9 @@ function listInstDelegate(treeid, listInst){
     return {
       treeid,
       data: lib.clone(data),
+      getData(){
+        return lib.clone(data)
+      },
       parent(param){
         if (!param) return listInst
         else {
@@ -69,38 +202,64 @@ function listInstDelegate(treeid, listInst){
           return listInst
         }
       },
-      addClass(params) {
-        let upData = {}
-        if (data) {
-          // key = key + '.itemClass'
-          let cls = params.split(' ')
-          let itCls = (data.itemClass || ' ').split(' ')
-          let _cls = cls.filter(c => itCls.indexOf(c) === -1)
-          itCls = itCls.concat(_cls)
-          data.itemClass = (itCls.join(' ') || ' ')
-          upData[key] = data
-          listInst.update(upData)
+      toggleClass(cls) {
+        if (cls) {
+          let clsAry = lib.isString(cls) ? itCls.split(' ') : []
+          if (clsAry.length) {
+            cls = clsAry[0]
+            if (this.hasClass(cls)) {
+              this.removeClass(cls)
+            } else {
+              this.addClass(cls)
+            }
+          }
         }
+      },
+      addClass(params) {
+        if (!lib.isString(params)) return
+        let clsData = _addClass(key, params, data)
+        if (clsData) listInst.update(clsData)
+
+        // if (!lib.isString(params)) return
+        // let upData = {}
+        // if (data) {
+        //   // key = key + '.itemClass'
+        //   params = params.replace(/\./g, '')
+        //   let cls = params.split(' ')
+        //   let itCls = (data.itemClass || ' ').split(' ')
+        //   let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+        //   itCls = itCls.concat(_cls)
+        //   data.itemClass = (itCls.join(' ') || ' ')
+        //   upData[key] = data
+        //   listInst.update(upData)
+        // }
       },
       removeClass(params) {
-        let upData = {}
-        if (data) {
-          let cls = params.split(' ')
-          let itCls = (data.itemClass || ' ').split(' ')
-          let _cls = itCls.filter(c => cls.indexOf(c) === -1)
-          itCls = _cls
-          data.itemClass = (itCls.join(' ') || ' ')
-          upData[key] = data
-          listInst.update(upData)
-        }
+        if (!lib.isString(params)) return
+        let clsData = _removeClass(key, params, data)
+        if (clsData) listInst.update(clsData)
+
+        // if (!lib.isString(params)) return
+        // let upData = {}
+        // if (data) {
+        //   params = params.replace(/\./g, '')
+        //   let cls = params.split(' ')
+        //   let itCls = (data.itemClass || ' ').split(' ')
+        //   let _cls = itCls.filter(c => cls.indexOf(c) === -1)
+        //   itCls = _cls
+        //   data.itemClass = (itCls.join(' ') || ' ')
+        //   upData[key] = data
+        //   listInst.update(upData)
+        // }
       },
       hasClass(params) {
-        if (data) {
-          let cls = params.split(' ')
-          let itCls = (data.itemClass || ' ').split(' ')
-          let _cls = cls.filter(c => itCls.indexOf(c) !== -1)
-          return cls.length === _cls.length
-        }
+        return _hasClass(params, data)
+        // if (data) {
+        //   let cls = params.split(' ')
+        //   let itCls = (data.itemClass || ' ').split(' ')
+        //   let _cls = cls.filter(c => itCls.indexOf(c) !== -1)
+        //   return cls.length === _cls.length
+        // }
       },
       update(params) {
         let upData = {}
@@ -133,7 +292,7 @@ function listInstDelegate(treeid, listInst){
         listInst.delete(treeid)
       },
       siblings(param) { // 只针对class进行筛选
-        let tmpData = {};
+        let _tmpData = {};
         ((listInst.getData()).data || []).forEach((item, ii) => {
           if (ii !== index) {
             let key = `data[${ii}]`
@@ -141,70 +300,106 @@ function listInstDelegate(treeid, listInst){
               let cls = param.split(' ')
               let itCls = (item.itemClass || ' ').split(' ')
               let _cls = cls.filter(c => itCls.indexOf(c) > -1)
-              if (cls.length === _cls.length) tmpData[key] = item
+              if (cls.length === _cls.length) _tmpData[key] = item
             } else {
-              tmpData[key] = item
+              _tmpData[key] = item
             }
           }
         })
-        return {
-          length: tmpData.length,
-          data: lib.clone(tmpData),
-          forEach(cb){
-            Object.keys(this.data).forEach((key, ii)=>{
-              let _data = {[key]: this.data[key]}
-              if (lib.isFunction(cb)) {
-                let context = {
-                  update(param){
-                    listInst.update(param)
-                  }
-                }
-                cb.call(context, _data, ii)
-              }
-            })
-          },
-          addClass(params) {
-            Object.keys(tmpData).forEach(key => {
-              let data = tmpData[key]
-              let cls = (params || ' ').split(' ')
-              let itCls = (data.itemClass || ' ').split(' ')
-              let _cls = cls.filter(c => itCls.indexOf(c) === -1)
-              itCls = itCls.concat(_cls)
-              data.itemClass = (itCls.join(' ') || ' ')
-              tmpData[key] = data
-            })
-            listInst.update(tmpData)
-          },
-          removeClass(params) {
-            Object.keys(tmpData).forEach(key => {
-              let data = tmpData[key]
-              let cls = (params || ' ').split(' ')
-              let itCls = (data.itemClass || ' ').split(' ')
-              let _cls = itCls.filter(c => cls.indexOf(c) === -1)
-              itCls = _cls
-              let mykey = key+'.itemClass'
-              tmpData[mykey] = (itCls.join(' ') || ' ')
+        let tmpData = lib.clone(_tmpData)
+        return fakeListInstance(tmpData, listInst)
+        // return {
+        //   length: Object.keys(tmpData).length,
+        //   data: tmpData,
+        //   getData(){
+        //     return tmpData
+        //   },
+        //   forEach(cb){
+        //     let forEachTmp = {}
+        //     let datas = Object.keys(this.data)
+        //     datas.forEach((key, ii) => {
+        //       // let _data = {[key]: this.data[key]}
+        //       let _data = this.data[key]
+        //       if (lib.isFunction(cb)) {
+        //         let context = {
+        //           data: _data,
+        //           addClass(cls){
+        //             let clsData = _addClass(key, cls, _data)
+        //             forEachTmp = Object.assign(forEachTmp, clsData)
+        //           },
+        //           removeClass(cls){
+        //             let clsData = _removeClass(key, cls, _data)
+        //             forEachTmp = Object.assign(forEachTmp, clsData)
+        //           },
+        //           hasClass(cls){
+        //             return _hasClass(cls, _data)
+        //           },
+        //           update(param){
+        //             let keyData = {[key]: param}
+        //             forEachTmp = Object.assign(forEachTmp, keyData)
+        //           }
+        //         }
+        //         cb(context, ii)
+        //         // cb.call(context, _data, ii)
+        //       }
+        //       // if ((ii + 1) === datas.length) {
+        //       //   listInst.update(forEachTmp)
+        //       // }
+        //     })
+        //     listInst.update(forEachTmp)
+        //   },
+        //   addClass(params) {
+        //     if (!lib.isString(params)) return
+        //     Object.keys(tmpData).forEach(key => {
+        //       let data = tmpData[key]
+        //       let clsData = _addClass(key, params, data)
+        //       tmpData = Object.assign(tmpData, clsData)
+              
+        //       // let data = tmpData[key]
+        //       // params = params.replace(/\./g, '')
+        //       // let cls = (params || ' ').split(' ')
+        //       // let itCls = (data.itemClass || ' ').split(' ')
+        //       // let _cls = cls.filter(c => itCls.indexOf(c) === -1)
+        //       // itCls = itCls.concat(_cls)
+        //       // data.itemClass = (itCls.join(' ') || ' ')
+        //       // tmpData[key] = data
+        //     })
+        //     listInst.update(tmpData)
+        //   },
+        //   removeClass(params) {
+        //     if (!lib.isString(params)) return
+        //     Object.keys(tmpData).forEach(key => {
+        //       let data = tmpData[key]
+        //       let clsData = _removeClass(key, params, data)
+        //       tmpData = Object.assign(tmpData, clsData)
 
-              // data.itemClass = (itCls.join(' ') || ' ')
-              // tmpData[key] = data
-            })
-            listInst.update(tmpData)
-          },
-          update(params) {
-            Object.keys(tmpData).forEach(key => {
-              let data = tmpData[key]
-              data = Object.assign({}, data, params)
-              tmpData[key] = data
-            })
-            listInst.update(tmpData)
-          }
-        }
+        //       // let data = tmpData[key]
+        //       // params = params.replace(/\./g, '')
+        //       // let cls = (params || ' ').split(' ')
+        //       // let itCls = (data.itemClass || ' ').split(' ')
+        //       // let _cls = itCls.filter(c => cls.indexOf(c) === -1)
+        //       // itCls = _cls
+        //       // let mykey = key+'.itemClass'
+        //       // tmpData[mykey] = (itCls.join(' ') || ' ')
+        //     })
+        //     listInst.update(tmpData)
+        //   },
+        //   update(params) {
+        //     Object.keys(tmpData).forEach(key => {
+        //       let data = tmpData[key]
+        //       data = Object.assign({}, data, params)
+        //       tmpData[key] = data
+        //     })
+        //     listInst.update(tmpData)
+        //   }
+        // }
       }
     }
   }
 }
 
 export const commonBehavior = (app, mytype) => {
+  app = app || getApp()
   mytype = mytype || 'behavior'
   return Behavior({
     properties: {
@@ -263,6 +458,7 @@ export const commonBehavior = (app, mytype) => {
         // this.mountId = id || props.$$id // 如果$$id，则交给
         // this.setData({uniqId: this.uniqId})
 
+        this.properties = lib.clone(this.properties)
         let properties = this.properties
         let ds = (properties.item || properties.list || properties.dataSource || {})
         if (lib.isObject(ds) || lib.isArray(ds)) this.originalDataSource = lib.clone(ds)
@@ -286,6 +482,7 @@ export const commonBehavior = (app, mytype) => {
           preSet.id = properties.id || ds.id
 
           /**
+           * ds.treeid是透过模板传递过来的
            * 只有继承了列表类，数据项中才会有treeid，普通的item类数据没有
            * 所有列表项都有treeid，但列表项的(body,footer..)的子项无法定位到列表项上
            * 列表项的treeid设置在item.attr['data-treeid']上
@@ -327,6 +524,19 @@ export const commonBehavior = (app, mytype) => {
         if (ods && lib.isObject(ods) && ods.__fromParent) {
           this.parentInst = app['_vars'][ods.__fromParent]
           this.parentInst.children.push(this)
+        }
+
+
+        /** 执行在数据中预置__ready方法
+         * {
+         *    title: '',
+         *    methods: {
+         *      __ready(){}
+         *    }
+         * }
+        */
+        if (this.__ready&&lib.isFunction(this.__ready)) {
+          this.__ready()
         }
 
         // let activePage = this.activePage
@@ -434,9 +644,10 @@ export const commonBehavior = (app, mytype) => {
           update: params => tmp.forEach($inst => $inst.update(params)),
           // setData: params => tmp.forEach($inst => $inst.setData(params)),
           forEach(cb){
-            tmp.forEach(item=>{
+            tmp.forEach((item, ii) => {
               if (lib.isFunction(cb)) {
-                cb.call(item, item.getData())
+                cb(item, ii)
+                // cb.call(item, item.getData())
               }
             })
           },
@@ -471,6 +682,20 @@ export const commonBehavior = (app, mytype) => {
           })
         }
         return this
+      },
+
+      toggleClass(cls) {
+        if (cls && lib.isFunction(this.hasClass)) {
+          let clsAry = lib.isString(cls) ? itCls.split(' ') : []
+          if (clsAry.length) {
+            cls = clsAry[0]
+            if (this.hasClass(cls)) {
+              this.removeClass(cls)
+            } else {
+              this.addClass(cls)
+            }
+          }
+        }
       },
 
       _getAppVars: function(key) {
@@ -571,11 +796,11 @@ export const commonBehavior = (app, mytype) => {
 
           if ($is == 'item') {
             // $id = $id || this.data.item['$$id'] || this.data.item['id']
-            $id = $id || this.data.item['$$id']
+            $id = $id || this.data.item && this.data.item['$$id']
           }
           
           if ($is == 'list' || $is == 'tree') {
-            $id = $id || this.data.$list['$$id']
+            $id = $id || this.data.$list && this.data.$list['$$id']
           }
 
           let $$$id = this.data.id
@@ -600,8 +825,8 @@ export const commonBehavior = (app, mytype) => {
             if (id || $id) {
               const myid = id || $id
               const itemKey = activePage['eles'][$id]
-              activePage['elements'][$id] = null
-              activePage['elements'][itemKey] = null
+              // activePage['elements'][$id] = null
+              // activePage['elements'][itemKey] = null
             }
             activePage['elements'] = null
           })
@@ -631,6 +856,7 @@ export const commonBehavior = (app, mytype) => {
 }
 
 export const commonMethodBehavior = (app, mytype) => {
+  app = app || getApp()
   return Behavior({
     behaviors: [],
     methods: {
@@ -785,8 +1011,8 @@ export function reactFun(app, e, prefix) {
   let dataset = currentTarget.dataset
   let is = this.$$is
   let context = this
-  if (dataset && dataset['treeid'] && is === 'list') {
-    let treeid = dataset['treeid']
+  if (dataset && (dataset['treeid'] || dataset['data-treeid']) && is === 'list') {
+    let treeid = (dataset['treeid'] || dataset['data-treeid'])
     context = listInstDelegate(treeid, this)
   }
   
@@ -801,20 +1027,43 @@ export function reactFun(app, e, prefix) {
     const thisFun = this[fun]
     const isEvt = lib.isFunction(evtFun)
     let vals = this.hooks.emit('instBindBefore', {ctx: this, event: e, funName: fun, param})
-    
     if (vals) {
 
     } else {
+      let rootInstance = parentInstance
+      function getParent(ctx, f){
+        if (ctx.parentInst) {
+          if (ctx.parentInst[f]) {
+            return ctx.parentInst
+          } else {
+            return getParent(ctx.parentInst, f)
+          }
+        }
+      }
+      parentInstance = getParent(this, fun)
       if (lib.isFunction(thisFun)) {
         thisFun.call(this, e, param, context)
-      } else if (parentInstance && lib.isFunction(parentInstance[fun])) {
+      } else if (parentInstance) {
         parentInstance[fun].call(parentInstance, e, param, context)
+      } else if(rootInstance && lib.isFunction(rootInstance[fun])) {
+        rootInstance[fun].call(rootInstance, e, param, context)
       } else {
         if (isEvt) evtFun.call(activePage, e, param, context)
         else {
-          console.warn(`找不到定义的${fun}方法`);
+          console.warn(`找不到定义的${fun}方法`)
         }
       }
+      
+      // if (lib.isFunction(thisFun)) {
+      //   thisFun.call(this, e, param, context)
+      // } else if (parentInstance && lib.isFunction(parentInstance[fun])) {
+      //   parentInstance[fun].call(parentInstance, e, param, context)
+      // } else {
+      //   if (isEvt) evtFun.call(activePage, e, param, context)
+      //   else {
+      //     console.warn(`找不到定义的${fun}方法`);
+      //   }
+      // }
     }
 
     // if (parentInstance && lib.isFunction(parentInstance[fun])) {
