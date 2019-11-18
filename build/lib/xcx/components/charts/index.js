@@ -3,7 +3,7 @@
  * github: webkixi
  * 小程序的模板真是又长又臭
  */
-const app = getApp()
+const app = null //getApp()
 const Core = require('../aotoo/core')
 const lib = Core.lib
 const uCharts = require('./ucharts/u-charts.js');

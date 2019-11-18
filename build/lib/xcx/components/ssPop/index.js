@@ -3,7 +3,7 @@
  * github: webkixi
  * 小程序的模板真是又长又臭
  */
-const app = getApp()
+const app = null //getApp()
 const Core = require('../aotoo/core')
 const lib = Core.lib
 
@@ -15,22 +15,22 @@ Component({
     multipleSlots: true, // 在组件定义时的选项中启用多slot支持
     addGlobalClass: true
   },
-  properties: {
-    $item: Object
-  },
+  // properties: {
+  //   $item: Object
+  // },
   data: {},
   behaviors: [Core.itemBehavior(app, '_Pop')],
   lifetimes: {
     attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
-      let properties = this.properties
-      let dataSource = properties.$item
-      this.setData({
-        $item: dataSource
-      })
+      // let properties = this.properties
+      // let dataSource = properties.$item
+      // this.setData({
+      //   $item: dataSource
+      // })
     },
     ready: function() {
-      const ds = this.data
-      this.mount((ds.$$id || ds.id))
+      // const ds = this.data
+      // this.mount((ds.$$id || ds.id))
     }
   },
   methods: {

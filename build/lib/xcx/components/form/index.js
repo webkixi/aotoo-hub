@@ -3,7 +3,7 @@
  * github: webkixi
  * 小程序的模板真是又长又臭
  */
-const app = getApp()
+const app = null //getApp()
 const Core = require('../aotoo/core')
 const lib = Core.lib
 
@@ -917,8 +917,11 @@ function runFormBindFun(fn, res, e, from) {
   res.param = param
   if (lib.isString(res.inputData[fn])) {
     let funName = res.inputData[fn]
-    let targetObj = (this.componentInst && !lib.isEmpty(this.componentInst)) || activePage
-    let fun = (funNm&&targetObj[funNm]) || targetObj[funName]
+    // let targetObj = (!lib.isEmpty(this.componentInst) && this.componentInst) || activePage
+    // let fun = (funNm&&targetObj[funNm]) || targetObj[funName]
+    let targetObj = this.componentInst
+    let fun = (funNm&&targetObj[funNm]) || targetObj[funName] || activePage[funName]
+
     if (lib.isFunction(fun)) {
       let resData = ''
       let result = fun(e, res, this)

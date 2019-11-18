@@ -187,7 +187,7 @@ class htmlparser {
     // content = htmlDecodeByRegExp(content)
     return new Promise((resolve, reject)=>{
       parser.onend = function() {
-        console.log(that._html);
+        // console.log(that._html);
         resolve({...param, data: that._html})
       }
       parser.write(content)
