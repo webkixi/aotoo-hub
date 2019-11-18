@@ -72,7 +72,8 @@
     "ui-slip": "/components/slip/index",
     "ui-markit": "/components/markit/index",
     "ui-chart": "/components/charts/index",
-    "ui-switch": "/components/switch/index"
+    "ui-switch": "/components/switch/index",
+    "ui-calendar": "/components/calendar/index"
   },
   "tabBar": { "custom": true, "list": [{ "pagePath": "pages/index/index"}, { "pagePath": "pages/index/index"}] },
   "window":{
