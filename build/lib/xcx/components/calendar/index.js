@@ -57,7 +57,7 @@ function tintSelected(value=[]) {
     let id = `${that.calenderId}-${ymd.year}-${ymd.month}`
     let inst = that.activePage.getElementsById(id)
     if (inst) {
-      inst.setSelected(date)
+      inst.setChecked(date)
     }
   })
 }
@@ -284,10 +284,13 @@ function adapter(source={}) {
         listClass: 'calendar-nav',
         itemClass: 'calendar-nav-item',
         methods: {
-          __ready(){
+          __ready() {
             that.header = this
+            this.selectedElement = ''
           },
           selected(date){
+            if (this.selectedElement===date) return
+            this.selectedElement = date
             let findIt = this.find({date})
             if (findIt) {
               this.forEach(item=>item.removeClass('selected'))
@@ -295,8 +298,8 @@ function adapter(source={}) {
             }
           },
           gotoMonth(e, param, inst){
-            inst.siblings().removeClass('selected')
-            inst.addClass('selected')
+            // inst.siblings().removeClass('selected')
+            // inst.addClass('selected')
             that.goto(param.ym)
           }
         }
@@ -546,7 +549,9 @@ Component({
             this.hooks.emit('monthShowStat')
           }
           if (len === 1) {
-            value[1] = date
+            if (value[0] !== date) {
+              value[1] = date
+            }
             // tintRange.call(this, value)
           }
         }

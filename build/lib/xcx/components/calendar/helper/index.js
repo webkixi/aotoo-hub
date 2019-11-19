@@ -11,6 +11,11 @@ function indexData(data=[]) {
   return tmp
 }
 
+export function formatDate(date) {
+  let ymd = getYmd(date)
+  return `${ymd.year}-${ymd.month}-${ymd.day}`
+}
+
 // 工具方法 - start
 // 1.为了获得每个月的日期有多少，我们需要判断 平年闰年[四年一闰，百年不闰，四百年再闰]
 export function isLeapYear(year) {
@@ -284,7 +289,8 @@ export function oneMonthListConfig(timestart) {
             if (lib.isArray(param)) {
               monthDays = monthDays.map(day => {
                 param.forEach(item=>{
-                  if (item.date === day.date) {
+                  let date = formatDate(item.date)
+                  if (date === day.date) {
                     day = Object.assign({},day, (item.content||item))
                   }
                 })
