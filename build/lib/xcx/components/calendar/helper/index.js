@@ -137,6 +137,10 @@ export function completeMonth(timestart) {
           delete ori.tap
         }
       }
+      if (ori.disable === false) {
+        ori.itemClass = 'valid'
+        ori.tap = dateTap
+      }
       return ori
     } else {
       return {title: num, itemClass: 'valid invalid'}
