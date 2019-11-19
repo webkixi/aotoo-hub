@@ -58,20 +58,6 @@ export function getNextMonthCount(year, month) {
   }
 }
 
-// 工具方法 - end
-let weekStr = '日一二三四五六';
-let weekArr = weekStr.split('').map(item => '星期' + item);
-
-// 星期抬头
-export function weeksTils(params) {
-  let weeks = weekArr.map(item => new Object({title: item}))
-  return {
-    data: weeks,
-    listClass: 'calendar-tils',
-    itemClass: 'calendar-tils-item'
-  }
-}
-
 export function newDate(timepoint){
   if (timepoint) {
     if (timepoint.getDate && timepoint.getFullYear) return timepoint
@@ -123,14 +109,15 @@ export function completeMonth(timestart) {
   let startDayStamp = this.validStartDay
   let endDayStamp = this.validEndDay
   
-  preArr = preArr.map(num=>({title: num, itemClass: 'invalid'}) )
-  nextArr = nextArr.map(num=>({title: num, itemClass: 'invalid'}))
+  preArr = preArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}) )
+  nextArr = nextArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}))
 
-  currentMonth = currentMonth.map(num=>{
-    let theDate = `${year}-${month}-${num}`
+  currentMonth = currentMonth.map(_num=>{
+    let theDate = `${year}-${month}-${_num}`
     let theStamp = newDate(theDate).getTime()
+    let num = {title: _num, itemClass: 'date-item-day'}
     if (theStamp <= endDayStamp) {
-      let ori = {title: num, date: theDate, year, month, day: num, itemClass: 'valid'}
+      let ori = {title: num, date: theDate, year, month, day: _num, itemClass: 'valid'}
       let dateTap = `onSelected?type=date&date=${theDate}`
       if (globalDisable === false) {
         ori.tap = dateTap
@@ -170,6 +157,7 @@ export function oneMonthListConfig(timestart) {
   let {year, month, day} = getYmd(timestart)
   let endPoint = getYmd(this.validEndDay)
   let monthDays = completeMonth.call(this, timestart)
+  let originalMonthDays = lib.clone(monthDays)
 
 
   function getFollowMonths(first, over) {
@@ -215,15 +203,24 @@ export function oneMonthListConfig(timestart) {
     let others = follow.others
     let nexts = follow.nexts
 
+    that.calendar.children.forEach(child=>{
+      child.visible(true)
+      child.show()
+      if (child.lazyDisplay) {
+        child.hooks.emit('emptyChecked', {itemClass: 'invalid'})
+      }
+    })
+
     // 隐藏所有需要隐藏的月份
     others.forEach(monInstId => {
       let handle = that.activePage.getElementsById(monInstId)
       if (handle) {
-        let parent = handle.parent()
         handle.visible(false)
-        if (parent) {
-          parent.hide()
-        }
+        handle.hide()
+        // let parent = handle.parent()
+        // if (parent) {
+        //   parent.hide()
+        // }
       }
     })
 
@@ -249,30 +246,69 @@ export function oneMonthListConfig(timestart) {
       methods: {
         __ready(){
           let theMon = this
-          this.showStat = true   // 当前月结构是否在列表中显示
-          this.lazyDisplay = false  // 
+
+          /**
+           * 显示状态
+           * false时， 整个结构去除， 包括占位容器
+           * false时， 不响应tint， 不响应lazy
+           */
+          this.showStat = true   
+
+          /**
+           * 是否已经响应lazy
+           * true时， 表示已经为展示状态
+           * false时， 表示隐藏状态
+           * 该状态值权重低于showStat
+           * 该状态仅仅表示该月所有日期是否可见， 但不影响容器的占位
+           */
+          this.lazyDisplay = false  
+
+          /**
+           * 清空该月所有日期的选择状态
+           */
           theMon.hooks.once('emptyChecked', function(cls={itemClass: 'selected'}) {
             theMon.forEach(item => {
               if (item.data && item.data.date) {
                 if (item.hasClass(cls.itemClass)) {
-                  item.removeClass(cls.itemClass)
+                  item.removeClass(`${cls.itemClass} range`)
                 }
               }
             })
           })
 
-          // 挂载月实例钩子
-          // 清空当前月份所有已选项的类 selected
-          // that.hooks.on('emptyMonthChecked', function() {
-          //   theMon.hooks.emit('emptyChecked')
-          // })
+          that.hooks.on('update-month-days', function(param){
+            if (lib.isArray(param)) {
+              monthDays = monthDays.map(day => {
+                param.forEach(item=>{
+                  if (item.date === day.date) {
+                    day = Object.assign({},day, (item.content||item))
+                  }
+                })
+                return day
+              })
+            }
+          })
 
+          // 批量恢复初始月数据
+          that.hooks.on('restore-month-days', function(param={}) {
+            monthDays = originalMonthDays
+            if (theMon.lazyDisplay) {
+              theMon.fillMonth()
+            }
+          })
+          
+          // 重置showStat，使所有月份都能正常显示
           that.hooks.on('monthShowStat', function(param={}){
             if (param.hasOwnProperty('stat')) theMon.showStat = param.stat
             else {
               theMon.showStat = true
             }
           })
+        },
+
+        // 恢复初始月数据
+        restore(){
+          monthDays = originalMonthDays
         },
 
         // 当月是否可见
@@ -293,6 +329,8 @@ export function oneMonthListConfig(timestart) {
         tint(spd, epd, cls='selected', stat){
           let theMon = this
           if (!stat || stat === 'start') that.rangeValue = []
+
+          // 该月处于lazy隐藏状态时，
           if (!this.lazyDisplay) {
             this.hooks.one('lazy', function(){
               theMon.tint(spd, epd, cls)
@@ -307,7 +345,12 @@ export function oneMonthListConfig(timestart) {
               let date = data.date
               if (date) {
                 stat ? that.rangeValue.push(item) : ''
-                item.addClass(cls)
+                if (checkType==='range') {
+                  item.addClass(cls+' range')
+
+                } else {
+                  item.addClass(cls)
+                }
               }
             })
           }
@@ -323,7 +366,11 @@ export function oneMonthListConfig(timestart) {
                 let day = data.day
                 if (day >= spoint.day && day<=epoint.day) {
                   stat ? that.rangeValue.push(item) : ''
-                  item.addClass(cls)
+                  if (day > spoint.day && day < epoint.day) {
+                    item.addClass(cls+ ' range')
+                  } else {
+                    item.addClass(cls)
+                  }
                 }
               }
             })
@@ -339,7 +386,11 @@ export function oneMonthListConfig(timestart) {
                 let day = data.day
                 if (day >= point.day) {
                   stat ? that.rangeValue.push(item) : ''
-                  item.addClass(cls)
+                  if (day>point.day) {
+                    item.addClass(cls+' range')
+                  } else {
+                    item.addClass(cls)
+                  }
                 }
               }
             })
@@ -355,7 +406,11 @@ export function oneMonthListConfig(timestart) {
                 let day = data.day
                 if (day <= point.day) {
                   stat ? that.rangeValue.push(item) : ''
-                  item.addClass(cls)
+                  if (day<point.day) {
+                    item.addClass(cls+' range')
+                  } else {
+                    item.addClass(cls)
+                  }
                 }
               }
             })
@@ -368,11 +423,19 @@ export function oneMonthListConfig(timestart) {
           let date = param.date
           that.setValue(date, function (val) {
             if (checkType === 'multiple' && inst.hasClass('selected')) {
-              inst.removeClass('selected')
+              inst.removeClass('selected range')
             } else {
               inst.addClass('selected')
+              
+              // 开始选择时间段，类似携程的入住，离店
+              if (rangeMode === 2) {
+                if (that.value.length === 1 && checkType === 'range') {
+                  periodValidDays(param, rangeCount)
+                }
+              }
             }
             that.selectDate(e, param, inst)
+
             // tap=selected?date=2019-11-21
             // that.itemMethod.call(inst, e)
           })
@@ -382,13 +445,6 @@ export function oneMonthListConfig(timestart) {
         onSelected(e, param, inst){
           if (inst.hasClass('invalid')) return
           this.checked(e, param, inst)
-          // 开始选择时间段，类似携程的入住，离店
-          
-          if (rangeMode === 2) {
-            if (that.value.length === 1 && checkType === 'range') {
-              periodValidDays(param, rangeCount)
-            }
-          }
         },
 
         setChecked(targetDate){
@@ -470,7 +526,7 @@ export function calendarMonths(timestart, end=5) {
 }
 
 /**
- * 
+ * 以天为单位生成日历
  * @param {Date/timestamp} timestart 开始时间，为空则自动从当前开始
  * @param {Number} total 结束时间，后多少天
  * 通过结算得到结束时间的年月日，用 calendarMonths 方法生成日历

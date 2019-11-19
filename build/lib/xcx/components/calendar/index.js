@@ -12,7 +12,6 @@ const {
   getWeekday,
   getPreMonthCount,
   getNextMonthCount,
-  weeksTils,
   getYmd,
   newDate,
   completeMonth,
@@ -20,6 +19,10 @@ const {
   calendarMonths,
   calendarDays,
 } = require('./helper/index')
+
+const {
+  weeksTils
+} = require('./helper/weektils')
 
 function initData(data={}, opts, cb) {
   if (lib.isFunction(opts)){
@@ -184,13 +187,12 @@ function adapter(source={}) {
     let dateList = []
     let currentYmd = getYmd()
     let selected = value[0] || new Date().getTime()
-    let $weekTils = weeksTils()
+    let $weekTils = weeksTils(options)
 
     header = (this.allowBox.header && this.options.header) || null
     footer = (this.allowBox.footer && this.options.footer) || null
 
     if (!total) throw new Error('必须指定范围天数, total')
-
     
     let modeConfig = {
       is: 'scroll',
@@ -199,7 +201,7 @@ function adapter(source={}) {
     }
 
     if (mode === 2) {
-      this.options.rangeMode = 1
+      // this.options.rangeMode = 1
       modeConfig = {
         is: 'swiper',
         bindchange: '_bindswiper'
@@ -213,6 +215,11 @@ function adapter(source={}) {
       data: calendarItems,
       itemClass: 'calendar-list-item',
       listClass: 'calendar-list',
+      methods: {
+        __ready(){
+          that.calendar = this
+        }
+      }
     }
     
 
@@ -239,49 +246,6 @@ function adapter(source={}) {
         })
       }
 
-      // 头部
-      // 如果是日历为横向swiper滚动，则需要添加一个年月导航
-      if (mode === 2) {
-        let theHeader = header || {}
-        let allMonths = that.allMonths.map(item=>{
-          let ymd = getYmd(item)
-          let myDate = `${ymd.year}-${ymd.month}`
-          return {
-            title: `${ymd.year}-${ymd.month}`,
-            aim: `gotoMonth?ym=${myDate}`,
-            attr: {date: myDate}
-          }
-        })
-        theHeader['@list'] = {
-          type: {
-            is: 'scroll',
-            'scroll-x': true,
-          },
-          data: allMonths,
-          listClass: 'calendar-nav',
-          itemClass: 'calendar-nav-item',
-          methods: {
-            __ready(){
-              that.header = this
-            },
-            selected(date){
-              let findIt = this.find({date})
-              if (findIt) {
-                this.forEach(item=>item.removeClass('selected'))
-                findIt.addClass('selected')
-              }
-            },
-            gotoMonth(e, param, inst){
-              inst.siblings().removeClass('selected')
-              inst.addClass('selected')
-              that.goto(param.ym)
-            }
-          }
-        }
-        header = theHeader
-      }
-      
-
       // 传进来的value进行selected
       if (type === 'range') {
         this.hooks.one('onReady', function() {
@@ -292,6 +256,52 @@ function adapter(source={}) {
           tintSelected.call(that, value)
         })
       }
+    } else {
+      this.hooks.on('onReady', function(){
+        that.goto(start)
+      })
+    }
+
+    // 头部
+    // 如果是日历为横向swiper滚动，则需要添加一个年月导航
+    if (mode === 2) {
+      let theHeader = header || {}
+      let allMonths = that.allMonths.map(item=>{
+        let ymd = getYmd(item)
+        let myDate = `${ymd.year}-${ymd.month}`
+        return {
+          title: `${ymd.year}-${ymd.month}`,
+          aim: `gotoMonth?ym=${myDate}`,
+          attr: {date: myDate}
+        }
+      })
+      theHeader['@list'] = {
+        type: {
+          is: 'scroll',
+          'scroll-x': true,
+        },
+        data: allMonths,
+        listClass: 'calendar-nav',
+        itemClass: 'calendar-nav-item',
+        methods: {
+          __ready(){
+            that.header = this
+          },
+          selected(date){
+            let findIt = this.find({date})
+            if (findIt) {
+              this.forEach(item=>item.removeClass('selected'))
+              findIt.addClass('selected')
+            }
+          },
+          gotoMonth(e, param, inst){
+            inst.siblings().removeClass('selected')
+            inst.addClass('selected')
+            that.goto(param.ym)
+          }
+        }
+      }
+      header = theHeader
     }
 
     if (header) header.$$id = this.headerId
@@ -383,10 +393,11 @@ Component({
 
         // scroll-view跳转
         that.hooks.once('scroll-into-view', function(param={}){
-          let theCalendar = that.activePage.getElementsById(that.calenderId)
-          if (theCalendar) {
-            theCalendar.update({ "type.scroll-into-view": param.id })
-          }
+          that.calendar.update({ "type.scroll-into-view": param.id })
+          // let theCalendar = that.activePage.getElementsById(that.calenderId)
+          // if (theCalendar) {
+          //   theCalendar.update({ "type.scroll-into-view": param.id })
+          // }
         })
 
         // swiper 跳转
@@ -397,10 +408,13 @@ Component({
             that.header.selected(id)
           }
 
-          // let theCalendar = that.activePage.getElementsById(that.calenderId)
-          // if (theCalendar) {
-          //   theCalendar.update({ "type.current": param.index })
-          // }
+          if (param.index || param.index === 0){
+            that.calendar.update({"type.current": param.index})
+            // let theCalendar = that.activePage.getElementsById(that.calenderId)
+            // if (theCalendar) {
+            //   theCalendar.update({ "type.current": param.index })
+            // }
+          }
         })
 
         // 延时为了不去污染orienDataSource，保证原始数据不被污染
@@ -424,31 +438,67 @@ Component({
     }
   },
   methods: {
+    // update(param){
+    //   let options = this.options
+    //   let start = options.start
+    //   let total = options.total
+    //   if (lib.isArray(param)) {
+    //     this.fillData = param
+    //     let ary = calendarDays.call(this, start, total)
+    //   }
+    // },
+
+    // 设置指定日期数据
+    renderDate(param){
+      this.hooks.emit('update-month-days', param)
+      this.calendar.children.forEach(month=>{
+        if (month.lazyDisplay) {
+          month.fillMonth()
+        }
+      })
+    },
+
+    // 恢复原始月数据
+    restore(date){
+      if (date){
+        let ymd = getYmd(date)
+        this.calendar.children.forEach(month=>{
+          let mon = month.getDate()
+          if (mon.year === ymd.year && mon.month === ymd.month) {
+            month.restore()
+            if (month.lazyDisplay) {
+              month.fillMonth()
+            }
+          }
+        })
+      } else {
+        this.hooks.emit('restore-month-days')
+      }
+    },
+
     // 跳转到指定月份
     goto(date){
-      if (date) {
-        let options = this.options
-        let mode = options.mode
-        let allMonths = this.allMonths
-        let ymd = getYmd(date)
-        let ym = `${ymd.year}-${ymd.month}`
-        let index = null
-        for (let ii=0; ii<allMonths.length; ii++) {
-          let item = allMonths[ii]
-          if (item.indexOf(ym) > -1) {
-            index = ii
-            break;
-          }
+      let options = this.options
+      let mode = options.mode
+      let allMonths = this.allMonths
+      let ymd = getYmd(date)
+      let ym = `${ymd.year}-${ymd.month}`
+      let index = null
+      for (let ii=0; ii<allMonths.length; ii++) {
+        let item = allMonths[ii]
+        if (item.indexOf(ym) > -1) {
+          index = ii
+          break;
         }
+      }
 
-        if (mode===1) {
-          let id = `id-${ym}`
-          this.hooks.emit('scroll-into-view', {id})
-        }
+      if (mode===1) {
+        let id = `id-${ym}`
+        this.hooks.emit('scroll-into-view', {id})
+      }
 
-        if (mode===2) {
-          this.hooks.emit('swiper-current', {index})
-        }
+      if (mode===2) {
+        this.hooks.emit('swiper-current', {index, id: ym})
       }
     },
 
@@ -635,11 +685,6 @@ Component({
       }
     },
 
-    // 切换月份
-    changeMonth(){
-      console.log('changeMonth 尚未完成');
-    },
-
     // 切换下一月
     nextMonth(){
       console.log('nextMonth 尚未完成');
@@ -734,7 +779,7 @@ Component({
         let {dataset, showed} = item
         let id = dataset.id  // calendar13_calender-2019-11
         let theMon = activePage.getElementsById(id)
-        theMon.fillMonth()
+        if (!theMon.lazyDisplay) theMon.fillMonth()
         let ym = id.replace(this.calenderId+'-', '')
         this.header.selected(ym)
       }
