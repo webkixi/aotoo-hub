@@ -11,6 +11,23 @@ function indexData(data=[]) {
   return tmp
 }
 
+export function sortDates(params) {
+  if (lib.isArray(params)) {
+    params = params.filter(item=>{
+      if (item.date) {
+        item.date = formatDate(item.date)
+        return item
+      }
+    })
+
+    return params.sort((a, b)=>{
+      let astamp = newDate(a.date)
+      let bstamp = newDate(b.date)
+      return astamp - bstamp
+    })
+  }
+}
+
 export function formatDate(date) {
   let ymd = getYmd(date)
   return `${ymd.year}-${ymd.month}-${ymd.day}`
@@ -113,6 +130,8 @@ export function completeMonth(timestart) {
 
   let startDayStamp = this.validStartDay
   let endDayStamp = this.validEndDay
+  let sDate = getYmd(startDayStamp)
+  let startDate = `${sDate.year}-${sDate.month}-${sDate.day}`
   
   preArr = preArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}) )
   nextArr = nextArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}))
@@ -131,20 +150,19 @@ export function completeMonth(timestart) {
         let index = dataIndexs[theDate].index
         let fillData = fillupData[index].content || fillupData[index]
         ori = Object.assign({}, ori, fillData)
-        if (ori.disable) {
-          ori.itemClass = 'valid invalid'
-          delete ori.tap
-        }
       } else {
         ori = Object.assign({}, ori, defaultDate)
-        if (ori.disable) {
-          ori.itemClass = 'valid invalid'
-          delete ori.tap
-        }
+      }
+      if (theStamp < startDayStamp) {
+        ori.itemClass = 'valid invalid'
+        delete ori.tap
       }
       if (ori.disable === false) {
         ori.itemClass = 'valid'
         ori.tap = dateTap
+      } else if(ori.disable) {
+        ori.itemClass = 'valid invalid'
+        delete ori.tap
       }
       return ori
     } else {
@@ -278,8 +296,12 @@ export function oneMonthListConfig(timestart) {
           theMon.hooks.once('emptyChecked', function(cls={itemClass: 'selected'}) {
             theMon.forEach(item => {
               if (item.data && item.data.date) {
-                if (item.hasClass(cls.itemClass)) {
-                  item.removeClass(`${cls.itemClass} range`)
+                let date = item.data.date
+                let stamp = newDate(date).getTime()
+                if (stamp >= that.validStartDay && stamp <= that.validEndDay) {
+                  if (item.hasClass(cls.itemClass)) {
+                    item.removeClass(`${cls.itemClass} range`)
+                  }
                 }
               }
             })

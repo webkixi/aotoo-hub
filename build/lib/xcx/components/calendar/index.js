@@ -14,6 +14,8 @@ const {
   getNextMonthCount,
   getYmd,
   newDate,
+  sortDates,
+  formatDate,
   completeMonth,
   monthListConfig,
   calendarMonths,
@@ -191,8 +193,6 @@ function adapter(source={}) {
 
     header = (this.allowBox.header && this.options.header) || null
     footer = (this.allowBox.footer && this.options.footer) || null
-
-    if (!total) throw new Error('必须指定范围天数, total')
     
     let modeConfig = {
       is: 'scroll',
@@ -201,12 +201,36 @@ function adapter(source={}) {
     }
 
     if (mode === 2) {
-      // this.options.rangeMode = 1
       modeConfig = {
         is: 'swiper',
         bindchange: '_bindswiper'
       }
     }
+
+    if (this.fillData.length) {
+      let fillData = this.fillData
+      fillData = sortDates(fillData)
+      if (this.fillData.length === 1) {
+        let date = this.fillData[0].date
+        let ymd = getYmd(date)
+        total = getMonthCount(ymd.year, ymd.month).length
+      } else {
+        let fdate = fillData[0].date
+        let ldate = fillData[fillData.length-1].date
+        let ftime = newDate(fdate).getTime()
+        let ltime = newDate(ldate).getTime()
+        let dayTime = 24*60*60*1000
+        let days = parseInt((ltime-ftime)/dayTime)
+        if ((ltime-ftime)%dayTime) {
+          days++
+        }
+        this.fillData = fillData
+        start = fdate
+        total = days
+      }
+    }
+
+    if (!total) throw new Error('必须指定范围天数, total')
     
     let calendarItems = calendarDays.call(this, start, total)
     dateList = {
@@ -310,16 +334,15 @@ function adapter(source={}) {
     if (header) header.$$id = this.headerId
     if (footer) footer.$$id = this.footerId
 
-    if (this.init) {
-      initData.call(this, {
-        $weekTils,
-        $header: header,
-        $footer: footer,
-        $dateList: dateList
-      }, function () {
-        // console.log(that);
-      })
-    }
+    initData.call(this, {
+      $weekTils,
+      $header: header,
+      $footer: footer,
+      $dateList: dateList
+    }, function () {
+      // console.log(that);
+      that.hooks.emit('render-calendar')
+    })
   } catch (error) {
     console.error(error);
   }
@@ -334,12 +357,27 @@ Component({
     addGlobalClass: true
   },
   properties: {
-    dataSource: Object,
+    dataSource: {
+      type: Object,
+      observer(params){
+        if (!this.init) {
+          if (lib.isObject(params)) {
+            adapter.call(this, params)
+          }
+        }
+      }
+    }
   },
-  data: {},
+  data: {
+    $weekTils: null,
+    $header: null,
+    $footer: null,
+    $dateList: null
+  },
   behaviors: [Core.baseBehavior(app, 'calendar')],
   lifetimes: {
     created() {
+      let that = this
       this.query = wx.createSelectorQuery().in(this)
       this.elements = {}
       this.zoneItems = []
@@ -347,21 +385,16 @@ Component({
       this.footerId = this.uniqId + '_footer'
       this.calenderId = this.uniqId + '_calender'
       this.value = []
-    },
-    attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
-      let properties = this.properties
-      adapter.call(this, properties.dataSource)
-    },
-    ready(){
-      let that = this
-      let options = this.options
-      let mode = options.mode
-
-      if (this.$$id) {
-        this.mount(this.$$id)
-      }
       
-      this.activePage.hooks.on('onReady', function() {
+      // this.activePage.hooks.on('onReady', function() {
+      this.hooks.once('render-calendar', function () {
+        let options = that.options
+        let mode = options.mode
+
+        if (that.$$id) {
+          that.mount(that.$$id)
+        }
+        
         that.query.selectAll('.calendar').boundingClientRect((ret) => {
           if (ret && ret.length) {
             let ret0 = ret[0]
@@ -438,6 +471,15 @@ Component({
           }
         }, 100);
       })
+    },
+    attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
+      let properties = this.properties
+      if (properties.dataSource) {
+        adapter.call(this, properties.dataSource)
+      }
+    },
+    ready(){
+      let that = this
     }
   },
   methods: {
