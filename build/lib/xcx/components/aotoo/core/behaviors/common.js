@@ -651,7 +651,7 @@ export const commonBehavior = (app, mytype) => {
               }
             })
           },
-          length: data.length,
+          length: tmp.length,
           data: tmp
         }
       },
