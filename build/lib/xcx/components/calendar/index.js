@@ -64,8 +64,9 @@ function tintSelected(value=[]) {
   })
 }
 
-function tintRange(value) {
+function tintRange(fromInit) {
   let that = this
+  let value = this.value
   let activePage = this.activePage
 
   let startDate = getYmd(value[0])
@@ -76,9 +77,9 @@ function tintRange(value) {
   let endInstId = `${this.calenderId}-${endDate.year}-${endDate.month}`
   let endInst = activePage.getElementsById(endInstId)
   // let endInst = monInst
-
-  this.hooks.one('emptyMonthChecked', function () {
-    if (!startInstId) {
+  this.hooks.off('empty-month-checked')
+  this.hooks.one('empty-month-checked', function () {
+    if (!startInst) {
       startInst = activePage.getElementsById(startInstId)
       endInst = activePage.getElementsById(endInstId)
     }
@@ -90,7 +91,7 @@ function tintRange(value) {
   let endStamp = newDate(value[1]).getTime()
   if (startStamp > endStamp) {
     value = [value[1]]
-    this.hooks.emit('emptyMonthChecked')
+    this.hooks.emit('empty-month-checked')
   } else {
     if (startDate.month === endDate.month) {
       startInst.tint(value[0], value[1], 'selected', 'end')
@@ -281,7 +282,7 @@ function adapter(source={}) {
         // 传进来的value进行selected
         if (type === 'range') {
           this.hooks.one('onReady', function() {
-            that.tintRange()
+            that.tintRange(true)
           })
         } else {
           this.hooks.one('onReady', function () {
@@ -374,6 +375,7 @@ Component({
       observer(params){
         if (!this.init) {
           if (lib.isObject(params)) {
+            this.rendered = false
             params = Object.assign({}, this.options, params)
             adapter.call(this, params)
           }
@@ -511,6 +513,7 @@ Component({
         // headerId
         // footerId
         // calenderId
+        that.rendered = false
         this.setData({
           $header: null,
           $footer: null,
@@ -527,6 +530,31 @@ Component({
           adapter.call(this, params)
         }
       }
+    },
+
+    $(date){
+      let dateItem = null
+      if (date) {
+        let $date = formatDate(date)
+        let ymd = getYmd(date)
+        let monthInst = null
+        this.calendar.children.forEach(ele=>{
+          let eleYm = ele.getDate()
+          if (eleYm.year === ymd.year && eleYm.month === ymd.month) {
+            monthInst = ele
+          }
+        })
+        if (monthInst) {
+          monthInst.forEach(item=>{
+            let data = item.data
+            let date = data.date
+            if (date === $date) {
+              dateItem = item
+            }
+          })
+        }
+      }
+      return dateItem
     },
 
     // 设置指定日期数据
@@ -623,14 +651,15 @@ Component({
         if (type === 'range') {
           if (len === 0 || len === 2) {
             value = [date]
-            this.hooks.emit('emptyMonthChecked')  // 清空所有选择日期
+            this.hooks.emit('empty-month-checked') // 清空所有选择日期
             this.hooks.emit('monthShowStat')
-          }
-          if (len === 1) {
-            if (value[0] !== date) {
-              value[1] = date
+          } else {
+            if (len === 1) {
+              if (value[0] !== date) {
+                value[1] = date
+              }
+              // tintRange.call(this, value)
             }
-            // tintRange.call(this, value)
           }
         }
 
@@ -644,8 +673,7 @@ Component({
 
     // type=range时，渲染已选的日期颜色
     tintRange(){
-      let value = this.value
-      tintRange.call(this, value)
+      tintRange.call(this)
     },
 
     getValue(){
@@ -738,6 +766,7 @@ Component({
               gap = parseInt(diffStamp/dayTime)
               if (diffStamp%dayTime) gap++
               if (gap < rangeCount) {
+                gap++
                 this.tintRange()
               } else {
                 this.removeValue(value[1], inst)
@@ -750,8 +779,8 @@ Component({
 
             param.dateDiff = gap
             e.currentTarget.dataset.dateDiff = gap
-            param.range = 'end'
-            e.currentTarget.dataset.range = 'end'
+            param.range = diffStamp < 0 ? 'start' : 'end'
+            e.currentTarget.dataset.range = diffStamp < 0 ? 'start' : 'end'
           }
         }
       }
