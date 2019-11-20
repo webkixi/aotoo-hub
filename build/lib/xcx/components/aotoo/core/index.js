@@ -1,4 +1,4 @@
-const lib = require('../lib')
+const lib = require('../lib/index')
 import {
   resetStoreEvts,
   commonBehavior,
@@ -11,7 +11,7 @@ import {
   treeBehavior,
   treeComponentBehavior,
   reactFun
-} from "./behaviors";
+} from "./behaviors/index";
 
 import { 
   alert

@@ -1,5 +1,23 @@
-import path from 'path'
-const lib = require('../lib')
+// import path from 'path'
+const lib = require('../lib/index')
+const path = {
+  basename: function basename(str) {
+    var idx = str.lastIndexOf('/')
+    idx = idx > -1 ? idx : str.lastIndexOf('\\')
+    if (idx < 0) {
+      return str
+    }
+    return str.substring(idx + 1);
+  },
+  extname: function () {
+    if (!filename || typeof filename != 'string') {
+      return false
+    };
+    let a = filename.split('').reverse().join('');
+    let b = a.substring(0, a.search(/\./)).split('').reverse().join('');
+    return b
+  }
+}
 
 export function post(url, data={}, param={}, method='POST') {
   return new Promise((resolve, reject)=>{

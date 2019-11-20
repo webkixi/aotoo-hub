@@ -17,7 +17,7 @@
  */
  
 const app = null //getApp()
-const Core = require('../core')
+const Core = require('../core/index')
 const lib = Core.lib
 Component({
   options: {

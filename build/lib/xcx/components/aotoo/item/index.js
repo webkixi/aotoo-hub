@@ -4,7 +4,7 @@
  * 小程序的模板真是又长又臭
  */
 const app = null //getApp()
-const Core = require('../core')
+const Core = require('../core/index')
 const lib = Core.lib
 const resetItem = lib.resetItem
 
