@@ -76,6 +76,15 @@ function tintRange(fromInit) {
   let startInst = activePage.getElementsById(startInstId)
   let endInstId = `${this.calenderId}-${endDate.year}-${endDate.month}`
   let endInst = activePage.getElementsById(endInstId)
+
+  if (!value[1] && fromInit) {
+    // console.log(value[0], startInst);
+    setTimeout(() => {
+      startInst.setChecked(value[0])
+    }, 300);
+    return
+  }
+
   // let endInst = monInst
   this.hooks.off('empty-month-checked')
   this.hooks.one('empty-month-checked', function () {
@@ -258,6 +267,7 @@ function adapter(source={}) {
   
       // 有值时候，跳转到首月位置，并设置选中状态
       if (this.value && this.value.length) {
+        this.value = this.value.map(item=>formatDate(item))
         let value = that.value
         let value0 = value[0]
         let valueDate = getYmd(value0)
@@ -672,8 +682,8 @@ Component({
     },
 
     // type=range时，渲染已选的日期颜色
-    tintRange(){
-      tintRange.call(this)
+    tintRange(param){
+      tintRange.call(this, param)
     },
 
     getValue(){
