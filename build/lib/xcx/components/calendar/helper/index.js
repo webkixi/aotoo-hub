@@ -120,6 +120,7 @@ export function completeMonth(timestart) {
   let res = [];
   let today = getYmd() // 今天
   let {year, month, day} = getYmd(timestart)
+  let todayDate = `${today.year}-${today.month}-${today.day}`
   let currentMonth = getMonthCount(year, month-1);
   let preMonth = getPreMonthCount(year, month-1);
   let nextMonth = getNextMonthCount(year, month-1);
@@ -140,6 +141,7 @@ export function completeMonth(timestart) {
     let theDate = `${year}-${month}-${_num}`
     let theStamp = newDate(theDate).getTime()
     let num = {title: _num, itemClass: 'date-item-day'}
+    if (todayDate === theDate) num.title = '今天'
     if (theStamp <= endDayStamp) {
       let ori = {title: num, date: theDate, year, month, day: _num, itemClass: 'valid'}
       let dateTap = `onSelected?type=date&date=${theDate}`
@@ -266,7 +268,12 @@ export function oneMonthListConfig(timestart) {
   return {
     "@list": {
       $$id: `${this.calenderId}-${year}-${month}`,
-      header: {title: `${year}年${month}月`, aim: `onSelectedMonth?type=month&date=${year}-${month}`, itemClass: 'calendar-header'},
+      header: {
+        title: `${year}年${month}月`,
+        show: this.allowBox.monthHeader,
+        aim: `onSelectedMonth?type=month&date=${year}-${month}`,
+        itemClass: 'calendar-header'
+      },
       data: [],
       itemClass: 'date-item',
       listClass: 'date-list',

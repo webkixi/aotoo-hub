@@ -115,7 +115,7 @@ function emitter(type, key, param) {
  *  mode: 1, mode=1 scroll-view展现 mode=2 swiperview展示
  *  url: '' | cb, // 跳转地址，btn为false, 则日期点击日期触发跳转
  *  button: false | '' | cb, // 使用按钮来触发跳转，当button为字符串，则取代url设置，并且默认button为true
- *  showBox: [], // 需要显示的部分 header, footer, curDate, descript, 农历， 节假日
+ *  toolbox: [], // 需要显示的部分 header, footer, curDate, descript, 农历， 节假日
  *  lazy: true, // 默认启用懒加载
  * 
  *  header: {},
@@ -146,7 +146,12 @@ let defaultConfig = {
   url: '',
   button: false,
   value: [],
-  showBox: ['header', 'footer', 'curDate'],
+  // toolbox: ['header', 'footer', 'monthHeader'],
+  toolbox: {
+    header: true,
+    footer: true,
+    monthHeader: true
+  },
   date: null // 自定义默认日期
 }
 
@@ -166,9 +171,8 @@ function adapter(source={}) {
     data,
     date,
     disable,
-    showBox
+    toolbox
   } = options
-  showBox = source.showBox || showBox
   this.options = options
   this.value = value || []  // 点选后的值
   // this.data = data || []  // 指定日期填充数据
@@ -179,33 +183,21 @@ function adapter(source={}) {
   this.date = date // 默认日期填充数据
   this.allMonths = []  //计算后得到所有的月份
 
-  this.allowBox = (()=>{
-    let tmp = {}
-    showBox.forEach(key=>tmp[key]=true)
-    return tmp
-  })()
+  this.allowBox = toolbox
+  // this.allowBox = (()=>{
+  //   let tmp = {}
+  //   toolbox.forEach(key=>tmp[key]=true)
+  //   return tmp
+  // })()
 
   try {
-    let dateList = []
+    let dateList = null
     let currentYmd = getYmd()
     let selected = value[0] || new Date().getTime()
     let $weekTils = weeksTils(options)
 
     header = (this.allowBox.header && this.options.header) || null
     footer = (this.allowBox.footer && this.options.footer) || null
-    
-    let modeConfig = {
-      is: 'scroll',
-      "scroll-y": true,
-      "bindscroll": '_bindscroll'
-    }
-
-    if (mode === 2) {
-      modeConfig = {
-        is: 'swiper',
-        bindchange: '_bindswiper'
-      }
-    }
 
     if (this.fillData.length) {
       let fillData = this.fillData
@@ -213,6 +205,7 @@ function adapter(source={}) {
       if (this.fillData.length === 1) {
         let date = this.fillData[0].date
         let ymd = getYmd(date)
+        start = date
         total = getMonthCount(ymd.year, ymd.month).length
       } else {
         let fdate = fillData[0].date
@@ -230,109 +223,125 @@ function adapter(source={}) {
       }
     }
 
-    if (!total) throw new Error('必须指定范围天数, total')
-    
-    let calendarItems = calendarDays.call(this, start, total)
-    dateList = {
-      $$id: this.calenderId,
-      type: modeConfig,
-      data: calendarItems,
-      itemClass: 'calendar-list-item',
-      listClass: 'calendar-list',
-      methods: {
-        __ready(){
-          that.calendar = this
-        }
+    // if (!total) throw new Error('必须指定范围天数, total')
+    if (total) {
+      dateList = []
+
+      let modeConfig = {
+        is: 'scroll',
+        "scroll-y": true,
+        "bindscroll": '_bindscroll'
       }
-    }
-    
-
-    // 有值时候，跳转到首月位置，并设置选中状态
-    if (this.value && this.value.length) {
-      let value = that.value
-      let value0 = value[0]
-      let valueDate = getYmd(value0)
-
-      let targetId = `id-${valueDate.year}-${valueDate.month}`
-
-      // scroll-view 模式，跳转到第一个日期的位置
-      // onReady后跳转
-      if (mode === 1) {
-        dateList.type['scrollIntoView'] = targetId
-      }
-      // swiper-view 跳转到响应的位置
+  
       if (mode === 2) {
-        dateList.type['scrollIntoView'] = targetId
-        calendarItems.forEach((item, ii)=>{
-          if (item.id === targetId) {
-            dateList.type['current'] = ii
-          }
-        })
-      }
-
-      // 传进来的value进行selected
-      if (type === 'range') {
-        this.hooks.one('onReady', function() {
-          that.tintRange()
-        })
-      } else {
-        this.hooks.one('onReady', function () {
-          tintSelected.call(that, value)
-        })
-      }
-    } else {
-      this.hooks.on('onReady', function(){
-        that.goto(start)
-      })
-    }
-
-    // 头部
-    // 如果是日历为横向swiper滚动，则需要添加一个年月导航
-    if (mode === 2) {
-      let theHeader = header || {}
-      let allMonths = that.allMonths.map(item=>{
-        let ymd = getYmd(item)
-        let myDate = `${ymd.year}-${ymd.month}`
-        return {
-          title: `${ymd.year}-${ymd.month}`,
-          aim: `gotoMonth?ym=${myDate}`,
-          attr: {date: myDate}
+        modeConfig = {
+          is: 'swiper',
+          bindchange: '_bindswiper'
         }
-      })
-      theHeader['@list'] = {
-        type: {
-          is: 'scroll',
-          'scroll-x': true,
-        },
-        data: allMonths,
-        listClass: 'calendar-nav',
-        itemClass: 'calendar-nav-item',
+      }
+  
+      let calendarItems = calendarDays.call(this, start, total)
+  
+      dateList = {
+        $$id: this.calenderId,
+        type: modeConfig,
+        data: calendarItems,
+        itemClass: 'calendar-list-item',
+        listClass: 'calendar-list',
         methods: {
-          __ready() {
-            that.header = this
-            this.selectedElement = ''
-          },
-          selected(date){
-            if (this.selectedElement===date) return
-            this.selectedElement = date
-            let findIt = this.find({date})
-            if (findIt) {
-              this.forEach(item=>item.removeClass('selected'))
-              findIt.addClass('selected')
-            }
-          },
-          gotoMonth(e, param, inst){
-            // inst.siblings().removeClass('selected')
-            // inst.addClass('selected')
-            that.goto(param.ym)
+          __ready(){
+            that.calendar = this
           }
         }
       }
-      header = theHeader
+  
+      // 有值时候，跳转到首月位置，并设置选中状态
+      if (this.value && this.value.length) {
+        let value = that.value
+        let value0 = value[0]
+        let valueDate = getYmd(value0)
+  
+        let targetId = `id-${valueDate.year}-${valueDate.month}`
+  
+        // scroll-view 模式，跳转到第一个日期的位置
+        // onReady后跳转
+        if (mode === 1) {
+          dateList.type['scrollIntoView'] = targetId
+        }
+        // swiper-view 跳转到响应的位置
+        if (mode === 2) {
+          dateList.type['scrollIntoView'] = targetId
+          calendarItems.forEach((item, ii)=>{
+            if (item.id === targetId) {
+              dateList.type['current'] = ii
+            }
+          })
+        }
+  
+        // 传进来的value进行selected
+        if (type === 'range') {
+          this.hooks.one('onReady', function() {
+            that.tintRange()
+          })
+        } else {
+          this.hooks.one('onReady', function () {
+            tintSelected.call(that, value)
+          })
+        }
+      } else {
+        this.hooks.on('onReady', function(){
+          that.goto(start)
+        })
+      }
+  
+      // 头部
+      // 如果是日历为横向swiper滚动，则需要添加一个年月导航
+      if (mode === 2) {
+        let theHeader = header || {}
+        let allMonths = that.allMonths.map(item=>{
+          let ymd = getYmd(item)
+          let myDate = `${ymd.year}-${ymd.month}`
+          return {
+            title: `${ymd.year}-${ymd.month}`,
+            aim: `gotoMonth?ym=${myDate}`,
+            attr: {date: myDate}
+          }
+        })
+        theHeader['@list'] = {
+          type: {
+            is: 'scroll',
+            'scroll-x': true,
+          },
+          data: allMonths,
+          listClass: 'calendar-nav',
+          itemClass: 'calendar-nav-item',
+          methods: {
+            __ready(){
+              that.header = this
+              this.selectedElement = ''
+            },
+            selected(date){
+              if (this.selectedElement===date) return
+              this.selectedElement = date
+              let findIt = this.find({date})
+              if (findIt) {
+                this.forEach(item=>item.removeClass('selected'))
+                findIt.addClass('selected')
+              }
+            },
+            gotoMonth(e, param, inst){
+              // inst.siblings().removeClass('selected')
+              // inst.addClass('selected')
+              that.goto(param.ym)
+            }
+          }
+        }
+        header = theHeader
+      }
+  
+      if (header) header.$$id = this.headerId
+      if (footer) footer.$$id = this.footerId
     }
-
-    if (header) header.$$id = this.headerId
-    if (footer) footer.$$id = this.footerId
 
     initData.call(this, {
       $weekTils,
@@ -341,7 +350,10 @@ function adapter(source={}) {
       $dateList: dateList
     }, function () {
       // console.log(that);
-      that.hooks.emit('render-calendar')
+      if (total) {
+        that.rendered = true
+        that.hooks.emit('render-calendar')
+      }
     })
   } catch (error) {
     console.error(error);
@@ -362,6 +374,7 @@ Component({
       observer(params){
         if (!this.init) {
           if (lib.isObject(params)) {
+            params = Object.assign({}, this.options, params)
             adapter.call(this, params)
           }
         }
@@ -385,16 +398,12 @@ Component({
       this.footerId = this.uniqId + '_footer'
       this.calenderId = this.uniqId + '_calender'
       this.value = []
+      this.rendered = false
       
       // this.activePage.hooks.on('onReady', function() {
       this.hooks.once('render-calendar', function () {
         let options = that.options
         let mode = options.mode
-
-        if (that.$$id) {
-          that.mount(that.$$id)
-        }
-        
         that.query.selectAll('.calendar').boundingClientRect((ret) => {
           if (ret && ret.length) {
             let ret0 = ret[0]
@@ -480,6 +489,9 @@ Component({
     },
     ready(){
       let that = this
+      if (that.$$id) {
+        that.mount(that.$$id)
+      }
     }
   },
   methods: {
@@ -492,6 +504,30 @@ Component({
     //     let ary = calendarDays.call(this, start, total)
     //   }
     // },
+
+    update(params, cb) {
+      let that = this
+      if (this.rendered) {
+        // headerId
+        // footerId
+        // calenderId
+        this.setData({
+          $header: null,
+          $footer: null,
+          $dateList: null
+        }, function(){
+          if (lib.isObject(params)) {
+            params = Object.assign({}, this.options, params)
+            adapter.call(this, params)
+          }
+        })
+      } else {
+        if (lib.isObject(params)) {
+          params = Object.assign({}, this.options, params)
+          adapter.call(this, params)
+        }
+      }
+    },
 
     // 设置指定日期数据
     renderDate(param){
