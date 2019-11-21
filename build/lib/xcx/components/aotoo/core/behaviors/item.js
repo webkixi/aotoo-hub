@@ -150,7 +150,7 @@ export const itemBehavior = function(app, mytype) {
               if (lib.isObject(methods)) {
                 Object.keys(methods).forEach(key => {
                   let fun = methods[key]
-                  if (isFunction(fun)) {
+                  if (lib.isFunction(fun)) {
                     fun = fun.bind(that)
                     that[key] = fun
                   }
