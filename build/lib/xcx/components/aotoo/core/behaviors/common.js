@@ -523,7 +523,7 @@ export const commonBehavior = (app, mytype) => {
         let ods = this.originalDataSource
         if (ods && lib.isObject(ods) && ods.__fromParent) {
           this.parentInst = app['_vars'][ods.__fromParent]
-          this.parentInst.children.push(this)
+          this.parentInst && this.parentInst.children.push(this)
         }
 
 
@@ -789,7 +789,7 @@ export const commonBehavior = (app, mytype) => {
             fromTree = this.data.fromTree || this.data.$list.fromTree
             if (lib.isString(fromTree)) {
               const treeInst = app['_vars'][fromTree]
-              $id ? treeInst['children'][$id] = this : ''
+              $id ? treeInst['childs'][$id] = this : ''
               this.treeInst = treeInst
             }
           }

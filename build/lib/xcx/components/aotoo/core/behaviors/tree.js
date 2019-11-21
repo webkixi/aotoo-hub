@@ -12,7 +12,7 @@ export const treeBehavior = function(app, mytype) {
     lifetimes: {
       created: function created() {
         this.$$is = 'tree'
-        this.children = {}
+        this.childs = {}
       },
       ready: function() {
       }

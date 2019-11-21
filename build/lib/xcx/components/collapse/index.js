@@ -84,15 +84,15 @@ Component({
         let title = res.title
         if (title.class.indexOf('icon-arrows-a-r')>-1) {
           res.title.class = 'item icon-arrows-a-b color-999'
-          setTimeout(() => inst.children.level1.show(), 100);
+          setTimeout(() => inst.childs.level1.show(), 100);
         } else {
           res.title.class = 'item icon-arrows-a-r color-999'
-          setTimeout(() => inst.children.level1.hide(), 100);
+          setTimeout(() => inst.childs.level1.hide(), 100);
         }
         return res
       })
-      // if (inst && inst.children && inst.children.level1) {
-      //   inst.children.level1.toggle()
+      // if (inst && inst.childs && inst.childs.level1) {
+      //   inst.childs.level1.toggle()
       // }
     }
   }
