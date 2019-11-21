@@ -392,6 +392,7 @@ export const listBehavior = function(app, mytype) {
             let datas = {}
             index.forEach(idx => {
               let item = this.data.$list.data[idx]
+              item.__realIndex = idx
               datas[`data[${idx}]`] = item
             })
             let tmpData = lib.clone(datas)
