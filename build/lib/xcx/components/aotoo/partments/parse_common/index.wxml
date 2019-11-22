@@ -168,7 +168,7 @@
     <view 
       class="htitle {{item.itemClass||item.class||''}}"
       style="{{item.itemStyle||item.style||''}}"
-    >{{item.title}}</view>
+    ><text>{{item.title}}</text></view>
     <!-- <view class="htitle {{item.itemClass||item.class}}" wx:if="{{item.itemStyle||item.style}}" style="{{item.itemStyle||item.style}}">
       {{item.title}}
     </view>
