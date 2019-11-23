@@ -13,7 +13,7 @@
 </template>
 
 <!-- 这个key要小心 -->
-<block wx:for="{{item.dot}}" wx:key="" wx:for-item="son">
+<block wx:for="{{item.dot}}" wx:key="__key" wx:for-item="son">
   <block wx:if="{{util.isString(son)}}">
     <view class="hdot-item">
       <text>{{son}}</text>
@@ -23,7 +23,7 @@
     <template is="@item" data="{{ props: {...son, treeid: util.treeid(item), itemClass: son.itemClass ?  'hdot-item ' + son.itemClass : 'hdot-item'} }}" />
   </block>
 </block>
-<!-- <block wx:for="{{item.dot}}" wx:key="">
+<!-- <block wx:for="{{item.dot}}" wx:key="__key">
   <view id="{{item.id}}" class="hdot-item {{item.itemClass||item.class}}" wx:if="{{item.aim}}" catch:tap="aim" data-aim="{{item.aim}}">
     <template is="hdot-content" data="{{item}}" />
   </view>

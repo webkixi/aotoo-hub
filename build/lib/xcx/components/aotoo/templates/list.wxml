@@ -48,7 +48,7 @@
 <template name="listWrap">
   <block wx:if="{{ list.type && list.type.is === 'exposed'}}">
     <block wx:if="{{util.isArray(list.data)}}">
-      <block wx:for="{{list.data}}" wx:key="">
+      <block wx:for="{{list.data}}" wx:key="__key">
         <template is="itemContent" data="{{item, type: list.type}}" />
       </block>
     </block>
@@ -56,7 +56,7 @@
   <block wx:else>
     <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}" >
       <block wx:if="{{util.isArray(list.data)}}">
-        <block wx:for="{{list.data}}" wx:key="">
+        <block wx:for="{{list.data}}" wx:key="__key">
           <template is="itemContent" data="{{item, type: list.type}}" />
         </block>
       </block>
@@ -64,7 +64,7 @@
     <block wx:else>
       <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" >
         <block wx:if="{{util.isArray(list.data)}}">
-          <block wx:for="{{list.data}}" wx:key="">
+          <block wx:for="{{list.data}}" wx:key="__key">
             <template is="itemContent" data="{{item, type: list.type}}" />
           </block>
         </block>
@@ -98,7 +98,7 @@
     data-evt="{{util.dataEvt(list.type, ['bindchange', 'bindtransition', 'bindanimationfinish'])}}"
   >
     <block wx:if="{{util.isArray(list.data)}}">
-      <block wx:for="{{list.data}}" wx:key="">
+      <block wx:for="{{list.data}}" wx:key="__key">
         <swiper-item>
           <template is="itemContent" data="{{item}}" />
         </swiper-item>
@@ -131,13 +131,13 @@
     <block wx:if="{{util.isArray(list.data)}}">
       <block wx:if="{{list.type.container}}">
         <view class="hlist {{list.listClass||list.class}}">
-          <block wx:for="{{list.data}}" wx:key="">
+          <block wx:for="{{list.data}}" wx:key="__key">
             <template is="itemContent" data="{{item}}" />
           </block>
         </view>
       </block>
       <block wx:else>
-        <block wx:for="{{list.data}}" wx:key="">
+        <block wx:for="{{list.data}}" wx:key="__key">
           <template is="itemContent" data="{{item}}" />
         </block>
       </block>
@@ -164,7 +164,7 @@
       data-evt="{{util.dataEvt(list.type, ['bindscroll', 'bindscrolltolower', 'bindscrolltoupper'])}}"
     >
       <block wx:if="{{util.isArray(list.data)}}">
-        <block wx:for="{{list.data}}" wx:key="">
+        <block wx:for="{{list.data}}" wx:key="__key">
           <template is="itemContent" data="{{item}}" />
         </block>
       </block>
@@ -190,7 +190,7 @@
       data-evt="{{util.dataEvt(list.type, ['bindscroll', 'bindscrolltolower', 'bindscrolltoupper'])}}"
     >
       <block wx:if="{{util.isArray(list.data)}}">
-        <block wx:for="{{list.data}}" wx:key="">
+        <block wx:for="{{list.data}}" wx:key="__key">
           <template is="itemContent" data="{{item}}" />
         </block>
       </block>
@@ -216,7 +216,7 @@
       data-evt="{{util.dataEvt(list.type, ['bindscroll', 'bindscrolltolower', 'bindscrolltoupper'])}}"
     >
       <block wx:if="{{util.isArray(list.data)}}">
-        <block wx:for="{{list.data}}" wx:key="">
+        <block wx:for="{{list.data}}" wx:key="__key">
           <template is="itemContent" data="{{item}}" />
         </block>
       </block>
@@ -241,7 +241,7 @@
       data-evt="{{util.dataEvt(list.type, ['bindscroll', 'bindscrolltolower', 'bindscrolltoupper'])}}"
     >
       <block wx:if="{{util.isArray(list.data)}}">
-        <block wx:for="{{list.data}}" wx:key="">
+        <block wx:for="{{list.data}}" wx:key="__key">
           <template is="itemContent" data="{{item}}" />
         </block>
       </block>

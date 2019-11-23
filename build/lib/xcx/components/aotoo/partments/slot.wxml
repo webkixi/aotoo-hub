@@ -75,7 +75,7 @@
   </block>
   <block wx:else>
     <block wx:if="{{item['__sort']}}">
-      <block wx:for="{{item['__sort']}}" wx:key="" wx:for-item="tempname">
+      <block wx:for="{{item['__sort']}}" wx:key="__key" wx:for-item="tempname">
         <block wx:if="{{tmp.execTemp(tempname)}}">
           <template is="extraTemp" data="{{tempname, item}}" />
         </block>
@@ -113,7 +113,7 @@
 </block>
 
 <block wx:elif="{{util.isArray(item)}}">
-  <block wx:for="{{item}}" wx:key="" wx:for-item="son">
+  <block wx:for="{{item}}" wx:key="__key" wx:for-item="son">
     <template is="parse-part" data="{{son}}" />
   </block>
 </block>

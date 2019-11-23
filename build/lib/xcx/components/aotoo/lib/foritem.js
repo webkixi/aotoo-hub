@@ -51,6 +51,14 @@ export function resetItem(data, context, loop, attrkey) {
           delete data.itemMethod
         }
       }
+
+      if (context.$$is && (context.$$is === 'list' || context.$$is === 'tree')) {
+        if (!data['__key']) data['__key'] = suid('arykey_')
+      }
+    }
+
+    if (loop === 'itemSubArray') {
+      if (!data['__key']) data['__key'] = suid('arykey_')
     }
     
     Object.keys(data).forEach(function (key) {
@@ -76,7 +84,7 @@ export function resetItem(data, context, loop, attrkey) {
     for (var attr of incAttrs) {
       const sonItem = data[attr]
       if (isArray(sonItem)) {
-        data[attr] = sonItem.filter(item => resetItem(item, context, true))
+        data[attr] = sonItem.filter(item => resetItem(item, context, 'itemSubArray'))
       } else {
         if (attrkey && attrkey.indexOf('@') > -1) {
           /** 不去污染内部的父级链，只做表层 */

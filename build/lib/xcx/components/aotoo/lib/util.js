@@ -95,7 +95,7 @@ export function formatToUrl(url, param={}) {
 
 let suidCount = -1
 export function suid(prefix) {
-  if (suidCount >= 9999) resetSuidCount()
+  if (suidCount >= 99999) resetSuidCount()
   suidCount++
   prefix = prefix || 'normal_'
   if (typeof prefix == 'string') {
@@ -104,7 +104,7 @@ export function suid(prefix) {
 }
 
 export function resetSuidCount(){
-  if (suidCount > 9999) suidCount = -1
+  if (suidCount > 99999) suidCount = -1
 }
 
 export function uuid(prefix, len) {

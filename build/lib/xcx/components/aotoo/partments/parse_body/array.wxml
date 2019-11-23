@@ -14,7 +14,7 @@
 <!-- 这个key要小心 -->
 
 <view class="hbody {{item.bodyClass||''}}">
-  <block wx:for="{{item.body}}" wx:key="" wx:for-item="son">
+  <block wx:for="{{item.body}}" wx:key="__key" wx:for-item="son">
     <block wx:if="{{util.isString(son)}}">
       <view class="hb-item">
         <text>{{son}}</text>

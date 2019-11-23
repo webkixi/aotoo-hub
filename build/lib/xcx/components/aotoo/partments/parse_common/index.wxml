@@ -92,7 +92,7 @@
 
 <!-- title img -->
 <template name="@ti">
-  <block wx:for="{{item['__sort']}}" wx:key="" wx:for-item="tempname">
+  <block wx:for="{{item['__sort']}}" wx:key="__key" wx:for-item="tempname">
     <block wx:if="{{tmp.execTemp(tempname, exclude)}}">
       <block wx:if="{{tmp.isExtraTemp(tempname)}}">
         <template is="{{tempname}}" data="{{props: item[tempname], keyword: tempname }}" />
@@ -108,7 +108,7 @@
 <!-- title img kv -->
 <template name="@tik">
   <block wx:if="{{item['__sort']}}">
-    <block wx:for="{{item['__sort']}}" wx:key="" wx:for-item="tempname">
+    <block wx:for="{{item['__sort']}}" wx:key="__key" wx:for-item="tempname">
       <block wx:if="{{tmp.execTemp(tempname)}}">
         <template is="extraTemp" data="{{tempname, item}}" />
         <!-- <template is="{{'@'+tempname}}" data="{{item}}"/> -->
@@ -121,7 +121,7 @@
 <!-- 为了避免li模板的递归回调， 展开extraTemp模板至此-->
 <template name="@itk">
   <block wx:if="{{item['__sort']}}">
-    <block wx:for="{{item['__sort']}}" wx:key="" wx:for-item="tempname">
+    <block wx:for="{{item['__sort']}}" wx:key="__key" wx:for-item="tempname">
       <block wx:if="{{tmp.execTemp(tempname)}}">
         <block wx:if="{{tmp.isExtraTemp(tempname)}}">
           <template is="{{tempname}}" data="{{props: item[tempname], keyword: tempname }}" />
@@ -168,7 +168,7 @@
     <view 
       class="htitle {{item.itemClass||item.class||''}}"
       style="{{item.itemStyle||item.style||''}}"
-    ><text>{{item.title}}</text></view>
+    >{{item.title}}</view>
     <!-- <view class="htitle {{item.itemClass||item.class}}" wx:if="{{item.itemStyle||item.style}}" style="{{item.itemStyle||item.style}}">
       {{item.title}}
     </view>
@@ -184,7 +184,7 @@
   </block>
   <block wx:else>
     <block wx:if="{{item['__sort']}}">
-      <block wx:for="{{item['__sort']}}" wx:key="" wx:for-item="tempname">
+      <block wx:for="{{item['__sort']}}" wx:key="__key" wx:for-item="tempname">
         <block wx:if="{{tmp.execTemp(tempname, exclude)}}">
           <block wx:if="{{tempname=='title'}}">
             <template is="make-title" data="{{item: {id: item.id, $$id: item.$$id, treeid: treeid, __fromParent: item.__fromParent, fromComponent: item.fromComponent, fromTree: item.fromTree, title: item.title,  itemClass: item.itemClass||item.class, style: item.itemStyle||item.style, aim: item.aim, tap: item.tap, catchtap: item.catchtap, longpress: item.longpress, catchlongpress: item.catchlongpress, touchstart: item.touchstart, touchmove: item.touchmove, touchcancel: item.touchcancel, touchend: item.touchend} }}"/>
