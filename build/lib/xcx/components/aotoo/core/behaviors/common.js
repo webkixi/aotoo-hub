@@ -463,6 +463,21 @@ export const commonBehavior = (app, mytype) => {
         let ds = (properties.item || properties.list || properties.dataSource || {})
         if (lib.isObject(ds) || lib.isArray(ds)) this.originalDataSource = lib.clone(ds)
         else this.originalDataSource = ds
+        if (lib.isObject(ds)) {
+          if (ds.methods) {
+            if (lib.isObject(ds.methods)) {
+              Object.keys(ds.methods).forEach(key => {
+                let fun = ds.methods[key]
+                if (lib.isFunction(fun)) {
+                  // this[key] = fun.bind(this)
+                  this[key] = fun
+                }
+              })
+            }
+          }
+          delete ds.methods
+          delete this.originalDataSource.methods
+        }
 
         let preSet = {
           uniqId: this.uniqId,
