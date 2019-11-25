@@ -73,7 +73,7 @@ function subTree(item, dataAry, deep, index){
     }
     // item['__sort'] = (item['__sort'] || []).concat('@list')
   }
-  // item = resetItem(item)  //在list初始化中已经做过了
+  item = resetItem(item) //必须要，否则树结构不出来
 	return item
 }
 

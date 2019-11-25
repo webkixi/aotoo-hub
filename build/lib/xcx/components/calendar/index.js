@@ -168,6 +168,10 @@ let defaultConfig = {
 function adapter(source={}) {
   let that = this
   let options = Object.assign({}, defaultConfig, source)
+  options.total = parseInt(options.total)
+  options.mode = parseInt(options.mode)
+  options.rangeCount = parseInt(options.rangeCount)
+  options.rangeMode = parseInt(options.rangeMode)
   let {
     $$id,
     header,
@@ -796,12 +800,16 @@ Component({
       }
 
       if (tapFun) {
-        let parent = funInParent(this, tapFun)
-        if (parent) {
-          parent[tapFun].call(this, e, param, inst)
+        if (this[tapFun]) {
+          this[tapFun](e, param, inst)
         } else {
-          if (typeof activePage[tapFun] === 'function') {
-            activePage[tapFun].call(activePage, e, param, inst)
+          let parent = funInParent(this, tapFun)
+          if (parent) {
+            parent[tapFun].call(this, e, param, inst)
+          } else {
+            if (typeof activePage[tapFun] === 'function') {
+              activePage[tapFun].call(activePage, e, param, inst)
+            }
           }
         }
       }
