@@ -1,4 +1,4 @@
-const Core = require('../../aotoo/core')
+const Core = require('../../aotoo/core/index')
 const lib = Core.lib
 
 function indexData(data=[]) {
@@ -542,10 +542,12 @@ export function calendarMonths(timestart, end=5) {
     }
     yearLoop++
     if (month+ii <= 12) {
-      configs.push( `${year}-${month+ii}-${day}` )
+      // configs.push( `${year}-${month+ii}-${day}` )
+      configs.push( `${year}-${month+ii}` )
     } else {
       let mon = (month + ii)%12||12
-      configs.push(`${year}-${mon}-${day}`)
+      // configs.push(`${year}-${mon}-${day}`)
+      configs.push(`${year}-${mon}`)
     }
   }
 

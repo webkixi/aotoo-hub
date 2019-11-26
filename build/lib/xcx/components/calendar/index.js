@@ -4,7 +4,7 @@
  * 小程序的模板真是又长又臭
  */
 const app = null //getApp()
-const Core = require('../aotoo/core')
+const Core = require('../aotoo/core/index')
 const lib = Core.lib
 const {
   isLeapYear,
