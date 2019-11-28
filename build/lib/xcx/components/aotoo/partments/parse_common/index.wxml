@@ -165,16 +165,18 @@
     <template is="@item" data="{{props: item}}" />
   </block>
   <block wx:else>
+    <block wx:if="{{item.url}}">
+      <template is="{{@url}}" data="{{props: item}}"></template>
+    </block>
     <view 
+      wx:else
       class="htitle {{item.itemClass||item.class||''}}"
       style="{{item.itemStyle||item.style||''}}"
-    >{{item.title}}</view>
-    <!-- <view class="htitle {{item.itemClass||item.class}}" wx:if="{{item.itemStyle||item.style}}" style="{{item.itemStyle||item.style}}">
-      {{item.title}}
-    </view>
-    <block wx:else>
-      <view class="htitle {{item.itemClass||item.class}}">{{item.title}}</view>
-    </block> -->
+    ><text>{{item.title}}</text></view>
+    <!-- <view 
+      class="htitle {{item.itemClass||item.class||''}}"
+      style="{{item.itemStyle||item.style||''}}"
+    >{{item.title}}</view> -->
   </block>
 </template>
 
@@ -187,7 +189,7 @@
       <block wx:for="{{item['__sort']}}" wx:key="__key" wx:for-item="tempname">
         <block wx:if="{{tmp.execTemp(tempname, exclude)}}">
           <block wx:if="{{tempname=='title'}}">
-            <template is="make-title" data="{{item: {id: item.id, $$id: item.$$id, treeid: treeid, __fromParent: item.__fromParent, fromComponent: item.fromComponent, fromTree: item.fromTree, title: item.title,  itemClass: item.itemClass||item.class, style: item.itemStyle||item.style, aim: item.aim, tap: item.tap, catchtap: item.catchtap, longpress: item.longpress, catchlongpress: item.catchlongpress, touchstart: item.touchstart, touchmove: item.touchmove, touchcancel: item.touchcancel, touchend: item.touchend} }}"/>
+            <template is="make-title" data="{{item: {id: item.id, url: item.url, $$id: item.$$id, treeid: treeid, __fromParent: item.__fromParent, fromComponent: item.fromComponent, fromTree: item.fromTree, title: item.title,  itemClass: item.itemClass||item.class, style: item.itemStyle||item.style, aim: item.aim, tap: item.tap, catchtap: item.catchtap, longpress: item.longpress, catchlongpress: item.catchlongpress, touchstart: item.touchstart, touchmove: item.touchmove, touchcancel: item.touchcancel, touchend: item.touchend} }}"/>
           </block>
           <block wx:else>
             <template is="extraTemp" data="{{tempname, item}}" />

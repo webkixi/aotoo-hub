@@ -72,7 +72,10 @@ export function formatQuery(url) {
       let params = urls[1].split('&')
       params.forEach(param => {
         let attrs = param.split('=')
-        query[attrs[0]] = attrs[1] ? attrs[1] : true
+        if (!attrs[1]) attrs[1] = true
+        if (attrs[1]==='true' || attrs[1] === 'false') attrs[1] = JSON.parse(attrs[1])
+        query[attrs[0]] = attrs[1]
+        // query[attrs[0]] = attrs[1] ? attrs[1] : true
       })
     }
   }

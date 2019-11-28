@@ -9,6 +9,49 @@ import {
   resetSuidCount,
 } from './util'
 
+function formatImg(props) {
+  let img = props.img
+  if (isString(img)) {
+    let ary = img.split('#')
+    if (ary.length > 1) {
+      img = img.replace('#', '?')
+      let obj = formatQuery(img)
+      props.img = { src: obj.url, ...obj.query }
+    } 
+  }
+  return props
+}
+
+// 处理url
+function formatUrl(props) {
+  let url = props.url
+  if (isString(url)) {
+    let ary = url.split('#')
+    if (ary.length === 1) {
+      props.url = {title: props.title, url: url}
+    } else {
+      let obj = formatQuery('?'+ary[1])
+      url = ary[0]
+      props.url = {title: props.title, url, ...obj.query}
+      
+      // let tmp = {}
+      // let param = ary[1]
+      // tmp.url = ary[0]
+      // let paramAry = param.split('&')
+      // for (let ii = 0; ii < paramAry.length; ii++) {
+      //   let val = paramAry[ii]
+      //   let kv = val.split('=')
+      //   if (!kv[1]) kv[1] = true
+      //   if (kv[1]==='false' || kv[1]==='true') kv[1] = JSON.parse(kv[1])
+      //   tmp[kv[0]] = kv[1]
+      // }
+      // props.url = {...tmp}
+    }
+    delete props.title
+  }
+  return props
+}
+
 const attrKey = [
   'aim', 'attr', 'class', 'itemClass', 'style', 'itemStyle', 'template',
   'tap', 'catchtap', 'longtap', 'catchlongtap', 'longpress', 'catchlongpress',
@@ -21,7 +64,7 @@ const attrKey = [
 
 const accessKey = [
   'title', 'img', 'icon', 'list', 'tree', 'item', 
-  'header', 'body', 'footer', 'dot', 'li', 'k', 'v'
+  'header', 'body', 'footer', 'dot', 'li', 'k', 'v', 'url'
 ]
 
 export function resetItem(data, context, loop, attrkey) {
@@ -31,6 +74,14 @@ export function resetItem(data, context, loop, attrkey) {
     let incAttrs = []
     data['__sort'] = []
     data.show = data.hasOwnProperty('show') ? data.show : true
+
+    if (attrkey!=='url' && data.url) {
+      data = formatUrl(data)
+    }
+
+    if (attrkey!=='img' && data.img) {
+      data = formatImg(data)
+    }
   
     if (context) {
       data.fromComponent = context.data.fromComponent || data.fromComponent || context.data.uniqId

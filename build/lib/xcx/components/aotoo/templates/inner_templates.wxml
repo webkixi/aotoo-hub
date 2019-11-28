@@ -151,3 +151,32 @@
 <template name="@switch">
   <ui-switch item="{{props}}" />
 </template>
+
+<template name="@url">
+  <block wx:if="{{props && props.url && props.title}}">
+    <navigator 
+      target="{{props.target||''}}"
+      url="{{props.url||''}}"
+      open-type="{{props['open-type']||'navigate'}}"
+      delta="{{props.delta||''}}"
+      app-id="{{props['app-id']||''}}"
+      path="{{props.path||''}}"
+      extra-data="{{props['extra-data']||''}}"
+      version="{{props.version||''}}"
+      hover-class	="{{props['hover-class']||''}}"
+      hover-stop-propagation="{{props['hover-stop-propagation']||''}}"
+      hover-start-time="{{props['hover-start-time']||''}}"
+      hover-stay-time="{{props['hover-stay-time']||''}}"
+      bindsuccess="{{props['bindsuccess']||''}}"
+      bindfail="{{props['bindfail']||''}}"
+      bindcomplete="{{props['bindcomplete	']||''}}"
+      class="{{props.itemClass||props.class||''}}"
+      style="{{props.itemStyle||props.style||''}}"
+    >
+      <block wx:if="{{util.isString(props.title)}}"><text>{{props.title}}</text></block>
+      <block wx:else>
+        <ui-item item="{{props.title}}" />
+      </block>
+    </navigator>
+  </block>
+</template>
