@@ -4,7 +4,7 @@
  * 小程序的模板真是又长又臭
  */
 const app = null //getApp()
-const Core = require('../aotoo/core')
+const Core = require('../aotoo/core/index')
 const lib = Core.lib
 import {html, markdown} from './htmlparser'
 
@@ -63,13 +63,20 @@ Component({
     }
   },
   methods: {
+    reset(){
+      this.setData({
+        "$list.data": []
+      })
+    },
     md(content, param){
       const that = this
+      this.reset()
       markdown(content, param).then(cnt => doneHtml(cnt, that))
     },
 
     html(content, param) {
       const that = this
+      this.reset()
       html(content, param).then(cnt => doneHtml(cnt, that))
     }
   }

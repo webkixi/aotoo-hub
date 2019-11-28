@@ -543,11 +543,11 @@ export function calendarMonths(timestart, end=5) {
     yearLoop++
     if (month+ii <= 12) {
       // configs.push( `${year}-${month+ii}-${day}` )
-      configs.push( `${year}-${month+ii}` )
+      configs.push( `${year}-${month+ii}-1` )
     } else {
       let mon = (month + ii)%12||12
       // configs.push(`${year}-${mon}-${day}`)
-      configs.push(`${year}-${mon}`)
+      configs.push(`${year}-${mon}-1`)
     }
   }
 

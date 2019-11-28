@@ -1,4 +1,4 @@
-const htmlparser2 = require("htmlparser2");
+const htmlparser2 = require("./hp2");
 const marked = require('marked')
 const hl = require('./hl')
 const langJs = require('./hl/js')
@@ -84,18 +84,23 @@ class htmlparser {
           hasAttr = true;
           let _key = ky.replace("data-", "");
           attr[_key] = attribs[ky];
-          delete attribs[ky];
+          // delete attribs[ky];
         }
 
         if (ky === "class") {
           attribs["itemClass"] = attribs[ky];
-          delete attribs[ky];
+          // delete attribs[ky];
         }
 
         if (ky === "style") {
           attribs["itemStyle"] = attribs[ky];
-          delete attribs[ky];
+          // delete attribs[ky];
         }
+
+        if (ky === 'href') {
+          attribs["url"] = attribs[ky];
+        }
+        delete attribs[ky];
       });
     }
 
@@ -178,13 +183,15 @@ class htmlparser {
     }
   }
 
-  html(content, param={}){
+  html(content, param={}, fromMd){
+    this._codes = []
+    this._html = []
     let stack = this.stack
     let tags = this.tags
     let _html = this._html
     let parser = this.parser
     let that = this
-    // content = htmlDecodeByRegExp(content)
+    content = htmlDecodeByRegExp(content)
     return new Promise((resolve, reject)=>{
       parser.onend = function() {
         // console.log(that._html);
@@ -204,7 +211,7 @@ class htmlparser {
       }
     })
     content = marked(content)
-    return this.html(content, param)
+    return this.html(content, param, true)
   }
 }
 

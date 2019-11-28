@@ -4,7 +4,7 @@
  * 小程序的模板真是又长又臭
  */
 const app = null //getApp()
-const Core = require('../aotoo/core')
+const Core = require('../aotoo/core/index')
 const lib = Core.lib
 
 /**
@@ -626,6 +626,12 @@ Component({
 
     setValue(id, val){
       this.value(id, val)
+    },
+
+    setInputProfile(param={}){
+      if (lib.isObject(param)) {
+        this.value(param)
+      }
     },
     
     value: function(id, val) {
