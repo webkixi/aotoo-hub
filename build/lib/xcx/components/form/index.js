@@ -179,6 +179,9 @@ function resetUIitem(params, cls='input-item-title') {
 // 依照依赖规范输出配置
 function normAsset(params, normAst=[]) {
   let nInput = {}
+  if (params.type === 'span') {
+    return params
+  }
   Object.keys(params).forEach(key => normAst.includes(key) ? nInput[key] = params[key] : '')
   return nInput
 }

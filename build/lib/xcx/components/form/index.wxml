@@ -453,7 +453,7 @@
 </template>
 
 <template name="@span">
-  <ui-item item="{{input}}" fromComponent="{{uniqId}}"/>
+  <ui-item wx:if="{{input.value}}" item="{{input.value}}" fromComponent="{{uniqId}}"/>
 </template>
 
 <template name="whatTypeElement">
@@ -565,7 +565,7 @@
     <!-- content -->
     <view class="input-item-area">
       <block wx:if="{{util.isArray(input)}}">
-        <block wx:for="{{input}}" wx:key="" wx:for-item="inputItem">
+        <block wx:for="{{input}}" wx:key="uAddress" wx:for-item="inputItem">
           <template is="inputItem" data="{{uniqId, input: inputItem, profile, props}}" />
         </block>
       </block>
@@ -588,7 +588,7 @@
   >
     <block wx:if="{{util.isArray($validInputs)}}">
       <view class="input-container {{$props.listClass}}">
-        <block wx:for="{{$validInputs}}" wx:key="">
+        <block wx:for="{{$validInputs}}" wx:key="_index" wx:for-index="_index">
           <template is="inputs" data="{{uniqId, props: $props, profile: item.profile, input: item.input}}" />
         </block>
       </view>
