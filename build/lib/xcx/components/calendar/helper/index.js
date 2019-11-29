@@ -144,21 +144,27 @@ export function completeMonth(timestart) {
     if (todayDate === theDate) num.title = '今天'
     if (theStamp <= endDayStamp) {
       let ori = {title: num, date: theDate, year, month, day: _num, itemClass: 'valid'}
+      ori = Object.assign({}, ori, defaultDate)
       let dateTap = `onSelected?type=date&date=${theDate}`
       if (globalDisable === false) {
         ori.tap = dateTap
       }
+
+      // 是否匹配data中的数据
       if (dataIndexs[theDate]) {
         let index = dataIndexs[theDate].index
         let fillData = fillupData[index].content || fillupData[index]
         ori = Object.assign({}, ori, fillData)
       } else {
-        ori = Object.assign({}, ori, defaultDate)
+        if (globalDisable) ori.disable = true
       }
+
+      // 小于开始日期
       if (theStamp < startDayStamp) {
         ori.itemClass = 'valid invalid'
         delete ori.tap
       }
+
       if (ori.disable === false) {
         ori.itemClass = 'valid'
         ori.tap = dateTap

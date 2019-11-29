@@ -86,21 +86,27 @@ class htmlparser {
           attr[_key] = attribs[ky];
           // delete attribs[ky];
         }
-
+        else
         if (ky === "class") {
           attribs["itemClass"] = attribs[ky];
           // delete attribs[ky];
         }
-
+        else
         if (ky === "style") {
           attribs["itemStyle"] = attribs[ky];
           // delete attribs[ky];
         }
-
+        else
         if (ky === 'href') {
           attribs["url"] = attribs[ky];
         }
-        delete attribs[ky];
+        else
+        if (ky === 'src') {
+          // attribs["src"] = attribs[ky];
+        }
+        else {
+          delete attribs[ky];
+        }
       });
     }
 
@@ -145,7 +151,11 @@ class htmlparser {
       text = text.trim()
       if (tags.length && /[\w\u4e00-\u9fa5]/g.test(text)) {
         let curTag = tags[tags.length - 1];
-        curTag.title = text;
+        if (curTag.title) {
+          curTag.dot = (curTag.dot||[]).concat(text)
+        } else {
+          curTag.title = text;
+        }
       } else {
         if (text) {
           _html.push({ title: text });
