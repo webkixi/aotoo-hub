@@ -33,12 +33,12 @@ function updateSelf(params) {
       return props
     })()
     
-    if (list.itemMethod && lib.isObject(list.itemMethod)) {
-      Object.keys(list.itemMethod).forEach(fn=>{
-        this[fn] = list.itemMethod[fn]
-      })
-      delete list.itemMethod
-    }
+    // if (list.itemMethod && lib.isObject(list.itemMethod)) {
+    //   Object.keys(list.itemMethod).forEach(fn=>{
+    //     this[fn] = list.itemMethod[fn]
+    //   })
+    //   delete list.itemMethod
+    // }
 
     if (list.header || list.footer) {
       list.header = list.header && resetItem(list.header, this)

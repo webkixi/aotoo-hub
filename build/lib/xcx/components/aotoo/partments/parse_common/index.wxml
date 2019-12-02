@@ -40,7 +40,8 @@
       <template is="{{'@'+tempname}}" data="{{item, props: {...item[tempname], treeid: util.treeid(item)}, keyword: tempname }}" />
     </block>
     <block wx:else>
-      <template is="{{tempname}}" data="{{props: item[tempname], keyword: tempname }}" />
+      <!-- <template is="{{tempname}}" data="{{props: item[tempname], keyword: tempname }}" /> -->
+      <template is="{{tempname}}" data="{{props: item, keyword: tempname }}" />
     </block>
   </block>
 </template>

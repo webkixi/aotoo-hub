@@ -25,7 +25,7 @@ export const itemBehavior = function(app, mytype) {
     behaviors: [commonBehavior(app, mytype), commonMethodBehavior(app, mytype)],
     properties: {
       item: {
-        type: Object|String, 
+        type: Object|String|Number, 
         observer: function (params) { 
           if (!this.init) {
             if (params) {

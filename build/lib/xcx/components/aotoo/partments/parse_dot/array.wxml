@@ -14,7 +14,7 @@
 
 <!-- 这个key要小心 -->
 <block wx:for="{{item.dot}}" wx:key="__key" wx:for-item="son">
-  <block wx:if="{{util.isString(son)}}">
+  <block wx:if="{{util.isString(son) || util.isNumber(son)}}">
     <view class="hdot-item">
       <text>{{son}}</text>
     </view>

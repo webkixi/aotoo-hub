@@ -12,6 +12,6 @@
 
 
 
-<block wx:else="{{util.isString(item.title)}}">
+<block wx:else="{{util.isString(item.title) || util.isNumber(item.title)}}">
   <include src="./parse_title/string.wxml" />
 </block>

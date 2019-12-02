@@ -87,15 +87,31 @@ export function reSetArray(data, list) {
         let fun = methods[key]
         if (isFunction(fun)) {
           fun = fun.bind(that)
-          that[key] = methods[key]
+          that[key] = fun
         }
       })
     }
     delete list.methods
 
+    if (list.itemMethod && isObject(list.itemMethod)) {
+      let methods = list.itemMethod
+      let tmp = {}
+      Object.keys(methods).forEach(key => {
+        let funKey = '__on' + key
+        tmp[key] = funKey
+        let fun = methods[key]
+        if (isFunction(fun)) {
+          fun = fun.bind(that)
+          that[funKey] = fun
+        }
+      })
+      list.itemMethod = tmp
+    }
+
     if (isArray(data)) {
       list.data = data.map(item => reSetItemAttr.call(this, item, list))
     }
+    delete list.itemMethod
     return list
     
   } catch (error) {

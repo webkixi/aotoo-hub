@@ -204,7 +204,7 @@ export function listInstDelegate(treeid, listInst){
       },
       toggleClass(cls) {
         if (cls) {
-          let clsAry = lib.isString(cls) ? itCls.split(' ') : []
+          let clsAry = lib.isString(cls) ? cls.split(' ') : []
           if (clsAry.length) {
             cls = clsAry[0]
             if (this.hasClass(cls)) {
@@ -701,7 +701,7 @@ export const commonBehavior = (app, mytype) => {
 
       toggleClass(cls) {
         if (cls && lib.isFunction(this.hasClass)) {
-          let clsAry = lib.isString(cls) ? itCls.split(' ') : []
+          let clsAry = lib.isString(cls) ? cls.split(' ') : []
           if (clsAry.length) {
             cls = clsAry[0]
             if (this.hasClass(cls)) {

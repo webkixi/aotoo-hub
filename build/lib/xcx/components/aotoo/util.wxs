@@ -47,7 +47,7 @@ function isArray(obj) {
 }
 
 function isNumber(obj) {
-  return objTypeof(obj) == 'number'
+  return objTypeof(obj) == 'number' || obj === 0 ? true : false
 }
 
 function isFunction(obj) {
