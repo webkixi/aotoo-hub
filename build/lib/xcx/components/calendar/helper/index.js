@@ -542,7 +542,7 @@ export function calendarMonths(timestart, end=5) {
   let configs = []
   let yearLoop = month
   for (let ii=0; ii<end; ii++) {
-    if (yearLoop%12 === 1) {
+    if (yearLoop > 1 && yearLoop % 12 === 1) {
       year++
       yearLoop = 1
     }
