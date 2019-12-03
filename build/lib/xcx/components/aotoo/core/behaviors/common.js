@@ -100,10 +100,10 @@ export function fakeListInstance(tmpData, listInst) {
     },
     forEach(cb) {
       let forEachTmp = {}
-      let datas = Object.keys(this.data)
+      let datas = Object.keys(tmpData)
       datas.forEach((key, ii) => {
-        // let _data = {[key]: this.data[key]}
-        let _data = this.data[key]
+        // let _data = {[key]: tmpData[key]}
+        let _data = tmpData[key]
         if (lib.isFunction(cb)) {
           let context = {
             data: _data,
@@ -181,7 +181,7 @@ export function fakeListInstance(tmpData, listInst) {
   }
 }
 
-export function listInstDelegate(treeid, listInst){
+export function listInstDelegate(treeid, listInst, from){
   let index = listInst.findIndex(treeid)
   if (index || index === 0) {
     let data = (listInst.getData()).data[index]
@@ -218,7 +218,13 @@ export function listInstDelegate(treeid, listInst){
       addClass(params) {
         if (!lib.isString(params)) return
         let clsData = _addClass(key, params, data)
-        if (clsData) listInst.update(clsData)
+        if (clsData) {
+          if (from === 'foreach') {
+            listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, clsData)
+          } else {
+            listInst.update(clsData)
+          }
+        }
 
         // if (!lib.isString(params)) return
         // let upData = {}
@@ -237,7 +243,12 @@ export function listInstDelegate(treeid, listInst){
       removeClass(params) {
         if (!lib.isString(params)) return
         let clsData = _removeClass(key, params, data)
-        if (clsData) listInst.update(clsData)
+        // if (clsData) listInst.update(clsData)
+        if (from === 'foreach') {
+          listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, clsData)
+        } else {
+          listInst.update(clsData)
+        }
 
         // if (!lib.isString(params)) return
         // let upData = {}
@@ -266,7 +277,12 @@ export function listInstDelegate(treeid, listInst){
         if (data) {
           data = Object.assign({}, data, params)
           upData[key] = data
-          listInst.update(upData)
+          // listInst.update(upData)
+          if (from === 'foreach') {
+            listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, upData)
+          } else {
+            listInst.update(upData)
+          }
         }
       },
       show() {
@@ -274,7 +290,12 @@ export function listInstDelegate(treeid, listInst){
         if (data) {
           data.show = true
           upData[key] = data
-          listInst.update(upData)
+          // listInst.update(upData)
+          if (from === 'foreach') {
+            listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, upData)
+          } else {
+            listInst.update(upData)
+          }
         }
       },
       hide() {
@@ -282,7 +303,12 @@ export function listInstDelegate(treeid, listInst){
         if (data) {
           data.show = false
           upData[key] = data
-          listInst.update(upData)
+          // listInst.update(upData)
+          if (from === 'foreach') {
+            listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, upData)
+          } else {
+            listInst.update(upData)
+          }
         }
       },
       remove() {

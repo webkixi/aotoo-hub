@@ -121,13 +121,14 @@ export const listBehavior = function(app, mytype) {
       },
 
       forEach(cb){
+        this.__foreachUpdata = {}
         let that = this
         let upData = {}
         let data = this.getData().data
         data.forEach(function(item, ii){
           let attr = item.attr || {}
           let treeid = attr.treeid || attr['data-treeid']
-          let it = listInstDelegate(treeid, that)
+          let it = listInstDelegate(treeid, that, 'foreach')
           cb(it, ii)
           // let key = `data[${ii}]`
           // if (lib.isFunction(cb)) {
@@ -153,6 +154,7 @@ export const listBehavior = function(app, mytype) {
           // }
         })
         // this.update(upData)
+        this.update(this.__foreachUpdata)
       },
 
       addClass: function(listCls) {
