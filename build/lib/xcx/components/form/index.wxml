@@ -473,7 +473,7 @@
   <label class="input-item-label" for="{{input.id||input.name}}">
     <block wx:if="{{input.eye}}">
       <view class="input-item-passwd-eye">
-        <template is="whatTypeElement" data="{{uniqId, props, profile, input, inputStyle: 'flex: 3'}}"/>
+        <template is="whatTypeElement" data="{{uniqId, props, profile, input}}"/>
         <block wx:if="{{tmp.isInput(input.type)}}">
           <block wx:if="{{input.type=='dropdown'}}">
             <text 
