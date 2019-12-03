@@ -160,7 +160,8 @@ let defaultConfig = {
   toolbox: {
     header: true,
     footer: true,
-    monthHeader: true
+    monthHeader: true,
+    rangeEdge: null //自定义边界日期
   },
   date: null // 自定义默认日期
 }

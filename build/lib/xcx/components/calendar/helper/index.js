@@ -58,7 +58,7 @@ export function getMonthCount(year, month) {
 
 // 3.获得某年某月的 1号 是星期几，这里要注意的是 JS 的 API-getDay() 是从 [日-六](0-6)，返回 number
 export function getWeekday(year, month) {
-  let date = newDate(year, month, 1);
+  let date = new Date(year, month, 1);
   return date.getDay();
 }
 
@@ -119,6 +119,7 @@ export function completeMonth(timestart) {
   // 生成日历数据，上个月的 x 天 + 当月的 [28,29,30,31]天 + 下个月的 y 天 = 42
   let res = [];
   let today = getYmd() // 今天
+  let todayStamp = newDate(todayDate).getTime()
   let {year, month, day} = getYmd(timestart)
   let todayDate = `${today.year}-${today.month}-${today.day}`
   let currentMonth = getMonthCount(year, month-1);
@@ -143,7 +144,7 @@ export function completeMonth(timestart) {
     let num = {title: _num, itemClass: 'date-item-day'}
     if (todayDate === theDate) num.title = '今天'
     if (theStamp <= endDayStamp) {
-      let ori = {title: num, date: theDate, year, month, day: _num, itemClass: 'valid'}
+      let ori = {title: num, timestamp: theStamp, date: theDate, year, month, day: _num, itemClass: 'valid'}
       ori = Object.assign({}, ori, defaultDate)
       let dateTap = `onSelected?type=date&date=${theDate}`
       if (globalDisable === false) {
@@ -155,23 +156,38 @@ export function completeMonth(timestart) {
         let index = dataIndexs[theDate].index
         let fillData = fillupData[index].content || fillupData[index]
         ori = Object.assign({}, ori, fillData)
+        ori.valid = true // 有效日期
+        if (theStamp < todayStamp) {
+          ori.disable = true
+        }
       } else {
         if (globalDisable) ori.disable = true
       }
 
       // 小于开始日期
       if (theStamp < startDayStamp) {
-        ori.itemClass = 'valid invalid'
-        delete ori.tap
+        ori.disable = true
+        // ori.itemClass = 'valid invalid'
+        // delete ori.tap
       }
 
-      if (ori.disable === false) {
+      if (ori.disable) {
+        ori.itemClass = 'valid invalid'
+        if (fillupData.length) ori.valid = false // 只有data有数据的时候才设置该值
+        delete ori.tap
+      } else {
         ori.itemClass = 'valid'
         ori.tap = dateTap
-      } else if(ori.disable) {
-        ori.itemClass = 'valid invalid'
-        delete ori.tap
       }
+
+      // if (ori.disable === false) {
+      //   ori.itemClass = 'valid'
+      //   ori.tap = dateTap
+      // } else if(ori.disable) {
+      //   ori.itemClass = 'valid invalid'
+      //   delete ori.tap
+      // }
+
       return ori
     } else {
       return {title: num, itemClass: 'valid invalid'}
@@ -185,6 +201,7 @@ export function completeMonth(timestart) {
 export function oneMonthListConfig(timestart) {
   let that = this
   let options = this.options
+  let allowBox = this.allowBox
   let checkType = options.type   // single/range/mutiple
   let rangeCount = options.rangeCount
   let rangeMode = options.rangeMode
@@ -238,13 +255,13 @@ export function oneMonthListConfig(timestart) {
     let others = follow.others
     let nexts = follow.nexts
 
-    that.calendar.children.forEach(child=>{
-      child.visible(true)
-      child.show()
-      if (child.lazyDisplay) {
-        child.hooks.emit('emptyChecked', {itemClass: 'invalid'})
-      }
-    })
+    // that.calendar.children.forEach(child=>{
+    //   child.visible(true)
+    //   child.show()
+    //   if (child.lazyDisplay) {
+    //     child.hooks.emit('emptyChecked', {itemClass: 'invalid'})
+    //   }
+    // })
 
     // 隐藏所有需要隐藏的月份
     others.forEach(monInstId => {
@@ -259,16 +276,50 @@ export function oneMonthListConfig(timestart) {
       }
     })
 
-    nexts.forEach(monInstId => {
-      let edgeId = that.calenderId + '-' + edgeMonth
-      let handle = that.activePage.getElementsById(monInstId)
-      if (handle) {
-        if (edgeId === monInstId) {
-          handle.hooks.emit('emptyChecked', {itemClass: 'invalid'})
-          handle.tint(edgeDate, null, 'invalid')
+    if (!nexts.length) {
+      nexts.push(that.calenderId + '-' + edgeMonth)
+    } else {
+      nexts.unshift(`${that.calenderId}-${curPoint.year}-${curPoint.month}`)
+    }
+
+    let newEdgeDate = null // 自定义边界日期
+    let myhandle = null
+
+    if (allowBox.rangeEdge) {
+      if (allowBox.rangeEdge && lib.isString(allowBox.rangeEdge)) {
+        let ymd = getYmd(allowBox.rangeEdge)
+        let newEdgeDateId = that.calenderId + '-' + '-' + ymd.year + '-' + ymd.month
+        let handle = that.activePage.getElementsById(newEdgeDateId)
+        handle && handle.tint(newEdgeDate, null, 'invalid')
+      }
+      if (allowBox.rangeEdge && lib.isFunction(allowBox.rangeEdge)) {
+        let context = {
+          current: curDayStamp,
+          end: endDayStamp,
+          getYmd,
+          calenderId: that.calenderId,
+          activePage: that.activePage
+        }
+        newEdgeDate = allowBox.rangeEdge.call(context, nexts)
+        if (newEdgeDate) {
+          let ymd = getYmd(newEdgeDate)
+          let newEdgeDateId = that.calenderId + '-' + '-' + ymd.year + '-' + ymd.month
+          let handle = that.activePage.getElementsById(newEdgeDateId)
+          handle && handle.tint(newEdgeDate, null, 'invalid')
         }
       }
-    })
+    } else {
+      nexts.forEach(monInstId => {
+        let edgeId = that.calenderId + '-' + edgeMonth
+        let handle = that.activePage.getElementsById(monInstId)
+        if (handle) {
+          if (edgeId === monInstId) {
+            // handle.hooks.emit('emptyChecked', {itemClass: 'invalid'})
+            handle.tint(edgeDate, null, 'invalid')
+          }
+        }
+      })
+    }
   }
   
   return {
