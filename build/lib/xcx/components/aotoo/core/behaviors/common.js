@@ -30,7 +30,7 @@ function rightEvent(dsetEvt) {
         }
       })
       rightEvt = myQuery[evtType] || {fun: '', param: {}}
-      rightEvt.allParam = myQuery
+      rightEvt.allParam = lib.clone(myQuery)
     } else {
       dsetEvt = dsetEvt.replace('@@', '?').replace(/,/g, '&')
       const evtObj = lib.formatQuery(dsetEvt)
