@@ -106,7 +106,7 @@
     data-address="{{input.uAddress}}"
     data-eye = "{{input.type === 'dropdown' ? true : ''}}"
     
-    value="{{input.value}}"
+    value="{{(util.isObject(input.value) ? (input.value.title||input.value.text) : input.value)||''}}"
     placeholder="{{input.placeholder}}"
     placeholder-class="{{input['placeholder-class']}}"
 

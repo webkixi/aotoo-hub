@@ -119,9 +119,9 @@ export function completeMonth(timestart) {
   // 生成日历数据，上个月的 x 天 + 当月的 [28,29,30,31]天 + 下个月的 y 天 = 42
   let res = [];
   let today = getYmd() // 今天
-  let todayStamp = newDate(todayDate).getTime()
   let {year, month, day} = getYmd(timestart)
   let todayDate = `${today.year}-${today.month}-${today.day}`
+  let todayStamp = newDate(todayDate).getTime()
   let currentMonth = getMonthCount(year, month-1);
   let preMonth = getPreMonthCount(year, month-1);
   let nextMonth = getNextMonthCount(year, month-1);
@@ -544,13 +544,15 @@ export function oneMonthListConfig(timestart) {
         },
 
         setChecked(targetDate){
-          this.forEach(item=>{
-            let data = item.data
-            let date = data.date
-            if (date === targetDate) {
-              item.addClass('selected')
-            }
-          })
+          setTimeout(() => {
+            this.forEach(item=>{
+              let data = item.data
+              let date = data.date
+              if (date === targetDate) {
+                item.addClass('selected')
+              }
+            })
+          }, 100);
         },
 
         onSelectedMonth(e, param, inst) {

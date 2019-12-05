@@ -222,6 +222,7 @@ function adapter(source={}) {
         let ymd = getYmd(date)
         start = date
         total = getMonthCount(ymd.year, ymd.month).length
+        total = total - ymd.day
       } else {
         let fdate = fillData[0].date
         let ldate = fillData[fillData.length-1].date
@@ -639,10 +640,11 @@ Component({
 
         // 单选
         if (type === 'single') {
-          this.hooks.emit('emptyMonthChecked')  // 先清空所有已选项
-          this.hooks.one('emptyMonthChecked', function () {
-            monInst && monInst.hooks.emit('emptyChecked')
-          })
+          monInst && monInst.hooks.emit('emptyChecked')
+          // this.hooks.emit('emptyMonthChecked')  // 先清空所有已选项
+          // this.hooks.one('emptyMonthChecked', function () {
+          //   monInst && monInst.hooks.emit('emptyChecked')
+          // })
           value = [date]
         }
 

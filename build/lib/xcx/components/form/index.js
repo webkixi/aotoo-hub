@@ -292,10 +292,12 @@ function normInput(params, profile) {
       }
   
       if (params.type == 'dropdown') {
+        let listid = (params.id||params.name)+'_dd'
         if (lib.isArray(params.titles)){
           params.titles = { data: params.titles }
         }
         if (lib.isObject(params.titles)){
+          params.titles.$$id = listid
           params.eye = 'form-arrows'
           if (lib.isArray(params.titles.data)){
             // params.titles.type = {
@@ -309,7 +311,7 @@ function normInput(params, profile) {
             params.titles.itemClass = params.titles.itemClass ? `input-item-dropdown-options-item ${params.titles.itemClass}` : 'input-item-dropdown-options-item'
             params.titles.data = params.titles.data.map((item, ii)=>{
               if (typeof item == 'string') item = {title: item}
-              item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
+              item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title||item.text||''}`
               // if (item.parent) {
               //   item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
               // } else {
@@ -708,19 +710,52 @@ Component({
     // e evtent
     // param 经过 core itemMethod解析过后的数据，包含?abc=xxx等query信息
     inputItemDropdown: function (e, param={}) {
+      const $ = this.activePage.getElementsById.bind(this.activePage)
       const mytype = e.type
       const dataset = e.currentTarget.dataset
       const detail = e.detail
       let {address, index, value, text} = param
       let res = this.getAddressInfo(address||dataset.address)
+      let id = res.inputData.id || res.inputData.name
+      let listid = id+'_dd'
       if (res) {
         if (dataset.eye) {
+          let itemInput = this.allocation[id]
+          let hasSelected = itemInput.__param
+          let value = itemInput.value
           const state = !res.inputData.titles.show
           res.inputData.titles.show = state
           res.inputData.eye = state ? 'form-arrows-x' : 'form-arrows'
+          let hs = hasSelected
+          let tDatas = res.inputData.titles.data
+          if (hasSelected) {
+            tDatas = tDatas.map((item, ii)=>{
+              item.itemClass = (item.itemClass||'').replace(/ active/, '')
+              if (ii === parseInt(hs.index)) {
+                item.itemClass = (item.itemClass||'') + ' active'
+              }
+              return item
+            })
+            // res.inputData.titles.data = tDatas
+          } else {
+            if (value) {
+              if (lib.isObject(value)) {
+                value = value.value
+              }
+              tDatas = tDatas.map((item, ii) => {
+                item.itemClass = (item.itemClass||'').replace(/ active/, '')
+                if (item.value === value || item.title === value) {
+                  item.itemClass = (item.itemClass||'') + ' active'
+                } 
+                return item
+              })
+              // res.inputData.titles.data = tDatas
+            }
+          }
+
           // setAllocation.call(this, res, {value: detail.value})
           // runFormBindFun.call(this, 'tap', res, e)
-
+          
           // const state = !res.inputData.titles.show
           // res.inputData.titles.show = state
           // res.inputData.eye = state ? 'icon-arrows-t' :'icon-arrows-b'
@@ -729,7 +764,7 @@ Component({
             res.inputData.titles.show = false
             res.inputData.eye = 'form-arrows'
           }
-          setAllocation.call(this, res, {value: (value||''), text })
+          setAllocation.call(this, res, {value: (value||''), text, __param: param })
           res.inputData.value = text||''
           res.param = param
         }
@@ -748,7 +783,7 @@ Component({
       const address = dataset.address
       const res = this.getAddressInfo(address)
       const activePage = this.activePage
-      const {fun, param, allParam} = this._rightEvent(e)
+      // const {fun, param, allParam} = this._rightEvent(e)
 
       switch (mytype) {
         case 'getuserinfo':
@@ -786,7 +821,7 @@ Component({
       const address = dataset.address
       const res = this.getAddressInfo(address)
       const activePage = this.activePage
-      const {fun, param, allParam} = this._rightEvent(e)
+      // const {fun, param, allParam} = this._rightEvent(e)
 
       if (res) {
         var id = res.inputData.id || res.inputData.name
@@ -801,8 +836,14 @@ Component({
           break;
 
         case 'blur':
-          setAllocation.call(this, res, {value: detail.value})
-          runFormBindFun.call(this, 'bindblur', res, e)
+          if (res.inputData.type == 'dropdown') {
+            res.inputData.titles.show = false
+            res.inputData.eye = 'form-arrows'
+            runFormBindFun.call(this, 'bindblur', res, e)
+          } else {
+            setAllocation.call(this, res, {value: detail.value})
+            runFormBindFun.call(this, 'bindblur', res, e)
+          }
           break;
 
         case 'input':
@@ -821,11 +862,12 @@ Component({
             // setAllocation.call(this, res, {value: detail.value})
             // runFormBindFun.call(this, 'tap', res, e)
           } else {
-            const targetFun = this.parentInstance&&this.parentInstance[fun] || activePage[fun]
-            if (lib.isFunction(targetFun)) {
-              const tapctx = this.parentInstance || activePage
-              targetFun.call(tapctx, e, param, this)
-            }
+            // const targetFun = this.parentInstance&&this.parentInstance[fun] || activePage[fun]
+            // if (lib.isFunction(targetFun)) {
+            //   const tapctx = this.parentInstance || activePage
+            //   targetFun.call(tapctx, e, param, this)
+            // }
+            runFormBindFun.call(this, 'tap', res, e)
           }
           break;
       
@@ -923,13 +965,15 @@ function runFormBindFun(fn, res, e, from) {
   let activePage = this.activePage
   let {fun, param, allParam} = this._rightEvent(e)
   let funNm = fun
-  res.param = param
+  res.param ? e.param = res.param : ''
+  res.param = res.param || param
   if (lib.isString(res.inputData[fn])) {
     let funName = res.inputData[fn]
     // let targetObj = (!lib.isEmpty(this.componentInst) && this.componentInst) || activePage
     // let fun = (funNm&&targetObj[funNm]) || targetObj[funName]
     let targetObj = this.componentInst
-    let fun = (funNm&&targetObj[funNm]) || targetObj[funName] || activePage[funName]
+    // let fun = (funNm&&targetObj[funNm]) || targetObj[funName] || activePage[funName]
+    let fun = targetObj[(funNm || funName)] || activePage[(funNm || funName)]
 
     if (lib.isFunction(fun)) {
       let resData = ''
