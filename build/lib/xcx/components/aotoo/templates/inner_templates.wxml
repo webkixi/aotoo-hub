@@ -99,34 +99,11 @@
     <icon class="iconfont {{props}}" />
   </block>
   <block wx:elif="{{util.isObject(props)}}">
-    <block wx:if="{{props.aim}}">
-      <block wx:if="{{props.style}}">
-        <icon 
-          class="iconfont {{props.class || props.itemClass}}" 
-          bind:tap="aim" data-aim="{{props.aim}}"
-          style="{{props.style||''}}" 
-        />
-      </block>
-      <block wx:else>
-        <icon 
-          class="iconfont {{props.class || props.itemClass}}" 
-          bind:tap="aim" data-aim="{{props.aim}}"
-        />
-      </block>
-    </block>
-    <block wx:else>
-      <block wx:if="{{props.style}}">
-        <icon 
-          class="iconfont {{props.class || props.itemClass}}" 
-          style="{{props.style||''}}" 
-        />
-      </block>
-      <block wx:else>
-        <icon 
-          class="iconfont {{props.class || props.itemClass}}" 
-        />
-      </block>
-    </block>
+    <icon 
+      class="iconfont {{props.itemClass || props.class}}" 
+      catch:tap="{{props.aim||''}}" 
+      style="{{props.style||''}}" 
+    />
   </block>
 </template>
 

@@ -45,6 +45,7 @@ const containerAttributs = { // attrs
   desc: undefined,
   itemClass: 'input-item',
   listClass: '',
+  formClass: '',
   itemStyle: undefined,
   listStyle: '',
   required: undefined,
@@ -311,7 +312,11 @@ function normInput(params, profile) {
             params.titles.itemClass = params.titles.itemClass ? `input-item-dropdown-options-item ${params.titles.itemClass}` : 'input-item-dropdown-options-item'
             params.titles.data = params.titles.data.map((item, ii)=>{
               if (typeof item == 'string') item = {title: item}
-              item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title||item.text||''}`
+              if (!item.disabled) {
+                item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title||item.text||''}`
+              } else {
+                item.itemClass = (item.itemClass||'') + ' disabled'
+              }
               // if (item.parent) {
               //   item.aim = `inputItemDropdown?address=${params.uAddress}&index=${ii}&value=${item.value}&text=${item.title}`
               // } else {
@@ -386,7 +391,13 @@ function getItemAllocation(data, index) {
     let inputs = [].concat((data.input || []))
     inputs.forEach(item => {
       if (lib.isObject(item)) {
-        assets.push(Object.assign({}, inputAttributs, normInput.call(this, item, itemProfile)))
+        let target = Object.assign({}, inputAttributs, normInput.call(this, item, itemProfile))
+        if (target === 'dropdown' && lib.isObject(target.value)) {
+          let tmpV = target.value
+          target.text = tmpV.title||tmpV.text
+          target.value = tmpV.value
+        }
+        assets.push(target)
       }
     })
 
@@ -436,11 +447,23 @@ function createProps(params) {
 }
 
 function initForm(params) {
+  let that = this
   let dataSource = params
   const props = this.props = createProps((dataSource || {}))
   const {allocation, data} = createAllocation.call(this, (dataSource.data||[]))
   this.allocation = allocation
   dataSource.data = this.validInputs = data
+  if (lib.isObject(dataSource.methods)) {
+    let mths = dataSource.methods
+    Object.keys(mths).forEach(key=> {
+      let fun = mths[key]
+      if (lib.isFunction(fun)) {
+        this[key] = fun.bind(that)
+      }
+    })
+  }
+  delete dataSource.methods
+
   this.setData({
     $dataSource: dataSource,
     $validInputs: this.validInputs,
@@ -650,12 +673,16 @@ Component({
               let willUpdate = {}
               let res = this.getAddressInfo(address)
               if (res) {
+                let inputType = res.inputData.type
                 if (lib.isString(val)) {
                   res.inputData.value = val
                   let resault = res.inputData
                   res.inputData = resault = normInput.call(this, resault, res.profile)
                   willUpdate = {[res.address]: resault}
                 } else {
+                  if (lib.isArray(val) && inputType === 'dropdown') {
+                    val = {titles: {data: val}}
+                  }
                   if (lib.isObject(val)) {
                     let resault = Object.assign({}, res.inputData, val)
                     res.inputData = resault = normInput.call(this, resault, res.profile)
@@ -706,26 +733,73 @@ Component({
       // console.log(e);
       // console.log(param);
     },
+
+    inputItemDropdownOff(e){
+      const dataset = e.currentTarget.dataset
+      this.hooks.emit('dropdown-off')
+    },
     // dropdown
     // e evtent
     // param 经过 core itemMethod解析过后的数据，包含?abc=xxx等query信息
     inputItemDropdown: function (e, param={}) {
+      const that = this
       const $ = this.activePage.getElementsById.bind(this.activePage)
       const mytype = e.type
       const dataset = e.currentTarget.dataset
       const detail = e.detail
       let {address, index, value, text} = param
       let res = this.getAddressInfo(address||dataset.address)
-      let id = res.inputData.id || res.inputData.name
-      let listid = id+'_dd'
+      this.hooks.emit('dropdown-off', dataset)
       if (res) {
+        let id = res.inputData.id || res.inputData.name
+        let listid = id+'_dd'
         if (dataset.eye) {
+          // console.log(dataset);
+          // console.log(res.inputData);
           let itemInput = this.allocation[id]
           let hasSelected = itemInput.__param
-          let value = itemInput.value
+          let defValue = itemInput.value
           const state = !res.inputData.titles.show
           res.inputData.titles.show = state
           res.inputData.eye = state ? 'form-arrows-x' : 'form-arrows'
+
+          let style = res.inputData.itemStyle
+          let ddlistStyle = res.inputData.titles.listStyle
+          if (state) {
+            style = (style||'') + ';z-index: 698'
+            ddlistStyle = (ddlistStyle||'') + ';z-index: 699'
+            res.inputData.itemStyle = style
+            res.inputData.titles.listStyle = ddlistStyle
+
+            this.hooks.off('dropdown-off')
+            this.hooks.on('dropdown-off', function (param) {
+              let beable = false
+              if (param) {
+                if (param.address !== res.inputData.uAddress) {
+                  beable = true
+                }
+              } else {
+                beable = true
+              }
+
+              if (beable) {
+                res.inputData.titles.show = false
+                res.inputData.eye = 'form-arrows'
+                style = (style || '').replace(';z-index: 698', '')
+                ddlistStyle = (ddlistStyle || '').replace(';z-index: 699', '')
+                res.inputData.itemStyle = style
+                res.inputData.titles.listStyle = ddlistStyle
+                runFormBindFun.call(that, null, res, e)
+              }
+            })
+
+          } else {
+            style = (style || '').replace(';z-index: 698', '')
+            ddlistStyle = (ddlistStyle || '').replace(';z-index: 699', '')
+            res.inputData.itemStyle = style
+            res.inputData.titles.listStyle = ddlistStyle
+          }
+
           let hs = hasSelected
           let tDatas = res.inputData.titles.data
           if (hasSelected) {
@@ -738,13 +812,13 @@ Component({
             })
             // res.inputData.titles.data = tDatas
           } else {
-            if (value) {
-              if (lib.isObject(value)) {
-                value = value.value
+            if (defValue) {
+              if (lib.isObject(defValue)) {
+                defValue = defValue.value
               }
               tDatas = tDatas.map((item, ii) => {
                 item.itemClass = (item.itemClass||'').replace(/ active/, '')
-                if (item.value === value || item.title === value) {
+                if (item.value === defValue || item.title === defValue) {
                   item.itemClass = (item.itemClass||'') + ' active'
                 } 
                 return item
@@ -847,7 +921,7 @@ Component({
           break;
 
         case 'input':
-          if (!res.inputData.readonly && detail.value) {
+          if (!res.inputData.readonly && (detail.value || detail.value === '')) {
             setAllocation.call(this, res, {value: detail.value})
             res.inputData.value = detail.value
             runFormBindFun.call(this, 'bindinput', res, e)
@@ -856,6 +930,7 @@ Component({
 
         case 'tap':
           if (res.inputData.type == 'dropdown') {
+            // this.hooks.emit('dropdown-off')
             this.inputItemDropdown(e)
             // res.inputData.titles.show = !res.inputData.titles.show
             // res.inputData.eye = 'icon-arrows-t'
@@ -883,7 +958,7 @@ Component({
       // console.log(res.address, res.inputData);
       if (res) {
         res.inputData.type = res.inputData.type == 'password' ? 'text' : 'password'
-        res.inputData.eye && (res.inputData.eye = typeof res.inputData.eye == 'boolean' ? 'form-close-eye' : true)
+        res.inputData.eye && (res.inputData.eye = typeof res.inputData.eye == 'boolean' ? 'form-eye' : true)
         this.setData({ [res.address]: res.inputData })
       }
     },
@@ -973,11 +1048,11 @@ function runFormBindFun(fn, res, e, from) {
     // let fun = (funNm&&targetObj[funNm]) || targetObj[funName]
     let targetObj = this.componentInst
     // let fun = (funNm&&targetObj[funNm]) || targetObj[funName] || activePage[funName]
-    let fun = targetObj[(funNm || funName)] || activePage[(funNm || funName)]
-
+    let fun = this[(funNm || funName)] || targetObj[(funNm || funName)] || activePage[(funNm || funName)]
+    let context = this[(funNm || funName)] ? this : targetObj[(funNm || funName)] ? targetObj : activePage
     if (lib.isFunction(fun)) {
-      let resData = ''
-      let result = fun(e, res, this)
+      let resData = null
+      let result = fun.call(context, e, res, this)
       if (result) {
         resData = result.inputData ? result.inputData : result
         if (from == 'pickers') {

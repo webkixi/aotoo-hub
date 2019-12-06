@@ -100,27 +100,40 @@
 
 
 <template name="@input">
+  <block wx:if="{{tmp.isDropdown(input) && input.mode==='view'}}">
+    <view 
+      type="{{input.type||'text'}}" 
+      id="{{input.id||''}}"
+      data-address="{{input.uAddress}}"
+      data-eye = "{{input.type === 'dropdown' ? true : ''}}"
+      class="{{tmp.isDropdown(input) ? 'item-input-dropdown' :'input-item-input' }} {{input.itemClass||input.class}}"
+      style="z-index: 639; {{inputStyle||''}} {{input.itemStyle||input.style||''}};"
+      catch:tap = "inputItemMethod"
+      data-evt="{{util.dataEvt(input, ['bindinput', 'bindfocus', 'bindblur', 'bindconfirm' ])}}"
+    >{{(util.isObject(input.value) ? (input.value.title||input.value.text) : input.value)||''}}</view>
+  </block>
   <input 
+    wx:else
     type="{{input.type||'text'}}" 
-    id="{{input.id}}"
+    id="{{input.id||''}}"
     data-address="{{input.uAddress}}"
     data-eye = "{{input.type === 'dropdown' ? true : ''}}"
     
     value="{{(util.isObject(input.value) ? (input.value.title||input.value.text) : input.value)||''}}"
-    placeholder="{{input.placeholder}}"
-    placeholder-class="{{input['placeholder-class']}}"
+    placeholder="{{input.placeholder||''}}"
+    placeholder-class="{{input['placeholder-class']||''}}"
 
     disabled="{{input.disabled}}"
     maxlength="{{input.maxlength||20}}"
-    cursor-spacing	="{{input.cursor-spacing}}"
-    confirm-type ="{{input.confirm-type}}"
-    confirm-hold ="{{input.confirm-hold}}"
-    adjust-position ="{{input.adjust-position||true}}"
+    cursor-spacing	="{{input['cursor-spacing']||''}}"
+    confirm-type ="{{input['confirm-type']||''}}"
+    confirm-hold ="{{input['confirm-hold']||''}}"
+    adjust-position ="{{input['adjust-position']||true}}"
     
     class="{{tmp.isDropdown(input) ? 'item-input-dropdown' :'input-item-input' }} {{input.itemClass||input.class}}"
-    style="{{inputStyle}} {{input.itemStyle||input.style}}"
+    style="z-index: 639; {{inputStyle||''}} {{input.itemStyle||input.style||''}}"
 
-    bind:tap = "inputItemMethod"
+    catch:tap = "inputItemMethod"
     bindinput = "inputItemMethod"
     bindfocus = "inputItemMethod"
     bindblur = "inputItemMethod"
@@ -326,9 +339,9 @@
 </template>
 
 <template name="@switch">
-  <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch {{input.itemClass}}" color="{{input.color}}" wx:if="{{input.value}}" checked />
+  <switch id="{{input.id}}" disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch {{input.itemClass}}" color="{{input.color}}" wx:if="{{input.value}}" checked />
   <block wx:else>
-    <switch disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch" color="{{input.color}}"/>
+    <switch id="{{input.id}}" disabled="{{input.disabled}}" data-address="{{input.uAddress}}" bindchange="rcChange" data-evt="{{util.dataEvt(input, ['bindchange'])}}" class="input-item-switch {{input.itemClass}}" color="{{input.color}}"/>
   </block>
 </template>
 
@@ -458,6 +471,13 @@
 
 <template name="whatTypeElement">
   <block wx:if="{{tmp.isInput(input.type)}}">
+    <view 
+      wx:if="{{input.type==='dropdown' && input.titles.show }}" 
+      catch:tap="inputItemDropdownOff" 
+      class="input-item-dropdown-masker" 
+      data-address="{{input.uAddress}}"
+      data-masker='true'
+    ></view>
     <template is="@input" data="{{uniqId, input, inputStyle}}" />
     <block wx:if="{{input.type=='dropdown'}}">
       <ui-list list="{{input.options || input.titles}}"  fromComponent="{{uniqId}}"/>
@@ -477,6 +497,7 @@
         <block wx:if="{{tmp.isInput(input.type)}}">
           <block wx:if="{{input.type=='dropdown'}}">
             <text 
+              wx:if="{{!input.mode}}"
               catch:tap="inputItemDropdown" 
               data-eye="{{true}}" 
               data-address="{{input.uAddress}}" 
@@ -496,7 +517,7 @@
             <text 
               catch:tap="openCloseEey" 
               data-address="{{input.uAddress}}" 
-              class="form-eye" 
+              class="form-close-eye" 
               data-evt="{{util.dataEvt(input, ['catchtap'])}}"
             ></text>
           </block>
@@ -587,7 +608,7 @@
     bindreset="formReset"
   >
     <block wx:if="{{util.isArray($validInputs)}}">
-      <view class="input-container {{$props.listClass}}">
+      <view class="input-container {{$props.formClass || $props.listClass}}">
         <block wx:for="{{$validInputs}}" wx:key="_index" wx:for-index="_index">
           <block wx:if="{{item.profile.show===false ? false : true}}">
             <template is="inputs" data="{{uniqId, props: $props, profile: item.profile, input: item.input}}" />
