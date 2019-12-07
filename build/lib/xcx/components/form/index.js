@@ -113,7 +113,7 @@ const inputAttributs = {
 
   // slider
   min: undefined,
-  max: undefined,
+  max: undefined,   // 在rating中作为最大分数
   step: undefined,
   color: undefined,
   'selected-color': undefined,
@@ -125,7 +125,7 @@ const inputAttributs = {
 
 
   // picker
-  'mode': undefined,
+  'mode': undefined,    // 在dropdown中 mode='view'时，表示用view作为输出结构
   'bindcancel': undefined,
   'bindinput': undefined,
   'bindfocus': undefined,
@@ -136,7 +136,7 @@ const inputAttributs = {
   'bindcolumnchange': undefined,
   'start': undefined,
   'end': undefined,
-  'range': undefined,
+  'range': undefined,  // 在rating中作为范围
   'customItem': undefined,
 
   // picker-view
@@ -270,7 +270,7 @@ function normInput(params, profile) {
         }
       }
     }
-    
+
     if (params.type !== 'span') {
       if (params.title) {
         params.title = resetUIitem(params.title)
@@ -282,6 +282,13 @@ function normInput(params, profile) {
   
       if (params.error) {
         params.error = resetUIitem(params.error, 'input-item-error')
+      }
+
+      if (params.type === 'rating') {
+        let max = params.max = parseInt(params.max) || 5
+        params.range = Array.from(new Array(max), (item, index) => {
+          return {title: index+1}
+        })
       }
   
       if (params.type == 'password') {
@@ -727,11 +734,35 @@ Component({
       }
     },
 
-    // 下拉菜单的列表项为scroll-view
-    // 滚动式触发以下方法
-    inputItemDropdownScroll: function (e, param) {
-      // console.log(e);
-      // console.log(param);
+    // // 下拉菜单的列表项为scroll-view
+    // // 滚动式触发以下方法
+    // inputItemDropdownScroll: function (e, param) {
+    //   // console.log(e);
+    //   // console.log(param);
+    // },
+
+    inputItemRating(e, param){
+      const that = this
+      const $ = this.activePage.getElementsById.bind(this.activePage)
+      const mytype = e.type
+      const dataset = e.currentTarget.dataset
+      const detail = e.detail
+      let res = this.getAddressInfo(dataset.address)
+      let value = e.detail.value = parseInt((dataset.value||0))
+      if (res) {
+        let range = res.inputData.range
+        range = range.map((item, index) => {
+          if (index <= (value-1)) {
+            item.itemClass = (item.itemClass||'') + ' active'
+          } else {
+            item.itemClass = (item.itemClass || '').replace(/ *active/g, '')
+          }
+          return item
+        })
+        res.inputData.range = range
+        setAllocation.call(this, res, {value: (value||'')})
+      }
+      runFormBindFun.call(this, 'tap', res, e)
     },
 
     inputItemDropdownOff(e){
@@ -804,7 +835,7 @@ Component({
           let tDatas = res.inputData.titles.data
           if (hasSelected) {
             tDatas = tDatas.map((item, ii)=>{
-              item.itemClass = (item.itemClass||'').replace(/ active/, '')
+              item.itemClass = (item.itemClass||'').replace(/ *active/g, '')
               if (ii === parseInt(hs.index)) {
                 item.itemClass = (item.itemClass||'') + ' active'
               }
@@ -817,7 +848,7 @@ Component({
                 defValue = defValue.value
               }
               tDatas = tDatas.map((item, ii) => {
-                item.itemClass = (item.itemClass||'').replace(/ active/, '')
+                item.itemClass = (item.itemClass||'').replace(/ *active/g, '')
                 if (item.value === defValue || item.title === defValue) {
                   item.itemClass = (item.itemClass||'') + ' active'
                 } 
@@ -929,6 +960,10 @@ Component({
           break;
 
         case 'tap':
+          if (res.inputData.type === 'rating') {
+            this.inputItemRating(e)
+          } 
+          else
           if (res.inputData.type == 'dropdown') {
             // this.hooks.emit('dropdown-off')
             this.inputItemDropdown(e)
@@ -1038,7 +1073,14 @@ function setAllocation(res, val) {
 
 function runFormBindFun(fn, res, e, from) {
   let activePage = this.activePage
-  let {fun, param, allParam} = this._rightEvent(e)
+  let inputType = res.inputData.type
+  let fun, param, allParam
+  if (fn !== 'bindcolumnchange') {
+    let tmp = this._rightEvent(e)
+    fun = tmp.fun; param = tmp.param; allParam = tmp.allParam
+  } else {
+    fn = undefined
+  }
   let funNm = fun
   res.param ? e.param = res.param : ''
   res.param = res.param || param
@@ -1061,6 +1103,9 @@ function runFormBindFun(fn, res, e, from) {
         from == 'cancel' ? '' : this.setData({[res.address]: resData})
       } else {
         /** 什么都不做 ? */
+        if (inputType === 'rating') {
+          from == 'cancel' ? '' : this.setData({[res.address]: res.inputData})
+        }
       }
     } else {
       from == 'cancel' ? '' : this.setData({[res.address]: res.inputData})

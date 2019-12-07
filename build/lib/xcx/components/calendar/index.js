@@ -548,11 +548,11 @@ Component({
       }
     },
 
-    $(date){
+    $month(date){
       let dateItem = null
       if (date) {
-        let $date = formatDate(date)
         let ymd = getYmd(date)
+        let $date = `${ymd.year}-${ymd.month}-${ymd.day}`
         let monthInst = null
         this.calendar.children.forEach(ele=>{
           let eleYm = ele.getDate()
@@ -561,16 +561,17 @@ Component({
           }
         })
         if (monthInst) {
-          monthInst.forEach(item=>{
-            let data = item.data
-            let date = data.date
-            if (date === $date) {
-              dateItem = item
-            }
-          })
+          let config = monthInst.getData()
+          if (config.data.length) {
+            return monthInst
+          } else {
+            monthInst.visible(true)
+            monthInst.show()
+            monthInst.fillMonth()
+          }
+          return monthInst
         }
       }
-      return dateItem
     },
 
     // 设置指定日期数据
@@ -635,6 +636,7 @@ Component({
         let value = this.value
         let len = value.length
         let curDate = getYmd(date)
+        let curStamp = newDate(date).getTime()
         let instId = `${this.calenderId}-${curDate.year}-${curDate.month}`
         let monInst = activePage.getElementsById(instId)  //测试一下 ？？？？
 
@@ -673,7 +675,18 @@ Component({
           } else {
             if (len === 1) {
               if (value[0] !== date) {
-                value[1] = date
+                let zeroStamp = newDate(value[0]).getTime()
+                if (curStamp > zeroStamp) {
+                  value[1] = date
+                } else {
+                  if (curStamp < zeroStamp) {
+                    let theMon = this.$month(zeroStamp)
+                    if (theMon) {
+                      theMon.unChecked(zeroStamp)
+                    }
+                    value[0] = date
+                  }
+                }
               }
               // tintRange.call(this, value)
             }
@@ -781,13 +794,14 @@ Component({
             let gap = 0
             if (diffStamp > 0) {
               gap = parseInt(diffStamp/dayTime)
-              if (diffStamp%dayTime) gap++
-              if (gap < rangeCount) {
-                gap++
-                this.tintRange()
-              } else {
-                this.removeValue(value[1], inst)
-              }
+              // if (diffStamp%dayTime) gap++
+              // if (gap < rangeCount) {
+              //   gap++
+              //   this.tintRange()
+              // } else {
+              //   this.removeValue(value[1], inst)
+              // }
+              this.tintRange()
             } else {
               let instId = `${this.calenderId}-${ssDate.year}-${ssDate.month}`
               let monInst = activePage.getElementsById(instId)
@@ -977,7 +991,7 @@ Component({
       let that = this
       let container = this.elements.container
       let cleft = container.left
-      let cright = container.right
+      let cright = container.right*2
       let cwidth = container.width
       let items = this.elements.items
       let scrollLeft = container.scrollLeft

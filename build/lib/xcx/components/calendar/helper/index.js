@@ -141,10 +141,11 @@ export function completeMonth(timestart) {
   currentMonth = currentMonth.map(_num=>{
     let theDate = `${year}-${month}-${_num}`
     let theStamp = newDate(theDate).getTime()
+    let theMonthCount = getMonthCount(year, month-1).length
     let num = {title: _num, itemClass: 'date-item-day'}
     if (todayDate === theDate) num.title = '今天'
+    let ori = {title: num, timestamp: theStamp, date: theDate, year, month, day: _num, itemClass: 'valid'}
     if (theStamp <= endDayStamp) {
-      let ori = {title: num, timestamp: theStamp, date: theDate, year, month, day: _num, itemClass: 'valid'}
       ori = Object.assign({}, ori, defaultDate)
       let dateTap = `onSelected?type=date&date=${theDate}`
       if (globalDisable === false) {
@@ -190,6 +191,12 @@ export function completeMonth(timestart) {
 
       return ori
     } else {
+      if (_num <= theMonthCount) {
+        ori.itemClass = 'valid invalid'
+        ori.valid = false
+        ori.tap = undefined
+        return ori
+      }
       return {title: num, itemClass: 'valid invalid'}
     }
   })
@@ -544,15 +551,29 @@ export function oneMonthListConfig(timestart) {
         },
 
         setChecked(targetDate){
-          setTimeout(() => {
-            this.forEach(item=>{
-              let data = item.data
-              let date = data.date
-              if (date === targetDate) {
-                item.addClass('selected')
-              }
-            })
-          }, 100);
+          this.forEach(item=>{
+            let data = item.data
+            let date = data.date
+            let ts = data.timestamp
+            if (date === targetDate || ts === targetDate) {
+              item.addClass('selected')
+            }
+          })
+          // setTimeout(() => {
+          // }, 100);
+        },
+
+        unChecked(targetDate){
+          this.forEach(item=>{
+            let data = item.data
+            let date = data.date
+            let ts = data.timestamp
+            if (date === targetDate || ts === targetDate) {
+              item.removeClass('selected range')
+            }
+          })
+          // setTimeout(() => {
+          // }, 100);
         },
 
         onSelectedMonth(e, param, inst) {

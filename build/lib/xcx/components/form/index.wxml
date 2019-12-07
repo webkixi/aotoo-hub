@@ -106,7 +106,7 @@
       id="{{input.id||''}}"
       data-address="{{input.uAddress}}"
       data-eye = "{{input.type === 'dropdown' ? true : ''}}"
-      class="{{tmp.isDropdown(input) ? 'item-input-dropdown' :'input-item-input' }} {{input.itemClass||input.class}}"
+      class="{{tmp.isDropdown(input) ? 'item-input-dropdown' :'input-item-input' }} {{input.itemClass||input.class}} {{input.eye}}"
       style="z-index: 639; {{inputStyle||''}} {{input.itemStyle||input.style||''}};"
       catch:tap = "inputItemMethod"
       data-evt="{{util.dataEvt(input, ['bindinput', 'bindfocus', 'bindblur', 'bindconfirm' ])}}"
@@ -345,6 +345,18 @@
   </block>
 </template>
 
+<template name="@rating">
+  <view 
+    wx:for="{{input.range}}"
+    catch:tap="inputItemMethod"
+    class="input-item-rating {{item.itemClass||''}}"
+    style="{{input.itemStyle||''}}"
+    data-value="{{item.title}}"
+    data-address="{{input.uAddress}}" 
+    data-evt="{{util.dataEvt(input, ['tap'])}}"
+  ></view>
+</template>
+
 <template name="@picker">
   <block wx:if="{{input.values && util.isArray(input.values)}}">
     <!-- <picker mode="multiSelector" bindcolumnchange="{{input.bindcolumnchange ? 'pickersChange': ''}}" bindchange="{{input.bindcolumnchange ? '': 'rcChange'}}" value="{{input.value||[0]}}" range="{{input.titles||[[]]}}" data-address="{{input.uAddress}}"> -->
@@ -490,7 +502,7 @@
 
 <!-- profile:{}, input: {} -->
 <template name="@input-element">
-  <label class="input-item-label" for="{{input.id||input.name}}">
+  <label class="input-item-label input-type-{{input.type}}" for="{{input.id||input.name}}">
     <block wx:if="{{input.eye}}">
       <view class="input-item-passwd-eye">
         <template is="whatTypeElement" data="{{uniqId, props, profile, input}}"/>
@@ -525,7 +537,8 @@
       </view>
     </block>
     <block wx:else>
-      <template is="whatTypeElement" data="{{uniqId, props, profile, input, inputStyle: 'flex: 3'}}"/>
+      <!-- <template is="whatTypeElement" data="{{uniqId, props, profile, input, inputStyle: 'flex: 3'}}"/> -->
+      <template is="whatTypeElement" data="{{uniqId, props, profile, input}}"/>
     </block>
 
     <!-- error -->
