@@ -221,7 +221,7 @@ function adapter(source={}) {
         let date = this.fillData[0].date
         let ymd = getYmd(date)
         start = date
-        total = getMonthCount(ymd.year, ymd.month).length
+        total = getMonthCount(ymd.year, (ymd.month-1)).length
         total = total - ymd.day
       } else {
         let fdate = fillData[0].date
