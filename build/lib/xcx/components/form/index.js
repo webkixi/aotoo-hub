@@ -504,6 +504,7 @@ Component({
     created: function () {
       this.generateUpdate('$dataSource')
       this.$$is = 'form'
+      this.query = wx.createSelectorQuery().in(this)
     },
     attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
       let properties = this.properties
@@ -743,26 +744,76 @@ Component({
 
     inputItemRating(e, param){
       const that = this
-      const $ = this.activePage.getElementsById.bind(this.activePage)
       const mytype = e.type
       const dataset = e.currentTarget.dataset
+      const address = dataset.address
+      const changedTouches = e.changedTouches[0]
       const detail = e.detail
-      let res = this.getAddressInfo(dataset.address)
-      let value = e.detail.value = parseInt((dataset.value||0))
-      if (res) {
-        let range = res.inputData.range
-        range = range.map((item, index) => {
-          if (index <= (value-1)) {
-            item.itemClass = (item.itemClass||'') + ' active'
+      let value = e.detail.value = parseInt((dataset.value))
+      
+      if (mytype === 'tap') {
+        let res = this.getAddressInfo(address)
+        ratingTint.call(this, e, res, value)
+      } else {
+        if (mytype === 'touchstart') {
+          // e.dataset
+          // address: "input_profile_29.input_input_30"
+          // evt: "tap=ratingChecked"
+          // max: 7
+          // type: "rating"
+          // value: 3
+
+          // rating item
+          // bottom: 110.71875
+          // dataset:
+          //   address: "input_profile_29.input_input_30"
+          //   evt: "tap=ratingChecked"
+          //   max: 7
+          //   type: "rating"
+          //   value: 1
+          // height: 40
+          // id: ""
+          // left: 89.28125
+          // right: 117.28125
+          // top: 70.71875
+          // width: 28
+
+
+          // changedTouches
+          // pageX: 179
+          // pageY: 93
+          let rightRatings = this.ratingItems.filter(item => item.dataset.address === address)
+          if (!rightRatings.length) {
+            rightRatings = null
           } else {
-            item.itemClass = (item.itemClass || '').replace(/ *active/g, '')
+            let res = this.getAddressInfo(address)
+            let leftPoints = rightRatings.map(item=>item.left)
+            this.__currentRating = {
+              res,
+              rightRatings,
+              leftPoints,
+              value,
+              x: changedTouches.pageX,
+              y: changedTouches.pageY
+            }
+            ratingTint.call(this, e, res, value)
           }
-          return item
-        })
-        res.inputData.range = range
-        setAllocation.call(this, res, {value: (value||'')})
+        }
+        
+        if (mytype === 'touchmove' && this.__currentRating) {
+          let __currentRating = this.__currentRating
+          let val = __currentRating.value
+          let res = __currentRating.res
+          let currentX = changedTouches.pageX
+          let currentY = changedTouches.pageY
+          let points = __currentRating.leftPoints
+          let rightPoints = points.filter(point=>point<currentX)
+          if (rightPoints.length && rightPoints.length !== val)  {
+            __currentRating.value = rightPoints.length
+            ratingTint.call(this, e, res, rightPoints.length)
+          }
+        }
       }
-      runFormBindFun.call(this, 'tap', res, e)
     },
 
     inputItemDropdownOff(e){
@@ -919,6 +970,7 @@ Component({
     },
 
     inputItemMethod: function(e) {
+      let that = this
       const mytype = e.type
       const dataset = e.currentTarget.dataset
       const detail = e.detail
@@ -927,9 +979,22 @@ Component({
       const res = this.getAddressInfo(address)
       const activePage = this.activePage
       // const {fun, param, allParam} = this._rightEvent(e)
-
+      
       if (res) {
         var id = res.inputData.id || res.inputData.name
+      }
+
+      if (dataset.type === 'rating') {
+        if (!this.ratingItems) {
+          this.query.selectAll('.input-type-rating .input-item-rating').boundingClientRect(ret => {
+            if (ret.length) {
+              that.ratingItems = ret
+              this.inputItemRating(e)
+            }
+          }).exec()
+        } else {
+          this.inputItemRating(e)
+        }
       }
       switch (mytype) {
         case 'confirm':
@@ -1115,5 +1180,23 @@ function runFormBindFun(fn, res, e, from) {
     if (selfUpdate.indexOf(res.inputData['type'])>-1) {
       from == 'cancel' ? '' : this.setData({[res.address]: res.inputData})
     }
+  }
+}
+
+function ratingTint(e, res, value) {
+  if (res) {
+    let range = res.inputData.range
+    range = range.map((item, index) => {
+      if (index <= (value-1)) {
+        item.itemClass = (item.itemClass||'') + ' active'
+      } else {
+        item.itemClass = (item.itemClass || '').replace(/ *active/g, '')
+      }
+      return item
+    })
+    res.inputData.range = range
+    setAllocation.call(this, res, {value})
+    runFormBindFun.call(this, 'tap', res, e)
+    lib.vibrateShort()
   }
 }

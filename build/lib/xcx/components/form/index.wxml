@@ -346,15 +346,18 @@
 </template>
 
 <template name="@rating">
-  <view 
-    wx:for="{{input.range}}"
-    catch:tap="inputItemMethod"
-    class="input-item-rating {{item.itemClass||''}}"
-    style="{{input.itemStyle||''}}"
-    data-value="{{item.title}}"
-    data-address="{{input.uAddress}}" 
-    data-evt="{{util.dataEvt(input, ['tap'])}}"
-  ></view>
+    <view 
+      wx:for="{{input.range}}"
+      bind:touchstart="inputItemMethod"
+      bind:touchmove="inputItemMethod"
+      class="input-item-rating {{item.itemClass||''}}"
+      style="{{input.itemStyle||''}}"
+      data-max="{{input.max}}"
+      data-type="rating"
+      data-value="{{item.title}}"
+      data-address="{{input.uAddress}}" 
+      data-evt="{{util.dataEvt(input, ['tap'])}}"
+    ></view>
 </template>
 
 <template name="@picker">
