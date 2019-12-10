@@ -4,7 +4,7 @@
  * 小程序的模板真是又长又臭
  */
 const app = null //getApp()
-const Core = require('../aotoo/core')
+const Core = require('../aotoo/core/index')
 const lib = Core.lib
 
 function cls(param) {
@@ -16,7 +16,7 @@ function sty(param) {
 }
 
 function content(param={}, myclass, op) {
-  let $item = this.data.$item
+  let $item = this.data.$item||{}
   let dot = (param.dot ? [].concat(param.dot).concat($item.dot) : $item.dot) || []
   let yesCloseBtn = false
 
@@ -46,16 +46,25 @@ function content(param={}, myclass, op) {
     }
   } 
 
+  if (param.enableMask) {
+    yesCloseBtn = param.closeBtn || false
+  }
+
+  if (myclass == 'full') {
+    yesCloseBtn = true
+  }
+
   if (yesCloseBtn) {
     let opts = {}
     if (lib.isObject(yesCloseBtn)) opts = yesCloseBtn
     let cls = opts.itemClass || opts.class
     let sty = opts.itemStyle || opts.style
-    let closePart = { class: `icono-crossCircle closeIt`, aim: 'hide' }
+    let closePart = { class: `icono-crossCircle closeIt`, aim: 'hidden' }
     if (cls) closePart.class += ' ' + cls
     if (sty) closePart.itemStyle = sty
     dot.push(closePart)
   }
+
 
   param.dot = dot
   param.__yesCloseBtn = yesCloseBtn
@@ -77,7 +86,7 @@ Component({
     multipleSlots: true, // 在组件定义时的选项中启用多slot支持
     addGlobalClass: true
   },
-  behaviors: [Core.itemComponentBehavior(app, '_actionSide')],
+  behaviors: [Core.itemBehavior(app, '_actionSide')],
   pageLifetimes: {
     show: function () {
       this.toast.countdown = (p) => this.toast_countdown = lib.isNumber(p) ? p :3000
@@ -175,6 +184,7 @@ Component({
   lifetimes: {
     created: function (params) {
       this.toast_countdown = 3000
+      this.cdTimmer = null
     },
     
     attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
@@ -185,9 +195,9 @@ Component({
         item.itemClass = 'actionSide'
         item.__actionMask = 'actionMask'
         if (item.dot) {
-          item.dot = [].concat(item.dot).concat({itemClass: 'icono-crossCircle closeIt', aim: 'hide'})
+          item.dot = [].concat(item.dot).concat({itemClass: 'icono-crossCircle closeIt', aim: 'hidden'})
         } else {
-          item.dot = [{itemClass: 'icono-crossCircle closeIt', aim: 'hide'}]
+          item.dot = [{itemClass: 'icono-crossCircle closeIt', aim: 'hidden'}]
         }
         this.setData({ $item: lib.resetItem(item) })
       }
@@ -202,6 +212,20 @@ Component({
         show: true,
         'itemClass': 'actionSide-right moveit',
       }, cb)
+    },
+    hidden: function (e, param, inst) {
+      // const itemClass = this.data.$item.itemClass
+      // const fromLeft = itemClass.indexOf('actionSide-left') > -1
+      // const itCls = fromRight ? 'actionSide-right' : fromLeft ? 'actionSide-left' : fromBot ? 'actionSide-bot' : fromTop ? 'actionSide-top' : 'actionSide'
+      // const itCls = 'actionSide'
+      // this.hooks.emit('hide')
+      // this.update({
+      //   show: false,
+      //   class: itCls,
+      //   itemClass: itCls,
+      //   __actionMask: 'actionMask'
+      // }, cb)
+      this.hide()
     },
     hide: function (cb) {
       // const itemClass = this.data.$item.itemClass
@@ -224,26 +248,40 @@ Component({
         let myclass = cls(param)
         let myStyle = sty(param)
         let myContent = content.call(this, param, myclass, op) || {}
-        
         let target = {
           itemClass: `${op} ${myclass} moveit`,
           // itemStyle: myStyle || this.__cssStyle,
           itemStyle: myStyle,
-          mask: param.enableMask ? 'actionMask show' : op.indexOf('toast') > -1 ? 'actionMask' : myContent.__yesCloseBtn ? 'actionMask' : 'actionMask show'
+          mask: param.enableMask ? 'actionMask show' : (op.indexOf('toast') > -1 || op.indexOf('actionSide-message') > -1) ? 'actionMask' : myContent.__yesCloseBtn ? 'actionMask' : 'actionMask show'
         }
         
-        const upContent = Object.assign({}, myContent, {
+        let upContent = Object.assign({}, myContent, {
           show: true,
           class: target.itemClass,
           itemClass: target.itemClass,
           itemStyle: target.itemStyle,
           __actionMask: target.mask
         })
+
+        if (op.indexOf('actionSide-toast')>-1) {
+          upContent.countdown = upContent.countdown === false ? false : (upContent.countdown || 3000)
+        }
+
+        let cd = null
+        if (upContent.countdown && (lib.isString(upContent.countdown) || lib.isNumber(upContent.countdown))) {
+          let _cd = parseInt(upContent.countdown)
+          if (lib.isNumber(_cd)) cd = _cd
+        }
+
+        delete upContent.countdown
         
         this.update(upContent, function () {
           if (lib.isFunction(cb)) cb()
-          if (op.indexOf('toast') > -1) {
-            setTimeout(() => that.hide(), that.toast_countdown);
+          if (cd) {
+            clearTimeout(that.cdTimmer)
+            that.cdTimmer = setTimeout(() => {
+              that.hide()
+            }, cd);
           }
         })
       } catch (error) {
@@ -277,6 +315,11 @@ Component({
     },
     top: function (p={}, c) {
       this.__opration(p, c, 'actionSide-top')
+    },
+    message: function (p={}, c) {
+      p.countdown = p.countdown === false ? false : (p.countdown || 2000)
+      p.enableMask = p.enableMask === true ? true : false
+      this.__opration(p, c, 'actionSide-message')
     },
   }
 })

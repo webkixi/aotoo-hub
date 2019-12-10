@@ -55,11 +55,13 @@ function funInParent(ctx, f) {
 function tintSelected(value=[]) {
   let that = this
   value.forEach(date=>{
-    let ymd = getYmd(date)
-    let id = `${that.calenderId}-${ymd.year}-${ymd.month}`
-    let inst = that.activePage.getElementsById(id)
-    if (inst) {
-      inst.setChecked(date)
+    if (date) {
+      let ymd = getYmd(date)
+      let id = `${that.calenderId}-${ymd.year}-${ymd.month}`
+      let inst = that.activePage.getElementsById(id)
+      if (inst) {
+        inst.setChecked(date)
+      }
     }
   })
 }
@@ -71,6 +73,8 @@ function tintRange(fromInit) {
 
   let startDate = getYmd(value[0])
   let endDate = getYmd(value[1])
+
+  if (!endDate) return  // endDate必须有效磁能渲染range
 
   let startInstId = `${this.calenderId}-${startDate.year}-${startDate.month}`
   let startInst = activePage.getElementsById(startInstId)
@@ -109,12 +113,6 @@ function tintRange(fromInit) {
       endInst.tint(null, value[1], 'selected', 'end')
     }
   }
-}
-
-function emitter(type, key, param) {
-  this.hooks.one('onReady', function() {
-    
-  })
 }
 
 /**
@@ -161,7 +159,8 @@ let defaultConfig = {
     header: true,
     footer: true,
     monthHeader: true,
-    rangeEdge: null //自定义边界日期
+    rangeEdge: null, //自定义边界日期，一般用于range选择
+    discontinue: false  // 月份排序完全按照data数据中的日期排列，没有的月份会被忽略
   },
   date: null // 自定义默认日期
 }
@@ -482,8 +481,7 @@ Component({
 
         // 延时为了不去污染orienDataSource，保证原始数据不被污染
         setTimeout(() => {
-          that.hooks.emit('onReady')
-
+          
           let $dl = that.data.$dateList
           if (mode===1) {
             if ($dl.type['scrollIntoView']) {
@@ -496,6 +494,10 @@ Component({
               that.hooks.emit('swiper-current', {id: $dl.type['scrollIntoView']})
             }
           }
+
+          setTimeout(() => {
+            that.hooks.emit('onReady')
+          }, 100);
         }, 100);
       })
     },

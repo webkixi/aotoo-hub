@@ -612,6 +612,7 @@ export function oneMonthListConfig(timestart) {
 
 // 以月为单位生成日历
 export function calendarMonths(timestart, end=5) {
+  let allowBox = this.allowBox
   let {year, month, day} = getYmd(timestart)
   let configs = []
   let yearLoop = month
@@ -639,11 +640,26 @@ export function calendarMonths(timestart, end=5) {
     endDay = (isLeapYear(endYear) ? 29 : 28)
   }
   
-  this.allMonths = configs
+  let validMonths = configs
+  let fillData = this.fillData
+  if (allowBox.discontinue && fillData.length > 1) {
+    let tmp = []
+    for (let ii = 0; ii < fillData.length; ii++) {
+      let date = fillData[ii].date
+      let ymd = getYmd(date)
+      let uniqMon = ymd.year+'-'+ymd.month+'-1'
+      if (tmp.indexOf(uniqMon)===-1) {
+        tmp.push(uniqMon)
+      }
+    }
+    validMonths = tmp
+  }
+
+  this.allMonths = validMonths
   this.validStartDay = this.validStartDay || newDate(`${year}-${month}-${day}`).getTime()
   this.validEndDay = this.validEndDay || newDate(`${endYear}-${endMonth}-${endDay}`).getTime()
   
-  return configs.map(timepoint => oneMonthListConfig.call(this, timepoint))
+  return validMonths.map(timepoint => oneMonthListConfig.call(this, timepoint))
 }
 
 /**
