@@ -304,7 +304,7 @@
     data-evt="{{util.dataEvt(input, ['bindchange'])}}"
   >
     <block wx:if="{{util.isArray(input.values)}}">
-      <label class="input-item-rc" wx:key="" wx:for="{{input.values}}" wx:for-item="val" wx:for-index="vid">
+      <label class="input-item-rc" wx:key="vid" wx:for="{{input.values}}" wx:for-item="val" wx:for-index="vid">
         <text wx:if="{{tmp.validrcp(input, 'titles', vid)}}">{{input.titles[vid]}}</text>
         <checkbox disabled="{{input.disabled}}" class="input-item-checkbox" value="{{val}}" wx:if="{{tmp.isChecked(input, val)}}" checked="{{true}}"/>
         <block wx:else>
@@ -325,7 +325,7 @@
     data-evt="{{util.dataEvt(input, ['bindchange'])}}"
   >
     <block wx:if="{{util.isArray(input.values)}}">
-      <label class="input-item-rc" wx:key="" wx:for="{{input.values}}" wx:for-item="val" wx:for-index="vid">
+      <label class="input-item-rc" wx:key="vid" wx:for="{{input.values}}" wx:for-item="val" wx:for-index="vid">
         <text wx:if="{{tmp.validrcp(input, 'titles', vid)}}">{{input.titles[vid]}}</text>
         <radio disabled="{{input.disabled}}" class="input-item-radio" value="{{val}}" wx:if="{{tmp.isChecked(input, val)}}" checked="{{true}}"/>
         <block wx:else>
@@ -465,9 +465,9 @@
       data-address="{{input.uAddress}}"
       data-evt="{{util.dataEvt(input, ['bindchange', 'bindpickstart', 'bindpickend'])}}"
     >
-      <block wx:for="{{input.values}}" wx:key="">
+      <block wx:for="{{input.values}}" wx:key="vsindex" wx:for-index="vsindex">
         <picker-view-column>
-          <view wx:for="{{item}}" wx:key="" wx:for-item="subitem">
+          <view wx:for="{{item}}" wx:key="subindex" wx:for-item="subitem" wx:for-index="subindex">
             <block wx:if="{{util.isObject(subitem)}}">{{subitem.title||subitem.text}}</block>
             <block wx:if="{{util.isString(subitem)}}">{{subitem}}</block>
           </view>
