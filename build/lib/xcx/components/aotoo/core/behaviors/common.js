@@ -850,7 +850,7 @@ export const commonBehavior = (app, mytype) => {
           if ($id) {
             const itemKey = activePage['eles'][$id]
             if (itemKey) {
-              activePage['elements'][itemKey] = this
+              activePage['elements'][$id] = activePage['elements'][itemKey] = this
             } else {
               activePage['elements'][$id] = this
             }
