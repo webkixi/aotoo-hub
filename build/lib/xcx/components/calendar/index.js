@@ -6,20 +6,60 @@
 const app = null //getApp()
 const Core = require('../aotoo/core/index')
 const lib = Core.lib
-const {
-  isLeapYear,
+export const {
+  // 是否闰年
+  isLeapYear, 
+
+  // 获取月份天数
   getMonthCount,
+
+  // 获取月份1号是星期几
   getWeekday,
+
+  // 获取上一个月的天数
   getPreMonthCount,
+
+  // 获取下一个月的天数
   getNextMonthCount,
+
+  // 转换日期字串为日期对象
   getYmd,
+
+  // 兼容性new Date的写法，windows/mac/linux/ios/android
   newDate,
+
+  // 为一组日期排序
   sortDates,
+
+  // 格式化日期为 xxxx-xx-xx格式
   formatDate,
+
+  
   completeMonth,
   monthListConfig,
+
+  // 以月份数为统计标准，返回实例
   calendarMonths,
+  
+  // 以total为统计标准，返回实例
   calendarDays,
+
+  // 取得系统阳历节日
+  getFestival,
+
+  // 设置系统阳历节日
+  // 按照get的格式设置
+  setFestival,
+
+  // 取得系统农历节日
+  getLunarFestival,
+
+  // 设置系统农历节日
+  // 按照get的格式设置
+  setLunarFestival
+
+  //24节气日不需要设置，直接在配置option.festival数组中设置需要的节气中文就行
+
 } = require('./helper/index')
 
 const {
@@ -54,7 +94,8 @@ function funInParent(ctx, f) {
 
 function tintSelected(value=[]) {
   let that = this
-  value.forEach(date=>{
+  let val = value || this.value
+  val.forEach(date => {
     if (date) {
       let ymd = getYmd(date)
       let id = `${that.calenderId}-${ymd.year}-${ymd.month}`
@@ -117,12 +158,10 @@ function tintRange(fromInit) {
 
 /**
  * let calendar = {
- *  start: 0, // 起始日期
- *  end: 0, // 结束日期
+ *  start: null, // 起始日期
+ *  end: null, // 结束日期
  *  total: 180, 总共多少天  // 优先于end
  *  mode: 1, mode=1 scroll-view展现 mode=2 swiperview展示
- *  url: '' | cb, // 跳转地址，btn为false, 则日期点击日期触发跳转
- *  button: false | '' | cb, // 使用按钮来触发跳转，当button为字符串，则取代url设置，并且默认button为true
  *  toolbox: [], // 需要显示的部分 header, footer, curDate, descript, 农历， 节假日
  *  lazy: true, // 默认启用懒加载
  * 
@@ -130,13 +169,14 @@ function tintRange(fromInit) {
  *  footer: {},
  *  type: 'single', // 'range' 连续范围选择, 'multiple'多项选择
  *  rangeCount: 28, // 当type === 'range'时，rangeCount为区间大小，意味着区间允许选择多少天
- *  rangeMode: 1,   // rangeMode=1 仿去哪儿不会隐藏区间外月份   rangeMode=2 仿携程，隐藏可选区间外月份
- *  tap: '',  //业务响应事件
- *  value: [], // 选择的日期，或者向日历回填数据的日期选择
- *  rangeValue: []  // range模式下，所有已选日期
- *  data: []  // 填充数据
+ *  rangeMode: 1,   // rangeMode=1 仿去哪儿不会隐藏区间外月份   rangeMode=2 仿携程，默认 隐藏可选区间外月份
+ *  tap: callback,  //业务响应事件
+ *  value: [], // 预设日期(一般从后台拿去，用于回显)，将value中的日期高亮显示
+ *  rangeValue: []  // range模式下，第二次tap与第一次tap间的日期都会被放入该变量中，在tap的回调方法中可以读取该变量
+ *  data: Array ['2020-5-3', '2020-7-9']  // 填充数据，如果没有start，日历组件将会依据data中的填充数据计算total天数并显示
  *  disable: true/false  全局无效
- *  date: {}  // 默认日期
+ *  date: Object|Function,  // 默认日期
+ *  festival: Boolean|Array 为true时显示所有预定义的节日，数组时显示特定的节日  true | ['清明节’, '平安夜', '圣诞节'...] 能够带节的都是用'节'
  * }
  */
 
@@ -154,7 +194,10 @@ let defaultConfig = {
   url: '',
   button: false,
   value: [],
-  // toolbox: ['header', 'footer', 'monthHeader'],
+  festival: false,
+  // festival: true,
+  // festival: ['春节'],
+  // festival: [{title: '春节', content: {dot: ['春节']}}],
   toolbox: {
     header: true,
     footer: true,
@@ -185,6 +228,7 @@ function adapter(source={}) {
     data,
     date,
     disable,
+    festival,
     toolbox
   } = options
   this.options = options
@@ -198,6 +242,7 @@ function adapter(source={}) {
   this.allMonths = []  //计算后得到所有的月份
 
   this.allowBox = toolbox
+  start = start && formatDate(start) || null
   // this.allowBox = (()=>{
   //   let tmp = {}
   //   toolbox.forEach(key=>tmp[key]=true)
@@ -223,7 +268,7 @@ function adapter(source={}) {
         total = getMonthCount(ymd.year, (ymd.month-1)).length
         total = total - ymd.day
       } else {
-        let fdate = fillData[0].date
+        let fdate = start || fillData[0].date   // 在设置data的同时，如果设置了start，则起始日期以start标准
         let ldate = fillData[fillData.length-1].date
         let ftime = newDate(fdate).getTime()
         let ltime = newDate(ldate).getTime()
@@ -409,12 +454,12 @@ Component({
     created() {
       let that = this
       this.query = wx.createSelectorQuery().in(this)
-      this.elements = {}
-      this.zoneItems = []
+      this.elements = {} // 日历容器, 月容器存放地址
+      this.zoneItems = [] // 在显示区的对象, 当月实例进入显示区调用fillMonth方法填充月数据
       this.headerId = this.uniqId + '_header'
       this.footerId = this.uniqId + '_footer'
       this.calenderId = this.uniqId + '_calender'
-      this.value = []
+      this.value = [] // checked的日期
       this.rendered = false
       
       // this.activePage.hooks.on('onReady', function() {
@@ -524,6 +569,22 @@ Component({
     //     let ary = calendarDays.call(this, start, total)
     //   }
     // },
+
+    getFestival(){
+      return getFestival()
+    },
+
+    setFestival(param){
+      setFestival(param)
+    },
+
+    getLunarFestival(){
+      return getLunarFestival()
+    },
+
+    setLunarFestival(param){
+      setLunarFestival(param)
+    },
 
     update(params, cb) {
       let that = this
@@ -706,6 +767,10 @@ Component({
     // type=range时，渲染已选的日期颜色
     tintRange(param){
       tintRange.call(this, param)
+    },
+
+    tintSelected(val){
+      tintSelected.call(this, val)
     },
 
     getValue(){

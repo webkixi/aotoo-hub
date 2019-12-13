@@ -1,5 +1,13 @@
 const Core = require('../../aotoo/core/index')
+const $lunar = require('./lunar').calendar
 const lib = Core.lib
+
+export const festival = $lunar.festival
+export const lfestival = $lunar.lfestival
+export const getFestival = $lunar.getFestival
+export const setFestival = $lunar.setFestival
+export const getLunarFestival = $lunar.getLunarFestival
+export const setLunarFestival = $lunar.setLunarFestival
 
 function indexData(data=[]) {
   let tmp = {}
@@ -115,6 +123,7 @@ export function completeMonth(timestart) {
   let globalDisable = this.disable
   let fillupData = this.fillData
   let defaultDate = this.date // 默认日期显示，item类型
+  let validFestival = this.options.festival
   let dataIndexs = indexData(fillupData)
   // 生成日历数据，上个月的 x 天 + 当月的 [28,29,30,31]天 + 下个月的 y 天 = 42
   let res = [];
@@ -135,27 +144,75 @@ export function completeMonth(timestart) {
   let sDate = getYmd(startDayStamp)
   let startDate = `${sDate.year}-${sDate.month}-${sDate.day}`
   
-  preArr = preArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}) )
-  nextArr = nextArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}))
+  preArr = preArr.map(num=>({title: num, itemClass: 'invalid'}) )
+  nextArr = nextArr.map(num=>({title: num, itemClass: 'invalid'}))
+  // preArr = preArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}) )
+  // nextArr = nextArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}))
 
   currentMonth = currentMonth.map(_num=>{
     let theDate = `${year}-${month}-${_num}`
+    let lunarDate = $lunar.solar2lunar(year, month, _num)
+    // console.log(lunarDate);
+
     let theStamp = newDate(theDate).getTime()
     let theMonthCount = getMonthCount(year, month-1).length
     let num = {title: _num, itemClass: 'date-item-day'}
     if (todayDate === theDate) num.title = '今天'
-    let ori = {title: num, timestamp: theStamp, date: theDate, year, month, day: _num, itemClass: 'valid'}
+
+
+    // 是否显示节日
+    if (validFestival) {
+      if (validFestival === true) {
+        num.title = lunarDate.festival || lunarDate.lunarFestival || lunarDate.Term || num.title
+      } else {
+        // 按筛选条件显示节日
+        if (lib.isArray(validFestival)) {
+          let holiday = lunarDate.festival || lunarDate.lunarFestival || lunarDate.Term
+          if (holiday) {
+            let vf = []  // 有效节日
+            validFestival.forEach((f, ii)=>{
+              if (f) { vf.push((f.title||f)) }
+            })
+
+            if (vf.indexOf(holiday) > -1 || vf.indexOf((holiday + '节')) > -1) {
+              let idx = ~(~vf.indexOf(holiday) || ~vf.indexOf((holiday+'节')))
+              let val = validFestival[idx]
+              if (lib.isString(val)) num.title = holiday
+              else if(lib.isObject(val)) num = Object.assign(num, val.content)
+            }
+          }
+        }
+      }
+    }
+
+    // let ori = {title: num, timestamp: theStamp, date: theDate, year, month, day: _num, itemClass: 'valid'}
+    let ori = {timestamp: theStamp, date: theDate, year, month, day: _num, itemClass: 'valid', ...num}
     if (theStamp <= endDayStamp) {
-      ori = Object.assign({}, ori, defaultDate)
+      if (lib.isObject(defaultDate)) {
+        ori = Object.assign({}, ori, defaultDate)
+      }
+      if (lib.isFunction(defaultDate)) {
+        ori = defaultDate.call(this, ori) || ori
+      }
+      
       let dateTap = `onSelected?type=date&date=${theDate}`
       if (globalDisable === false) {
         ori.tap = dateTap
       }
 
-      // 是否匹配data中的数据
+      // 是否匹配filldata中的数据，并设置该date的显示内容
       if (dataIndexs[theDate]) {
         let index = dataIndexs[theDate].index
         let fillData = fillupData[index].content || fillupData[index]
+        if (ori.body && fillData.body) {
+          fillData.body = ori.body.concat(fillData.body)
+        }
+        if (ori.footer && fillData.footer) {
+          fillData.footer = ori.footer.concat(fillData.footer)
+        }
+        if (ori.dot && fillData.dot) {
+          fillData.dot = ori.dot.concat(fillData.dot)
+        }
         ori = Object.assign({}, ori, fillData)
         ori.valid = true // 有效日期
         if (theStamp < todayStamp) {
@@ -197,7 +254,8 @@ export function completeMonth(timestart) {
         ori.tap = undefined
         return ori
       }
-      return {title: num, itemClass: 'valid invalid'}
+      // return {title: num, itemClass: 'valid invalid'}
+      return {itemClass: 'valid invalid', ...num}
     }
   })
 
