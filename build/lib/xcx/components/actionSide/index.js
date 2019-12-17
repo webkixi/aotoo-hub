@@ -17,7 +17,7 @@ function sty(param) {
 
 function content(param={}, myclass, op) {
   let $item = this.data.$item||{}
-  let dot = (param.dot ? [].concat(param.dot).concat($item.dot) : $item.dot) || []
+  let dot = (param.dot ? [].concat(param.dot).concat($item.dot||[]) : $item.dot) || []
   let yesCloseBtn = false
 
   if (myclass == 'full' || op&&op.indexOf('actionSide-pop') > -1) {

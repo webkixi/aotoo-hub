@@ -542,7 +542,7 @@ Component({
 
           setTimeout(() => {
             that.hooks.emit('onReady')
-          }, 100);
+          }, 500);
         }, 100);
       })
     },
