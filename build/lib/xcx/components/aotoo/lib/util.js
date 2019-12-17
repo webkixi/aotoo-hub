@@ -1,5 +1,5 @@
-import md5 from 'md5'
-import deepmerge from 'deepmerge'
+const deepmerge = require('./deepmerge')
+export const md5 = require('./md5')
 
 export function isString(title) {
   return typeof title == 'string'

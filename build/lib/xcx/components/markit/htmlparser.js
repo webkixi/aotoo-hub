@@ -1,5 +1,5 @@
 const htmlparser2 = require("./hp2");
-const marked = require('marked')
+const marked = require('./marked')
 const hl = require('./hl')
 const langJs = require('./hl/js')
 const langBash = require('./hl/bash')
