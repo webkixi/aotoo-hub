@@ -54,7 +54,18 @@
     </block>
   </block>
   <block wx:else>
-    <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}" >
+    <view id="{{list.id||id}}" 
+      class="hlist {{list.listClass||list.class}}" 
+      style="{{list.listStyle || list.style || ''}}" 
+    >
+      <block wx:if="{{util.isArray(list.data)}}">
+        <block wx:for="{{list.data}}" wx:key="__key">
+          <template is="itemContent" data="{{item, type: list.type}}" />
+        </block>
+      </block>
+    </view>
+
+    <!-- <view id="{{list.id||id}}" class="hlist {{list.listClass||list.class}}" wx:if="{{list.listStyle||list.style}}" style="{{list.listStyle || list.style}}" >
       <block wx:if="{{util.isArray(list.data)}}">
         <block wx:for="{{list.data}}" wx:key="__key">
           <template is="itemContent" data="{{item, type: list.type}}" />
@@ -68,9 +79,9 @@
             <template is="itemContent" data="{{item, type: list.type}}" />
           </block>
         </block>
-        <!-- <template is="listContent" data="{{collects: list.data, list}}" /> -->
       </view>
-    </block>
+    </block> -->
+
   </block>
 </template>
 
@@ -111,7 +122,7 @@
 <template name="scrollWrap">
   <scroll-view 
     id="{{list.id||list.type.id||''}}"
-    class="{{list.type.container ? '' : 'hlist '+(list.listClass||list.class) }}"
+    class="{{list.type.container ? '' : 'hlist '+(list.listClass||list.class||'') }}"
     style="{{list.listStyle||''}}" 
     scroll-x="{{ list.type['scroll-x']||''}}" 
     scroll-y="{{ list.type['scroll-y']||'' }}"
@@ -130,7 +141,7 @@
   >
     <block wx:if="{{util.isArray(list.data)}}">
       <block wx:if="{{list.type.container}}">
-        <view class="hlist {{list.listClass||list.class}}">
+        <view class="hlist {{list.listClass||list.class||''}}">
           <block wx:for="{{list.data}}" wx:key="__key">
             <template is="itemContent" data="{{item}}" />
           </block>

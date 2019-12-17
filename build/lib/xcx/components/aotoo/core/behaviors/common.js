@@ -714,7 +714,8 @@ export const commonBehavior = (app, mytype) => {
         } 
         else if (this.$$is == 'list' || this.$$is == 'tree') {
           this.setData({
-            '$list.itemStyle': cssStr
+            // '$list.itemStyle': cssStr
+            '$list.listStyle': cssStr
           })
         }
         else if (this.data.$dataSource) {

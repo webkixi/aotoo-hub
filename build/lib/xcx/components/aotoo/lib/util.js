@@ -24,7 +24,7 @@ export function objTypeof(obj, type) {
 }
 
 export function isObject(obj) {
-  return objTypeof(obj) == 'object' && !isArray(obj)
+  return obj && objTypeof(obj) == 'object' && !isArray(obj)
 }
 
 export function isArray(obj) {
@@ -32,7 +32,7 @@ export function isArray(obj) {
 }
 
 export function isNumber(obj) {
-  return objTypeof(obj) == 'number'
+  return obj && objTypeof(obj) == 'number'
 }
 
 export function isFunction(obj) {

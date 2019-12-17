@@ -55,7 +55,7 @@ function isFunction(obj) {
 }
 
 function delItem(ary, target) {
-  const willAry = []
+  var willAry = []
   ary.forEach(function (item){
     if (item !== target) {
       willAry.push(item)
@@ -246,15 +246,15 @@ function getClass(item, prefix){
 }
 
 function formatQuery(url) {
-  let aim = url
-  let query={};
+  var aim = url
+  var query={};
   if (url) {
-    let urls = url.split('?')
+    var urls = url.split('?')
     aim = urls[0]
     if (urls[1]) {
-      let params = urls[1].split('&')
+      var params = urls[1].split('&')
       params.forEach(function (param) {
-        let attrs = param.split('=')
+        var attrs = param.split('=')
         query[attrs[0]] = attrs[1] ? attrs[1] : true
       })
     }
@@ -265,7 +265,7 @@ function formatQuery(url) {
 var storeEvts = {}
 function rightEvent(dsetEvt) {
   if (isString(dsetEvt)) {
-    const _id = suid('rightEvent_')
+    var _id = suid('rightEvent_')
 
     // if (storeEvts[_id]) {
     //   return storeEvts[_id]

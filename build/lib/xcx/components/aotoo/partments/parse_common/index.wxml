@@ -230,7 +230,26 @@
   </block>
   <block wx:else>
     <block wx:if="{{util.isString(item.src)}}">
-      <block wx:if="{{util.hasEvent(item)}}">
+      <image 
+        style="{{item.style||item.itemStyle||''}}" 
+        lazy-load="{{true}}" 
+        class="himg {{item.class||item.itemClass||''}}" 
+        mode="{{item.mode || 'widthFix'||''}}" 
+        src="{{item.src}}" 
+        bind:tap="{{item.tap ? 'itemMethod' : ''}}" 
+        bind:longtap="{{item.longtap ? 'itemMethod' : ''}}" 
+        bind:longpress="{{item.longpress ? 'itemMethod' : ''}}"
+        bind:touchstart="{{item.touchstart ? 'itemMethod' : ''}}"
+        bind:touchmove="{{item.touchmove ? 'itemMethod' : ''}}"
+        bind:touchend="{{item.touchend ? 'itemMethod' : ''}}"
+        bind:cancel="{{item.cancel ? 'itemMethod' : ''}}"
+        catch:tap="{{(item.aim||item.catchtap) ? 'catchItemMethod' : ''}}"
+        catch:longpress="{{item.catchlongpress ? 'catchItemMethod' : ''}}"
+        catch:longtap="{{item.catchlongtap ? 'catchItemMethod' : ''}}"
+        data-evt="{{util.dataEvt(item, ['tap', 'aim', 'catchtap', 'catchlongpress', 'catchlongtap', 'longtap', 'longpress', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])}}"
+      />
+
+      <!-- <block wx:if="{{util.hasEvent(item)}}">
         <template is="img" data="{{item}}" />
       </block>
       <block wx:else>
@@ -240,7 +259,7 @@
             class="himg {{item.class||item.itemClass}}"
             mode="{{item.mode || 'scaleToFill'}}" lazy-load="{{true}}" src="{{item.src}}" />
         </block>
-      </block>
+      </block> -->
     </block>
   </block>
 </template>

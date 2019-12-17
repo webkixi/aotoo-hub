@@ -75,10 +75,10 @@
 <template name="@list">
   <block wx:if="{{util.isObject(props)}}">
     <block wx:if="{{props.fromComponent || props.fromTree}}">
-      <ui-list class="ui-list" list="{{props}}" fromComponent="{{props.fromComponent||props.fromTree}}"/>
+      <ui-list list="{{props}}" fromComponent="{{props.fromComponent||props.fromTree}}"/>
     </block>
     <block wx:else>
-      <ui-list class="ui-list" list="{{props}}"/>
+      <ui-list list="{{props}}"/>
     </block>
   </block>
 </template>

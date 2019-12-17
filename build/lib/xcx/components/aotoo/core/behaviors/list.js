@@ -108,15 +108,20 @@ export const listBehavior = function(app, mytype) {
       }
     },
     methods: {
-      reset: function(param) {
+      reset: function(param, cb) {
         // this.setData({$list: JSON.parse(this.originalDataSource)})
+        if (lib.isFunction(param)) {
+          cb = param
+          param = undefined
+        }
+
         this.setData({'$list.data': []})
         let oriData = lib.clone(this.originalDataSource)
         if (lib.isArray(param)) {
           let tmp = reSetArray.call(this, param, this.data.props)
           oriData.data = tmp.data
         }
-        this.setData({$list: oriData})
+        this.setData({$list: oriData}, cb)
         return this
       },
 
@@ -240,6 +245,12 @@ export const listBehavior = function(app, mytype) {
             }
             delete param.methods
 
+            let itemMethod = null
+            if (param.itemMethod) {
+              itemMethod = param.itemMethod
+              delete param.itemMethod
+            }
+
             if (lib.isObject(param)) {
               let target = {}
               Object.keys(param).forEach(key => {
@@ -247,10 +258,16 @@ export const listBehavior = function(app, mytype) {
                   let nkey = key.indexOf('$list.') == -1 ? '$list.' + key : key
                   let nval = param[key]
                   if (isArray(nval)) {
+                    let $list = this.data.$list
+                    if (lib.isObject(itemMethod)) {
+                      $list.itemMethod = itemMethod
+                    }
                     nval = reSetArray.call(this, param[key], this.data.$list).data
                   } else {
                     if (key.indexOf('title') > -1 || key.indexOf('img')>-1 || isObject(nval)) {
-                      if (isObject(nval)) {
+                      if (key === 'type') {
+                        /** 不处理list.type数据 */
+                      } else if (isObject(nval)) {
                         nval = reSetItemAttr.call(this, param[key], this.data.$list)
                       }
                       if (key.indexOf('@') === -1) {

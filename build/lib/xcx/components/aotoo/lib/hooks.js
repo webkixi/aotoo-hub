@@ -258,14 +258,14 @@ class _hooks {
         this.actions = {}
         return
       }
-      if (fun) {
-        let hooksActionUniqId = fun.hooksActionUniqId
+      if (fun && typeof fun === 'function') {
+        let hooksActionUniqId = fun.hooksActionUniqId || fun.name
         if (hooksActionUniqId) {
           let theFuns = this.actions[key]
           let selectFunIndex
           if (theFuns) {
             theFuns.forEach(($f, ii) => {
-              if ($f['hooksActionUniqId'] == hooksActionUniqId) {
+              if ($f['hooksActionUniqId'] == hooksActionUniqId || $f.name === hooksActionUniqId) {
                 selectFunIndex = ii
               }
             })
