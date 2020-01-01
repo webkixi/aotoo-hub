@@ -97,7 +97,7 @@ export function reSetArray(data, list) {
       let methods = list.itemMethod
       let tmp = {}
       Object.keys(methods).forEach(key => {
-        let funKey = '__on' + key
+        let funKey = '__on'+key
         tmp[key] = funKey
         let fun = methods[key]
         if (isFunction(fun)) {
