@@ -158,10 +158,12 @@ function tintRange(fromInit) {
     this.hooks.emit('empty-month-checked')
   } else {
     if (startDate.month === endDate.month) {
-      startInst.tint(value[0], value[1], 'selected', 'end')
+      startInst && startInst.tint(value[0], value[1], 'selected', 'end')
     } else {
-      startInst.tint(value[0], null, 'selected', 'start')
-      endInst.tint(null, value[1], 'selected', 'end')
+      if (startInst) {
+        startInst && startInst.tint(value[0], null, 'selected', 'start')
+        endInst && endInst.tint(null, value[1], 'selected', 'end')
+      }
     }
   }
 }
