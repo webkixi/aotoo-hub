@@ -290,11 +290,20 @@ function core(params) {
     const oldLoad = params.onLoad
     params.onLoad = function () {
       this.vars = {}
-      this.elements = {}
+      this.elements = this.elements || {}
       this.eles = eles || {}  // 存放id映射表
       this.acts = acts || {}
       this.uniqId = lib.suid('page')
       this.hooks = lib.hooks(this.uniqId)
+      this.doReady = (pageReady) => {
+        if (this.__rendered || pageReady) {
+          if (this.__READY && this.__READY.length) {
+            this.hooks.actions['__READY'] = (this.hooks.actions['__READY'] || []).concat(this.__READY)
+            this.__READY = []
+          }
+          this.hooks.fire('__READY')
+        }
+      }
       
       this.getElementsById = function(key) {
         if (key) {
@@ -308,9 +317,6 @@ function core(params) {
       app.hooks.emit('changeActivePage', activePage)
       if (typeof oldLoad == 'function') {
         oldLoad.apply(this, arguments)
-        // setTimeout(() => {
-        //   oldLoad.apply(this, arguments)
-        // }, 150);
       }
     }
 
@@ -331,21 +337,17 @@ function core(params) {
       })
 
       mkFind(this, app)
-
       this.find = wx.$$find
       
       if (typeof oldReady == 'function') {
         oldReady.apply(this, arguments)
-        // this.hooks.emit('onReady')
-        // setTimeout(() => {
-        //   oldReady.apply(this, arguments)
-        //   this.hooks.emit('onReady')
-        // }, 150);
       }
+
+      this.doReady(true)
       setTimeout(() => {
         this.hooks.emit('onReady')
         this.__rendered = true
-      }, 100);
+      }, 200);
     }
 
     const oldSshow = params.onShow
@@ -367,6 +369,8 @@ function core(params) {
 
     const oldHide = params.onHide
     params.onHide = function () {
+      this.hooks.off('__READY')
+      this.__READY = []
       this.__hide = true
       if (typeof oldHide == 'function') {
         oldHide.apply(this, arguments)
@@ -375,6 +379,8 @@ function core(params) {
 
     const oldUnload = params.onUnload
     params.onUnload = function() {
+      this.hooks.off('__READY')
+      this.__READY = []
       if (typeof oldUnload == 'function') {
         oldUnload.apply(this, arguments)
       }
