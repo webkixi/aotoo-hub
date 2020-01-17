@@ -724,7 +724,7 @@ export const commonBehavior = (app, mytype) => {
       //组件实例从节点树中移除
       detached: function () {
         this.hooks.emit('componentDetached')
-        this.hooks = null
+        // this.hooks = null
         // setTimeout(() => {
         //   app['_vars'][this.uniqId] = null
         // }, 50);

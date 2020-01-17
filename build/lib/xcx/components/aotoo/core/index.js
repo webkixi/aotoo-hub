@@ -289,12 +289,20 @@ function core(params) {
 
     const oldLoad = params.onLoad
     params.onLoad = function () {
+      let that = this
       this.vars = {}
       this.elements = this.elements || {}
       this.eles = eles || {}  // 存放id映射表
       this.acts = acts || {}
       this.uniqId = lib.suid('page')
       this.hooks = lib.hooks(this.uniqId)
+      this.getElementsById = function(key) {
+        if (key) {
+          return this.elements[key] || this.selectComponent('#'+key) || this.selectComponent('.'+key)
+        } else {
+          return this.elements
+        }
+      }
       this.doReady = (pageReady) => {
         if (this.__rendered || pageReady) {
           if (this.__READY && this.__READY.length) {
@@ -304,13 +312,14 @@ function core(params) {
           this.hooks.fire('__READY')
         }
       }
-      
-      this.getElementsById = function(key) {
-        if (key) {
-          return this.elements[key] || this.selectComponent('#'+key) || this.selectComponent('.'+key)
-        } else {
-          return this.elements
-        }
+      let oldSetData = this.setData
+      this.setData = function (param, cb) {
+        oldSetData.call(that, param, function () {
+          if (lib.isFunction(cb)) {
+            cb()
+          }
+          that.doReady()
+        })
       }
       app.activePage = activePage = this
       app.hooks.emit('activePage', activePage)
