@@ -1,3 +1,8 @@
+# 近期更新
+aotoo-hub是一套支持小程序与web/h5的开发脚手架，当然文档暂时不完善，大家参考代码为主吧，注释我都尽量写完整了  
+
+近期从aotoo-hub从分离独立的小程序原生库(很容易回归hub)，[aotoo-xquery](https://github.com/webkixi/aotoo-xquery)，欢迎关注
+
 # aotoo-hub
 aotoo-hub是一套全栈脚手架，以新版webpack4为基础，支持多项目开发，多环境部署，支持小程序，WEB, H5的开发和部署，  
 aotoo-hub只提供环境支撑，并无特定库的依赖(不包括基础库如react,vue等，暂时只支持react，后期支持vue环境)，你可以根据自身项目引入router、reducx等其他类库
