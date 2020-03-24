@@ -110,7 +110,8 @@ export function fakeListInstance(temp_data, listInst, listInstDelegate) {
     length: Object.keys(temp_data).length,
     data: lib.clone(temp_data),
     getData() {
-      return this.data
+      // return this.data
+      return listInstDelegate.__refreshData()
     },
     parent(param){
       if (listInstDelegate) {
@@ -121,7 +122,7 @@ export function fakeListInstance(temp_data, listInst, listInstDelegate) {
     reset(){
       this.data = lib.clone(theOldTempData)
     },
-    forEach(cb) {
+    forEach(cb, callback) {
       let that = this
       let forEachTmp = {}
       let tmpData = this.data
@@ -167,7 +168,7 @@ export function fakeListInstance(temp_data, listInst, listInstDelegate) {
         //   listInst.update(forEachTmp)
         // }
       })
-      listInst.update(forEachTmp)
+      listInst.update(forEachTmp, callback)
     },
     hasClass(params){
       let hasCls = false
@@ -179,7 +180,7 @@ export function fakeListInstance(temp_data, listInst, listInstDelegate) {
       })
       return hasCls
     },
-    addClass(params) {
+    addClass(params, cb) {
       let tmpData = this.data
       if (!lib.isString(params)) return
       Object.keys(tmpData).forEach(key => {
@@ -196,9 +197,9 @@ export function fakeListInstance(temp_data, listInst, listInstDelegate) {
         // data.itemClass = (itCls.join(' ') || ' ')
         // tmpData[key] = data
       })
-      listInst.update(tmpData)
+      listInst.update(tmpData, cb)
     },
-    removeClass(params) {
+    removeClass(params, cb) {
       let tmpData = this.data
       if (!lib.isString(params)) return
       Object.keys(tmpData).forEach(key => {
@@ -215,16 +216,16 @@ export function fakeListInstance(temp_data, listInst, listInstDelegate) {
         // let mykey = key+'.itemClass'
         // tmpData[mykey] = (itCls.join(' ') || ' ')
       })
-      listInst.update(tmpData)
+      listInst.update(tmpData, cb)
     },
-    update(params) {
+    update(params, cb) {
       let tmpData = this.data
       Object.keys(tmpData).forEach(key => {
         let data = tmpData[key]
         data = Object.assign({}, data, params)
         tmpData[key] = data
       })
-      listInst.update(tmpData)
+      listInst.update(tmpData, cb)
     }
   }
 }
@@ -246,17 +247,18 @@ export function listInstDelegate(treeid, listInst, from){
       data: lib.clone(data),
       getData(){
         // return lib.clone(data)
-        return this.data
+        return (listInst.getData()).data[index]
       },
-      exec(){
+      exec(cb){
         // 列表实例批量更新方法
         // exec方法允许执行以下若干更新方法后，触发批量更新数据并渲染
         // 本对象原来的使用环境是list.forEach场景中使用，由forEach方法批来量更新数据，脱离forEach后没有触发机制
         // 在有些场景当中本对象会作为个体变量传递给外部，如 return [inst1, inst2, inst3]
         // 此时即便应用了更新方法仍然不能更新数据、渲染，因为没有触发事件执行更新
-        listInst.update(listInst.__foreachUpdata)
+        if (!listInst.__foreachUpdata) return 
+        listInst.update(listInst.__foreachUpdata, cb)
       },
-      reset(param){
+      reset(param, cb){
         if (!param) return
         let upData = {}
         if (data) {
@@ -269,7 +271,7 @@ export function listInstDelegate(treeid, listInst, from){
           if (from === 'foreach') {
             listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, upData)
           } else {
-            listInst.update(upData)
+            listInst.update(upData, cb)
           }
         }
       },
@@ -288,39 +290,45 @@ export function listInstDelegate(treeid, listInst, from){
           return listInst.childs[treeid]
         }
       },
-      css(params) {
+      css(params, cb) {
         // if (!lib.isString(params)) return
         if (typeof params !== 'string') return
+        if (data) {
+          data = this.getData()
+        }
         let styData = _css(key, params, data)
         if (styData) {
           if (from === 'foreach') {
             listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, styData)
           } else {
-            listInst.update(styData)
+            listInst.update(styData, cb)
           }
         }
       },
-      toggleClass(cls) {
+      toggleClass(cls, cb) {
         if (cls) {
           let clsAry = lib.isString(cls) ? cls.split(' ') : []
           if (clsAry.length) {
             cls = clsAry[0]
             if (this.hasClass(cls)) {
-              this.removeClass(cls)
+              this.removeClass(cls, cb)
             } else {
-              this.addClass(cls)
+              this.addClass(cls, cb)
             }
           }
         }
       },
-      addClass(params) {
+      addClass(params, cb) {
         if (!lib.isString(params)) return
+        if (data) {
+          data = this.getData()
+        }
         let clsData = _addClass(key, params, data)
         if (clsData) {
           if (from === 'foreach') {
             listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, clsData)
           } else {
-            listInst.update(clsData)
+            listInst.update(clsData, cb)
           }
         }
 
@@ -338,21 +346,25 @@ export function listInstDelegate(treeid, listInst, from){
         //   listInst.update(upData)
         // }
       },
-      removeClass(params) {
+      removeClass(params, cb) {
         if (!lib.isString(params)) return
+        if (data) {
+          data = this.getData()
+        }
         let clsData = _removeClass(key, params, data)
         if (from === 'foreach') {
           listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, clsData)
         } else {
-          listInst.update(clsData)
+          listInst.update(clsData, cb)
         }
       },
       hasClass(params) {
         return _hasClass(params, data)
       },
-      update(params) {
+      update(params, cb) {
         let upData = {}
         if (data) {
+          data = this.getData()
           if (lib.isFunction(params)) {
             data = params(data) || data
           } else {
@@ -362,58 +374,64 @@ export function listInstDelegate(treeid, listInst, from){
           if (from === 'foreach') {
             listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, upData)
           } else {
-            listInst.update(upData)
+            listInst.update(upData, cb)
           }
         }
       },
-      show() {
+      show(cb) {
         let upData = {}
         if (data) {
+          data = this.getData()
           data.show = true
           upData[key] = data
           // listInst.update(upData)
           if (from === 'foreach') {
             listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, upData)
           } else {
-            listInst.update(upData)
+            listInst.update(upData, cb)
           }
         }
       },
-      hide() {
+      hide(cb) {
         let upData = {}
         if (data) {
+          data = this.getData()
           data.show = false
           upData[key] = data
           // listInst.update(upData)
           if (from === 'foreach') {
             listInst.__foreachUpdata = Object.assign({}, listInst.__foreachUpdata, upData)
           } else {
-            listInst.update(upData)
+            listInst.update(upData, cb)
           }
         }
       },
-      remove() {
-        listInst.delete(treeid)
+      remove(cb) {
+        listInst.delete(treeid, cb)
       },
-      delete() {
-        listInst.delete(treeid)
+      delete(cb) {
+        listInst.delete(treeid, cb)
       },
       siblings(param) { // 只针对class进行筛选
-        let _tmpData = {};
-        ((listInst.getData()).data || []).forEach((item, ii) => {
-          if (ii !== index) {
-            let key = `data[${ii}]`
-            if (lib.isString(param)) {
-              let cls = param.split(' ')
-              let itCls = (item.itemClass || ' ').split(' ')
-              let _cls = cls.filter(c => itCls.indexOf(c) > -1)
-              if (cls.length === _cls.length) _tmpData[key] = item
-            } else {
-              _tmpData[key] = item
+        function __refreshData() {
+          let _tmpData = {};
+          ((listInst.getData()).data || []).forEach((item, ii) => {
+            if (ii !== index) {
+              let key = `data[${ii}]`
+              if (lib.isString(param)) {
+                let cls = param.split(' ')
+                let itCls = (item.itemClass || ' ').split(' ')
+                let _cls = cls.filter(c => itCls.indexOf(c) > -1)
+                if (cls.length === _cls.length) _tmpData[key] = item
+              } else {
+                _tmpData[key] = item
+              }
             }
-          }
-        })
-        let tmpData = lib.clone(_tmpData)
+          })
+          return _tmpData
+        }
+        let tmpData = lib.clone(__refreshData())
+        this.__refreshData = __refreshData
         return fakeListInstance(tmpData, listInst, this)
         // return {
         //   length: Object.keys(tmpData).length,
@@ -520,6 +538,29 @@ export const commonBehavior = (app, mytype) => {
         value: ''
       }
     },
+    definitionFilter(defFields, definitionFilterArr) {
+      // 监管组件的setData
+      defFields.methods = defFields.methods || {}
+      defFields.methods._setData_ = function (data, callback) {
+        let that = this
+        const originalSetData = this._originalSetData // 原始 setData
+        originalSetData.call(this, data, function() {
+          if (that.activePage) {
+            that.activePage.doReady()
+            if (lib.isFunction(callback)) {
+              callback.call(this)
+            }
+          } else {
+            that.hooks.on('__ready', function() {
+              that.activePage.doReady()
+              if (lib.isFunction(callback)) {
+                callback.call(this)
+              }
+            })
+          }
+        }) // 做 data 的 setData
+      }
+    },
     externalClasses: ['class-name'],
     relations: {},
     pageLifetimes: {
@@ -541,6 +582,8 @@ export const commonBehavior = (app, mytype) => {
         this.mounted = false
         this.children = []
         app['_vars'][this.uniqId] = this
+        this._originalSetData = this.setData // 原始 setData
+        this.setData = this._setData_ // 封装后的 setData
       },
       //节点树完成，可以用setData渲染节点，但无法操作节点
       attached: function () { //节点树完成，可以用setData渲染节点，但无法操作节点
@@ -651,16 +694,17 @@ export const commonBehavior = (app, mytype) => {
         this.init = false
         this.mounted = true
         this.activePage = app.activePage
-        this.hooks.emit('ready')
         // // let oriData = this.data.item || this.data.list || this.data.dataSource || {}
         // // this.originalDataSource = lib.clone(oriData)
-
-
-
-
+        
+        
+        
+        
         // this.mount()
-
+        
         this._mount()
+        this.hooks.emit('ready')
+        this.hooks.fire('__ready')
 
         // if (this.__ready) {
         //   console.log('======= 3333');
@@ -737,12 +781,27 @@ export const commonBehavior = (app, mytype) => {
       //   }
       // },
 
+      findPath(param){
+        /** 查找路径 */
+      },
+
       parent(param, ctx){
         if (!ctx) ctx = this
         let res
 
         if (ctx.treeid && ctx.parentInst && ctx.parentInst.$$is === 'list') {
-          return listInstDelegate(ctx.treeid, ctx.parentInst)
+          if (param) {
+            res = listInstDelegate(ctx.treeid, ctx.parentInst)
+            if (res) {
+              if (res.hasClass(param)) {
+                return res
+              } else {
+                return res.parent(param)
+              }
+            }
+          } else {
+            return listInstDelegate(ctx.treeid, ctx.parentInst)
+          }
         }
 
         if (!param) {
@@ -1193,6 +1252,36 @@ export const commonMethodBehavior = (app, mytype) => {
       catchItemMethod: function (e) {
         reactFun.call(this, app, e, 'catch')
       },
+
+      imgPreview: function(e) {
+        let currentTarget = e.currentTarget
+        let dataset = currentTarget.dataset
+        let src = dataset.src
+
+        let $item = this.data.$item
+        let $img = $item.img
+        let findIt = null
+        if (lib.isArray($img)) {
+          findIt = $img.find({src})
+        } else {
+          findIt = $img
+        }
+
+        if (findIt) {
+          let preview = findIt.preview
+          let previewConfig = {
+            current: src,
+            urls: [src]
+          }
+          if (lib.isArray(preview)) {
+            previewConfig = {
+              current: src,
+              urls: preview
+            }
+          }
+          wx.previewImage(previewConfig)
+        }
+      }
     }
   })
 }
@@ -1208,6 +1297,7 @@ function getParent(ctx, f) {
 }
 
 export function reactFun(app, e, prefix) {
+  app = app || getApp()
   if (this.treeInst) {
     this.treeInst[(prefix ? 'catchItemMethod' : 'itemMethod')].call(this.treeInst, e, prefix)
     return false

@@ -9,6 +9,14 @@ import {
   resetSuidCount,
 } from './util'
 
+const eventName = ['tap', 'catchtap', 'aim', '_tap', '_aim', 
+'longpress', '_longpress', 'catchlongpress', 'longtap', '_longtap', 'catchlongtap',
+'touchstart', 'touchmove','touchend', 'touchcancel',
+'_touchstart', '_touchmove', '_touchend', '_touchcancel',
+'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'catchtouchcancel',
+'touchoption'
+]
+
 function formatImg(props) {
   let img = props.img
   if (isString(img)) {
@@ -23,16 +31,32 @@ function formatImg(props) {
 }
 
 // 处理url
+// hash 传递navigate组件的参数
 function formatUrl(props) {
   let url = props.url
-  if (isString(url)) {
+  if (isString(url) && url.length > 1) {
     let ary = url.split('#')
+    let isbutton = url.indexOf('button://') === 0
+    let funName = (()=>{
+      if (url.indexOf('button://') === 0) {
+        ary[0] = ary[0].replace('button://', '')
+        return ary[0]
+      }
+    })()
     if (ary.length === 1) {
-      props.url = {title: props.title, url: url}
+      if (isbutton) {
+        props.url = {value: props.title, tap: funName}
+      } else {
+        props.url = {title: props.title, url: url}
+      }
     } else {
-      let obj = formatQuery('?'+ary[1])
-      url = ary[0]
-      props.url = {title: props.title, url, ...obj.query}
+      let obj = formatQuery('?'+ary[1])  // 获取navigate的配置
+      if (isbutton) {
+        props.url = {value: props.title, tap: funName, ...obj.query}
+      } else {
+        url = ary[0]
+        props.url = {title: props.title, url, ...obj.query}
+      }
       
       // let tmp = {}
       // let param = ary[1]
@@ -100,6 +124,18 @@ export function resetItem(data, context, loop, attrkey) {
           })
           delete data.methods
           delete data.itemMethod
+          // if (loop !== 'itemSubArray') { // 数据(dot, body...)数组的子数据
+          //   const methods = data.methods
+          //   Object.keys(methods).forEach(key=>{
+          //     let fun = methods[key]
+          //     if (isFunction(fun)) {
+          //       fun = fun.bind(context)
+          //       context[key] = fun
+          //     }
+          //   })
+          //   delete data.methods
+          //   delete data.itemMethod
+          // }
         }
       }
 
@@ -108,6 +144,7 @@ export function resetItem(data, context, loop, attrkey) {
       }
     }
 
+    // (dot, body...)的子元素
     if (loop === 'itemSubArray') {
       if (!data['__key']) data['__key'] = suid('arykey_')
     }
@@ -124,6 +161,17 @@ export function resetItem(data, context, loop, attrkey) {
             delete data.aim
           } else {
             extAttrs[key] = data[key]
+          }
+
+          if (eventName.includes(key) && context) {
+            if (key === 'aim') key = 'catchtap'
+            let val = data[key]
+            if (isFunction(val)) {
+              let fun = val.bind(context)
+              let funKey = suid('__on_') + key
+              data[key] = funKey
+              context[funKey] = fun
+            }
           }
         }
       } else {

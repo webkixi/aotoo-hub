@@ -32,7 +32,8 @@ export function post(url, data={}, param={}, method='POST') {
         resolve(res)
       },
       error: function (e) {
-        reject('网络出错');
+        // reject('网络出错');
+        reject(e)
       }
     }
     postParam = Object.assign(postParam, param)
@@ -185,7 +186,8 @@ class UsualKit {
           let stat = res.authSetting[`scope.${scopeType}`]
           if (!stat) {
             if (scopeType === 'userInfo') {
-              return resolve(stat)
+              // return resolve(stat)
+              return erro(stat)
             }
           }
           wx.authorize({

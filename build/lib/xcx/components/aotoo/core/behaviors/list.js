@@ -162,7 +162,7 @@ export const listBehavior = function(app, mytype) {
         return this
       },
 
-      forEach(cb){
+      forEach(cb, callback){
         this.__foreachUpdata = {}
         let that = this
         let upData = {}
@@ -196,10 +196,10 @@ export const listBehavior = function(app, mytype) {
           // }
         })
         // this.update(upData)
-        this.update(this.__foreachUpdata)
+        this.update(this.__foreachUpdata, callback)
       },
 
-      addClass: function(listCls) {
+      addClass: function(listCls, cb) {
         if (listCls) {
           listCls = listCls.replace(/\./g, '')
           listCls = lib.isString(listCls) ? listCls.split(' ') : []
@@ -209,7 +209,7 @@ export const listBehavior = function(app, mytype) {
           $listClass = $listClass.concat(listCls)
           this.update({
             listClass: $listClass.join(' ')
-          })
+          }, cb)
         }
       },
 
@@ -226,7 +226,7 @@ export const listBehavior = function(app, mytype) {
         }
       },
 
-      removeClass: function (listCls) {
+      removeClass: function (listCls, cb) {
         if (listCls) {
           listCls = listCls.replace(/\./g, '')
           listCls = lib.isString(listCls) ? listCls.split(' ') : []
@@ -237,7 +237,7 @@ export const listBehavior = function(app, mytype) {
           $listClass = _cls
           this.update({
             listClass: ($listClass.join(' ') || ' ')
-          })
+          }, cb)
 
           // let indexs = []
           // $listClass.forEach((cls, ii)=>{
@@ -306,7 +306,7 @@ export const listBehavior = function(app, mytype) {
                     nval = reSetArray.call(this, param[key], $list).data
                   } else {
                     if (key.indexOf('title') > -1 || key.indexOf('img')>-1 || isObject(nval)) {
-                      if (key === 'type') {
+                      if (key === 'type' || nkey.indexOf('$list.type.') > -1) {
                         /** 不出来list.type数据 */
                       } else if (isObject(nval)) {
                         nval = reSetItemAttr.call(this, param[key], $list)
@@ -596,14 +596,14 @@ export const listBehavior = function(app, mytype) {
         }
       },
 
-      append: function(params) {
+      append: function(params, cb) {
         const that = this
         if (params) {
           let $list = this.data.$list
           let $data = $list.data
           let appendFun = (opts) => {
             $list.data = $data.concat(that.__newItem(opts, 'append'))
-            that.setData({$list})
+            that.setData({$list}, cb)
           }
 
           let result = this.hooks.emit('append', params)
@@ -621,14 +621,14 @@ export const listBehavior = function(app, mytype) {
         return this
       },
 
-      prepend: function(params) {
+      prepend: function(params, cb) {
         const that = this
         if (params) {
           let $list = this.data.$list
           let $data = $list.data
           let prependFun = (opts) => {
             $list.data = [].concat(this.__newItem(opts, 'prepend')).concat($data)
-            that.setData({$list})
+            that.setData({$list}, cb)
           }
 
           let result = this.hooks.emit('prepend', params)
@@ -646,18 +646,18 @@ export const listBehavior = function(app, mytype) {
         return this
       },
 
-      delete: function (params) {
+      delete: function (params, cb) {
         let $list = this.data.$list
         let $data = $list.data
         let $selectIndex = this.findIndex(params)
         if ($selectIndex || $selectIndex == 0) {
           $data.splice($selectIndex, 1)
-          this.setData({ $list })
+          this.setData({ $list }, cb)
         }
         return this
       },
 
-      insert: function (params, pay) {
+      insert: function (params, pay, cb) {
         const that = this
         let $list = this.data.$list
         let $data = $list.data
@@ -668,7 +668,7 @@ export const listBehavior = function(app, mytype) {
               payload = that.__newItem(payload, 'insert')
               if ($selectIndex || $selectIndex == 0) {
                 $data.splice($selectIndex, 0, payload)
-                that.setData({ $list })
+                that.setData({ $list }, cb)
               }
             }
           }
@@ -730,7 +730,22 @@ export const listBehavior = function(app, mytype) {
   })
 }
 
+function lookforEventFun(ctx, fun) {
+  if (ctx.parentInst) {
+    if (ctx.parentInst[fun] && lib.isFunction(ctx.parentInst[fun])) {
+      return ctx.parentInst
+    } else {
+      return lookforEventFun(ctx.parentInst, fun)
+    }
+  } else {
+    if (ctx.componentInst && lib.isFunction(ctx.componentInst[fun])) {
+      return ctx.componentInst
+    }
+  }
+}
+
 function listReactFun(app, e, type="list") {
+  app = app || getApp()
   const that = this
   if (this.treeInst) {
     return type == 'swiper' ? this.treeInst._swiperMethod.call(this.treeInst, e, type) : this.treeInst._scrollMethod.call(this.treeInst, e, type)
@@ -752,29 +767,48 @@ function listReactFun(app, e, type="list") {
   }
 
   const activePage = this.activePage
-  let parentInstance = this.componentInst
+  let parentInstance = this.parentInst || this.componentInst
   const {fun, param} = this._rightEvent(e)
 
   if (fun) {
     const evtFun = activePage[fun] || app.activePage[fun]
     const thisFun = this[fun]
-    const isEvt = lib.isFunction(evtFun)
-    if (lib.isEmpty(parentInstance)) {
-      parentInstance = undefined
-    }
-  
-    if (parentInstance && lib.isFunction(parentInstance[fun])) {
-      parentInstance[fun].call(parentInstance, e, param)
-    } else {
-      if (lib.isFunction(thisFun)) {
-        thisFun.call(this, e, param, this)
+
+    if (lib.isFunction(thisFun)) {
+      thisFun.call(this, e, param, this)
+    } else if (lib.isFunction(evtFun)) {
+      evtFun.call(activePage, e, param, that)
+    } else if (parentInstance) {
+      let ctx = lookforEventFun(that, fun)
+      if (ctx) {
+        ctx[fun].call(ctx, e, param, that)
       } else {
-        if (isEvt) evtFun.call(activePage, e, param, (parentInstance||that))
-        else {
-          console.warn(`找不到定义的${fun}方法`);
-        }
+        console.warn(`找不到定义的${fun}方法`);
       }
+    } else {
+      console.warn(`找不到定义的${fun}方法`);
     }
+
+    // const evtFun = activePage[fun] || app.activePage[fun]
+    // const thisFun = this[fun]
+    // const isEvt = lib.isFunction(evtFun)
+    // if (lib.isEmpty(parentInstance)) {
+    //   parentInstance = undefined
+    // }
+  
+    // if (parentInstance && lib.isFunction(parentInstance[fun])) {
+    //   parentInstance[fun].call(parentInstance, e, param)
+    // } else {
+    //   if (lib.isFunction(thisFun)) {
+    //     thisFun.call(this, e, param, this)
+    //   } else {
+    //     if (isEvt) evtFun.call(activePage, e, param, (parentInstance||that))
+    //     else {
+    //       console.warn(`找不到定义的${fun}方法`);
+    //     }
+    //   }
+    // }
+
   }
 }
 

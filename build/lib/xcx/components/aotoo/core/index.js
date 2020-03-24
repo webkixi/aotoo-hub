@@ -57,16 +57,18 @@ function mkFind(context, app){
             }
           })
         } else {
-          xxx = [ctx]
+          // xxx = [ctx]
           if (ctx.children && ctx.children.length) {
             ctx.children.forEach(cld => {
               if (cld.children&&cld.children.length) {
-                xxx = xxx.concat(findChilds(cld))
+                // xxx = xxx.concat(findChilds(cld))
+                xxx = findChilds(cld).concat(xxx)
               } else {
                 xxx = xxx.concat(cld)
               }
             })
           }
+          xxx = xxx.concat(ctx)
         }
         return xxx
       }
@@ -289,6 +291,7 @@ function core(params) {
 
     const oldLoad = params.onLoad
     params.onLoad = function () {
+      app.activePage = activePage = this
       let that = this
       this.vars = {}
       this.elements = this.elements || {}
@@ -298,6 +301,7 @@ function core(params) {
       this.hooks = lib.hooks(this.uniqId)
       this.getElementsById = function(key) {
         if (key) {
+          key = key.replace('#', '')
           return this.elements[key] || this.selectComponent('#'+key) || this.selectComponent('.'+key)
         } else {
           return this.elements
@@ -316,12 +320,11 @@ function core(params) {
       this.setData = function (param, cb) {
         oldSetData.call(that, param, function () {
           if (lib.isFunction(cb)) {
-            cb()
+            that.doReady()
+            cb.call(that)
           }
-          that.doReady()
         })
       }
-      app.activePage = activePage = this
       app.hooks.emit('activePage', activePage)
       app.hooks.emit('changeActivePage', activePage)
       if (typeof oldLoad == 'function') {
@@ -348,15 +351,13 @@ function core(params) {
       mkFind(this, app)
       this.find = wx.$$find
       
+      this.__rendered = true
+      this.doReady()
+      this.hooks.emit('onReady')
+
       if (typeof oldReady == 'function') {
         oldReady.apply(this, arguments)
       }
-
-      this.doReady(true)
-      setTimeout(() => {
-        this.hooks.emit('onReady')
-        this.__rendered = true
-      }, 200);
     }
 
     const oldSshow = params.onShow
@@ -371,6 +372,7 @@ function core(params) {
         // activePage = curPage
       }
       this.__hide = false
+      this.hooks.emit('onShow')
       if (typeof oldSshow == 'function') {
         oldSshow.apply(this, arguments)
       }
@@ -466,4 +468,5 @@ core.listComponentBehavior = listComponentBehavior
 core.treeBehavior = treeBehavior
 core.treeComponentBehavior = treeComponentBehavior
 core.hooks = lib.hooks
+lib.innerKit = core.toolkit
 module.exports = core
