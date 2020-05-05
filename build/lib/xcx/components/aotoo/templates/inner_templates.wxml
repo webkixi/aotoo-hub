@@ -35,7 +35,13 @@
   </block>
 </template>
 
-<template name="a">
+<template name="@ext">
+  <block wx:if="{{util.isString(props.is)}}">
+    <template is="{{props.is}}" data="{{item: props, props}}" />
+  </block>
+</template>
+
+<!-- <template name="a">
   <view class="htitle {{item.class || item.itemClass}}" wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" bind:tap="aim" data-aim="{{item.aim}}">{{item.title}}</view>
   <block wx:else>
     <view class="htitle {{item.class || item.itemClass}}" bind:tap="aim" data-aim="{{item.aim}}">{{item.title}}</view>
@@ -47,7 +53,7 @@
   <block wx:else>
     <image catch:tap="catchItemMethod" data-evt="{{util.dataEvt(item, ['catchtap', 'tap', 'longpress', 'aim', 'touchstart', 'tourchend', 'touchmove', 'touchcancel'])}}" class="himg {{ item.class || item.itemClass }}" mode="{{item.mode || 'widthFix'}}" lazy-load="{{true}}" src="{{item.src}}" />
   </block>
-</template>
+</template> -->
 
 <template name="@item">
   <block wx:if="{{util.isObject(props)}}">
@@ -58,16 +64,16 @@
         id="{{props.id||''}}" 
         data-treeid="{{props && util.isObject(props.attr) && (props.attr['data-treeid']||props.attr['treeid']||'')}}"
         data-id="{{(props && util.isObject(props.attr) && (props.attr['id'] || props.attr['data-id']) || '')}}"
-        selectable="{{props.selectable||true}}"
+        selectable="{{props.selectable === false ? false : true}}"
         space="{{props.space||''}}"
         decode="{{props.decode||''}}"
       >{{props.text}}</text>
     </block>
     <block wx:elif="{{props.fromComponent}}">
-      <ui-item item="{{props}}" fromComponent="{{props.fromComponent}}"/>
+      <ui-item item="{{props}}" class="ui-item {{props.containerClass}}" fromComponent="{{props.fromComponent}}"/>
     </block>
     <block wx:else>
-      <ui-item item="{{props}}"/>
+      <ui-item item="{{props}}" class="ui-item {{props.containerClass}}"/>
     </block>
   </block>
 </template>
@@ -75,10 +81,10 @@
 <template name="@list">
   <block wx:if="{{util.isObject(props)}}">
     <block wx:if="{{props.fromComponent || props.fromTree}}">
-      <ui-list list="{{props}}" fromComponent="{{props.fromComponent||props.fromTree}}"/>
+      <ui-list class="ui-list {{props.containerClass}}" list="{{props}}" fromComponent="{{props.fromComponent||props.fromTree}}"/>
     </block>
     <block wx:else>
-      <ui-list list="{{props}}"/>
+      <ui-list list="{{props}}" class="ui-list"/>
     </block>
   </block>
 </template>
@@ -86,10 +92,10 @@
 <template name="@tree">
   <block wx:if="{{util.isObject(props)}}">
     <block wx:if="{{props.fromComponent}}">
-      <ui-tree class="ui-tree" list="{{props}}" fromComponent="{{props.fromComponent}}"/>
+      <ui-tree class="ui-tree {{props.containerClass}}" list="{{props}}" fromComponent="{{props.fromComponent}}"/>
     </block>
     <block wx:else>
-      <ui-tree class="ui-tree" list="{{props}}"/>
+      <ui-tree class="ui-tree {{props.containerClass}}" list="{{props}}"/>
     </block>
   </block>
 </template>
@@ -125,11 +131,11 @@
 </template>
 
 <template name="@html">
-  <ui-markit dataSource="{{props}}" textType="html" />
+  <ui-markit dataSource="{{props}}" class="ui-markit" textType="html" />
 </template>
 
 <template name="@md">
-  <ui-markit dataSource="{{props}}" textType="md" />
+  <ui-markit dataSource="{{props}}" class="ui-markit" textType="md" />
 </template>
 
 <template name="@button">
@@ -169,9 +175,12 @@
 
 <template name="@url">
   <!-- <block wx:if="{{props && props.url && (props.title||props.value)}}"> -->
-  <block wx:if="{{props && (props.title||props.value)}}">
+  <block wx:if="{{props && (props.title||props.value||props.__isAd)}}">
     <block wx:if="{{props.value}}">
       <template is="@button" data="{{props: props}}"/>
+    </block>
+    <block wx:elif="{{props.__isAd}}">
+      <template is="@ad" data="{{props: props}}"/>
     </block>
     <navigator 
       wx:else
@@ -195,8 +204,115 @@
     >
       <block wx:if="{{util.isString(props.title)}}"><text>{{props.title}}</text></block>
       <block wx:else>
-        <ui-item item="{{props.title}}" />
+        <ui-item item="{{props.title}}" class="ui-item {{props.containerClass}}" />
       </block>
     </navigator>
   </block>
+</template>
+
+
+<template name="@myinput">
+  <input 
+    class="{{props.itemClass||props.class||''}}"
+    style="{{props.itemStyle||props.style||''}}"
+    id="{{props.id||''}}"
+
+    value="{{props.value||''}}"
+    type="{{props.type||'text'}}"
+    passsword="{{props.passsword||''}}"
+    placeholder="{{props.placeholder||''}}"
+    placeholder-style="{{props['placeholder-style']||''}}"
+    placeholder-class="{{props['placeholder-class']||''}}"
+    disabled="{{props.disabled||''}}"
+    cursor-spacing="{{props['cursor-spacing']||''}}"
+    maxlength="{{props.maxlength||''}}"
+    focus="{{props.focus||''}}"
+    confirm-type="{{props['confirm-type']||''}}"
+    confirm-hold="{{props['confirm-hold']||''}}"
+    cursor="{{props.cursor||''}}"
+    selection-start="{{props['selection-start']||''}}"
+    selection-end="{{props['selection-end']||''}}"
+    adjust-position="{{props['adjust-position']||''}}"
+    hold-keyboard="{{props['hold-keyboard']||''}}"
+
+    catchtap="{{props.tap||props.aim||props.catchtap ? 'itemMethod' : ''}}"
+
+    bindinput="{{props.bindinput ? 'itemMethod' : ''}}"
+    bindfocus="{{props.bindfocus ? 'itemMethod' : ''}}"
+    bindblur="{{props.bindblur ? 'itemMethod' : ''}}"
+    bindconfirm="{{props.bindconfirm ? 'itemMethod' : ''}}"
+    bindkeyboardheightchange="{{props.bindkeyboardheightchange ? 'itemMethod' : ''}}"
+    data-isform="{{true}}"
+    data-evt="{{util.dataEvt(props, ['tap', 'aim', 'catchtap','bindinput', 'bindfocus', 'bindblur', 'bindconfirm', 'bindkeyboardheightchange'])}}"
+  />
+</template>
+
+<template name="@input">
+  <block wx:if="{{util.isArray(props)}}">
+    <block wx:for="{{props}}" wx:key="index">
+      <template is="@myinput" data="{{props: item}}"></template>
+    </block>
+  </block>
+  <block wx:else>
+    <template is="@myinput" data="{{props}}"></template>
+  </block>
+</template>
+
+<template name="@textarea">
+  <textarea 
+    class="{{props.itemClass||props.class||''}}"
+    style="{{props.itemStyle||props.style||''}}"
+    id="{{props.id||''}}"
+
+    value="{{props.value||''}}"
+    placeholder="{{props.placeholder||''}}"
+    placeholder-style="{{props['placeholder-style']||''}}"
+    placeholder-class="{{props['placeholder-class']||''}}"
+    disabled="{{props.disabled||''}}"
+    cursor-spacing="{{props['cursor-spacing']||''}}"
+    maxlength="{{props.maxlength||''}}"
+    auto-focus="{{props['auto-focus']||''}}"
+    focus="{{props.focus||''}}"
+    auto-height="{{props['auto-height']||''}}"
+    fixed="{{props.fixed||''}}"
+    confirm-type="{{props['confirm-type']||''}}"
+    confirm-hold="{{props['confirm-hold']||''}}"
+    cursor="{{props.cursor||''}}"
+    show-confirm-bar="{{props['show-confirm-bar']||''}}"
+    selection-start="{{props['selection-start']||''}}"
+    selection-end="{{props['selection-end']||''}}"
+    adjust-position="{{props['adjust-position']||''}}"
+    hold-keyboard="{{props['hold-keyboard']||''}}"
+    disable-default-padding="{{props['disable-default-padding']||''}}"
+
+    catchtap="{{props.tap||props.aim||props.catchtap ? 'itemMethod' : ''}}"
+
+    bindlinechange="{{props.bindlinechange ? 'itemMethod' : ''}}"
+    bindinput="{{props.bindinput ? 'itemMethod' : ''}}"
+    bindfocus="{{props.bindfocus ? 'itemMethod' : ''}}"
+    bindblur="{{props.bindblur ? 'itemMethod' : ''}}"
+    bindconfirm="{{props.bindconfirm ? 'itemMethod' : ''}}"
+    bindkeyboardheightchange="{{props.bindkeyboardheightchange ? 'itemMethod' : ''}}"
+    data-isform="{{true}}"
+    data-evt="{{util.dataEvt(props, ['tap', 'aim', 'catchtap','bindinput', 'bindfocus', 'bindblur', 'bindconfirm', 'bindkeyboardheightchange'])}}"
+  />
+</template>
+
+<template name="@switch">
+  <switch 
+    class="{{props.itemClass||props.class||''}}"
+    style="{{props.itemStyle||props.style||''}}"
+    id="{{props.id||''}}"
+
+    checked="{{props.checked||''}}"
+    disabled="{{props.disabled||''}}"
+    type="{{props.type||''}}"
+    color="{{props.color||''}}"
+
+    catchtap="{{props.tap||props.aim||props.catchtap ? 'itemMethod' : ''}}"
+
+    bindchange="{{props.bindchange ? 'itemMethod' : ''}}"
+    data-isform="{{true}}"
+    data-evt="{{util.dataEvt(props, ['tap', 'aim', 'catchtap','bindchange'])}}"
+  />
 </template>

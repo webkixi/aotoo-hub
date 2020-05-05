@@ -29,7 +29,7 @@ import {
 function mkFind(context, app){
   let that = context
   wx.$$find = function (param, context) {
-    let id, cls
+    let id, cls, treeid
     let vars = app['_vars']
     if (param||param === 0) {
       if (lib.isString(param)) {
@@ -40,40 +40,14 @@ function mkFind(context, app){
           id = param.replace('#', '')
         } else {
           cls = param
-        }
-      }
-
-      function findChilds(ctx) {
-        if (!ctx) return null
-        let xxx = []
-        if (lib.isArray(ctx)) {
-          ctx.forEach(item=>{
-            if (item) {
-              if (item.$$is === 'fakelist') {
-                if (item.length) xxx = xxx.concat(findChilds(item.parentInst))
-              } else {
-                xxx = xxx.concat(findChilds(item))
-              }
-            }
-          })
-        } else {
-          // xxx = [ctx]
-          if (ctx.children && ctx.children.length) {
-            ctx.children.forEach(cld => {
-              if (cld.children&&cld.children.length) {
-                // xxx = xxx.concat(findChilds(cld))
-                xxx = findChilds(cld).concat(xxx)
-              } else {
-                xxx = xxx.concat(cld)
-              }
-            })
+          if (param.indexOf('treeid-index-')>-1) {
+            cls = undefined
+            treeid = param
           }
-          xxx = xxx.concat(ctx)
         }
-        return xxx
       }
 
-      let findScope = findChilds(context) || Object.entries(vars).map(item => item[1])
+      let findScope = lib.findChilds(context) || Object.entries(vars).map(item => item[1])
       let findIt = []
       findScope.forEach(inst => {
         // let inst = item[1] 
@@ -90,6 +64,7 @@ function mkFind(context, app){
               if (param.charAt(0) === '.') {
                 bywhat = 'class'
               }
+              if (!treeid && !id) bywhat = 'class'
             }
             if (inst.$$is === 'fakelist') {
               listInst = inst.parentInst
@@ -352,8 +327,8 @@ function core(params) {
       this.find = wx.$$find
       
       this.__rendered = true
-      this.doReady()
       this.hooks.emit('onReady')
+      this.doReady()
 
       if (typeof oldReady == 'function') {
         oldReady.apply(this, arguments)
