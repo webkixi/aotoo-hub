@@ -265,7 +265,7 @@
       wx:key="_key"
       bind:touchstart="inputItemMethod"
       bind:touchmove="inputItemMethod"
-      class="input-item-rating {{item.itemClass||''}}"
+      class="input-item-rating {{item.itemClass||''}} {{index<(input.value) ? 'active': ''}}"
       style="{{input.itemStyle||''}}"
       data-max="{{input.max}}"
       data-type="rating"

@@ -305,6 +305,11 @@ function normInput(params, profile) {
 
       if (params.type === 'rating') {
         let max = params.max = parseInt(params.max) || 5
+        if (params.value || params.value === 0) {
+          params.value = parseInt(params.value)
+        } else {
+          params.value = 0
+        }
         params.range = Array.from(new Array(max), (item, index) => {
           return {title: index+1}
         })
@@ -665,16 +670,45 @@ Component({
     empty: function(keyid) {
       const allocation = this.allocation
       let willEmpty = {}
-      if (keyid) {
-        Object.keys(allocation).forEach(id=>{
-          if (id === keyid) willEmpty[id] = {value: ''}
-        })
-      } else {
-        Object.keys(allocation).forEach(id=>{
-          willEmpty[id] = {value: ''}
-        })
-      }
+
+      Object.keys(allocation).forEach(id=>{
+        let profile = allocation[id]
+        let val = profile.value
+        let emptyValue = null
+        if (lib.isArray(val)) emptyValue = []
+        if (lib.isString(val) || lib.isNumber(val)) emptyValue = ''
+        if (keyid) {
+          if (id === keyid) {
+            willEmpty[id] = {value: emptyValue}
+          }
+        } else {
+          willEmpty[id] = {value: emptyValue}
+        }
+      })
       this.value(willEmpty)
+
+      // if (keyid) {
+      //   Object.keys(allocation).forEach(id=>{
+      //     if (id === keyid) {
+      //       let profile = allocation[id]
+      //       let val = profile.value
+      //       let emptyValue = null
+      //       if (lib.isArray(val)) emptyValue = []
+      //       if (lib.isString(val) || lib.isNumber(val)) emptyValue = ''
+      //       willEmpty[id] = {value: emptyValue}
+      //     }
+      //   })
+      // } else {
+      //   Object.keys(allocation).forEach(id=>{
+      //     let profile = allocation[id]
+      //     let val = profile.value
+      //     let emptyValue = null
+      //     if (lib.isArray(val)) emptyValue = []
+      //     if (lib.isString(val) || lib.isNumber(val)) emptyValue = ''
+      //     willEmpty[id] = {value: emptyValue}
+      //   })
+      // }
+      // this.value(willEmpty)
     },
     
     /**
@@ -807,19 +841,37 @@ Component({
      * @param {Boolean} forData true获得完整数据，false只获取表单的value值
      */
     getValue(id, forData){
-      let val = this.value(id)
+      let val = this.value(id) || {}
       let tmpValue = {}
-      Object.keys(val).forEach(ky=>{
-        if (ky!==undefined) {
-          tmpValue[ky] = val[ky]
-        }
-      })
-      if (val) {
+      if (id) {
+        Object.keys(val).forEach(ky=>{
+          if (val[ky] !== undefined) {
+            tmpValue[ky] = val[ky]
+          }
+        })
+      } else {
+        Object.keys(val).forEach(ky=>{
+          if (val[ky]) {
+            let element = val[ky]
+            let tmp = {}
+            Object.keys(element).forEach(key=>{
+              if (element[key]!==undefined) {
+                tmp[key] = element[key]
+              }
+            })
+            tmpValue[ky] = tmp
+          }
+        })
+      }
+
+      if (id) {
         if (val.type === 'dropdown') {
           // return forData ? {type: val.type, id: (val.id||val.name), text: val.text, value: val.value} : val.value
           return {type: tmpValue.type, id: (tmpValue.id||tmpValue.name), text: tmpValue.text, value: tmpValue.value}
         }
         return forData ? tmpValue : tmpValue.value
+      } else {
+        return tmpValue
       }
     },
 
@@ -857,7 +909,7 @@ Component({
       }
     },
     
-    value: function(id, val) {
+    value(id, val){
       const allocation = this.allocation
       if (id) {
         if (val) {
@@ -869,7 +921,7 @@ Component({
               let res = this.getAddressInfo(address)
               if (res) {
                 let inputType = res.inputData.type
-                if (lib.isString(val)) {
+                if (lib.isString(val) || lib.isNumber(val)) {
                   res.inputData.value = val
                   let resault = res.inputData
                   res.inputData = resault = normInput.call(this, resault, res.profile)
