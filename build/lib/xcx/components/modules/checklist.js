@@ -449,6 +449,7 @@ function mkCheckList(params, init) {
         }
 
         let hasRadio = false  // 当前状态是否是选中状态(单选)
+        let hasChecked = true  // 当前是否选中状态 (多选/switch)
 
         this.forEach((item, ii) => {
           let $v = item.data.value
@@ -464,6 +465,7 @@ function mkCheckList(params, init) {
           if (item.treeid === treeid) {
             if (item.hasClass(checkedClass)) {
               if (opts.checkedType === 2) {
+                hasChecked = false
                 item.removeClass(checkedClass)
                 if ($tmpIndex > -1) {
                   this.value.splice($tmpIndex, 1) // 移除value
@@ -493,6 +495,7 @@ function mkCheckList(params, init) {
         } else {
           rootInst.fromLeaf = true
           rootInst.tapItem = {
+            checked: hasChecked,
             checkedType: opts.checkedType,
             title: this.currentTitle,
             value: this.currentValue
@@ -557,10 +560,12 @@ function mkCheckList(params, init) {
           }
         })
         let stat = e.detail.value
+        let hasChecked = true
         if (stat) {
           $val = $val || $item.title
           this.setValueValid($val, $index, $item)
         } else {
+          hasChecked = false
           let $idx = this.value.indexOf($val)
           let $validIdx = this.valids.indexOf($index)
           if ($idx > -1) {
@@ -575,6 +580,7 @@ function mkCheckList(params, init) {
         let rootInst = this.getRoot()
         rootInst.fromLeaf = true
         rootInst.tapItem = {
+          checked: hasChecked,
           checkedType: opts.checkedType,
           title: this.currentTitle,
           value: this.currentValue
@@ -777,6 +783,7 @@ function mkCheckList(params, init) {
         }
 
         let allValue = []
+        let allTitle = []
         let subValues = []
         function initValidItem(item, val) {
           if (item.content || item.body) {
@@ -843,11 +850,12 @@ function mkCheckList(params, init) {
                 getAllValue(context, $ckuniqId, theValue)
               } else {
                 // 补上属性
-                if ($attrs) {
+                let theAttrs = $data.attr || $attrs
+                if (theAttrs) {
                   let tmp = {}
-                  Object.keys($attrs).forEach(key=>{
+                  Object.keys(theAttrs).forEach(key=>{
                     if (key!=='data-treeid') {
-                      tmp[key] = $attrs[key]
+                      tmp[key] = theAttrs[key]
                     }
                   })
                   if (Object.keys(tmp).length) {
@@ -856,6 +864,7 @@ function mkCheckList(params, init) {
                 }
                 if (allValue.indexOf(theValue)===-1) {
                   allValue.push(theValue)
+                  allTitle.push($data.title)
                 }
               }
             }
@@ -865,6 +874,7 @@ function mkCheckList(params, init) {
         this.hooks.once('set-valid-stat', function (ctx) {
           if (opts.$$id) {
             allValue = []
+            allTitle = []
             getAllValue(ctx, opts.checklistUniqId)
             that.allValue = allValue
             let _value = {
@@ -872,7 +882,8 @@ function mkCheckList(params, init) {
               value: that.currentValue,
               index: that.currentValueIndex,
               tapItem: that.tapItem,
-              allValue: allValue
+              allValue: allValue,
+              allTitle: allTitle
             }
             that._value = _value
             if (that.fromLeaf) {
@@ -1021,6 +1032,7 @@ function mkCheckList(params, init) {
           setTimeout(() => {
             let rootInst = this.getRoot()
             rootInst.tapItem = {
+              checked: true,
               checkedType: opts.checkedType,
               title: this.currentTitle,
               value: this.currentValue
