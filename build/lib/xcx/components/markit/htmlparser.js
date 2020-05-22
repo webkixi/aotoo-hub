@@ -105,10 +105,10 @@ class htmlparser {
         if (ky === 'href') {
           attribs["url"] = attribs[ky];
         }
-        else
-        if (ky === 'src') {
-          attribs["src"] = attribs[ky];
-        }
+        // else
+        // if (ky === 'src') {
+        //   attribs["src"] = attribs[ky];
+        // }
         else {
           if (ky === 'align' && ['td', 'th'].indexOf(name)>-1) {
             let alignStr = attribs[ky]
@@ -139,9 +139,9 @@ class htmlparser {
     if (hasAttr) tag.attr = attr;
     tag.itemClass = tag.itemClass ? name + " " + tag.itemClass : name;
 
-    if (name === "img") {
-      tag.img = attribs.src || "";
-      delete tag.src;
+    if (name === "img" && attribs.src) {
+      tag.img = attribs || "";
+      // delete tag.src;
     }
     
     if (!this._code || name === 'code') {
