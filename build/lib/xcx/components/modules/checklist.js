@@ -498,10 +498,13 @@ function mkCheckList(params, init) {
         let rootInst = this.getRoot()
 
         let $value = this.value
-        let $tmpIndex = $value.indexOf($val)
+        let $tmpValueIndex = $value.indexOf($val)
         let $footer = this.footerInst
 
-        if (opts.checkedType === 1) this.value = [] // 如果是单选，先清空值
+        if (opts.checkedType === 1) {
+          this.value = [] // 如果是单选，先清空值
+          storeValue[this.checklistUniqId] = []
+        }
         if (opts.onlyValid) this.valids = []
         
         if ($val === '9999') {
@@ -526,9 +529,9 @@ function mkCheckList(params, init) {
             if (item.hasClass(checkedClass)) {
               if (opts.checkedType === 2) {
                 hasChecked = false
-                item.removeClass(checkedClass)
-                if ($tmpIndex > -1) {
-                  this.value.splice($tmpIndex, 1) // 移除value
+                item.removeClass(checkedClass + ' valid')
+                if ($tmpValueIndex > -1) {
+                  this.value.splice($tmpValueIndex, 1) // 移除value
                   let $validIndex = this.valids.indexOf(ii)
                   if ($validIndex > -1) {
                     this.valids.splice($validIndex, 1)
@@ -549,6 +552,9 @@ function mkCheckList(params, init) {
             }
           }
         })
+
+        storeValue[this.checklistUniqId] = this.value
+        storeValids[this.checklistUniqId] = this.valids
 
         if ($content && $footer) {
           if (!hasRadio) $footer.fillContent($content)
@@ -580,9 +586,9 @@ function mkCheckList(params, init) {
           let stat = false
           if (data.content) {
             let cklistId = data.content.checklistUniqId
-            if (data.content.value.length) {
-              stat = true
-            }
+            // if (data.content.value.length) {
+            //   stat = true
+            // }
             if (storeValue[cklistId] && storeValue[cklistId].length) {
               stat = true
             }
@@ -620,8 +626,8 @@ function mkCheckList(params, init) {
           }
         }
 
-        storeValue[opts.checklistUniqId] = this.value
-        storeValids[opts.checklistUniqId] = this.valids
+        // storeValue[opts.checklistUniqId] = this.value
+        // storeValids[opts.checklistUniqId] = this.valids
         storeAttrs[opts.checklistUniqId] = data.attr
       },
       onBindSWchange(e, param, inst){
@@ -644,13 +650,15 @@ function mkCheckList(params, init) {
           let $validIdx = this.valids.indexOf($index)
           if ($idx > -1) {
             this.value.splice($idx, 1)
-            storeValue[opts.checklistUniqId] = this.value
+            // storeValue[opts.checklistUniqId] = this.value
           }
           if ($validIdx > -1){
             this.valids.splice($validIdx, 1)
-            storeValids[opts.checklistUniqId] = this.valids
+            // storeValids[opts.checklistUniqId] = this.valids
           }
         }
+        storeValue[this.checklistUniqId] = this.value
+        storeValids[this.checklistUniqId] = this.valids
         let rootInst = this.getRoot()
         rootInst.fromLeaf = true
         rootInst.tapItem = {
@@ -881,7 +889,10 @@ function mkCheckList(params, init) {
         let subValues = []
         function initValidItem(item, val) {
           if (item.content || item.body) {
-            subValues = subValues.concat((item.content&&(item.content.value||[])) || (item.body&&(item.body[0].value||[])) || [])
+            let clid = (item.content||item.body).checklistUniqId
+            let $v = storeValue[clid] || []
+            // subValues = subValues.concat((item.content&&(item.content.value||[])) || (item.body&&(item.body[0].value||[])) || [])
+            subValues = subValues.concat($v)
             if (val) {
               subValues = subValues.map(v=>val+opts.separator+v)
             }
@@ -1091,6 +1102,8 @@ function mkCheckList(params, init) {
               }
             })
             this.value = tmp
+            storeValue[this.checklistUniqId] = this.value
+            // storeValids[this.checklistUniqId] = this.valids
             return tmp
           }
         }
@@ -1110,6 +1123,7 @@ function mkCheckList(params, init) {
                 clearTimeout(timmer)
                 timmer = setTimeout(() => {
                   it.addClass(checkedClass)
+                  it.exec()
                   this.footerInst.fillContent(item.content)
                 }, 17);
               } else {
@@ -1125,7 +1139,9 @@ function mkCheckList(params, init) {
               }
             }
           })
-          storeValids[opts.checklistUniqId] = this.valids
+          storeValue[this.checklistUniqId] = this.value
+          storeValids[this.checklistUniqId] = this.valids
+          // storeValids[opts.checklistUniqId] = this.valids
         })
         this.hooks.emit('set-value-valid', {}, this)
         
