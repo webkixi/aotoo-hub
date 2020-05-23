@@ -804,7 +804,7 @@ function mkCheckList(params, init) {
                 item.removeClass(checkedClass + ' valid')
                 clearRelationValids(item.data, _clearStat)
               })
-              // this.hooks.emit('set-valid-stat', this)
+              this.hooks.emit('set-valid-stat', this)
             }
           }
 
