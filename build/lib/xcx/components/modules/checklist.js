@@ -403,6 +403,7 @@ function mkCheckList(params, init) {
           })
         }
       } else {
+        content.value = []
         storeValids[uniqId] = []
         storeValue[uniqId] = []
         storeAttrs[uniqId] = {}
@@ -414,7 +415,7 @@ function mkCheckList(params, init) {
             item.removeClass(opts.checkedClass + ' valid')
           })
         } else {
-          storeContex[uniqId] = null
+          // storeContex[uniqId] = null
         }
       }
       
@@ -422,6 +423,57 @@ function mkCheckList(params, init) {
         clearRelationValids(it, _clearStat)
       })
     }
+  }
+
+  function reviewAllValueAndValids(params, asset) {
+    let ckId = asset.checklistUniqId
+    let data = asset.data
+    let $value = storeValue[ckId] || []
+    storeValue[ckId] = $value
+    params.forEach(val => {
+      let vals = val.split(opts.separator)
+      let $v = vals.shift()
+      data.forEach(item=>{
+        let $data = item
+        let $content = $data.content || $data.body
+        // if (val.indexOf($data.value) === 0) {
+        if ($v === $data.value) {
+          if ($value.indexOf($v) === -1) {
+            storeValue[ckId] = $value = $value.concat($v)
+          }
+          if ($content && vals.length) {
+            let sonVal = vals.join(opts.separator)
+            reviewAllValueAndValids([sonVal], $content)
+          }
+        }
+      })
+    })
+
+
+
+    // let $value = context.value || []
+    // let ckId = context.checklistUniqId
+    // params.forEach(val=>{
+    //   context.forEach(item => {
+    //     let $data = item.data
+    //     let $content = $data.content || $data.body
+    //     if (val.indexOf($data.value) === 0) {
+    //       if ($value.indexOf($data.value) === -1) {
+    //         context.value = context.value.concat($data.value)
+    //       }
+    //       if ($content) {
+    //         let cklistId = $content.checklistUniqId
+    //         let inst  = storeContex[cklistId]
+    //         let vals = val.split(opts.separator) 
+    //         vals.shift()
+    //         if (vals.length) {
+    //           let sonVal = vals.join(opts.separator)
+    //           reviewAllValueAndValids([sonVal], inst)
+    //         }
+    //       }
+    //     }
+    //   })
+    // })
   }
 
   return {
@@ -525,7 +577,21 @@ function mkCheckList(params, init) {
         }
 
         if (this.valids.indexOf(index) === -1) {
-          this.valids.push(index)
+          let stat = false
+          if (data.content) {
+            let cklistId = data.content.checklistUniqId
+            if (data.content.value.length) {
+              stat = true
+            }
+            if (storeValue[cklistId] && storeValue[cklistId].length) {
+              stat = true
+            }
+          } else {
+            stat = true
+          }
+          if (stat) {
+            this.valids.push(index)
+          }
         }
 
         // 
@@ -700,6 +766,7 @@ function mkCheckList(params, init) {
         }
 
         if (opts.$$id) {
+          this.$$id = opts.$$id
           this.allValue = []
           this.activePage[opts.$$id] = this
           if (opts.id) {
@@ -745,7 +812,14 @@ function mkCheckList(params, init) {
             this.clear(val, true)
           }
 
-          this.review = () => {
+          this.review = (param) => {
+            this.setValue(param)
+          }
+
+          this.setValue = (param) => {
+            if (param) {
+              reviewAllValueAndValids(param, this.getData())
+            }
             this.hooks.emit('set-value-valid', {}, this)
           }
         }
@@ -1021,21 +1095,25 @@ function mkCheckList(params, init) {
           }
         }
 
-        let $value = this.value
+        let $value = storeValue[opts.checklistUniqId] || this.value
         let renderContentStat = false
+        let timmer = null
         this.hooks.once('set-value-valid', function(param) {
           this.forEach((it, ii) => {
             it.removeClass(checkedClass)
             let item = it.data
             if (item.value && $value.indexOf(item.value) > -1) {
               this.setValueValid((item.value||item.title), ii, item)
-              it.addClass(checkedClass)
-  
+              
               if (item.content && this.footerInst) {
                 renderContentStat = true
-                this.footerInst.fillContent(item.content)
+                clearTimeout(timmer)
+                timmer = setTimeout(() => {
+                  it.addClass(checkedClass)
+                  this.footerInst.fillContent(item.content)
+                }, 17);
               } else {
-                
+                it.addClass(checkedClass)
               }
             } else {
               subValues = []
