@@ -199,9 +199,10 @@ function preAdapter(opts, init) {
       hasContent = true
       if (lib.isFunction(item.content)) {
         item.content.checklistUniqId = lib.uuid('ck-list-')
+        item.itemClass = item.itemClass && item.itemClass + ' checklist-category' || 'checklist-category'
+        delete item.idf
+        delete item.parent
       }
-      tmpAry.push(item)
-      return
     }
 
     if (!item.idf && !item.parent) {
@@ -300,7 +301,7 @@ function mkCheckList(params, init) {
     function setDefaultValue(config) {
       if (!config.value || !config.value.length) {
         config.value = [].concat(config.data[0].value)
-        if (config.data[0].content) {
+        if (config.data[0].content && !lib.isFunction(config.data[0].content)) {
           setDefaultValue(config.data[0].content)
         }
       }
@@ -675,6 +676,10 @@ function mkCheckList(params, init) {
         const currentContent = this.currentContent
         let $valids = this.valids
 
+        if (this.value.indexOf(currentValue)===-1) {
+          this.value.push(currentValue)
+        }
+
         this.forEach((item, ii)=>{
           let value = item.data.value
           let validIdx = $valids.indexOf(ii)
@@ -739,7 +744,8 @@ function mkCheckList(params, init) {
           }
         })
         this.valids = $valids
-        storeValids[opts.checklistUniqId] = $valids
+        storeValue[this.checklistUniqId] = this.value
+        storeValids[this.checklistUniqId] = this.valids
       },
       __ready(){
         const that = this
@@ -853,14 +859,13 @@ function mkCheckList(params, init) {
 
         // 设置父级状态
         function setParentStat(theParent) {
+          let pValue = opts.parentValue
+          // let pIndex = opts.parentValueIndex
+          let pIndex = theParent.findIndex({value: pValue})
           if (opts.fromBody) { // 事件是由body中的实例传递过来的
-            let pValue = opts.parentValue
-            // let pIndex = opts.parentValueIndex
-            let pIndex = theParent.findIndex({value: pValue})
             theParent.currentValue = pValue
             theParent.currentValueIndex = pIndex
           }
-
           if (!that.value.length) {
             theParent.validIt(false)
           } else {
