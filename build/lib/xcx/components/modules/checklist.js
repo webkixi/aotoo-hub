@@ -123,7 +123,7 @@ function getChilds(item, datas, opts, index, init) {
     
     // 其他筛选
     checkListOption.parentValue = item.value
-    checkListOption.parentValueIndex = index
+    // checkListOption.parentValueIndex = index
     if (opts.mode === 3) {
       checkListOption.fromBody = true
     }
@@ -855,21 +855,10 @@ function mkCheckList(params, init) {
         function setParentStat(theParent) {
           if (opts.fromBody) { // 事件是由body中的实例传递过来的
             let pValue = opts.parentValue
-            let pIndex = opts.parentValueIndex
+            // let pIndex = opts.parentValueIndex
+            let pIndex = theParent.findIndex({value: pValue})
             theParent.currentValue = pValue
             theParent.currentValueIndex = pIndex
-
-            // let pValue = opts.parentValue
-            // let pIndex = -1
-            // if ( theParent.currentValue !== pValue) {
-            //   theParent.forEach((item, ii)=>{
-            //     if (item.data.value === pValue) {
-            //       pIndex = ii
-            //     }
-            //   })
-            //   theParent.currentValue = pValue
-            //   theParent.currentValueIndex = pIndex
-            // }
           }
 
           if (!that.value.length) {
