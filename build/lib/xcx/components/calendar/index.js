@@ -63,7 +63,13 @@ export const {
 
 } = require('./helper/index')
 
-const getCalendarHeader = require('./helper/calendarheader')
+const {
+  rightYmd
+} = require('./helper/util/index')
+
+const {
+  getNavHeader
+} = require('./helper/calendarheader')
 
 const {
   weeksTils
@@ -98,6 +104,9 @@ function funInParent(ctx, f) {
 function tintSelected(value=[]) {
   let that = this
   let val = value || this.value
+  if (this.coptions.type === 'single') {
+    val = [val[0]]
+  }
   val.forEach(date => {
     if (date) {
       let inst = that.$month(date)
@@ -123,9 +132,9 @@ function tintRange(fromInit) {
   if (!endDate) return  // endDate必须有效磁能渲染range
 
   let startInstId = `${this.calenderId}-${startDate.year}-${startDate.month}`
-  let startInst = activePage.getElementsById(startInstId)
+  let startInst = this.rangeStartMonth || activePage.getElementsById(startInstId)
   let endInstId = `${this.calenderId}-${endDate.year}-${endDate.month}`
-  let endInst = activePage.getElementsById(endInstId)
+  let endInst = this.rangeEndMonth || activePage.getElementsById(endInstId)
 
   if (value[0] && !value[1] && fromInit) {
     setTimeout(() => {
@@ -171,11 +180,11 @@ function tintRange(fromInit) {
     this.hooks.emit('empty-month-checked')
   } else {
     if (startDate.month === endDate.month) {
-      startInst && startInst.tint(value[0], value[1], 'selected', 'end')
+      startInst && startInst.tint(value[0], value[1], 'selected', 'end', fromInit)
     } else {
       if (startInst) {
-        startInst && startInst.tint(value[0], null, 'selected', 'start')
-        endInst && endInst.tint(null, value[1], 'selected', 'end')
+        startInst && startInst.tint(value[0], null, 'selected', 'start', fromInit)
+        endInst && endInst.tint(null, value[1], 'selected', 'end', fromInit)
       }
     }
   }
@@ -186,7 +195,7 @@ function tintRange(fromInit) {
  *  start: null, // 起始日期
  *  end: null, // 结束日期
  *  total: 180, 总共多少天  // 优先于end
- *  mode: 1, mode=1 scroll-view展现 mode=2 swiperview展示, mode=3 swiperview 纵向滚动
+ *  mode: 1, mode=1 scroll-view展现 mode=2 swiperview展示, mode=3 swiperview 纵向滚动 4 无限日历
  *  toolbox: [], // 需要显示的部分 header, footer, curDate, descript, 农历， 节假日
  *  lazy: true, // 默认启用懒加载
  * 
@@ -195,7 +204,9 @@ function tintRange(fromInit) {
  *  type: 'single', // 'range' 连续范围选择, 'multiple'多项选择
  *  rangeCount: 28, // 当type === 'range'时，rangeCount为区间大小，意味着区间允许选择多少天
  *  rangeMode: 1,   // rangeMode=1 仿去哪儿不会隐藏区间外月份   rangeMode=2 仿携程，默认 隐藏可选区间外月份
+ *  rangeTip: [],  // 区选第一次点击，第二次点击附加的描述
  *  tap: callback,  //业务响应事件
+ *  navTap: callback, // 横向滚动时，点击tab项的响应方法
  *  value: [], // 预设日期(一般从后台拿去，用于回显)，将value中的日期高亮显示
  *  rangeValue: []  // range模式下，第二次tap与第一次tap间的日期都会被放入该变量中，在tap的回调方法中可以读取该变量
  *  data: Array ['2020-5-3', '2020-7-9']  // 填充数据，如果没有start，日历组件将会依据data中的填充数据计算total天数并显示
@@ -216,9 +227,11 @@ let defaultConfig = {
   rangeCount: 28,
   rangeMode: 2,
   rangeValue: [],
+  rangeTip: [],
   url: '',
   button: false,
   value: [],
+  alignMonth: false,  // 平均每月日期数为42，swiper时对齐月容器高度
   festival: false,
   // festival: true,
   // festival: ['春节'],
@@ -240,6 +253,17 @@ function adapter(source={}) {
   coptions.mode = parseInt(coptions.mode)
   coptions.rangeCount = parseInt(coptions.rangeCount)
   coptions.rangeMode = parseInt(coptions.rangeMode)
+  if (coptions.rangeTip.length >=2) {
+    coptions.rangeTip = coptions.rangeTip.map(item=>{
+      if (lib.isString(item)) {
+        item = {title: item}
+      }
+      return item
+    })
+  } else {
+    coptions.rangeTip = []
+  }
+
   let {
     $$id,
     header,
@@ -273,6 +297,20 @@ function adapter(source={}) {
   //   toolbox.forEach(key=>tmp[key]=true)
   //   return tmp
   // })()
+
+  if (lib.isFunction(coptions.tap)) {
+    let funcId = lib.suid('calendar_tap_fun_')
+    this[funcId] = coptions.tap
+    coptions.tap = funcId
+    this.coptions.tap = funcId
+  }
+
+  if (lib.isFunction(coptions.navTap)) {
+    let funcId = lib.suid('calendar_navTap_fun_')
+    this[funcId] = coptions.navTap
+    coptions.navTap = funcId
+    this.coptions.navTap = funcId
+  }
 
   try {
     let dateList = null
@@ -308,7 +346,8 @@ function adapter(source={}) {
       }
     }
 
-    // if (!total) throw new Error('必须指定范围天数, total')
+    if (mode === 4) total = 150
+    if (!total) throw new Error('必须指定范围天数, total')
     if (total) {
       this.total = total
       dateList = []
@@ -330,8 +369,23 @@ function adapter(source={}) {
       }
       
       if (mode === 4) {
-        modeConfig = {}
-        total = 5
+        modeConfig = {
+          is: 'swiper',
+          bindchange: '_mode4swiper',
+          bindtransition: '_mode4swiping',
+          circular: true,
+          current: 2
+        }
+        this.m4_ymd = getYmd()
+        this.m4_current = 2
+        let ymd = this.m4_ymd
+        let month = ymd.month-2
+        let year = ymd.year
+        let _month = month <= 0 ? month + 12 : month
+        year = month <= 0 ? year - 1 : year
+        month = _month
+        start = `${year}-${month}-1`
+        total = 150
         this.value = []
       }
   
@@ -393,10 +447,10 @@ function adapter(source={}) {
   
       // 头部
       // 如果是日历为横向swiper滚动，则需要添加一个年月导航
-      header = getCalendarHeader.call(this, mode, {
+      header = getNavHeader.call(this, mode, {
         header, 
         getYmd
-      })
+      }) || null
   
       if (header) header.$$id = this.headerId
       if (footer) footer.$$id = this.footerId
@@ -457,6 +511,9 @@ Component({
       this.calenderId = this.uniqId + '_calender'
       this.value = [] // checked的日期
       this.rendered = false
+      this.currentMonth = null
+      this.rangeStartMonth = null  // range 第一次点击的month实例
+      this.rangeEndMonth = null // range 第二次点击的month实例
       
       // this.activePage.hooks.on('onReady', function() {
       this.hooks.once('render-calendar', function () {
@@ -531,6 +588,15 @@ Component({
             that.hooks.emit('swiper-current', {id: $dl.type['scrollIntoView']})
           }
         }
+
+        if (mode === 4) {
+          let ymd = that.m4_ymd
+          let currentDate = `${ymd.year}-${ymd.month}-${ymd.day}`
+          let monInst = that.getMonthInstance(currentDate)
+          if (monInst && monInst.days.length > 31) {
+            that.setData({ $style: `--append-date-item-height: var(--date-item-height)` })
+          }
+        }
       })
     },
     attached: function() { //节点树完成，可以用setData渲染节点，但无法操作节点
@@ -552,24 +618,13 @@ Component({
       let that = this
 
       // this.activePage.doReady(true)
+      that.hooks.once('done-display', function () {
+        that.hooks.emit('onReady')
+      })
+
       setTimeout(() => {
         that.hooks.emit('render-calendar')
-        that.hooks.emit('onReady')
       }, 100);
-
-      // if (this.activePage.__rendered) {
-      //   setTimeout(() => {
-      //     that.hooks.emit('render-calendar')
-      //     that.hooks.emit('onReady')
-      //   }, 1000);
-      // } else {
-      //   this.activePage.hooks.on('onReady', function () {
-      //     setTimeout(() => {
-      //       that.hooks.emit('render-calendar')
-      //       that.hooks.emit('onReady')
-      //     }, 1000);
-      //   })
-      // }
     },
     getFestival(){
       return getFestival()
@@ -669,6 +724,7 @@ Component({
     },
 
     // 跳转到指定月份
+    // mode 1 2 3 4
     goto(date){
       let coptions = this.coptions
       let mode = coptions.mode
@@ -684,6 +740,13 @@ Component({
         }
       }
 
+      let _date = date
+      if (mode === 4) {
+        let ym = this.m4_ymd
+        _date = `${ym.year}-${ym.month}-1`
+      }
+      this.currentMonth = this.getMonthInstance(_date)
+
       if (mode === 1) {
         let id = `id-${ym}`
         this.hooks.emit('scroll-into-view', {id})
@@ -694,7 +757,11 @@ Component({
       }
     },
 
-    setValue(date, cb){
+    setValue(date, param, cb){
+      if (lib.isFunction(param)) {
+        cb = param
+        param = undefined
+      }
       let coptions = this.coptions
       let type = coptions.type
       let activePage = this.activePage
@@ -704,7 +771,7 @@ Component({
         let curDate = getYmd(date)
         let curStamp = newDate(date).getTime()
         let instId = `${this.calenderId}-${curDate.year}-${curDate.month}`
-        let monInst = activePage.getElementsById(instId)
+        let monInst = this.currentMonth || activePage.getElementsById(instId)
         
         // 单选
         if (type === 'single') {
@@ -735,6 +802,7 @@ Component({
         // 选择范围
         if (type === 'range') {
           if (len === 0 || len === 2) {
+            this.rangeStartMonth = this.currentMonth
             this.value = value = [date]
             len = 1
             this.hooks.emit('empty-month-checked') // 清空所有选择日期
@@ -748,7 +816,7 @@ Component({
                 value[1] = date
               } else {
                 if (curStamp < zeroStamp) {
-                  let theMon = this.$month(zeroStamp)
+                  let theMon = monInst || this.$month(zeroStamp)
                   if (theMon) {
                     theMon.emptyChecked()
                   }
@@ -756,9 +824,8 @@ Component({
                 }
               }
             }
-            // tintRange.call(this, value)
+            // // tintRange.call(this, value)
           }
-
         }
 
         this.value = value
@@ -811,6 +878,7 @@ Component({
       let type = coptions.type
       let tapFun = coptions.tap
       let rangeCount = coptions.rangeCount
+      let rangeTip = coptions.rangeTip
 
       let activePage = this.activePage
       e.currentTarget.dataset.date = param.date
@@ -865,6 +933,7 @@ Component({
             let dayTime = 24*60*60*1000
             let gap = 0
             if (diffStamp > 0) {
+              this.rangeEndMonth = this.currentMonth
               gap = parseInt(diffStamp/dayTime)
               // if (diffStamp%dayTime) gap++
               // if (gap < rangeCount) {
@@ -875,8 +944,9 @@ Component({
               // }
               this.tintRange()
             } else {
+              this.rangeEndMonth = null
               let instId = `${this.calenderId}-${ssDate.year}-${ssDate.month}`
-              let monInst = activePage.getElementsById(instId)
+              let monInst = this.currentMonth || activePage.getElementsById(instId)
               monInst.forEach(item => item.data.date === ss ? that.removeValue(ss, item) : '')
             }
 
@@ -901,20 +971,46 @@ Component({
             }
           }
         }
+
+        if (type === 'range' && rangeTip) {
+          let startTip = rangeTip[0]
+          let endTip = rangeTip[1]
+          let $data = inst.getData()
+          let $dot = $data.dot || []
+
+          if (param.range === 'start') {
+            if (lib.isObject(startTip)) {
+              $dot.push(startTip)
+            }
+          }
+
+          if (param.range === 'end') {
+            if (lib.isObject(endTip)) {
+              $dot.push(endTip)
+            }
+          }
+          inst.update({ dot: $dot })
+        }
+
+
         // if (param.range === 'end') {
         //   this.rangeValue = []
         // }
       }
     },
 
-    // 切换下一月
-    nextMonth(){
-      console.log('nextMonth 尚未完成');
+    // 切换下一月, 只适用于mode4
+    nextMonth(e, param, inst){
+      e.detail.current = this.m4_current + 1
+      this.m4_dx = 1111
+      this._mode4swiper(e)
     },
 
-    // 切换上一月
-    prevMonth(){
-      console.log('prevMonth 尚未完成');
+    // 切换上一月, 只适用于mode4
+    prevMonth(e, param, inst){
+      e.detail.current = this.m4_current - 1
+      this.m4_dx = -1111
+      this._mode4swiper(e)
     },
 
     // 获取月份的实例
@@ -947,7 +1043,7 @@ Component({
       return theDate
     },
 
-    display(){
+    display(fromScroll){
       let that = this
       let activePage = this.activePage
       let zoneItems = this.zoneItems
@@ -976,6 +1072,7 @@ Component({
           xxx.emptyMonth()
         })
       }
+      if (!fromScroll) this.hooks.emit('done-display')
     },
     _bindscroll(e){
       if (this.elements.container) {
@@ -987,7 +1084,81 @@ Component({
         container.scrollLeft = detail.scrollLeft
         container.scrollWidth = detail.scrollWidth
         container.scrollHeight = detail.scrollHeight
-        this.display()
+        this.display(true)
+      }
+    },
+
+    _mode4swiping(e){
+      let dx = e.detail.dx
+      this.m4_dx = dx
+    },
+    _mode4swiper(e){
+      if (e.type === 'change' && Math.abs(this.m4_dx)===1111) return
+      
+      // swiper items = 5的场景
+      this.m4_current = this.m4_current !== undefined ? this.m4_current : 2
+      let ym = (this.m4_currentDate && getYmd(this.m4_currentDate)) || this.m4_ymd
+      if (this.m4_dx > 0) {
+        ym = rightYmd(ym, 1)
+      } else {
+        ym = rightYmd(ym, -1)
+      }
+      let start = `${ym.year}-${ym.month}-1`
+      this.m4_currentDate = start
+      
+      let activePage = this.activePage
+      let detail = e.detail
+      let current = detail.current
+      current = current > 4 ? 0 : current < 0 ? 4 : current
+      let monInst = this.calendar.children[current]
+      let header = monInst.children[0]
+      let navHeader = this.activePage.getElementsById(this.headerId)
+      let navHeaderData = navHeader.getData()
+      let navHeaderTitle = navHeaderData.title
+      let myDate = ym.year + '年' + ym.month + '月'
+      navHeaderTitle[1] = myDate
+      navHeader.update({ title: navHeaderTitle }) 
+      this.currentMonth = monInst
+
+      
+      this.m4_current = current
+      this.m4_ymd = ym
+      
+      let site = 0
+      let ymd = Object.assign({}, ym)
+      if (this.m4_dx > 0) {
+        site = current -3 > -1 ? current - 3 : (current - 3) + 5
+        ymd = rightYmd(ymd, 2)
+      } else {
+        site = current + 3 < 5 ? current + 3 : (current + 3) - 5
+        ymd = rightYmd(ymd, -2)
+      }
+      start = `${ymd.year}-${ymd.month}-1`
+      let count = getMonthCount(ymd.year, (ymd.month - 1), true)
+      let calendarItems = calendarDays.call(this, start, count - 1)
+      let _data = calendarItems[0]['@list']._data
+      let preMonInst = this.calendar.children[site]
+      let preHeader = preMonInst.children[0]
+      preMonInst.year = ymd.year
+      preMonInst.month = ymd.month
+      preHeader.update({ title: ymd.month })
+      preMonInst.fillMonth(_data)
+
+      if (!this.coptions.alignMonth) {
+        if (monInst.days.length > 31) {
+          this.setData({ $style: `--append-date-item-height: var(--date-item-height)` })
+        }else {
+          this.setData({ $style: `--append-date-item-height: 0px;` })
+        }
+      }
+
+      let $ym = monInst.getDate()
+      if ($ym.year === ym.year && $ym.month === ym.month) {
+        if (Math.abs(this.m4_dx)>1000) {
+          this.calendar.update({ 'type.current': current })
+        } else {
+          if (!monInst.lazyDisplay) monInst.fillMonth()
+        }
       }
     },
 
@@ -1002,6 +1173,7 @@ Component({
         let {dataset, showed} = item
         let id = dataset.id  // calendar13_calender-2019-11
         let theMon = activePage.getElementsById(id)
+        this.currentMonth = theMon
         if (!theMon.lazyDisplay) theMon.fillMonth()
         let ym = id.replace(this.calenderId+'-', '')
         if (theMon.days.length > 35) {
