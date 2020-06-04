@@ -292,11 +292,12 @@ function adapter(source={}) {
 
   this.allowBox = toolbox
   start = start && formatDate(start) || null
-  // this.allowBox = (()=>{
-  //   let tmp = {}
-  //   toolbox.forEach(key=>tmp[key]=true)
-  //   return tmp
-  // })()
+  this.fillData = this.fillData.map(item=>{
+    if (lib.isString(item)) {
+      return {date: item}
+    }
+    return item
+  })
 
   if (lib.isFunction(coptions.tap)) {
     let funcId = lib.suid('calendar_tap_fun_')
@@ -330,6 +331,7 @@ function adapter(source={}) {
         start = date
         total = getMonthCount(ymd.year, (ymd.month-1)).length
         total = total - ymd.day
+        if (total === 0) total = 99999
       } else {
         let fdate = start || fillData[0].date   // 在设置data的同时，如果设置了start，则起始日期以start标准
         let ldate = fillData[fillData.length-1].date
@@ -349,7 +351,7 @@ function adapter(source={}) {
     if (mode === 4) total = 150
     if (!total) throw new Error('必须指定范围天数, total')
     if (total) {
-      this.total = total
+      this.total = total === 99999 ? 0 : total
       dateList = []
 
       let modeConfig = {

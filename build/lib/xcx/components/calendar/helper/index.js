@@ -288,7 +288,7 @@ export function oneMonthListConfig(timestart) {
     let others = follow.others
     let nexts = follow.nexts
     let preset = follow.preset
-    preset.pop()
+    // preset.pop()
     preset.forEach(monInstId=>{
       let handle = that.activePage.getElementsById(monInstId)
       handle&&handle.hooks.emit('restore-month-days')
@@ -908,6 +908,7 @@ export function calendarMonths(timestart, end=5) {
  * 通过结算得到结束时间的年月日，用 calendarMonths 方法生成日历
  */
 export function calendarDays(timestart, total=30) {
+  if (total === 99999) total = 0
   let day = 24*60*60*1000
   let startPoint = getYmd(timestart)
   let sp = startPoint
