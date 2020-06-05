@@ -65,12 +65,14 @@ export function completeMonth(timestart) {
   let fillupData = this.fillData
   let defaultDate = this.date // 默认日期显示，item类型
   let validFestival = this.coptions.festival
+  let validLunar = this.coptions.lunar
   let alignMonth = this.coptions.alignMonth
   let dataIndexs = indexData(fillupData)
   // 生成日历数据，上个月的 x 天 + 当月的 [28,29,30,31]天 + 下个月的 y 天 = 42
   let res = [];
   let today = getYmd() // 今天
-  let {year, month, day} = getYmd(timestart)
+  let ymd = getYmd(timestart)
+  let {year, month, day} = ymd
   let todayDate = `${today.year}-${today.month}-${today.day}`
   let todayStamp = newDate(todayDate).getTime()
   let currentMonth = getMonthCount(year, month-1);
@@ -91,8 +93,34 @@ export function completeMonth(timestart) {
   let sDate = getYmd(startDayStamp)
   let startDate = `${sDate.year}-${sDate.month}-${sDate.day}`
   
-  preArr = preArr.map(num=>({title: num, itemClass: 'invalid'}) )
-  nextArr = nextArr.map(num=>({title: num, itemClass: 'invalid'}))
+  let preYmd = rightYmd(ymd, -1)
+  let nextYmd = rightYmd(ymd)
+  preArr = preArr.map(num=>{
+    let lunarDate = $lunar.solar2lunar(preYmd.year, preYmd.month, num)
+    let date = {title: num, itemClass: 'invalid'}
+    if (validLunar) {
+      date.ltitle = lunarDate.lunarFestival || lunarDate.IDayCn
+      date.lunar = lunarDate
+    }
+    if (date.ltitle) {
+      date.dot = date.dot || []
+      date.dot.push({title: date.ltitle, itemClass: 'lunar-date'})
+    }
+    return date
+  })
+  nextArr = nextArr.map(num=>{
+    let lunarDate = $lunar.solar2lunar(nextYmd.year, nextYmd.month, num)
+    let date = {title: num, itemClass: 'invalid'}
+    if (validLunar) {
+      date.ltitle = lunarDate.lunarFestival || lunarDate.IDayCn
+      date.lunar = lunarDate
+    }
+    if (date.ltitle) {
+      date.dot = date.dot || []
+      date.dot.push({title: date.ltitle, itemClass: 'lunar-date'})
+    }
+    return date
+  })
   // preArr = preArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}) )
   // nextArr = nextArr.map(num=>({title: {title: num, itemClass: 'date-item-day'}, itemClass: 'invalid'}))
 
@@ -106,6 +134,11 @@ export function completeMonth(timestart) {
     let num = {title: _num, itemClass: 'date-item-day'}
     if (todayDate === theDate) num.title = '今天'
 
+    if (validLunar && theDate === lunarDate.date) {
+      validFestival = true
+      num.ltitle = lunarDate.lunarFestival || lunarDate.IDayCn
+      num.lunar = lunarDate
+    }
 
     // 是否显示节日
     if (validFestival) {
@@ -130,6 +163,11 @@ export function completeMonth(timestart) {
           }
         }
       }
+    }
+
+    if (num.ltitle) {
+      num.dot = num.dot || []
+      num.dot.push({title: num.ltitle, itemClass: 'lunar-date'})
     }
 
     // let ori = {title: num, timestamp: theStamp, date: theDate, year, month, day: _num, itemClass: 'valid'}
@@ -606,103 +644,6 @@ export function oneMonthListConfig(timestart) {
               }
             }
           })
-
-          // // 全部渲染
-          // if (!spd && !epd) {
-          //   theMon.forEach(item=>{
-          //     let data = item.data
-          //     let date = data.date
-          //     if (date) {
-          //       stat ? that.rangeValue.push(item) : ''
-          //       if (checkType==='range') {
-          //         item.addClass(cls+' range')
-
-          //       } else {
-          //         item.addClass(cls)
-          //       }
-          //     }
-          //   })
-          // }
-
-          // // 区间渲染(当月)
-          // if (spd && epd) {
-          //   let spoint = getYmd(spd)
-          //   let epoint = getYmd(epd)
-          //   theMon.forEach(item => {
-          //     let data = item.data
-          //     let date = data.date
-          //     if (date) {
-          //       let day = data.day
-          //       if (day >= spoint.day && day<=epoint.day) {
-          //         stat ? that.rangeValue.push(item) : ''
-          //         if (day > spoint.day && day < epoint.day) {
-          //           item.addClass(cls+ ' range')
-          //         } else {
-          //           item.addClass(cls)
-          //           let dot = data.dot || []
-          //           if (day === spoint.day && stip) {
-          //             dot.push(stip)
-          //             item.update({dot})
-          //           }
-          //           if (day === epoint.day && etip) {
-          //             dot.push(etip)
-          //             item.update({dot})
-          //           }
-          //         }
-          //       }
-          //     }
-          //   })
-          // }
-
-          // // 渲染start后所有日期
-          // if (spd && !epd){
-          //   let point = getYmd(spd)
-          //   theMon.forEach(item=>{
-          //     let data = item.data
-          //     let date = data.date
-          //     if (date) {
-          //       let day = data.day
-          //       if (day >= point.day) {
-          //         stat ? that.rangeValue.push(item) : ''
-          //         if (day>point.day) {
-          //           item.addClass(cls+' range')
-          //         } else {
-          //           item.addClass(cls)
-          //           if (stip) {
-          //             let dot = data.dot || []
-          //             dot.push(stip)
-          //             item.update({dot})
-          //           }
-          //         }
-          //       }
-          //     }
-          //   })
-          // }
-
-          // // 渲染终止日期前所有日期
-          // if (!spd && epd) {
-          //   let point = getYmd(epd)
-          //   theMon.forEach(item => {
-          //     let data = item.data
-          //     let date = data.date
-          //     if (date) {
-          //       let day = data.day
-          //       if (day <= point.day) {
-          //         stat ? that.rangeValue.push(item) : ''
-          //         if (day<point.day) {
-          //           item.addClass(cls+' range')
-          //         } else {
-          //           item.addClass(cls)
-          //           if (etip) {
-          //             let dot = data.dot || []
-          //             dot.push(etip)
-          //             item.update({dot})
-          //           }
-          //         }
-          //       }
-          //     }
-          //   })
-          // }
         },
 
         // 选中状态处理

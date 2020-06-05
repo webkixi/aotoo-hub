@@ -233,6 +233,7 @@ let defaultConfig = {
   value: [],
   alignMonth: false,  // 平均每月日期数为42，swiper时对齐月容器高度
   festival: false,
+  lunar: false,  // 是否显示农历
   // festival: true,
   // festival: ['春节'],
   // festival: [{title: '春节', content: {dot: ['春节']}}],
@@ -764,6 +765,7 @@ Component({
         cb = param
         param = undefined
       }
+      this.currentMonth = this.getMonthInstance(date)
       let coptions = this.coptions
       let type = coptions.type
       let activePage = this.activePage
