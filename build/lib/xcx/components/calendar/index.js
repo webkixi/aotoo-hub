@@ -517,6 +517,29 @@ Component({
       this.currentMonth = null
       this.rangeStartMonth = null  // range 第一次点击的month实例
       this.rangeEndMonth = null // range 第二次点击的month实例
+
+      // scroll-view跳转
+      this.hooks.once('scroll-into-view', function(param={}){
+        that.calendar.update({ "type.scroll-into-view": param.id })
+      })
+
+      // swiper 跳转
+      this.hooks.once('swiper-current', function(param={}){
+        let id = param.id
+        id = id.replace('id-', '')
+        if (that.header) {
+          that.header.selected(id)
+        }
+
+        let instId = `${that.calenderId}-${id}`
+        let monInst = that.activePage.getElementsById(instId)
+        if (monInst.days.length > 35) {
+          that.setData({ $style: `--append-date-item-height: var(--date-item-height)` })
+        }
+        if (param.index || param.index === 0){
+          that.calendar.update({"type.current": param.index})
+        }
+      })
       
       // this.activePage.hooks.on('onReady', function() {
       this.hooks.once('render-calendar', function () {
@@ -551,46 +574,17 @@ Component({
               item.showed = false
               return item
             })
-            that.display()
           }
-        }).exec()
-
-        // scroll-view跳转
-        that.hooks.once('scroll-into-view', function(param={}){
-          that.calendar.update({ "type.scroll-into-view": param.id })
-        })
-
-        // swiper 跳转
-        that.hooks.once('swiper-current', function(param={}){
-          let id = param.id
-          id = id.replace('id-', '')
-          if (that.header) {
-            that.header.selected(id)
-          }
-
-          let instId = `${that.calenderId}-${id}`
-          let monInst = that.activePage.getElementsById(instId)
-          if (monInst.days.length > 35) {
-            that.setData({ $style: `--append-date-item-height: var(--date-item-height)` })
-          }
-          if (param.index || param.index === 0){
-            that.calendar.update({"type.current": param.index})
-          }
-        })
-
-        // 延时为了不去污染orienDataSource，保证原始数据不被污染
-        let $dl = that.data.$dateList
-        if (mode === 1) {
+        }).exec(()=>{
+          // 延时为了不去污染orienDataSource，保证原始数据不被污染
+          let $dl = that.data.$dateList
           if ($dl.type['scrollIntoView']) {
-            that.hooks.emit('scroll-into-view', {id: $dl.type['scrollIntoView']})
+            let targetDate = $dl.type['scrollIntoView'].replace('id-', '')
+            let index = $dl.type['current']
+            that.goto(targetDate, {index})
           }
-        }
-
-        if (mode === 2 || mode === 3) {
-          if ($dl.type['scrollIntoView']) {
-            that.hooks.emit('swiper-current', {id: $dl.type['scrollIntoView']})
-          }
-        }
+          that.display()
+        })
 
         if (mode === 4) {
           let ymd = that.m4_ymd
@@ -624,12 +618,10 @@ Component({
       that.hooks.once('done-display', function () {
         setTimeout(() => {
           that.hooks.emit('onReady')
-        }, 200);
+        }, 100);
       })
-
-      setTimeout(() => {
-        that.hooks.emit('render-calendar')
-      }, 100);
+      
+      that.hooks.emit('render-calendar')
     },
     getFestival(){
       return getFestival()
@@ -703,11 +695,11 @@ Component({
     // 设置指定日期数据
     renderDate(param){
       this.hooks.emit('update-month-days', param)
-      this.calendar.children.forEach(month=>{
-        if (month.lazyDisplay) {
-          month.fillMonth()
-        }
-      })
+      // this.calendar.children.forEach(month=>{
+      //   if (month.lazyDisplay) {
+      //     month.fillMonth()
+      //   }
+      // })
     },
 
     // 恢复原始月数据
@@ -718,9 +710,9 @@ Component({
           let mon = month.getDate()
           if (mon.year === ymd.year && mon.month === ymd.month) {
             month.restore()
-            if (month.lazyDisplay) {
-              month.fillMonth()
-            }
+            // if (month.lazyDisplay) {
+            //   month.fillMonth()
+            // }
           }
         })
       } else {
@@ -730,20 +722,12 @@ Component({
 
     // 跳转到指定月份
     // mode 1 2 3 4
-    goto(date){
+    goto(date, param={}){
       let coptions = this.coptions
       let mode = coptions.mode
       let allMonths = this.allMonths
       let ymd = getYmd(date)
       let ym = `${ymd.year}-${ymd.month}`
-      let index = null
-      for (let ii=0; ii<allMonths.length; ii++) {
-        let item = allMonths[ii]
-        if (item.indexOf(ym) > -1) {
-          index = ii
-          break;
-        }
-      }
 
       let _date = date
       if (mode === 4) {
@@ -758,6 +742,16 @@ Component({
       }
 
       if (mode === 2 || mode === 3) {
+        let index = param.index !== undefined ? param.index : null
+        if (!index && index !== 0) {
+          for (let ii=0; ii<allMonths.length; ii++) {
+            let item = allMonths[ii]
+            if (item.indexOf(ym) > -1) {
+              index = ii
+              break;
+            }
+          }
+        }
         this.hooks.emit('swiper-current', {index, id: ym})
       }
     },
@@ -1227,7 +1221,7 @@ Component({
         top = top - scrollTop
         bottom = bottom - scrollTop
         if (!showed ) {
-          if (bottom < ctop && bottom > (ctop - cheight) ) {
+          if (bottom <= cbottom && bottom > (ctop - cheight) ) {
             item.showed = true
             zoneItems.push(item)
           } else {
