@@ -584,6 +584,9 @@ Component({
             that.goto(targetDate, {index})
           }
           that.display()
+          if (lib.isFunction(coptions.__ready)) {
+            coptions.__ready.call(that)
+          }
         })
 
         if (mode === 4) {
