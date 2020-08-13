@@ -36,7 +36,10 @@ export function post(url, data={}, param={}, method='POST') {
         reject(e)
       }
     }
+    let header = param.header || {}
+    delete param.header
     postParam = Object.assign(postParam, param)
+    postParam.header = Object.assign(postParam.header, header)
     postParam.fail = postParam.error
     if (postParam.url) wx.request(postParam)
   })
@@ -154,6 +157,42 @@ export function usualKit(ctx, options) {
   return new UsualKit(ctx, options)
 }
 
+export function _cloud (url, param, ctx) {
+  if (lib.isString(url)) {
+    if (/^[\\\/]/.test(url)) url = url.substr(1)
+    let urls = url.split('/')
+    let api = urls[0]
+    let $url = urls.slice(1)
+    if ($url.length) {
+      $url = $url.join('/')
+    } else {
+      $url = 'index'
+    }
+    param.$url = $url
+
+    const re = /(add|update|set|delete|remove)/
+    if (api) {
+      return new Promise((resolve, reject) => {
+        wx.cloud.callFunction({
+          name: api,
+          data: param || {},
+          success: res => {
+            // if (re.test(param.$url)) {
+            //   that.cloud('one/site/upVersion')
+            // }
+            if (ctx) that.hooks.emit('response', param)
+            resolve(res)
+          },
+          fail: err => {
+            if (ctx) that.hooks.emit('cloud_fail')
+            reject(err)
+          }
+        })
+      })
+    }
+  }
+} 
+
 class UsualKit {
   constructor(ctx, options) {
     this.ctx = ctx
@@ -175,7 +214,11 @@ class UsualKit {
 
   // 获取用户是否获得某权限
   auth(scopeType) {
-    const scopes = ['userInfo', 'userLocation', 'address', 'invoiceTitle', 'invoice', 'werun', 'record', 'writePhotosAlbum', 'camera']
+    // const scopes = ['userInfo', 'userLocation', 'address', 'invoiceTitle', 'invoice', 'werun', 'record', 'writePhotosAlbum', 'camera']
+    if(!scopeType) {
+      console.warn('必须指定需要设置的状态');
+      return
+    }
     return new Promise((resolve, rej) =>{
       function erro(err) {
         console.error(err);
@@ -186,8 +229,7 @@ class UsualKit {
           let stat = res.authSetting[`scope.${scopeType}`]
           if (!stat) {
             if (scopeType === 'userInfo') {
-              // return resolve(stat)
-              return erro(stat)
+              return erro(false)
             }
           }
           wx.authorize({
@@ -223,20 +265,21 @@ class UsualKit {
    * inst.cloud('one/user/get', {...})  // 获取用户信息  one 云端接口名
    */
   cloud(url, param={}) {
-    if (lib.isString(url)) {
-      if (/^[\\\/]/.test(url)) url = url.substr(1)
-      let urls = url.split('/')
-      let api = urls[0]
-      let $url = urls.slice(1)
-      if ($url.length) {
-        $url = $url.join('/')
-      } else {
-        $url = 'index'
-      }
-      param.$url = $url
+    return _cloud(url, param, this)
+    // if (lib.isString(url)) {
+    //   if (/^[\\\/]/.test(url)) url = url.substr(1)
+    //   let urls = url.split('/')
+    //   let api = urls[0]
+    //   let $url = urls.slice(1)
+    //   if ($url.length) {
+    //     $url = $url.join('/')
+    //   } else {
+    //     $url = 'index'
+    //   }
+    //   param.$url = $url
 
-      return this.c_fun(api, param)
-    }
+    //   return this.c_fun(api, param)
+    // }
   }
 
   // 调用云方法

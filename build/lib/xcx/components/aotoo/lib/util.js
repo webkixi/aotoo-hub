@@ -23,6 +23,14 @@ export function objTypeof(obj, type) {
   }
 }
 
+export function isBoolean(obj) {
+  return typeof obj === 'boolean'
+}
+
+export function isSymbol(obj) {
+  return typeof obj === 'symbol'
+}
+
 export function isObject(obj) {
   return obj && objTypeof(obj) == 'object' && !isArray(obj)
 }
@@ -41,6 +49,10 @@ export function isFunction(obj) {
   return objTypeof(obj) == 'function'
 }
 
+export function isRegExp(obj) {
+  return obj && Object.prototype.toString.call(obj) === '[object RegExp]';
+}
+
 export function clone(params={}) {
   return deepmerge({}, params)
   // return JSON.parse(JSON.stringify(params))
@@ -56,12 +68,23 @@ export function isEmpty(params) {
     if (Array.isArray(params)) {
       return params.length ? false : true
     } else {
-      for (var key in params) {
-        return false
-      };
+      let objKeys = Object.keys(params)
+      return objKeys.length ? false : true
     }
   }
   return true
+
+  // const $obj = typeof params == 'object' ? true : false
+  // if ($obj) {
+  //   if (Array.isArray(params)) {
+  //     return params.length ? false : true
+  //   } else {
+  //     for (var key in params) {
+  //       return false
+  //     };
+  //   }
+  // }
+  // return true
 }
 
 //计算字符变量的长度，包含处理中文
@@ -98,10 +121,12 @@ export function subcontent(content, len, ellipse) {
 export function formatQuery(url) {
   let aim = url
   let query={};
+  let hasQuery = false
   if (url) {
     let urls = url.split('?')
     aim = urls[0]
     if (urls[1]) {
+      hasQuery = true
       let params = urls[1].split('&')
       params.forEach(param => {
         let attrs = param.split('=')
@@ -112,7 +137,7 @@ export function formatQuery(url) {
       })
     }
   }
-  return {url: aim, query}
+  return {url: aim, query, hasQuery}
 }
 
 export function formatToUrl(url, param={}) {
