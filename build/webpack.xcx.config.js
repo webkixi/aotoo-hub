@@ -19,7 +19,7 @@ class appendCommonFile {
     const {DIST, TYPE} = options
     const isXcx = TYPE == 'mp'
     const isAli = TYPE == 'ali'
-    const globalVar = isXcx ? 'wx' : 'my'
+    const globalVar = isXcx ? 'wx$1' : 'my$1'
     this.globalVar = globalVar
     this.regeneratorRuntimeVar = 'wx.regeneratorRuntime'
     this.prePath = '../'
@@ -31,7 +31,8 @@ class appendCommonFile {
     const options = this.options
     const opts = options.options
     const cloud = opts&&opts.cloud
-    const windowRegExp = new RegExp('window', 'g');
+    // const windowRegExp = new RegExp('window', 'g');
+    const windowRegExp = /window([\.\[])/g;
     const regeneratorRuntimeRegExp = new RegExp('regeneratorRuntime', 'g'); // 支持async，替换全局变量regeneratorRuntime为wx.regeneratorRuntime
 
     compiler.hooks.compilation.tap('wpConcatFile', (compilation, params) => {
