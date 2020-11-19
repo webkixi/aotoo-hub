@@ -1,0 +1,1344 @@
+
+var templates = [
+  'audio',
+  'button',
+  'camera',
+  'canvas',
+  'checkbox',
+  'icon',
+  'image',
+  'input',
+  'liveplayer',
+  'livepusher',
+  'map',
+  'navigator',
+  'progress',
+  'radio',
+  'richtext',
+  'slider',
+  'switch',
+  'text',
+  'textarea',
+  'video',
+  'view',
+
+  // 不一样的解析模板
+  'swiper',
+  'form',
+  'label',
+  'coverview',
+  'coverimage'
+]
+
+function isString(title){
+  return typeof title == 'string'
+}
+
+function objTypeof(obj) {
+  if (obj) return obj.constructor.toLowerCase()
+}
+
+function isObject(obj) {
+  return objTypeof(obj) == 'object'
+}
+
+function isArray(obj) {
+  return objTypeof(obj) == 'array'
+}
+
+function isNumber(obj) {
+  return objTypeof(obj) == 'number' || obj === 0 ? true : false
+}
+
+function isFunction(obj) {
+  return objTypeof(obj) == 'function'
+}
+
+function delItem(ary, target) {
+  var willAry = []
+  ary.forEach(function (item){
+    if (item !== target) {
+      willAry.push(item)
+    }
+  })
+  return willAry
+}
+
+function sClone(obj) {
+  if (obj) {
+    return JSON.parse(JSON.stringify(obj))
+  }
+}
+
+// 简单数组去重，只针对字符串，数字
+// function unique(arr) {
+//   return arr.reduce((prev, cur) => prev.includes(cur) ? prev : [...prev, cur], []);
+// }
+
+function log(what){
+  console.log(JSON.stringify(what))
+}
+
+function equal(item, equalwhat){
+  if (item.title ==  equalwhat) {
+    console.log(item)
+  }
+}
+
+function getItemClass(item) {
+  // var cItemClass = (item.itemClass || item.class || item.className || 'class-name')
+  var cItemClass = (item.itemClass || item.class || item.className)
+  return cItemClass ? 'item '+cItemClass : 'item'
+}
+
+function getItemStyle(item) {
+  var cItemStyle = (item.itemStyle||item.style)
+  return cItemStyle ? cItemStyle : ''
+}
+
+
+function existTemp(item, excludeTmp) {
+  var tmpName = ''
+  var _tmpName
+  var noopRet = {
+    temp: 'noop',
+    data: {}
+  }
+  for (var ii = 0; ii < templates.length; ii++) {
+    var tmp = templates[ii]
+    if (item[tmp]) {
+      tmpName = tmp
+    }
+  }
+
+  if ((isString(excludeTmp) && tmpName)) {
+    if (tmpName == excludeTmp) return noopRet
+  }
+
+  _tmpName = tmpName
+  var data = item[tmpName]
+
+  switch (tmpName) {
+    case 'label':
+      tmpName = 'parse-label'
+      data = item
+      break;
+    case 'form':
+      tmpName = 'parse-form'
+      data = item
+      break;
+    case 'swiper':
+      tmpName = 'parse-swiper'
+      data = item
+      break;
+  }
+
+  return tmpName ? {
+    temp: tmpName,
+    data: data
+  } : noopRet
+}
+
+var innerCount = -1
+function suid(prefix) {
+  innerCount++
+  if (typeof prefix == 'string') {
+    return prefix + innerCount
+  } else {
+    return '_' + innerCount
+  }
+}
+
+function hasEvent(props, key) {
+  var keys = ['url', 'tap', 'catchtap', 'longpress', 'catchlongpress', 'touchstart', 'touchend', 'touchmove', 'touchcancel', 'catchtouchstart', 'catchtouchend', 'catchtouchmove', 'catchtouchcancel']
+  if (props) {
+    if (key == 'tap') {
+      return (props.tap || props.catchtap) ? true : false
+    }
+    else if (key == 'longtap') {
+      return (props.longtap || props.catchlongtap) ? true : false
+    }
+    else if (key == 'longpress') {
+      return (props.longpress || props.catchlongpress) ? true : false
+    }
+    else {
+      if (key) {
+        return props[key] ? true : false
+      } else {
+        var state = false
+        for (var ii=0; ii<keys.length; ii++) {
+          var mykey = keys[ii]
+          if (props[mykey]) {
+            state = true
+            break;
+          }
+        }
+        return state
+      }
+    }
+
+  }
+}
+
+function dataset(item, key) {
+  if (item && item.attr && isObject(item.attr)) {
+    if (key) {
+      if (item.attr[key] || item.attr[key]==0) {
+        return true
+      }
+    } else {
+      return item.attr['id'] || item.attr['data-id'] || 0
+    }
+  } else {
+    return ''
+  }
+}
+
+function dataEvt(item, selects) {
+  var evtStr = ''
+  if (selects && isArray(selects)) {
+    selects.forEach(function(evtName, ii) {
+      if (item[evtName]||(item.type&&item.type[evtName])) {
+        var val = item[evtName]||(item.type&&item.type[evtName])
+        if (isArray(val)) val = val.join(';;')
+        if (isObject(val)) val = '<'+JSON.stringify(val)+'>' // <{ ... }>
+        if ((ii+1)==selects.length) {
+          evtStr += evtName+'='+val
+        } else {
+          evtStr += evtName+'='+val + ','
+        }
+      }
+    })
+  }
+  return evtStr
+}
+
+function getClass(item, prefix){
+  prefix = prefix || 'htitle'
+  item = item || {}
+  var myClass = prefix
+  if (item) {
+    var _class = item.class || item.className || item.itemClass
+    myClass =  _class ? prefix+' '+_class : prefix
+  }
+  return myClass
+}
+
+function formatQuery(url, attrAry) {
+  var aim = url
+  var query={};
+  if (url) {
+    var urls = url.split('?')
+    aim = urls[0]
+    if (urls[1]) {
+      var params = urls[1].split('&')
+      params.forEach(function (param, ii) {
+        var attrs = param.split('=')
+        if (attrs[1] === '__xxx__' && attrAry) {
+          query[attrs[0]] = attrAry[ii]
+        } else {
+          query[attrs[0]] = attrs[1] ? attrs[1] : true
+        }
+      })
+    }
+  }
+  return {url: aim, query: query}
+}
+
+function parseObject(str, type) {
+  var re = getRegExp("\<\{[^\>]*\}\>", "g")
+  var objAry = str.match(re)
+  var targetAry = []
+  var targetObj = {}
+  var flatAry = []
+  str = str.replace(re, '__xxx__')
+  objAry && objAry.forEach(function (it, ii) {
+    var myQuery = {}
+    it = it.replace('<{', '').replace('}>', '').replace(getRegExp('"', 'g'), '')
+    var ary = it.split(',')
+    ary.forEach(function (ele) {
+      var aa = ele.split(':')
+      flatAry.push(aa)
+      myQuery[aa[0]] = aa[1]
+      targetObj[aa[0]] = aa[1]
+    })
+    targetAry.push(myQuery)
+  })
+
+  if (type) {
+    if (type === 'get-pure-array') {
+      return flatAry
+    }
+    return targetAry
+  } else {
+    return targetObj
+  }
+}
+
+var storeEvts = {}
+function rightEvent(dsetEvt) {
+  if (isString(dsetEvt)) {
+    var _id = suid('rightEvent_')
+
+    // if (storeEvts[_id]) {
+    //   return storeEvts[_id]
+    // }
+
+    // 取出字串中的object对象字串，并重新解析为object
+    var targetAry = parseObject(dsetEvt, 'return ary')
+    // var re = getRegExp("\<\{[^\>]*\}\>", "g")
+    // var objAry = dsetEvt.match(re)
+    // var targetAry = []
+    // dsetEvt = dsetEvt.replace(re, '__xxx__')
+    // objAry && objAry.forEach(function (it, ii) {
+    //   var myQuery = {}
+    //   it = it.replace('<{', '').replace('}>', '').replace(getRegExp('"', 'g'), '')
+    //   var ary = it.split(',')
+    //   ary.forEach(function (ele) {
+    //     var aa = ele.split(':')
+    //     myQuery[aa[0]] = aa[1]
+    //   })
+    //   targetAry.push(myQuery)
+    // })
+
+    var rightEvt
+    if (dsetEvt.indexOf('?') > -1) {
+      var myQuery = {}
+      var params = dsetEvt.split('@@')
+      var evtType = params[0]
+      dsetEvt = params[1]
+      var evts = dsetEvt.split(',')
+      evts.forEach(function (item) {
+        if (item) {
+          var its = item.split('=')
+          var itName = its.splice(0, 1)
+          var itQuery = its.join('=')
+          var evtObj = formatQuery(itQuery, targetAry)
+          myQuery[itName] = {
+            fun: evtObj.url,
+            param: evtObj.query,
+          }
+        }
+      })
+      rightEvt = myQuery[evtType] || {fun: '', param: {}}
+      rightEvt.allParam = myQuery
+    } else {
+      dsetEvt = dsetEvt.replace('@@', '?').replace(getRegExp(",", "g"), '&')
+      var evtObj = formatQuery(dsetEvt, targetAry)
+      var evtType = evtObj.url
+      var evtQuery = evtObj.query
+      var evtSelect = evtQuery[evtType]
+      var selObj = formatQuery(evtSelect)
+      var selFun = selObj.url
+      var selParam = selObj.query
+      rightEvt = {
+        fun: selFun,
+        param: selParam,
+        allParam: evtQuery
+      }
+    }
+    // storeEvts[_id] = rightEvt
+    return rightEvt || {}
+  }
+}
+
+// slip props
+
+// [20, 'u', 120]
+// [20, 'n', 120]
+// [20, '<', 120]
+// [20, '>', 120]
+// [20, '<>', 120]
+// [20, 'un', 120]
+// [20, 'un<>', 120]
+// [0, '@', 0]
+
+var tpos = {
+  instance: undefined,
+  start: { x: 0, y: 0, timeStamp: 0 },
+  // btns：有多少个附加按钮用于计算宽度
+  // inst 当前子项的实例
+  current: {x: 0, y: 0, pos: 0, timeStamp: 0, index: -1, btns: 0, inst: null}, 
+  distance: 0,
+  events: {},
+  moving: false,    // touchmove触发状态
+  endTouch: false,  // touchend触发状态
+  timeStamp: {
+    gap: 500,
+    start: 0,
+    end: 0
+  },
+  _siblingIds: [],
+  tops: null,  // top值合集
+  _tops: null,  // 上一次top值合集
+  lefts: null,  // left值合集
+  _lefts: null  // 上一次left值合集
+}
+
+var globleVar = {
+  touchoption: {}
+}
+
+var touchMethods = ['touchstart', 'touchmove', 'touchend']
+var catchTouchMethods = ['catchtouchstart', 'catchtouchmove', 'catchtouchend']
+function isFakeEvent(allParam) {
+  var isFake = true
+  for (var ii=0; ii<touchMethods.length; ii++) {
+    var mtd = allParam[ii]
+    if (mtd) {
+      isFake = false
+      break;
+    }
+  }
+  for (var ii = 0; ii < catchTouchMethods.length; ii++) {
+    var mtd = allParam[ii]
+    if (mtd) {
+      isFake = false
+      break;
+    }
+  }
+
+  if (allParam.__slip) {
+    isFake = false
+  }
+  return isFake
+}
+
+function merge(a, b) {
+  var re = getRegExp("([^:,\}\{:]*):", "g")
+  var bstr = JSON.stringify(b).replace(getRegExp('"', "g"), '')
+  var keys = bstr.match(re)
+  keys.forEach(function(_key) {
+    var key = _key.replace(':', '')
+    if (b[key] || b[key]!==undefined) {
+      a[key] = b[key]
+    }
+  })
+  return a
+}
+
+function optionObserver(newValue, oldValue, ownerInstance, instance) {
+  globleVar.touchoption = merge(globleVar.touchoption, newValue)
+  globleVar.oldTouchoption = oldValue
+  if (newValue.ssliderAixs) {
+    globleVar.ssliderAixs = instance
+  }
+  if (newValue.sslider) {
+    globleVar.sslider = globleVar.sslider || {}
+  }
+  if (newValue.navpad) {
+    globleVar.navpad = globleVar.navpad || {}
+  }
+  if (newValue.slip) {
+    globleVar.listSlip = globleVar.listSlip || {}
+  }
+  if (isObject(newValue.navball)) {
+    tpos.current.navballStartX = newValue.navball.start.x
+    tpos.current.navballStartY = newValue.navball.start.y
+    instance.setStyle('transform: translate3d(' + newValue.navball.x + 'px, ' + newValue.navball.y + 'px, 0)')
+  }
+}
+
+function initTouchEnv(e, ins, dsetEvt) {
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  
+  var tmp = rightEvent(dsetEvt)
+  var allParam = tmp.allParam
+  if (allParam) {
+    tpos.events.tap = allParam._tap ? allParam._tap : allParam.tap ? allParam.tap : undefined
+    tpos.events.catchtap = allParam._aim ? allParam._aim : allParam._catchtap ? allParam._catchtap : allParam.catchtap ? allParam.catchtap : undefined
+    tpos.events.longpress = allParam._longpress ? allParam._longpress : allParam.longpress ? allParam.longpress : undefined
+    tpos.events.catchlongpress = allParam._catchlongpress ? allParam._catchlongpress : allParam.catchlongpress ? allParam.catchlongpress : undefined
+    tpos.events.longtap = allParam._longtap ? allParam._longtap : allParam.longtap ? allParam.longtap : undefined
+    tpos.events.catchlongtap = allParam._catchlongtap ? allParam._catchlongtap : allParam.catchlongtap ? allParam.catchlongtap : undefined
+
+    tpos.events.touchstart = allParam.touchstart || allParam.catchtouchstart
+    tpos.events.touchmove = allParam.touchmove || allParam.catchtouchmove
+    tpos.events.touchend = allParam.touchend || allParam.catchtouchend
+    tpos.events.touchcancel = allParam.touchcancel || allParam.catchtouchcancel
+
+    if (allParam.__drop && (e.type === 'touchstart' || e.type ==='touchend')) {
+      allParam.__drop.gap = allParam.__drop.gap ? parseInt(allParam.__drop.gap) : 0
+      var option = allParam.__drop
+      var wid = parseInt(option.width.replace('px', ''))
+      var hgt = parseInt(option.height.replace('px', ''))
+      var gap = option.gap
+
+      var allInst = ins.selectAllComponents('.'+allParam.__drop.itemClass)
+      var ary = []
+      var aryLeft = []
+      var insts = []
+      allInst.forEach(function(item, ii) {
+        var ds = item.getDataset()
+        var id = ds.id, treeid = ds.treeid, top = ds.top, left = ds.left, right = ds.right, bottom = ds.bottom, widht = ds.width, height = ds.height
+        ary.push({id: id, val: top, index: ii})
+        aryLeft.push({id: id, val: left, index: ii})
+        item.id = ds.id
+        insts.push(item)
+      })
+
+      tpos.tops = ary
+      tpos.lefts = aryLeft
+      tpos.allInst = insts  // 子元素集合
+
+      if (tpos.tops) {
+        if (!tpos._tops) { // 第一次_tops为null
+          tpos._tops = tpos._tops || tpos.tops
+        }
+      }
+      if (tpos.lefts) {
+        if (!tpos._lefts) { // 第一次_lefts为null
+          tpos._lefts = tpos._lefts || tpos.lefts
+        }
+      }
+    }
+  }
+  return tmp
+}
+
+function chooseTouchFun(e, ins, stopPropagation) {
+  var evtType = e.type
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var dsetEvt = e.type + '@@' + dataset['evt']
+  var slipObj = {}
+
+  tpos.events = {}
+
+  var tmp = initTouchEnv(e, ins, dsetEvt)
+  var allParam = tmp.allParam
+  
+  if (allParam) {
+     e.__query = tmp.param
+     tpos.__allParam = tpos.__allParam || allParam
+     tpos._allParam = tpos._allParam || sClone(tpos.__allParam)
+     switch (evtType) {
+       case 'touchstart':
+         tStart(e, slipObj, ins, stopPropagation)
+         break;
+       case 'touchmove':
+         tMove(e, slipObj, ins, stopPropagation)
+         break;
+       case 'touchend':
+         tEnd(e, slipObj, ins, stopPropagation)
+         break;
+     }
+  } else {
+    return true
+  }
+}
+
+function iMethod(e, ins) {
+  chooseTouchFun(e, ins)
+}
+
+function ciMethod(e, ins) {
+  chooseTouchFun(e, ins, 'catch')
+}
+
+function setStyle(inst, distance, distanceY) {
+  tpos.distance = distance
+  inst.setStyle('transform: translate3d('+distance+'px, '+distanceY+'px, 0)')
+}
+
+function tStart(e, slip, ins, stopPropagation) {
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var treeid = dataset.treeid
+  var param = e.__query
+  var allParam = tpos.__allParam
+  var target = e.changedTouches[0]
+  var pageX = target.pageX
+  var pageY = target.pageY
+  tpos.timeStamp.start = e.timeStamp
+  tpos.endTouch = false
+  tpos.moving = false
+
+  var cb = param.cb
+
+  tpos.start.x = parseInt(pageX)
+  tpos.start.y = parseInt(pageY)
+  tpos.start.timeStamp = e.timeStamp
+
+  if (globleVar.touchoption) {
+    if (globleVar.touchoption.navball) navballStart(e, ins)
+    if (globleVar.touchoption.sslider) ssliderStart(e, ins)
+    if (globleVar.touchoption.navpad) navpadStart(e, ins)
+    if (globleVar.touchoption.slip) slipStart(e, ins)
+    if (globleVar.touchoption.followTouch) {  // 任何item有此属性都设置其跟随手指
+      if (!globleVar.followTouch) {
+        globleVar.followTouch = {
+          start: { x: tpos.start.x, y: tpos.start.y, timeStamp: e.timeStamp },
+          end: { }, 
+          current: { }
+        }
+      } else {
+        globleVar.followTouch.start = {x: tpos.start.x, y: tpos.start.y, timeStamp: e.timeStamp}
+      }
+    }
+  }
+  
+
+  // 响应js的touchstart方法
+  var tevent = tpos.events.touchstart
+  if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
+    stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
+  }
+
+  // 模拟longpress
+  if (!tpos.moving) {
+    if (tpos.events.longpress || tpos.events.catchlongpress) {
+      var targetTimeStamp = e.timeStamp + tpos.timeStamp.gap
+      var ts = e.timeStamp
+      var newE = JSON.parse(JSON.stringify(e))
+      newE.type = 'longpress'
+      newE.__stopPropagation = tpos.events.catchlongpress ? true : false
+      
+      function endPoint(params) {
+        if (ts<targetTimeStamp) {
+          if (!tpos.endTouch) ins.requestAnimationFrame(endPoint)
+          ts+=17
+        } else {
+          if (!tpos.moving) {
+            callMethod(newE, ins)
+          }
+        }
+      }
+      ins.requestAnimationFrame(endPoint)
+    }
+  }
+}
+
+function tMove(e, slip, ins, stopPropagation) {
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var treeid = dataset.treeid
+  var param = e.__query
+  var allParam = tpos.__allParam
+  var cb = param.cb
+
+  // var allInst = ins.selectAllComponents(find)
+  var inst = e.instance
+  var target = e.changedTouches[0]
+  var pageX = target.pageX
+  var pageY = target.pageY
+  var startX = tpos.start.x
+  var startY = tpos.start.y
+  var diffX = pageX - startX
+  var diffY = pageY - startY
+  var absDiffx = Math.abs(diffX)
+  var absDiffy = Math.abs(diffY)
+
+  tpos.moving = true
+  tpos.current.x = parseInt(pageX)
+  tpos.current.y = parseInt(pageY)
+
+  if (globleVar.touchoption) {
+    if (globleVar.touchoption.navball) navballMove(e, ins)
+    if (globleVar.touchoption.sslider) ssliderMove(e, ins)
+    if (globleVar.touchoption.navpad) navpadMove(e, ins)
+    if (globleVar.touchoption.slip) slipMove(e, ins)
+
+    if (globleVar.touchoption.followTouch) {
+      let startX = globleVar.followTouch.start.x
+      let startY = globleVar.followTouch.start.y
+      let endX = globleVar.followTouch.end.x
+      let endY = globleVar.followTouch.end.y
+      let _diffX = diffX + (globleVar.followTouch.end.diffX || 0)
+      let _diffY = diffY + (globleVar.followTouch.end.diffY || 0)
+      inst.setStyle('transform: translate3d(' + _diffX + 'px, ' + _diffY + 'px, 0)')
+    }
+  }
+  
+  tpos.current.timeStamp = e.timeStamp
+  var tevent = tpos.events.touchmove
+  if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
+    stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
+  }
+}
+
+function slipStart(e, ins) {
+  var id = e.currentTarget.id
+  var currentTarget = e.currentTarget
+  var inst = e.instance
+  var offsetLeft = currentTarget.offsetLeft
+  var offsetTop = currentTarget.offsetTop
+  var changedTouches = e.changedTouches[0]
+  var pageX = changedTouches.pageX
+  var pageY = changedTouches.pageY
+  var listSlip = globleVar.listSlip
+  var slipEnv = globleVar.touchoption.slip
+  var wth = parseInt(slipEnv.menuWidth.replace('px', ''))
+  var count = inst.selectAllComponents('.li-item').length || slipEnv.menuCount
+  var maxDistance = wth*count  // 左移最大距离
+
+  listSlip.start = listSlip.start || {}
+  listSlip.finish = listSlip.finish || {}
+
+  var start = listSlip.start[id] || {}
+  var finish = listSlip.finish[id] || {}
+  var current = listSlip.current || {}
+
+  if (current && current.inst) {
+    if (id !== current.id) {
+      var _id = current.id
+      listSlip.finish[_id] = {
+        diffX: 0,
+        slipOpened: false
+      }
+      current.inst.setStyle('transition: all ease-in-out .3s;transform: translate3d(0, 0, 0)')
+    }
+  }
+
+  start = {
+    x: pageX,
+    y: pageY,
+    pageX: pageX,
+    pageY: pageY,
+    timeStamp: e.timeStamp,
+    offsetLeft: offsetLeft,
+    offsetTop: offsetTop,
+    maxDistance: maxDistance
+  }
+
+  listSlip.start[id] = start
+  e.slipOpened = finish.slipOpened ? true : false
+}
+
+function slipMove(e, ins) {
+  var listSlip = globleVar.listSlip
+  var inst = e.instance
+  var slipEnv = globleVar.touchoption.slip
+  var slipLeft = slipEnv.slipLeft
+
+  var changedTouches = e.changedTouches[0]
+  var currentTarget = e.currentTarget
+  var id = currentTarget.id
+  var start = listSlip.start[id]
+  var finish = listSlip.finish[id] || {}
+  var maxDistance = start.maxDistance
+
+  var pageX = changedTouches.pageX
+  var pageY = changedTouches.pageY
+
+  var diffX = pageX - start.x
+  var diffY = pageY - start.y
+  var absX = Math.abs(diffX)
+  var absY = Math.abs(diffY)
+  
+  var targetX = diffX + (finish.diffX||0)
+
+  if (targetX < -(maxDistance)) {
+    targetX = -(maxDistance)
+  }
+
+  if (slipLeft && absX > absY) {
+    e.slip = true
+    if (targetX<=0) {
+      inst.setStyle('transform: translate3d(' + targetX + 'px, 0, 0)')
+    }
+  }
+
+  listSlip.current = {
+    id: id,
+    inst: inst,
+    x: pageX,
+    y: pageY,
+    diffX: diffX,
+    diffY: diffY
+  }
+}
+function slipEnd(e, ins) {
+  var inst = e.instance
+  var id = e.currentTarget.id
+  var listSlip = globleVar.listSlip
+  var slipEnv = globleVar.touchoption.slip
+  var slipLeft = slipEnv.slipLeft
+
+  var changedTouches = e.changedTouches[0]
+  var currentTarget = e.currentTarget
+
+  var pageX = changedTouches.pageX
+  var pageY = changedTouches.pageY
+
+  var start = listSlip.start[id]
+  var finish = listSlip.finish[id] || {}
+  var maxDistance = start.maxDistance
+
+  var diffX = pageX - listSlip.start[id].x
+  var diffY = pageY - listSlip.start[id].y
+
+  var targetX = diffX + (finish.diffX || 0)
+  var targetY = diffY + (finish.diffY || 0)
+
+  var slipOpened = finish.slipOpened
+
+  if (diffX < 0) {
+    if (targetX < -(maxDistance)) {
+      targetX = -(maxDistance)
+      slipOpened = true
+    } else {
+      var absX = Math.abs(diffX)
+      if (absX < (maxDistance/2)) {
+        targetX = 0
+        slipOpened = false
+      } else {
+        targetX = -(maxDistance)
+        slipOpened = true
+      }
+    }
+  } else {
+    targetX = 0
+    slipOpened = false
+  }
+  diffX = targetX
+
+  inst.closeIt = function() {
+    if (slipOpened) {
+      slipOpened = false
+      listSlip.finish[id] = {
+        diffX: 0,
+        slipOpened: false
+      }
+      targetX = 0
+      inst.setStyle('transition: all ease-in-out .3s;transform: translate3d(' + targetX + 'px, 0, 0)')
+    }
+  }
+  
+  listSlip.finish[id] = {
+    x: pageX,
+    y: pageY,
+    diffX: diffX,
+    diffY: diffY,
+    slipOpened: slipOpened
+  }
+  e.slip = false
+  inst.setStyle('transition: all ease-in-out .3s;transform: translate3d(' + targetX + 'px, 0, 0)')
+}
+
+// 导航球
+function navballStart(e, ins) {
+  var id = e.currentTarget.id
+  if (id.indexOf('$$navball') === -1) return 
+  var inst = e.instance
+  tpos.current.offLeft = tpos.start.x - e.currentTarget.offsetLeft
+  tpos.current.offTop = tpos.start.y - e.currentTarget.offsetTop
+  tpos.current.navballStartX = tpos.current.navballStartX || tpos.start.x
+  tpos.current.navballStartY = tpos.current.navballStartY || tpos.start.y
+}
+function navballMove(e, ins) {
+  var inst = e.instance
+  var id = e.currentTarget.id
+  if (id.indexOf('$$navball') === -1) return
+  var touchOp = globleVar.touchoption
+  var nbOption = touchOp.navballOption
+  var safeArea = nbOption.safeArea
+  var target = e.changedTouches[0]
+  var current = tpos.current
+  var diffX = target.pageX - tpos.start.x
+  var diffY = target.pageY - tpos.start.y
+  var absX = Math.abs(diffX)
+  var absY = Math.abs(diffY)
+
+  var halfWidth = parseInt(nbOption.width / 2)
+  var halfHeight = parseInt(nbOption.height / 2)
+
+  var edge = {
+    left: safeArea.left,
+    top: safeArea.top,
+    bottom: safeArea.bottom,
+    right: safeArea.right,
+    width: safeArea.width,
+    height: safeArea.height,
+    windowHeight: nbOption.windowHeight,
+    windowWidth: nbOption.windowWidth
+  }
+
+  var navballOffsetX = tpos.current.x - tpos.current.navballStartX
+  var navballOffsetY = (tpos.current.y - tpos.current.navballStartY) + (tpos.current.y - tpos.start.y) * 0.1
+
+  if (
+    (absX > 5 || absY > 5) &&
+    (diffX > 0 && navballOffsetX < edge.right - halfWidth - current.navballStartX || diffX < 0 && navballOffsetX > edge.left + halfWidth - current.navballStartX) &&
+    ((diffY > 0 && navballOffsetY < edge.windowHeight - current.navballStartY - halfHeight) || (diffY < 0 && navballOffsetY > (0 + halfHeight) - current.navballStartY))
+  ) {
+    tpos.current.navballOffsetX = navballOffsetX
+    tpos.current.navballOffsetY = navballOffsetY
+    inst.setStyle('transform: translate3d(' + navballOffsetX + 'px, ' + navballOffsetY + 'px, 0)')
+  }
+}
+function navballEnd(e, ins) {
+  e.currentPosition = tpos.current
+}
+
+// 导航面板
+function navpadStart(e, ins) {
+  var id = e.currentTarget.id
+  if (id.indexOf('$$navpad') === -1) return
+  var currentTarget = e.currentTarget
+  var inst = e.instance
+  var offsetLeft = currentTarget.offsetLeft
+  var offsetTop = currentTarget.offsetTop
+  var changedTouches = e.changedTouches[0]
+  var pageX = changedTouches.pageX
+  var pageY = changedTouches.pageY
+  var navpad = globleVar.navpad
+  // log(globleVar.touchoption.navpad)
+  navpad.start = {
+    x: (navpad.start && navpad.start.x)|| pageX,
+    y: (navpad.start && navpad.start.y) || pageY,
+    pageX: pageX,
+    pageY: pageY,
+    timeStamp: e.timeStamp,
+    offsetTop: offsetTop
+  }
+  e.navpadOpened = navpad.openPad ? true : false
+}
+function navpadMove(e, ins) {
+  var navpad = globleVar.navpad
+  var inst = e.instance
+  var navpadEnv = globleVar.touchoption.navpad
+  var openHeight = navpadEnv.openHeight
+
+  var changedTouches = e.changedTouches[0]
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var id = currentTarget.id
+  if (id.indexOf('$$navpad') === -1) return
+
+  var offsetLeft = currentTarget.offsetLeft
+  var offsetTop = currentTarget.offsetTop
+  var pageX = changedTouches.pageX
+  var pageY = changedTouches.pageY
+
+  var diffX = pageX - navpad.start.x
+  var diffY = pageY - navpad.start.y
+  var realDiffY = pageY - navpad.start.pageY
+  var absY = Math.abs(realDiffY)
+  var diffTs = e.timeStamp - navpad.start.timeStamp
+
+  // console.log(pageY, navpad.start.y);
+
+  navpad.current = {
+    x: pageX,
+    y: pageY,
+    diffX: diffX,
+    diffY: diffY
+  }
+  
+  if (navpad.openPad) {
+    if (realDiffY > 0) {
+      diffY = 'calc('+openHeight+' + ' + realDiffY + 'px)'
+      inst.setStyle('transform: translate3d(0, '+diffY+', 0)')
+    }
+  } else { 
+    if (absY < 300 && realDiffY < 0)  {
+      inst.setStyle('transform: translate3d(0, '+diffY+'px, 0)')
+    }
+  }
+}
+function navpadEnd(e, ins) {
+  var navpad = globleVar.navpad
+  var navpadEnv = globleVar.touchoption.navpad
+  var inst = e.instance
+  var openHeight = navpadEnv.openHeight
+
+  var changedTouches = e.changedTouches[0]
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var id = currentTarget.id
+  if (id.indexOf('$$navpad') === -1) return
+
+  var offsetLeft = currentTarget.offsetLeft
+  var offsetTop = currentTarget.offsetTop
+  var pageX = changedTouches.pageX
+  var pageY = changedTouches.pageY
+
+  var diffX = pageX - navpad.start.x
+  var diffY = pageY - navpad.start.y
+  var absY = Math.abs(diffY)
+  var realDiffY = pageY - navpad.start.pageY
+  var diffTs = e.timeStamp - navpad.start.timeStamp
+
+  if (diffY > 0) {
+    inst.setStyle('transform: translate3d(0, 0, 0)')
+  } else {
+    if (navpad.openPad) {
+      if (realDiffY > 100) {
+        navpad.openPad = false
+        e.navpadOpened = false
+        inst.setStyle('transition: all ease-in-out .3s;transform: translate3d(0, 0, 0)')
+      } else {
+        inst.setStyle('transition: all ease-in-out .3s;transform: translate3d(0, '+openHeight+', 0)')
+      }
+    } else {
+      if (diffY < 0) {
+        if (absY > 60) {
+          navpad.openPad = true
+          e.navpadOpened = true
+          inst.setStyle('transition: all ease-in-out .3s;transform: translate3d(0, '+openHeight+', 0)')
+        } else {
+          inst.setStyle('transition: all ease-in-out .3s;transform: translate3d(0, 0, 0)')
+        }
+      } 
+    }
+  }
+}
+
+
+// 双向选择条
+function ssliderStart(e, ins) {
+  var inst = e.instance
+  var id = e.currentTarget.id
+  if (id.indexOf('$$slider_') === -1) return
+
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var target = e.changedTouches[0]
+  var pageX = target.pageX
+  var pageY = target.pageY
+
+  globleVar.sslider[id] ? globleVar.sslider[id] : globleVar.sslider[id] = { start: {  } }
+  globleVar.sslider[id].start.x = globleVar.sslider[id].start.x || pageX
+  globleVar.sslider[id].start.y = globleVar.sslider[id].start.y || pageY
+
+  var ssliderConfig = globleVar.touchoption.sslider
+  if (ssliderConfig.disable) return 
+  globleVar.sslider.blockSize = ssliderConfig.blockSize
+  globleVar.sslider.halfBlockSize = parseInt(ssliderConfig.blockSize/2)
+  globleVar.sslider.oneStepDraw = false
+}
+function ssliderMove(e, ins) {
+  var inst = e.instance
+  var id = e.currentTarget.id
+  if (id.indexOf('$$slider_') === -1) return
+
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var offsetLeft = currentTarget.offsetLeft
+  var target = e.changedTouches[0]
+  var pageX = target.pageX
+  var pageY = target.pageY
+
+  var ssliderConfig = globleVar.touchoption.sslider
+  if (ssliderConfig.disable) return
+  var rect = ssliderConfig.rect
+  var frontColor = ssliderConfig.frontColor
+  var backColor = ssliderConfig.backColor
+  var left = rect.left
+  var smooth = rect.smooth
+  var right = rect.right
+  var width = rect.width
+  var value = globleVar.sslider.value || ssliderConfig.value  // value是相对定位的值
+  var perWidth = ssliderConfig.perWidth
+  var scalsPx = ssliderConfig.scalsPx
+  var scals = ssliderConfig.scals
+  var edge = globleVar.sslider.edge || ssliderConfig.edge
+  var halfBlockSize = globleVar.sslider.halfBlockSize
+
+  globleVar.sslider[id]['current'] = { x: pageX, y: pageY }
+  var pointX = globleVar.sslider[id]['current'].pointX || left + offsetLeft + halfBlockSize
+  var diffX = globleVar.sslider[id]['current'].x - globleVar.sslider[id]['start'].x
+
+  var valuePx = globleVar.sslider.valuePx || []
+  var valuePx0Index = scals.indexOf(value[0])
+  if (valuePx0Index > -1) {
+    valuePx[0] = scalsPx[valuePx0Index] - left
+  }
+
+  var valuePx1Index = scals.indexOf(value[1])
+  if (valuePx1Index > -1) {
+    valuePx[1] = scalsPx[valuePx1Index] - left
+  }
+
+  if (pointX + diffX < left) {
+    diffX = -(offsetLeft + halfBlockSize)
+  }
+
+  if (pointX + diffX > right) {
+    diffX = width - offsetLeft - halfBlockSize
+  }
+
+  var len = []
+  if (id.indexOf('_1')>-1)  {
+    if (pointX+diffX > edge.right) {
+      diffX = edge.right - left - offsetLeft -halfBlockSize
+    }
+    valuePx[0] = pointX - left + diffX
+
+    scalsPx.forEach(function(px, ii) {
+      var _px = px - left
+      if (offsetLeft + diffX > _px) {
+        if (len.indexOf(ii) === -1) len.push(ii)
+      }
+    })
+    value[0] = scals[len.length]
+  }
+  if (id.indexOf('_2')>-1)  {
+    if (pointX+diffX < edge.left) {
+      diffX = -((offsetLeft - (edge.left - left))+halfBlockSize)
+    }
+    valuePx[1] = offsetLeft + diffX
+
+    scalsPx.forEach(function(px, ii) {
+      var _px = px - left
+      if (valuePx[1] > _px) {
+        if (len.indexOf(_px) === -1) len.push(_px)
+      }
+    })
+    value[1] = scals[len.length]
+  }
+
+  e.sliderDetail = {diffX: diffX, value: value, valuePx: valuePx}
+  inst.setStyle('transform: translate3d(' + diffX + 'px, 0, 0)')
+  var aixsStyle = 'background: linear-gradient(0.25turn, '+frontColor+' '+ valuePx[0] + 'px, '+backColor+' ' +valuePx[0]+ 'px, '+backColor+' '+valuePx[1]+'px, '+frontColor+' '+valuePx[1]+'px'
+
+  if (smooth) {
+    // 实时渲染
+    globleVar.ssliderAixs.setStyle(aixsStyle)
+  } else {
+    // 按刻度渲染
+    var oneStepDraw = parseInt(diffX / perWidth)
+    if (globleVar.sslider.oneStepDraw !== oneStepDraw) {
+      globleVar.sslider.oneStepDraw = oneStepDraw
+      globleVar.ssliderAixs.setStyle(aixsStyle)
+    }
+  }
+}
+function ssliderEnd(e, ins) {
+  var inst = e.instance
+  var id = e.currentTarget.id
+  if (id.indexOf('$$slider_') === -1) return  
+
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var offsetLeft = currentTarget.offsetLeft
+  var target = e.changedTouches[0]
+  var pageX = target.pageX
+  var pageY = target.pageY
+
+  var ssliderConfig = globleVar.touchoption.sslider
+  if (ssliderConfig.disable) return
+  var rect = ssliderConfig.rect
+  var frontColor = ssliderConfig.frontColor
+  var backColor = ssliderConfig.backColor
+  var left = rect.left
+  var right = rect.right
+  var width = rect.width
+  var value = globleVar.sslider.value || ssliderConfig.value
+  var perWidth = ssliderConfig.perWidth
+  var scalsPx = ssliderConfig.scalsPx
+  var scals = ssliderConfig.scals
+  var valuePx = globleVar.sslider.valuePx || []
+  var edge = globleVar.sslider.edge || ssliderConfig.edge
+  var halfBlockSize = globleVar.sslider.halfBlockSize
+
+  var valuePx0Index = scals.indexOf(value[0])
+  if (valuePx0Index > -1) {
+    valuePx[0] = scalsPx[valuePx0Index] - left
+  }
+
+  var valuePx1Index = scals.indexOf(value[1])
+  if (valuePx1Index > -1) {
+    valuePx[1] = scalsPx[valuePx1Index] - left
+  }
+
+  if (!globleVar.sslider[id]['current']){
+    globleVar.sslider[id]['current'] = globleVar.sslider[id]['start']
+  }
+
+  var diffX = globleVar.sslider[id]['current'].x - globleVar.sslider[id]['start'].x
+  var pointX = globleVar.sslider[id]['current'].pointX || left + offsetLeft + halfBlockSize
+  var absX = Math.abs(diffX)
+
+  if (pointX + diffX < left) {
+    diffX = -(offsetLeft + halfBlockSize)
+  }
+
+  if (pointX + diffX > right) {
+    diffX = width - offsetLeft - halfBlockSize
+  }
+
+  if (id.indexOf('_1')>-1)  {
+    if (pointX+diffX > edge.right) {
+      diffX = edge.right - left - offsetLeft - halfBlockSize
+    }
+  }
+  if (id.indexOf('_2')>-1)  {
+    if (pointX+diffX < edge.left) {
+      diffX = -((offsetLeft - (edge.left - left))+halfBlockSize)
+    }
+  }
+
+  var curPointX = pointX + diffX
+  var len = []
+  scalsPx.forEach(function(px, ii) {
+    if (curPointX >= px) {
+      if (len.indexOf(px) === -1) {
+        len.push(px)
+      }
+      if (curPointX > px+(parseInt(perWidth/2))) {
+        if (len.indexOf(scalsPx[ii+1]) === -1) {
+          len.push(scalsPx[ii+1])
+        }
+      }
+    }
+  })
+
+  var endPointX = len[len.length-1]
+  var endValue = scals[len.length-1]
+  globleVar.sslider[id]['current'].pointX = endPointX
+  if (curPointX < endPointX) {
+    diffX += (endPointX - curPointX)
+  } else {
+    diffX -= (curPointX - endPointX)
+  }
+
+  if (id.indexOf('_1') > -1) {
+    value[0] = endValue
+    valuePx[0] = pointX - left + diffX
+    edge.left = endPointX + perWidth
+  }
+
+  if (id.indexOf('_2') > -1) {
+    value[1] = endValue
+    valuePx[1] = endPointX - left
+    edge.right = endPointX - perWidth
+  }
+
+  globleVar.sslider.value = value
+  globleVar.sslider.valuePx = valuePx
+  globleVar.sslider.edge = edge
+  
+  e.sliderDetail = {diffX: diffX, value: value, valuePx: valuePx}
+  inst.setStyle('transform: translate3d(' + diffX + 'px, 0, 0)')
+  var aixsStyle = 'background: linear-gradient(0.25turn, '+frontColor+' ' + valuePx[0] + 'px, '+backColor+' ' + valuePx[0] + 'px, '+backColor+' ' + valuePx[1] + 'px, '+frontColor+' ' + valuePx[1] + 'px'
+  globleVar.ssliderAixs.setStyle(aixsStyle)
+}
+
+function tEnd(e, slip, ins, stopPropagation) {
+  var currentTarget = e.currentTarget
+  var dataset = currentTarget.dataset
+  var treeid = dataset.treeid
+
+  var param = e.__query
+  var allParam = tpos.__allParam
+  var cb = param.cb
+  tpos.timeStamp.end = e.timeStamp
+  var gapTime = tpos.timeStamp.end - tpos.timeStamp.start
+
+  tpos.endTouch = true
+  var myInst = tpos.instance
+  var inst = e.instance
+  var target = e.touches[0] || e.changedTouches[0]
+  var pageX = target.pageX
+  var pageY = target.pageY
+  var startX = tpos.start.x
+  var startY = tpos.start.y
+  var curX = tpos.current.x
+  var curY = tpos.current.y
+  var curPos = tpos.current.pos
+  var diffX = pageX - startX
+  var diffY = pageY - startY
+  var absDiffx = Math.abs(diffX)
+  var absDiffy = Math.abs(diffY)
+
+  // 兼容android
+  if (absDiffx < 2 && absDiffy < 2) {
+    tpos.moving = false
+  }
+
+  if (globleVar.touchoption) {
+    if (globleVar.touchoption.sslider) ssliderEnd(e, ins)
+    if (globleVar.touchoption.navpad) navpadEnd(e, ins)
+    if (globleVar.touchoption.slip) slipEnd(e, ins)
+    if (globleVar.touchoption.navball) {
+      navballEnd(e, ins)
+      if (absDiffx < 5 && absDiffy < 5) {
+        tpos.moving = false
+      }
+    }
+    if (globleVar.touchoption.followTouch) {  // 任何item有此属性都设置其跟随手指
+      globleVar.followTouch.end = {
+        x: pageX,
+        y: pageY,
+        diffX: diffX,
+        diffY: diffY,
+        timeStamp: e.timeStamp
+      }
+    }
+  }
+
+  var isFake = isFakeEvent(allParam)
+  var newE = JSON.parse(JSON.stringify(e))
+  var tevent = tpos.events.touchend
+  if (tevent && (tevent !== 'true' || tevent.fun !== 'true')) {
+    stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
+  }
+
+  // 模拟的longtap tap
+  if (!tpos.moving) {
+    if (gapTime > tpos.timeStamp.gap) {
+      if (tpos.events.longtap || tpos.events.catchlongtap) {
+        newE.type = 'longtap'
+        newE.__stopPropagation = tpos.events.catchlongpress ? true : false
+      }
+    } else {
+      if (tpos.events.tap || tpos.events.catchtap) {
+        newE.type = 'tap'
+        newE.__stopPropagation = tpos.events.catchtap ? true : false
+      }
+    }
+
+    if (newE.type.indexOf('touch') == -1) {
+      if (isFake) {
+        callMethod(newE, ins)
+      } else {
+        if (parseInt(absDiffx) == 0 && parseInt(absDiffy) == 0 ) {
+          callMethod(newE, ins)
+        }
+      }
+    }
+  }
+  
+  tpos.moving = false
+}
+
+function callMethod(e, ins) {
+  e.__stopPropagation ? ins.callMethod('catchItemMethod', e) : ins.callMethod('itemMethod', e)
+}
+
+// 获取item的treeid属性
+function treeid(item) {
+  return item&&item.attr&&(item.attr['data-treeid']||item.attr['treeid'])
+}
+
+module.exports = {
+  hasEvent: hasEvent,
+  dataset: dataset,
+  dataEvt: dataEvt,
+  getClass: getClass,
+
+  isString: isString,
+  isObject: isObject,
+  isArray: isArray,
+  log: log,
+  isFunction: isFunction,
+  isNumber: isNumber,
+  sClone: sClone,
+  delItem: delItem,
+
+  existTemp: existTemp,
+  getItemClass: getItemClass,
+  getItemStyle: getItemStyle,
+
+  optionObserver: optionObserver,
+  iMethod: iMethod,
+  ciMethod: ciMethod,
+  tStart: tStart,
+  tMove: tMove,
+  tEnd: tEnd,
+
+  treeid: treeid
+}

@@ -1,0 +1,32 @@
+// .message-fade-enter
+// 	transform: translate(-50%,-100%)
+
+.msgbox-fade-enter-active 
+	animation: msgbox-fade-in .3s
+
+.msgbox-fade-leave-active 
+	animation: msgbox-fade-out .3s
+
+.msgbox-fade-enter-active-x
+	.item-animation
+		animation: msgbox-fade-in .3s
+
+.msgbox-fade-leave-active-x
+	.item-animation
+		animation: msgbox-fade-out .3s
+
+@keyframes msgbox-fade-in 
+	0% 
+		transform: translate3d(0,-20px, 0);
+		opacity: 0
+	to 
+		transform: translateZ(0, 0, 0);
+		opacity: 1
+
+@keyframes msgbox-fade-out 
+	0% 
+		transform: translateZ(0);
+		opacity: 1
+	to 
+		transform: translate3d(0,-20px,0);
+		opacity: 0

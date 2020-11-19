@@ -1,0 +1,122 @@
+uploaderCfg = {
+  $iconSize: 20px
+}
+ss-uploader($class = '.uploader-wrapper',  $type = 'default', $config = false)
+  cfg = merge({}, uploaderCfg, $config)
+  {$class}
+    ss-row-list('.upload-imglist', {$typ: 1, $marginLeft: 20px, $color: false, $width: false, $activeColor: false})
+    >.addfile
+      display: none
+    .upload-imglist
+      >li
+        border: 1px dashed $color-line-input
+        border-radius: $br
+        display: inline-flex
+        position: relative
+        color: $color-text
+        &:hover
+          border-color: $color-primary
+          color: $color-aux-fail
+          .webuploader-button
+            color: $color-primary
+    .webuploader-button
+      cursor: pointer
+      &:before
+        content: $inputAddIconL
+        font-size: cfg.$iconSize
+        margin: auto
+    .icon-loading
+      color: $color-primary
+      &:after
+        font-size: 24px
+    .upfile
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      opacity: 0
+    .updelete
+      position: absolute
+      top: -8px
+      right: @top
+      font-size: 16px
+      z-index 5
+      &:before
+        content: '\e7ab';
+        background: $color-text
+        width: 16px;
+        height: 16px;
+        border-radius: 100%;
+        color: #fff;
+      &:hover
+        &:before
+          background: $color-aux-fail 
+    .upload-img, .upimg-wrap
+      height: 100%
+      position relative
+      z-index 2
+    .upimg-wrap
+      width: 100%
+      img
+        width 100%
+        height: auto;
+    .upitem
+      z-index 1
+    // .upitem-loading, .upimg-wrap, .webuploader-button
+    .upitem-loading, .webuploader-button
+      display: inline-flex
+    img, .icon-loading
+      margin: auto
+    .addfile
+      position: absolute;
+      opacity: 0;
+      clip: rect(1px,1px,1px,1px);
+    .media-cover
+      position: absolute
+      top: 0
+
+
+uploaderFileCfg = {
+  $space: 10px
+}
+
+ss-uploader-file($class ='.uploaderFiles-wrapper', $config = false)
+  cfg = merge({}, uploaderFileCfg, $config)
+  {$class}
+    .webuploader-button
+      border: 1px solid transparent
+      box-sizing: border-box
+      display: inline-block
+      vertical-align: middle
+      white-space: nowrap
+      text-decoration: none
+      text-align: center
+      border-radius: $btn-radius
+      cursor: pointer
+      {btn-default}
+    ss-btnFunc($class = '.webuploader-button', { $bgc: $btn-bgc-primary, $bc: $btn-bc-primary, $pcolor: $btn-bc-primary})
+    .addfile
+      display: none
+    .upload-tips
+      display: inline-block;
+      color: $color-line-input
+      margin-left: cfg.$space
+    .upload-fileList
+      width: 100%
+    .upload-fileItem
+      background: $color-aux-info
+      height: 34px;
+      line-height: @height
+      padding: 0 cfg.$space
+      margin-top: 6px;
+    .upload-file
+      display: inline-flex
+    .upload-fileName
+      margin-right: cfg.$space
+    .upload-operate
+      margin-left: auto
+    .updelete
+      color: $color-primary
+    
+

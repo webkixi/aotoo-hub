@@ -1,0 +1,215 @@
+
+// @import './routerconfig/routerStyle2'
+
+ss-admin($class= '.routerGroup', $config = admin)
+  //所有内容在一屏内显示
+  /html, body, /.container
+    height 100%
+  {$class}
+    background: $config.$routerBg if $config.$routerBg
+    height: 100%
+    padding: $config.$space
+    ss-display-flex(row nowrap, flex-start)
+    &.active          //缩小版本的menus
+      >.router-menus
+        width: $config.$min-width
+        line-height: $config.$lh-2
+        .item-icon
+          justify-content: center
+        if (!$min-titleShow)
+          .item-title
+            display: none
+        .ul
+          position: absolute;
+          top: 0;
+          left: ($config.$min-width - 5px)
+          padding: 10px 0;
+          white-space: nowrap;
+          z-index: $zidx-h
+          display: none
+          border: 1px solid $tipsx-bc-2
+          ss-arrow-direction(right, $tips-arrow-size, $tipsx-bc-2, $tipsx-bg-2, 20%, -($tips-arrow-size - 4px))
+
+    //菜单部分
+    >.router-menus
+      ss-menus()
+      border-right: $config.$box-line  if ($config.$box-line)
+    //内容部分
+    >.router-page
+      flex: 1
+      padding: $config.$boxSpace
+      background: $config.$mBg if $config.$mBg
+      border-radius: $config.$br  if $config.$br
+      margin-left: 30px
+      overflow: hidden
+    ss-func-customscroll('>.router-page', {$height: auto, $min-height: 300px}) if $config.$scrollBox     //滚动
+    
+
+
+/***************路由菜单部分*********************/
+ss-menus($class='>.hlist', $config = adminMenus)
+  {$class}
+    background: $config.$mBg if $config.$mBg
+    border-radius: $config.$br  if $config.$br
+    box-shadow: $config.$bs  if $config.$bs
+    color: $config.$mColor   if $config.$size
+    transition: 250ms ease;
+    font-size: $config.$size if $config.$size
+    line-height: $config.$lh if $config.$lh
+    padding: $config.$space-b if $config.$space-b
+    if ($config.$mWidth != false)
+      width: $config.$mWidth 
+    else 
+      width: $config.$min-width
+    >.item
+      &:first-child
+        margin-top: 30px
+      &:last-child
+        margin-bottom: 30px
+  .itemroot
+    >.htitle
+      margin: $config.$space
+      line-height: $config.$lh-title
+      font-size: $config.$size-title
+      // margin: $config.$spaceCaption if $config.$spaceCaption
+      if ($config.$mLine)
+        border-bottom: $config.$mLine
+        color: fade-out($config.$mColor, .3)
+        display: block
+      &.active-none
+        ~.ul
+          display: none
+      &.active
+        .item-title
+          &:after
+            transform: rotateZ(180deg)
+        ~.ul
+          height: auto
+          display: block
+  .ul
+    background: $config.$mUlBg
+    border-radius: $config.$br  if $config.$br
+    box-shadow: $config.$bs  if $config.$bs
+    // overflow: hidden
+    min-width: 140px
+    .li-item 
+      cursor: pointer
+      padding-left: $config.$spaceItem
+      color: $color-text-title
+      &:hover, &.active
+        background: $config.$mActiveItemBg if ($config.$mActiveItemBg)
+        color: $color-primary
+      &[data-path*='item-title']
+        
+        font-size: 16px
+        font-weight: bold
+        &:hover
+          color: $color-text-title
+  if ($config.$type == 'activeline') 
+    & {adminMenus.$typeClass}
+      position: relative
+      &:after //线条
+        content: ''
+        width: 2px
+        height: 100%
+        background: transparent
+        position: absolute
+        if (adminMenus.$typeleft)
+          left: 0
+        else
+          right: 0
+        top: 0
+      &.active, &:hover
+        background: fade-out(adminMenus.$mActiveBg, .9)
+        color: adminMenus.$mActiveBg
+      &.active
+        &:after //线条
+          background: adminMenus.$mActiveBg
+
+  if (adminMenus.$isShowIcon)
+    .item-icon
+      ss-display-flex(adminMenus.$isShowIcon)
+      align-items: center if adminMenus.$isShowIcon == column
+      &:before
+        width: 16px
+        content: adminMenus.$iconName if adminMenus.$iconName
+        font-size: 16px
+    .item-title
+      flex: 1
+      
+  if (adminMenus.$isAllShow == false)
+    .ul
+      display: none
+    .item-icon
+      cursor: pointer
+    .item-title
+      ss-display-flex(row nowrap, space-between)
+      margin-left: 10px   if adminMenus.$isShowIcon == row
+      margin-top: 7px   if adminMenus.$isShowIcon == column
+      if (adminMenus.$isShowIconRight)
+        &:after
+          content: '\e64e'
+          transform: rotateZ(0)
+          display: block
+          font-size: 12px
+/***************路由菜单部分 end*********************/
+
+
+/***************路由顶部部分*********************/
+ss-root-header($class= '.root-header', $config = false)
+  cfg = merge({}, rootHeadCfg, $config)
+  {$class}
+    background: cfg.$HeaderBg
+    box-shadow: $box-shadow
+    box-sizing: border-box
+    color: cfg.$HeadColor
+    font-size: cfg.$HeadSize
+    height: cfg.$HeaderHeight
+    position: relative
+    padding: 0 $space
+    transition: 250ms ease;
+
+    .abc
+      color: #999
+
+    .admin-header
+      @extends $flex-nowrap-between-center
+      color: #666
+      &.active
+        .item-logo
+          width: cfg.$logoWidth-2 if cfg.$logoWidth-2
+        .item-logo-title
+          display: none
+    //   &.abc
+    //     color: #333
+    // .abc
+    //   color: #000 
+    //logo
+    .item-logo
+      width: cfg.$logoWidth
+      height: cfg.$HeaderHeight
+      if (cfg.$bgimage)
+        background-image: url(cfg.$bgimage)
+        background-repeat: no-repeat
+        background-position: center center
+        background-size: contain
+        .item-logo-title
+          display: none
+      else 
+        @extends $flex-nowrap-center-center
+        .item-logo-title
+          margin-left: 16px
+          font-size: 36px
+          color: cfg.$HeadColor
+          font-family: monospace
+      
+    .hbody
+      padding-left: $space
+      flex: 1
+      @extends $flex-nowrap-between-center
+    .admin-right
+      @extends $flex-nowrap
+      margin-left: auto
+    .icon-active
+      margin-left: 36px
+/***************路由顶部部分 end*********************/

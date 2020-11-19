@@ -1,0 +1,18 @@
+/*
+  demo 演示，会把所有效果，都放在这里，因此代码量大，具体业务时，可参数以下方式去调用
+
+  $type： 目前有三种状态，1默认弹出提示框，2弹出操作框，3两个框都存在
+  abc 是新的参数，用来修改某个样式的值  
+*/
+abc = false
+
+ss-modal($class: '.ss-modal', $type: false)
+modal-bg('.ss-modal-bg')
+modal-wrap('.ss-modal-wrap')
+
+// ss-modal('.modal', 'tips', abc)
+// ss-modal('.modal', 'options', abc)
+.modal-container
+  &.item-body-mhei
+    .modal-body
+      min-height: 300px

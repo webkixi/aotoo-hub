@@ -1,0 +1,239 @@
+@import '../../config/config'
+@import './_common/*'
+
+inputTipsCfg = {
+  $isShow: false
+  $isNowrap: false                   //true:强制不换行, false: 固定宽度，超过换行
+  $max-width: 100%
+}
+
+.inputGroup
+  margin-bottom: -($inputMb)
+  &[class*='mb']
+    margin-bottom: 0
+  &[class*='flex']
+    ss-display-flex(row wrap)
+  &[class*='column']
+    >.inputItem, >.inputMultiply .inputItem, >.inputItemGroup
+      flex-flow: column
+  &[class*='content-p100']
+    >.inputItem, >.inputMultiply .inputItem
+      >.fkp-content
+        width: 100%
+  &[class*='mb-small']
+    >.inputItem, >.inputMultiply .inputItem
+      margin-bottom: $inputMb2
+  
+
+//多数组
+.inputMultiply
+  &.item-only-title
+    >.inputItem:not(:first-child)
+      .fkp-title
+        opacity 0
+  &.item-only-title-none
+    >.inputItem:not(:first-child)
+      .fkp-title
+        display: none
+  &[class*='item-flex']
+    ss-display-flex()
+    &.between
+      justify-content: space-between
+  &[class*='contaniner-relative']
+    .fkp-contaniner
+      position: relative
+  &[class*='contaniner-flex']
+    .fkp-contaniner
+      ss-display-flex(row nowrap)
+  >.fkp-caption
+    color: $inputTitleColor
+    height: $inputHeight
+    line-height: @height
+    margin-right: $inputTitleMargin
+    min-width: $inputTitleWid
+    ss-display-flex(row)
+
+.inputItem, .radioGroup, .checkboxGroup
+  ss-display-flex(row wrap, flex-start)
+  font-size: $inputSize
+  margin-bottom: $inputMb
+  .fkp-input-required
+    display: inline-block
+    line-height: $inputHeight
+    margin-right: $requiredSpace
+    &:before
+      content: '*'
+      color: $color-aux-fail
+  >.fkp-head
+    @extends .inputMultiply >.fkp-caption
+    // text-align-last: justify
+  >.fkp-content
+    position: relative
+  &.tb
+    flex-flow: column
+  &.fkp-content-flex
+    input[type='text']
+      flex: 1
+    >.fkp-content
+      ss-display-flex(row, flex-start, center)
+  &.fkp-content-flex1
+    .fkp-content
+      flex: 1
+  &.fkp-desc-order
+    .fkp-content
+      ss-display-flex(column)
+      >span 
+        order: 2
+        &.fkp-desc
+          order: 1
+  &.fkp-mb-primary
+    margin-bottom: 15px
+  &.fkp-mb-monir
+    margin-bottom: 10px
+  &.fkp-mb-0
+    margin-bottom: 0
+  &.input-w
+    input,.fkp-content
+      width: 180px
+  &.input-w-b
+    input
+      width: 260px
+  &.input-w-lg
+    input
+      width: 380px
+  &[class*='striping']
+    margin-left: 20px
+    .fkp-content
+      &:before
+        content: '-'
+        color: $borderColor
+        position: absolute
+        left: -15px
+        top: calc(50% - 12px)
+
+ss-tips-form('.fkp-input-error', inputTipsCfg)
+    
+//输入框带实体icon，有点击事件等操作
+.inputItem-icon-del
+  .item-icon-del
+    ss-form-icon({$display: false, $icon: $icon-del, $color: $borderColor,  $isrelative: false})
+  &.active
+    .item-icon-del
+      color: $inputColor
+
+//禁止操作
+.inputItem-disabled
+  color: $borderColor
+
+//自动伸缩  textarea
+.textareaItem-resize
+  .form-textarea
+    resize: auto
+
+//计数器 按钮
+.item-number
+  // absolute: top 0 right 0
+  ss-position(absolute, $top: 0, $right: 0)
+  ss-display-flex(column, center, center)
+  border-left: 1px solid $color-line-input
+  color: $color
+  width: 18px
+  height: 100%
+  >.item
+    flex: 1
+    width: 100%;
+    text-align: center;
+    position: relative
+    &:first-child
+      &:before
+        content: ''
+        position: absolute
+        bottom: 0
+        left 0
+        width: 100%
+        height 1px
+        background: $color-line-input
+    
+//计数器 按钮 左右
+.input-num
+  .item
+    box-sizing: border-box
+    ss-icon(false, 12px, inherit, $isFlex: center)
+    &.disabled
+      color: $color-line-input
+      &:hover
+        cursor: default
+        color: @color
+    &:hover, &.active
+      color: $color-hover
+      cursor: pointer
+  .item-right
+    &:after
+      content: $inputAddIcon
+  .item-left
+    &:after
+      content: $inputMinusIcon
+  &.lr
+    ss-display-flex(row nowrap, flex-start)
+    .item
+      border: 1px solid $color-line-input
+      width: $inputHeight
+      height $inputHeight
+      &:after
+        font-size: 16px
+    .item-left
+      border-right: none
+      border-radius: $br 0 0 $br
+      &:after
+        content: $inputMinusIcon
+    .item-right
+      border-left: none
+      border-radius: 0 $br $br 0
+      &:after
+        content: $inputAddIcon
+    .form_control
+      width: 56px
+      text-align: center
+      border-radius: 0
+
+.input-arrow-lr
+  ss-display-flex(row nowrap, flex-start)
+  .item
+    ss-display-flex(row, center, center)
+    border: 1px solid $color-line-input
+    width: $inputHeight
+    height $inputHeight
+    &:after
+      font-size: 16px
+    &.disabled
+      color: $color-line-input
+      cursor: default
+  .item-left
+    border-right: none
+    border-radius: $br 0 0 $br
+    &:after
+      content: $arrow-left
+  .item-right
+    border-left: none
+    border-radius: 0 $br $br 0
+    &:after
+      content: $arrow-right
+  .form_control
+    width: 132px
+    text-align: center
+    border-radius: 0
+    font-size: 16px
+input,select,textarea
+  placeholder()
+
+.split
+  text-indent: -999em;
+  width: 100%;
+  height: 1px;
+  background: $color-line-input
+  margin-bottom: $inputMb
+
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button
+  -webkit-appearance: none
+input[type='number']
+  -moz-appearance: textfield;

@@ -1,0 +1,105 @@
+  
+/**
+ * 直接写类名就可以执行对应的样式 如: .btn-primary
+ * @type {[type]}
+ * lighten(color, 10%); /* 返回的颜色在'color'基础上变亮10%
+ * darken(color, 10%);  /* 返回的颜色在'color'基础上变暗10%
+ * saturate(color, 10%);   /* 返回的颜色在'color'基础上饱和度增加10%
+ * desaturate(color, 10%); /* 返回的颜色在'color'基础上饱和度降低10% 
+
+  注意： 配制写法与darken（$btn-bgc-default， 15%）,fade-out($btn-bgc-default, .9)不兼容，
+ */
+
+primaryCfg = {
+  $bgc: $btn-bgc-primary
+  $bc: $btn-bc-primary
+  $pcolor: $btn-bc-primary
+}
+minorCfg = {
+  $bgc: $btn-bgc-minor
+  $bc: $btn-bc-minor
+  $pcolor: $btn-bc-minor
+}
+
+greyCfg = {
+  $bgc: $btn-bgc-grey
+  $bc: $btn-bc-grey
+  $pcolor: $color-text-title
+}
+
+//实背景
+ss-btnFunc('.btn-default')
+// ss-btnFunc('.btn-primary', primaryCfg)
+ss-btnFunc('.btn-minor', minorCfg)
+ss-btnFunc('.btn-grey', greyCfg)
+
+
+.ss-button
+  border: 1px solid transparent
+  box-sizing: border-box
+  display: inline-block
+  vertical-align: middle
+  white-space: nowrap
+  text-decoration: none
+  text-align: center
+  border-radius: $btn-radius
+  cursor: pointer
+  {btn-default}
+  &.small
+    {btn-sm}
+  &.larger
+    {btn-lg}
+  &.disabled
+    {btn-disabled}
+    cursor: not-allowed
+  &.round
+    border-radius: $btn-radius-lg
+  // &[class*='flex']
+  //   display: inline-flex
+  [class*='icon-']
+    &+div
+      display: inline-block
+      margin-left: $tips-mg-sm
+  // &.circle
+  //   border-radius: 50%
+  //   padding: 12px
+
+
+
+
+
+
+
+
+
+
+
+
+
+// + prefix-classes('btn-')
+//   //实背景
+//   .default
+//     ss-btnFunc( $btn-radius, $bgc: $btn-bgc-default, $bc: $btn-bc-default, $color: #fff, $hover-bg: darken($btn-bgc-default, 15%))
+//   .primary
+//     ss-btnFunc( $btn-radius, $bgc: $btn-bgc-primary, $bc: $btn-bc-primary, $color: #fff, $hover-bg:  darken($btn-bgc-primary, 15%))
+//   .minor
+//     ss-btnFunc( $btn-radius, $bgc: $btn-bgc-minor, $bc: $btn-bc-minor, $color: #fff, $hover-bg: darken($btn-bgc-minor, 15%))
+    
+//   //背景fff
+//   .fff-default
+//     ss-btnFunc( $btn-radius, $bgc: #fff, $bc: $btn-bc-default, $color: $btn-bc-default, $hover-bg: fade-out($btn-bgc-default, .9))
+//   .fff-minor
+//     ss-btnFunc( $btn-radius, $bgc: #fff, $bc: $btn-bc-minor, $color: $btn-bc-minor, $hover-bg: fade-out($btn-bgc-minor, .9))
+//   .fff-grey
+//     ss-btnFunc( $btn-radius, $bgc: #fff, $bc: $btn-fff-bc-grey, $color: $btn-fff-c-grey, $hover-bg: fade-out($btn-fff-bc-grey, .9))
+
+//   // .icon-normal
+//   //   ss-btnFunc( $btn-radius, $bgc: $btn-bgc-special, $bc: $btn-bc-special, $color: $btn-c-special, $hover-bg: $btn-bgc-special, $disable-bg: $btn-dislabel-color, $disable-c: #fff, $icon: '\e790')
+//   .text
+//     background: transparent
+//     border: none
+//     padding: 0
+//     margin: 0
+//     font-size: inherit
+//     line-height: inherit
+//     color: inherit

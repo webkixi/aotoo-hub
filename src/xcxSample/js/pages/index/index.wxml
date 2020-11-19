@@ -1,0 +1,4 @@
+<view class="container">
+  <ui-item wx:if="{{docConfig}}" item="{{docConfig}}" />
+  <ui-item wx:if="{{htmlConfig}}" item="{{htmlConfig}}" />
+</view>

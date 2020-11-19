@@ -1,0 +1,64 @@
+.router-container {} // 路由容器
+.router-body{} // page容器
+.router-header{} // 页面头部
+.router-footer{} // 页面底部
+.router-menus{} // 页面菜单部分
+
+.router-container
+  width 100%;
+  height 100vh;
+  display flex
+  overflow hidden
+
+  &.router-container-v
+    flex-direction column
+
+  > .router-header
+    width 100%
+    height 60px
+    display: flex;
+    background-color: #fff;
+    box-shadow: 0 0 .75rem #9da5ab;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 2rem;
+    position: relative;
+    z-index: 2;
+
+  > .router-footer
+    width 100%
+    height 50px
+  > .router-body
+    width 100%
+    height calc(100% - 60px)
+    flex 1
+    display flex
+  .router-menus
+    width 26rem
+    height 100%
+    overflow auto
+    font-size: 1rem;
+    background-color: #fff;
+    margin: 0;
+    box-sizing: border-box;
+    border-right: 1px solid #eaecef;
+    overflow-y: auto;
+    display: block;
+    min-width 310px;
+    padding-bottom 2rem
+
+  .router-page
+    width 100%
+    height 100%
+    overflow auto
+    box-sizing border-box
+    padding-top: 1rem
+    .router-item
+      box-sizing border-box
+      padding 0 2rem
+      width 720px
+      height 100%
+      margin 0 auto
+      .page
+        margin-bottom 5rem

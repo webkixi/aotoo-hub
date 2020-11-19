@@ -1,0 +1,212 @@
+/*
+  tipsCfg, tipsArrowCfg是给方法提供的基本配制，cfg = merge({},基础配制，传入的新的配制) 可以得到最终的样式 ====>>第一个参数为{}是因为merge后 基础配制 == cfg
+  注意： bg, bc 都是由 icon color 演变而来的
+*/
+//提示框
+tipsCfg = {
+  $br: $br
+  $bs: false
+  $padding: $tips-padding-sm
+  $size: $tips-size-sm
+  $color: $tips-color
+  $isNowrap: true                   //true:强制不换行, false: 固定宽度，超过换行
+  $max-width: 480px
+  $spc: false                     //是否特殊，为true时白色背景，灰色边框，且没有icon，[下面的参数都无效]; false时，背景与边框由iconColor演变 
+
+  $icon: 'normal'                    //icon是都否存在 存在时分两种情况，一，normal是提示框的定死的，用于表单验证，系统提示，二自定义
+  $icon-color: $tips-icon-color
+  $isFlex: true
+  $icon-size: $tips-icon-size-sm
+  $mg: $tips-mg-sm
+
+  $transform: true
+}
+//带箭头的提示框
+tipsArrowCfg = {
+  $bs: $box-shadow-tips
+  $icon: false                    //icon是都否存在 存在时分两种情况，一，normal是提示框的定死的，用于表单验证，系统提示，二自定义
+  $padding: $tips-padding-sm
+  $size: $tips-size-sm
+  $arrowSize: $tips-size-sm
+  $color: $tips-color
+  $isNowrap: true                   //true:强制不换行, false: 固定宽度，超过换行
+  $fixedWidth: true                 //固定宽度
+  $max-width: 480px
+  $spc: true                     //是否特殊，白色背景，灰色边框，false时，背景与边框由iconColor演变
+
+  //arrow
+  $direction: top
+  $arrowBc: $tipsx-bc
+  $arrowBg: $tipsx-bg
+  $arrowTop: -6px
+  $arrowLeft: 10px
+}
+
+//纯粹
+ss-tips($class = '.ss-tips', $config = false)
+  cfg = merge({}, tipsCfg, $config)
+  {$class}
+    border: 1px solid
+    border-radius: cfg.$br if cfg.$br
+    box-shadow: cfg.$bs if cfg.$bs
+    font-size: cfg.$size
+    font-weight: cfg.$fw if cfg.$fw
+    padding: cfg.$padding
+    if (cfg.$fixedWidth)
+      if (cfg.$isNowrap == true)
+        white-space: nowrap;
+      else 
+        width: cfg.$max-width     //固定宽度，超过换行
+        white-space: normal
+        text-align: left
+    else 
+      max-width: cfg.$max-width     //固定宽度，超过换行
+    if (cfg.$spc == true )       
+      background-color: $tipsx-bg
+      border-color: $tipsx-bc
+      color: $color-text-title
+    else 
+      border-color: lighten(cfg.$icon-color, 70%)
+      background-color: lighten(cfg.$icon-color, 90%)
+      color: cfg.$color
+      if (cfg.$icon == 'normal')     //写死提示框的三种状态
+        ss-icon(false, cfg.$icon-size, false, $isFlex: none, $space: cfg.$mg)
+        &.error
+          background-color: lighten($tips-icon-fail-color, 90%)
+          border-color: lighten($tips-icon-fail-color, 70%)
+          box-shadow: $box-shadow-pop
+          if (cfg.$isFlex == true)
+            ss-display-flex(row, flex-start, center)
+          else 
+            display: block
+          &:before
+            content: $tips-icon-fail
+            color: $tips-icon-fail-color
+        &.warning
+          background-color: lighten($tips-icon-color, 90%)
+          border-color: lighten($tips-icon-color, 70%)
+          box-shadow: $box-shadow-pop
+          if (cfg.$isFlex == true)
+            ss-display-flex(row, flex-start, center)
+          else 
+            display: block
+          &:before
+            content: $tips-icon
+            color: $tips-icon-color
+        &.success
+          background-color: lighten($tips-icon-sucess-color, 90%)
+          border-color: lighten($tips-icon-sucess-color, 70%)
+          box-shadow: $box-shadow-pop
+          if (cfg.$isFlex == true)
+            ss-display-flex(row, flex-start, center)
+          else 
+            display: block
+          &:before
+            content: $tips-icon-sucess
+            color: $tips-icon-sucess-color
+      else if (cfg.$icon != false)
+        ss-icon(cfg.$icon, cfg.$icon-size, cfg.$icon-color, cfg.$mg, $isFlex: cfg.$isFlex, $space: cfg.$mg)
+
+  // else 
+  //   background-color: lighten($color, 90%)
+  //   border: 1px solid lighten($color, 70%)
+
+
+ss-tips-form($class= '.ss-form-tips', $config = false)
+  cfg = merge({}, tipsCfg, $config)
+  ss-tips($class, cfg)
+  {$class}
+    {tips-form}
+    line-height: initial
+    z-index: $zidx-ft
+    white-space: nowrap
+ss-tips-like-form($class= '.form-tips', $class2 = '.ss-form-tips', $config = false)
+  cfg = merge({}, tipsCfg, $config)
+  {$class}
+    position relative 
+    ss-tips-form($class2, cfg)
+
+
+//箭头的方向
+ss-arrow-direction($direction = top, $tips-arrow-size-sm, $tipsx-bc-2, $tipsx-bg-2, $top = calc(100%), $left = 45%, $transform = rotate(-45deg))
+  &:before
+    content: ''
+    position: absolute
+    top: $top
+    left: $left
+    z-index: $zidx-h + 1
+    ss-triangle-hollow($direction, $tips-arrow-size-sm, $tipsx-bc-2, $tipsx-bg-2, $transform)
+//没有icon，但是有箭头  白色背景，灰色边框
+ss-tips-arrow-content($class = '.item-tips', $config = false)
+  cfg = merge({}, tipsArrowCfg, $config)      //合并基础参数与新的参数
+  {$class}
+    ss-arrow-direction(cfg.$direction, cfg.$arrowSize, cfg.$arrowBc, cfg.$arrowBg, cfg.$arrowTop, cfg.$arrowLeft)
+    ss-tips('&', cfg)
+    z-index: $zidx-h
+
+ss-tips-arrow($class = 'ss-tips-arrow', $config = false)
+  cfg = merge({}, tipsArrowCfg, $config)      //合并基础参数与新的参数
+  {$class}
+    display: inline-block
+    position: relative
+    ss-tips-arrow-content('.item-tips', cfg)
+    .item-tips
+      position: absolute
+      left: 0
+      top: "calc(100% + %s)" % (cfg.$size / 2)
+      display: none
+    &:before
+      display: none
+    &:hover, &.active
+      .item-tips
+        display: block
+      &:before
+        display: block
+    &.top
+      .item-tips
+        bottom: calc(100% + 6px)
+        top: inherit
+        &:before
+          bottom: cfg.$arrowTop
+          top: inherit
+          transform: rotate(135deg)
+
+//系统提示，提示语垂直居中
+ss-tips-system($config = false)
+  cfg = merge({}, tipsCfg, $config)
+  .ss-tips
+    z-index: $zidx-h;
+    position: fixed;
+    left: 50%
+    top: 50%
+    transform: translate(-50%, -50%) if cfg.$transform
+    ss-tips('&', cfg)
+
+
+
+
+//一次出现n个提示, 无法垂直居中，居左或右，目前是右
+ss-tips-system2($config = false, $class2 = '.ss-notice')
+  cfg = merge({}, tipsCfg, $config)
+  .ss_notice_wrap
+    z-index: $zidx-h;
+    position: fixed;
+    right: 30px
+    top: 50px
+    // top: 0
+    // bottom: 0
+    ss-display-flex(column, center, center)
+    ss-modal($class2)
+    {$class2}
+      margin-bottom: 20px
+      min-height: auto
+      width: 330px
+      padding: 10px $space-minor
+    .item-body
+      color: $color-text
+    &.left
+      right: initial
+      left: 30px
+    &.bottom
+      top: initial
+      bottom: 50px

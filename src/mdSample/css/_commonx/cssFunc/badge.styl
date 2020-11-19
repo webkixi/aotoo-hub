@@ -1,0 +1,36 @@
+//徽标数
+badgeCfg = {
+  $type: 'num'        //num, dot 数据是圆点
+  $width: 18px
+  $bg: $color-aux-warning
+  $color: #fff
+  $size: 12px
+}
+ss-func-badge($config = false)
+  cfg = merge({}, badgeCfg, $config)
+  .badge-absuolut
+    position: relative
+    .badge-num
+      position: absolute
+      top: 0
+      right: 0
+      transform: translate(50%,-50%)
+  if (cfg.$type == 'num')
+    .badge-num
+      min-width: cfg.$width
+      height: @min-width
+      border-radius: (@min-width / 2)
+      background: cfg.$bg
+      color: cfg.$color if cfg.$color
+      font-size: cfg.$size if cfg.$size
+      text-align: center;
+      font-style: normal;
+      line-height: @min-width
+      padding: 0 5px;
+  else
+    .badge-dot
+      min-width: cfg.$width
+      height: @min-width
+      border-radius: (@min-width / 2)
+      background: cfg.$bg
+      font-style: normal;

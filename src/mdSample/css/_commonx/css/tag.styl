@@ -1,0 +1,89 @@
+  
+/**
+ * 直接写类名就可以执行对应的样式 如: .btn-primary
+ * @type {[type]}
+ * lighten(color, 10%); /* 返回的颜色在'color'基础上变亮10%
+ * darken(color, 10%);  /* 返回的颜色在'color'基础上变暗10%
+ * saturate(color, 10%);   /* 返回的颜色在'color'基础上饱和度增加10%
+ * desaturate(color, 10%); /* 返回的颜色在'color'基础上饱和度降低10% 
+
+  注意： 配制写法与darken（$btn-bgc-default， 15%）,fade-out($btn-bgc-default, .9)不兼容，
+ */
+
+primaryCfg = {
+  $bgc: $btn-bgc-primary
+  $pcolor: $btn-bc-primary
+}
+minorCfg = {
+  $bgc: $btn-bgc-minor
+  $pcolor: $btn-bc-minor
+}
+
+greyCfg = {
+  $bgc: $btn-bgc-grey
+  $pcolor: $color-text
+}
+
+failCfg = {
+  $bgc: $color-aux-fail
+  $pcolor: $color-aux-fail
+}
+
+successCfg = {
+  $bgc: $color-aux-success
+  $pcolor: $color-aux-success
+}
+
+.ss-tag
+  border: 1px solid transparent
+  box-sizing: border-box
+  display: inline-block
+  vertical-align: middle
+  white-space: nowrap
+  text-align: center
+  border-radius: $btn-radius
+  // text-decoration: none
+  // font-style: normal
+  {tag-default}
+  &.larger
+    {tag-lg}
+  &.noborder
+    border: none
+    cursor: pointer
+  &.round
+    border-radius: $btn-radius-lg
+  .item-title
+    &+[class^=icon-]
+      margin-left: $tips-mg-sm
+  [class^=icon-]
+    font-weight: 400
+    line-height: 1
+    vertical-align: baseline
+    // display: inline-block
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+    vertical-align: text-top
+    &+span
+      margin-left: $tips-mg-sm
+  &[class*=ab]     //定位
+    position: absolute
+    top: 5px
+    z-index: 2
+  &[class*=ab-l]
+    left: 0
+  &[class*=sc-r]     //右半圆
+    border-radius: 0 9px 9px 0
+    border: none
+    line-height: 18px
+    padding: 0 10px 0 6px 
+
+
+
+//实背景
+ss-tagFunc('.tag-default')
+ss-tagFunc('.tag-primary', primaryCfg)
+ss-tagFunc('.tag-minor', minorCfg)
+ss-tagFunc('.tag-grey', greyCfg)
+
+ss-tagFunc('.tag-fail', failCfg)
+ss-tagFunc('.tag-success', successCfg)

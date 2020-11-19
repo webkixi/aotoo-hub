@@ -1,0 +1,175 @@
+/*
+  分为modal, pop两类
+  分辨率限高规范： 1366显示最大高度为550px;1440显示最大高度为680px;1920显示最大高度为820px
+  modalTipsCfg, tipsArrowCfg是给方法提供的基本配制，cfg = merge({},基础配制，传入的新的配制) 可以得到最终的样式 ====>>第一个参数为{}是因为merge后 基础配制 == cfg
+*/
+
+$modalMaxHei = 820px
+$modalMaxHei-2 = 680px
+$modalMaxHei-3 = 550px
+
+modalTipsCfg = {
+  $padding: $space
+  $minWid: 380px
+  $maxWid: 520px
+  $lineHeight: 32px                              //32 - 18 = 14 /2 = 7
+}
+modalOptionsCfg = {
+  $padding: $space-minor
+  $minWid: 440px
+  $maxWid: 960px
+  $lineHeight: 50px  
+}
+
+ss-modal-tips($config = false)
+  cfg = merge({}, modalTipsCfg, $config)
+  padding: (cfg.$padding - 7px) cfg.$padding cfg.$padding   // 30- 7 = 23 扣掉文字的行高实际间距
+  min-width: cfg.$minWid
+  max-width: cfg.$maxWid
+  min-height: auto
+  .item-header
+    line-height: cfg.$lineHeight    //32 - 18 = 14 /2 = 7
+    justify-content: center
+  .item-body
+    {config-content}
+  .item-footer
+    margin-top: (cfg.$padding - 7px)      //title 带有行高
+      
+ss-modal-options($config = false)
+  cfg = merge({}, modalOptionsCfg, $config)
+  min-width: cfg.$minWid
+  max-width: cfg.$maxWid
+  margin: auto
+  .item-header
+    line-height: cfg.$lineHeight    //32 - 18 = 14 /2 = 7
+    padding: 0 cfg.$padding
+    border-bottom: 1px solid $color-line
+  .item-body
+    padding: cfg.$padding
+    &.no-padding
+      padding: 0
+  .item-footer
+    justify-content: flex-end
+    padding: 0 cfg.$padding cfg.$padding
+  // .item-close
+  //   line-height: cfg.$lineHeight
+  //   width: @line-height
+  //   text-align: center
+ss-modal($class = '.ss-modal', $type = 'tips', $config = false, $config2 = false)
+  {$class}
+    background: #fff
+    box-shadow: $box-shadow-tips
+    border-radius:$br-lg
+    // max-height: $modalMaxHei
+    max-height: 90%
+    min-height: 140px
+    position: relative
+    ss-display-flex(column)
+    z-index: 2
+    .item-header
+      ss-display-flex(row nowrap, space-between, center)
+      {config-title-modal}
+    .item-body
+      flex: 1
+      ss-func-customscroll('&', {$height: 100%, $min-height: 32px})
+    .item-footer
+      ss-display-flex(row nowrap, center, center)
+      .item-btn
+        &:first-child
+          margin-right: $space-small
+    .item-close
+      ss-icon($icon-del, 16px, $color-text, $activeColor: $color-aux-fail)
+    if ($type == 'options')
+      &.options
+        ss-modal-options($config)
+    else if ($type == 'tips')
+      &.normal
+        ss-modal-tips($config)
+    else 
+      &.normal
+        ss-modal-tips($config)
+      &.options
+        ss-modal-options($config2)
+  
+    // @media (min-width: 1366px) and (max-width: 1440px) 
+    //   max-height: $modalMaxHei-2
+    //   // .modal-scroll
+    //   //   max-height: 566px // 680 - 114 = 566
+    // @media (min-width: 800px) and (max-width: 1366px) 
+    //   max-height: $modalMaxHei-3
+    //   // .modal-scroll
+    //   //   max-height: 436px // 550 - 114 = 436
+
+modal-bg($class = '.ss-bg')
+  {$class}
+    position:fixed
+    top: 0
+    left: @top
+    width: 100%;
+    height: 100%;
+    overflow: hidden
+    background-color: $mask-bg
+    z-index: 1
+    &.transparent
+      background: transparent
+
+modal-wrap($class='.ss-modal-wrap')
+  {$class}      
+    position: fixed
+    top: 0
+    left: @top
+    overflow: auto
+    outline: 0
+    -webkit-overflow-scrolling: touch
+    ss-display-flex(row nowrap, center, center, center)
+    width: 100%;
+    height: 100%;
+    z-index: $zidx-h
+
+popCfg = {
+  $minwidth: 100%
+  $scrollCfg: $inputSelectHei
+  $item: true    //为true时，下面的参数才生效
+
+  $padding: $inputSelectItemPadding     //height=>32
+  $activeBgColor: $color-bg-special
+  $activeColor: $color-primary
+}
+
+
+ss-pop($class = '.ss-popwrap', $config = false)
+  cfg = merge({}, popCfg, $config)
+  if ($scrollCfg != false)
+    ss-func-customscroll($class, {$min-height: auto, $height: cfg.$scrollCfg})
+  {$class}
+    background: #fff
+    box-shadow: $box-shadow-pop
+    border: 1px solid $borderColor
+    border-radius: $br
+    min-width: cfg.$minwidth
+    position: absolute
+    left: 0;
+    z-index: $zidx-ft
+    margin-top: 1px
+    ss-func-customscroll('&', {$height: 286px, $min-height: 32px})
+    &.nodata
+      line-height: 32px
+      color: $color-aux-warning
+    if (cfg.$item != false)
+      display: none
+      .item
+        padding: cfg.$padding
+        line-height: 32px
+        &:hover, &.activated
+          background: cfg.$activeBgColor
+          cursor: pointer
+          color: cfg.$activeColor
+      &.active
+        display: block
+      .hasVal
+        color: $color-primary 
+    else 
+      visibility: hidden      //替换display: none, 否则会影响计算width等
+      &.active
+        visibility: initial
+    

@@ -1,0 +1,376 @@
+//tabs Menus
+listTabsCfg = {
+  $showAni: false
+  $activeClass: '.active'
+  $bg: #fff
+  $height: 40px
+  $padding: false 
+  $sizeM: false
+  $itemPadding: 0 10px
+  $color: #666
+  $activeColor: #000
+  $activeFw: bold
+  $isPadding: true
+  $itemLine: 1px solid $color-line
+  $activeType: 'line'       //line单线条样式， card卡片化样式  tab选项卡样式  lr左右结构带有footer或header
+  //lr时，下面的参数才生效
+  $listMl: 40px
+  $listMW: 55vw
+  $listBtnsWidth: 24px
+  // $itemMg: 40px
+}
+//tabs内容
+boxTabCfg = {
+  $boxBg: #fff
+  $boxPadding: 20px 10px
+  $scrollBoxes: false
+}
+//下线画
+brLineAniCfg =  {
+  $activeClass: '.active'
+  $lineHei: 2px
+  $lineBot: 0
+  $lineColor: $color-hover
+  $lineWid: 100%
+}
+
+abc = {
+  $class: '.active'
+}
+
+$kkk = '.active'
+
+ss-border-ani($class = '.item', $config = false)
+  cfg = merge({}, brLineAniCfg, $config)
+  {$class}
+    position: relative
+    // overflow: hidden
+    &:after
+      content: ''
+      position: absolute
+      bottom: cfg.$lineBot
+      height: cfg.$lineHei
+      border-radius: (@height / 2)
+      width: cfg.$lineWid
+      transform: translateX(@width);
+      transition: transform .5s
+    &{cfg.$activeClass}
+      &:after
+        if (cfg.$lineWid) 
+          left: "calc(50% - %s)" % (cfg.$lineWid / 2)
+        else
+          left: 0
+        transform: translateX(0);
+        background: cfg.$lineColor
+      ~.item
+        &:after
+          left: -(cfg.$lineWid)
+          transform: translateX(@left)
+
+ss-like-tabs($class = '.hlist', $config = {})
+  cfg = merge({}, listTabsCfg, $config)
+  {$class}
+    color: cfg.$color
+    background: cfg.$bg
+    font-size: cfg.$sizeM if cfg.$sizeM
+    padding: cfg.$padding if cfg.$padding != false
+    if (cfg.$activeType == 'tab' || cfg.$activeType == 'card')     //选项卡样式
+      border: cfg.$itemLine if cfg.$itemLine
+      border-bottom: none
+      border-radius: $br
+      margin-bottom: -1px;
+      .item
+        border-bottom: cfg.$itemLine
+        &{cfg.$activeClass}
+          border-bottom-color: #fff
+    if (cfg.$activeType == 'card')
+      .item
+        border-left: 1px solid transparent
+        border-right: @border-left
+        &:first-child
+          border-left: none
+        &{cfg.$activeClass}
+          border-left-color: $color-line
+          border-right-color: @border-left-color
+    if (cfg.$activeType == 'tab')     //选项卡样式
+      display: inline-flex
+      .item
+        border-left: cfg.$itemLine
+        &:first-child
+          border-left: none
+    else 
+      ss-display-flex(row nowrap, flex-start, center)
+    //带footer结构
+    if (cfg.$activeType == 'lr')
+      justify-content: space-between
+      margin-left: cfg.$listMl
+      max-width: cfg.$listMW
+      overflow: hidden
+      >.hlist
+        @extends $flex-nowrap-start-center
+        position: relative
+        z-index: 1
+        width: "calc(100% - %s)" % cfg.$listBtnsWidth
+        overflow: hidden
+        >.item
+          // margin-right: cfg.itemMg
+          position: relative
+          cursor: pointer
+          white-space: nowrap;
+          &:hover
+            .item-icon
+              display: inline-block
+              color: cfg.$activeColor
+              &:hover
+                color: $color-aux-fail
+        .item-icon
+          display: none
+          position: absolute
+          right: -12px
+          color: @color
+          cursor: pointer
+          
+      .item-btns
+        background: #fff;
+        box-shadow: 0px 0px 6px 12px #fff;
+        width: cfg.$listBtnsWidth;
+        flex: 0 0 auto
+        position: relative;
+        z-index: 2;
+
+    a
+      color: @color
+    .item
+      cursor: pointer
+      height: cfg.$height
+      line-height: @height
+      text-align: center
+      if (cfg.$isPadding == true)
+        padding: cfg.$itemPadding
+      else 
+        margin: cfg.$itemPadding
+        &:first-child     //适用只有一行的时候，如果是多行的话，需要再添加个判断
+          margin-left: 0
+      &.disabled
+        cursor: not-allowed
+        color: $color-text-disabled
+        
+      &{cfg.$activeClass}, &:not(.disabled):hover
+        background: #fff
+        color: cfg.$activeColor
+        font-weight: cfg.$activeFw if cfg.$activeFw
+        a
+          color: @color
+    if (cfg.$activeType == 'line' || cfg.$showAni)
+      ss-border-ani($config: cfg.$likeTabsAniCfg)
+      
+
+// $menusScroll treeFooter 或 treeHeader存在时
+
+ss-tabs($class = '.tabsGroup', $menusCfg = false, $boxCfg = false, $menusScroll = false, $width = 500px, $oldMenusScroll = false, $height = false)
+  cfg = merge({}, listTabsCfg, $menusCfg)
+  cfgBox = merge({}, boxTabCfg, $boxCfg)
+  .itemrootCkb
+    display: none
+  {$class}
+    width: $width
+    height: $height if $height
+    >.tabsMenus
+      ss-like-tabs($config: cfg)
+      if (cfg.$activeType == 'line')
+        border-bottom: cfg.$itemLine  if cfg.$itemLine
+        // margin: 0 cfgBox.$boxPadding
+      if ($menusScroll != false)
+        ss-display-flex(row nowrap, space-between, center)
+        .hlist
+          flex-flow: row wrap
+          position: relative
+        ss-tabs-btnx()
+      if ($oldMenusScroll != false)
+        .list-wrap
+          ss-display-flex(row nowrap, space-between, center)
+        .hlist
+          flex-flow: row wrap
+          position: relative
+    >.tabsBoxes
+      background: cfgBox.$boxBg
+      padding: cfgBox.$boxPadding if cfgBox.$boxPadding
+      if (cfgBox.$boxWidth)
+        width: cfgBox.$boxWidth 
+        margin: auto
+      if (cfg.$activeType == 'tab' || cfg.$activeType == 'card')
+        border: cfg.$itemLine
+      if (cfgBox.$scrollBoxes)
+        ss-func-customscroll('&', {$height: calc(100% - 54px), $min-height: 300px})
+      // else 
+      //   padding: cfgBox.$boxPadding
+      
+ss-tabs-btnx()
+  .list-wrap
+    flex: 1
+    overflow: hidden
+  .tabs-btn-cut
+    ss-display-flex(row nowrap, flex-start, center)
+    border: 1px solid $color-line
+    margin-left: 6px
+    if ($height)
+      height: 34px
+    else 
+      flex-grow: 1
+    .ss-item 
+      border-left: @border
+      box-sizing: border-box
+      color: $color
+      width: 32px
+      text-align: center
+      &:first-child
+        border-left: none
+      &.disabled
+        color: $color-line-secondary
+        cursor: not-allowed
+
+
+
+// listTabCfg = {
+//   $algin: flex-start
+//   $bg: #fff
+//   $border: 1px solid $color-line
+//   $size: 16px
+//   $color: $color-text
+//   $activeColor: $color-primary 
+//   $padding: false
+//   $firstItem: false
+//   $height: false
+//   $isPadding: true
+//   $itemPadding: 16px 
+//   $showAni: true      //为true时，likeTabsAniCfg生效
+//   $likeTabsAniCfg: {
+//     $lineWid: 40px
+//     $lineHei: 4px
+//   }
+// }
+// ss-like-tabs-list($class= '.hlist', $config = false)
+//   cfg = merge({}, listTabCfg, $config)
+//   {$class}
+//     ss-display-flex(row wrap , cfg.$algin)
+//     background: cfg.$bg if cfg.$bg
+//     border-bottom: cfg.$border if cfg.$border
+//     color: cfg.$color
+//     font-size: cfg.$size
+//     padding: cfg.$padding if cfg.$padding != false
+//     a
+//       color: @color
+//     >.item
+//       cursor: pointer
+//       height: cfg.$height if cfg.$height
+//       line-height: @height if cfg.$height
+//       text-align: center
+//       if (cfg.$isPadding == true)
+//         padding: cfg.$itemPadding
+//         if (cfg.$firstItem)
+//           &:first-child     //适用只有一行的时候，如果是多行的话，需要再添加个判断
+//             padding-left: 0
+//       else 
+//         margin: cfg.$itemPadding
+//         &:first-child     //适用只有一行的时候，如果是多行的话，需要再添加个判断
+//           margin-left: 0
+//       &.active, &:hover
+//         color: cfg.$activeColor
+//       &.disabled
+//         cursor: not-allowed
+//         color: $color-text-disabled
+//     if (cfg.$activeType == 'line' || cfg.$showAni)
+//       ss-border-ani($config: cfg.$likeTabsAniCfg)
+
+
+// //发布攻略
+// listTabsCfg = {
+//   $showAni: true
+//   $sizeM: 16px
+//   $activeClass: '.select'
+//   $bg: #fff
+//   $height: 40px
+//   $padding: 0 20px 20px
+//   $isPadding: false
+//   $itemPadding: 0 16px
+//   $color: $color-text
+//   $activeColor: $color-primary
+//   $activeFw: bold
+//   $itemLine: 1px solid $color-line
+//   $activeType: 'line'       //line单线条样式， card卡片化样式  tab选项卡样式  lr左右结构带有footer或header
+
+//   $likeTabsAniCfg: {
+//     $activeClass: '.select'
+//     $lineWid: 40px
+//     $lineHei: 4px
+//   }
+// }
+// boxTabCfg = {
+//   $boxBg: #fff
+//   $boxPadding: false
+//   $scrollBoxes: true
+// }
+// ss-tabs('.tabsGroup-admin', $menusCfg: listTabsCfg, $boxCfg: boxTabCfg, $width: 100%, $height: 100%)
+// //发布攻略 二级
+// listTabsCfg2 = {
+//   $showAni: true
+//   $sizeM: 14px
+//   $activeClass: '.select'
+//   $bg: #fff
+//   $height: 40px
+//   $padding: 14px 20px
+//   $isPadding: false
+//   $itemPadding: 0 16px
+//   $color: $color-text
+//   $activeColor: $color-primary
+//   $activeFw: false
+//   $itemLine: 1px solid $color-line
+//   $activeType: 'line'       //line单线条样式， card卡片化样式  tab选项卡样式  lr左右结构带有footer或header
+
+//   $likeTabsAniCfg: {
+//     $activeClass: '.select'
+//     $lineWid: 20px
+//     $lineHei: 4px
+//   }
+// }
+// boxTabCfg2 = {
+//   $boxBg: #fff
+//   $boxPadding: false
+//   $boxWidth: 390px
+// }
+// ss-tabs('.tabsGroup-level-2', $menusCfg: listTabsCfg2, $boxCfg: boxTabCfg2, $width: 100%)
+// .tabsGroup-level-2
+//   >.tabsMenus
+//     >.hlist
+//       justify-content: center
+// //发布攻略 三级
+// listTabsCfg3 = {
+//   $showAni: true
+//   $sizeM: 14px
+//   $activeClass: '.select'
+//   $bg: #fff
+//   $height: 40px
+//   $padding: 14px 20px
+//   $isPadding: false
+//   $itemPadding: 0 16px
+//   $color: $color-text
+//   $activeColor: $color-text-title
+//   $activeFw: false
+//   $itemLine: false
+//   $activeType: 'line'       //line单线条样式， card卡片化样式  tab选项卡样式  lr左右结构带有footer或header
+
+//   $likeTabsAniCfg: {
+//     $activeClass: '.select'
+//     $lineWid: 20px
+//     $lineHei: 4px
+//     $lineColor: $color-text-title
+//   }
+// }
+// boxTabCfg3 = {
+//   $boxBg: #fff
+//   $boxPadding: false
+// }
+// .tabsGroup-level-3
+  // ss-display-flex(row nowrap, space-between)
+  // >.hlist
+  //   ss-like-tabs({$config: listTabsCfg3})

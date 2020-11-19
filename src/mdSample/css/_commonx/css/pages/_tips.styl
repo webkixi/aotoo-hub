@@ -1,0 +1,38 @@
+//组件 提示框
+popConfig =  {
+  $icon: false
+  $isNowrap: false
+  $spc: true,
+  $fixedWidth: false
+  $max-width: 314px
+  $br: $br
+  $bs: $box-shadow-tips
+}
+.pop-title-arrow
+  position: relative
+  width: var(--width)
+  &.left
+    ss-arrow-direction(right, 10px, $tipsx-bc, $tipsx-bg, -5px, 10px)
+  &.top
+    ss-arrow-direction(top, 10px, $tipsx-bc, $tipsx-bg, -5px, 10px)
+  &.bottom
+    ss-arrow-direction(top, 10px, $tipsx-bc, $tipsx-bg, calc(100% - 4px), 10px, $transform: rotate(135deg))
+  // &.arrow-bottom
+  //   &:before
+  //     transform: rotateZ(135deg);
+  //     top: inherit
+  //     bottom: calc(100%)
+
+ss-tips('.popup-box', popConfig)
+
+//组件 提示框
+popContentConfig =  {
+  $icon: false
+  $isNowrap: false
+  $spc: true
+  $max-width: 190px
+  //arrow
+  $arrowTop: -8px
+  $arrowLeft: 15px
+}
+ss-tips-arrow-content('.popup-box-2', popContentConfig)

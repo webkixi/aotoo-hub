@@ -1,0 +1,25 @@
+// .page-next,.page-prev
+//   a
+//     text-indent: -9999em;
+.page-next
+  .item-icon
+    &:before
+      content: $arrow-right
+.page-pre
+  .item-icon
+    &:before
+      content: $arrow-left
+
+
+ss-func-customscroll('.fixed-table-body', {$scroll: x, $scrollbarHei: 6px})
+
+.fixed-table-container
+  .tbody
+    tr
+      &:hover
+        background: $color-bg-special
+  td, th
+    min-width: 45px
+  //图片标签
+  .ss-tag[class*=ab]
+    top: -18px

@@ -1,0 +1,89 @@
+listTableCfg = {
+  $min-width:     60px 
+  $text-align:    center 
+  $paddingTthead: 10px
+  $padding:       10px
+  $headFw:        false
+  $headBg:        $color-bg
+  $headColor:     $color-text
+  $headHeight:    45px
+  
+  $lineChangeBg:  false             //不为false时，odd,even才生效
+  $odd:           #fff
+  $even:          $color-bg
+
+  $hoverBgColor:  false             //不为false时，生效
+
+  $borderLine:    $color-line       //不为false时，生效
+
+  $scroll:        false            //不为false时，生效
+
+}
+ss-table($class = '.ss-table', $config= false)
+  cfg = merge({}, listTableCfg, $config)
+  {$class}
+    width: 100%
+    display: table
+    .ss-table-tthead
+      background: cfg.$headBg
+      color: cfg.$headColor
+      display: inline-table
+      font-weight: bold if cfg.$headFw
+      line-height: $headHeight if cfg.$headHeight
+      .ss-table-td
+        padding: cfg.$paddingTthead
+    .ss-table-sx
+      display: table-row-group
+      width: 100%
+    .ss-table-tr
+      display: table-row;
+      ss-odd-event(cfg.$odd, cfg.$even) if (cfg.$lineChangeBg)
+      ss-table-hover(cfg.$hoverBgColor) if (cfg.$hoverBgColor)
+    .ss-table-td
+      min-width: cfg.$min-width
+      text-align: cfg.$text-align
+      padding: cfg.$padding
+      box-sizing: border-box;
+      display: table-cell;
+      &.left
+        text-align: left
+      &.right
+        text-align: right
+    if (cfg.$scroll)
+      ~/
+        ss-func-customscroll('.hlist', {$height: cfg.$scroll, $min-height: 100px})
+    ss-table-border(cfg.$borderLine) if (cfg.$borderLine)
+
+
+//控制奇偶变色
+ss-odd-event($odd-background = #fff, $even-background = $color-bg)
+  &:nth-of-type(odd)
+    background: $odd-background
+  &:nth-of-type(even)
+    background: $even-background
+
+//鼠标 hover事件
+ss-table-hover($bg = #e6f7ff)
+  &:hover
+    background-color: $bg
+
+
+// //控制border
+ss-table-border($border-color = #eee, $bottomBorder = false, $direction = top)
+  if ($bottomBorder == true)
+    border-bottom: 1px solid $border-color
+  else
+    border: 1px solid $border-color
+    border-top: none if $direction == top
+    // .ss-table-tthead
+    //   border-bottom: @border
+    .ss-table-td
+      border-left: @border
+      border-{$direction}: @border
+      &:first-child
+        border-left: none
+
+// ss-table-fixd($class= '.ss-table-body', $height = 200px)
+//   {$class}
+//     overflow-y: auto
+//     height: $height

@@ -1,0 +1,92 @@
+
+/*
+  custom.styl
+    不知道放在哪个样式表的，
+    或需要@extends 简单的
+  -------------------------------------
+  -------------------------------------lgh
+*/
+
+body
+  font-size: $size
+
+h5, h6 
+  font-weight: normal
+
+.flex-1
+  flex: 1
+
+.oh
+  overflow hidden
+
+
+ss-func-customscroll('.o-y-auto', {$height: false})
+
+.ss-center
+  text-align: center
+.ss-left
+  text-align: left
+.ss-right
+  text-align: right
+
+.ss-sizing-border
+  box-sizing: border-box
+
+.ss-zindex-m
+  position: relative
+  z-index: -9999!important
+.none
+  display none
+  @extends .ss-zindex-m
+.disN
+  display none!important
+  @extends .ss-zindex-m
+
+.ss-opacity-0
+  opacity: 0
+
+.ss-block
+  display block
+.ss-i-block
+  display: inline-block
+
+.ss-relative
+  position: relative
+  
+//默认icon与文字之间的距离
+.ss-icon-right
+  margin-right: $icon-dist
+.ss-icon-left
+  margin-left: $icon-dist
+
+
+.ss-hover-underline
+  &:hover
+    text-decoration: underline
+
+//文字链接
+[class*='link']
+  cursor: pointer
+  &:hover
+    color: $color-aux-fail
+[class*='link-primary']
+  cursor: pointer
+  color: $color-aux-primary
+  &:hover
+    color: $color-primary
+
+dCfg = {
+  $bg: $color-bg-special
+  $padding: 10px
+  $br: $br
+  $bs: false
+  $border: 1px solid $color-line-input
+}
+ss-func-display-div('.display-tips', dCfg)
+
+.item-space
+  ss-display-flex(row nowrap, space-between)
+  padding: $space-minor 0
+.item-space-btn
+  ss-display-flex(row nowrap, space-between)
+  padding: $space-small 0

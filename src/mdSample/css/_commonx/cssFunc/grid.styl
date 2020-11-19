@@ -1,0 +1,34 @@
+
+gridCfg = {
+  $num: 4
+  $spacing: 20px
+  $type: 'grid'
+}
+
+ss-func-grid($class='.ss-row-custom', $config = false)
+  cfg = merge({}, gridCfg, $config)
+  {$class}
+    @extends $flex-wrap
+    .ss-col
+      if (cfg.$type == 'grid')
+        box-sizing: border-box
+        width: "calc(100% / %s)" % cfg.$num
+        padding: cfg.$spacing
+      else 
+        flex: 1
+        margin: cfg.$spacing
+
+
+ss-func-grid-x($class='.ss-row', $spacing = 10px)
+  {$class}
+    @extends $flex-wrap
+    [class*=ss-col-]
+      box-sizing: border-box;
+      padding-left: $spacing
+      padding-right: $spacing
+    //一行分为24等份
+    for value in 1..24
+      .ss-col-{value}
+        width: round((value/24) * 100%, 5)
+      .ss-col-offset-{value}
+        margin-left: round((value/24) * 100%, 5)

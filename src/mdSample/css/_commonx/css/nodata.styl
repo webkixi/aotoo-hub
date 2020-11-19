@@ -1,0 +1,40 @@
+//没有数据时
+.nodata
+  text-align: center
+  margin: auto
+  &.mb
+    margin-bottom: $space-minor
+  &.big-pic
+    margin-top: 140px
+    .item-pic
+      width: 700px
+      height: 400px
+  .item-pic
+    width: 130px
+    height @width
+    margin: 0 auto
+    img 
+      width: 100%
+      height auto
+  .item-title
+    color: $color-text-title
+    font-size: $size-title
+    font-weight: bold
+    margin-top: 19px // 22-3 = 19
+    margin-bottom: 4px //10 - 6 = 4
+  .item-desc
+    {config-desc}
+  .item-btn
+    margin: 19px auto 0 // 22-3 = 19
+
+
+.pages-error
+  width: 100%
+  height: 100%
+  background: #fff
+  box-sizing: border-box;
+  ss-display-flex(column, center, center)
+  padding: 30px;
+  .item-copyright
+    color: $color-text-info
+    font-size: $size-sm

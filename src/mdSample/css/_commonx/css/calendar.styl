@@ -1,0 +1,127 @@
+ss-display-flex($flex-flow = row nowrap, $justify-content = flex-start, $align-items = false, $align-content = false)
+  display: flex
+  flex-flow: $flex-flow
+  justify-content: $justify-content
+  if ( $align-items != false)
+    align-items: $align-items
+  if ( $align-content != false)
+    align-content: $align-content
+
+$color = #333
+$activecolor = #2773F5
+$headerHei = 86rpx
+$titleHei = 50rpx
+$height = calc(100% - 136rpx)  //(86+50)
+
+.calendar
+  width 100%
+  height: 100%
+  position relative
+
+.calendar-nav
+  background: #fff
+  width 100%
+  height $headerHei
+  line-height: @height
+  font-size: 30rpx
+  color: #666
+  white-space: nowrap
+  .calendar-nav-item
+    display inline-block
+    text-align center
+    margin: 0 30rpx
+    &:first-child
+      margin: 0 30rpx 0 40rpx
+    &.selected
+      color: $color
+      font-weight: bold
+      position: relative
+      &:after
+        content: ''
+        position: absolute
+        bottom: 0
+        left: 0
+        width: 100%
+        height: 6rpx
+        border-radius: 3rpx 
+        background: $activecolor
+// .calendar-nav
+//   display flex
+//   flex-grow: 0
+//   flex-shrink 0
+//   flex-wrap: nowrap
+//   // flex 1 0 auto
+//   .calendar-nav-item
+//     display flex
+//     justify-content: center
+//     align-items: center
+//     width 100px
+
+// 年容器
+// 必须指定年容器的宽高，scroll-view用于滚动
+.calendar-list
+  height: $height
+  position relative
+  background: #fff
+  // 月容器
+  // 必须指定月容器的宽高，主要用于lazy显示宽高
+  .calendar-list-item
+    height calc(114rpx * 5 + 92rpx)
+    .invalid
+      >.htitle
+        color: #fff
+    .valid
+      // background-color #fff
+      &.selected
+        background-color $activecolor
+        border-radius: 6rpx
+        >.htitle,.hdot-item
+          color: #fff
+        &.range
+          background: #EEF6FF
+          border-radius: 0
+          >.htitle
+            color: $color
+      &.invalid
+        >.htitle
+          color: #ccc
+  .calendar-header
+    height 92rpx
+    line-height: @height
+    font-size: 34rpx
+    font-weight: bold
+    color: $color
+    text-align: center
+
+
+.calendar-tils
+  background: #F5F5F5
+  color: #666
+  height: $titleHei
+  font-size: 28rpx
+  ss-display-flex(row nowrap, flex-start, center)
+  .calendar-tils-item
+    flex: 1
+    text-align: center
+
+// .calendar-tils-item
+//   flex 1
+//   display: flex; 
+//   justify-content: center
+//   align-items: center
+//   font-size 13px
+
+.date-list
+  background: #fff
+  width: 100%; 
+  ss-display-flex(row wrap, flex-start)
+  .date-item
+    width: calc(100% / 7)
+    height: 114rpx
+    text-align: center
+    padding: 15rpx 0
+    box-sizing: border-box;
+    >.htitle
+      font-size: 30rpx
+      font-weight: bold
+      color: $color

@@ -1,0 +1,42 @@
+.c-checkandradio
+  ss-form-checkbox-radio()
+  margin-right: $space-small
+.radioGroup, .checkboxGroup
+  >.fkp-content
+    ss-display-flex(row wrap, flex-start)
+  &[class*='tick']
+    .rcItem
+      margin-right: 10px
+      &.disabled
+        color: $borderColor
+        .fkp-title
+          position: relative
+          z-index 2
+        [class*='-box']
+          background-color: $disabledColorBg
+          border-color: $disabledColor
+          cursor: default;
+      .fkp-title
+        padding: 7px 10px
+        min-width 120px
+  &:not([class*='tick'])
+    .rcItem
+      >.fkp-title 
+        order: 2
+
+.radioGroup
+  &[class*='tick']
+    .rcItem
+      ss-form-checkbox-radio(2)
+  &:not([class*='tick'])
+    .rcItem
+      @extends .c-checkandradio
+      align-items: center
+.checkboxGroup
+  &[class*='tick']
+    .rcItem
+      ss-form-checkbox-radio(2)
+  &:not([class*='tick'])
+    .rcItem
+      @extends .c-checkandradio
+      align-items: center

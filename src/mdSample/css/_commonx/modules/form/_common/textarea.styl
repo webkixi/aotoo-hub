@@ -1,0 +1,20 @@
+.form-textarea
+  ss-form_control( $textareaHei, $width: $textareaWid)
+  line-height: inherit
+  resize: none;
+  ss-func-customscroll(false, {$height: false})
+
+.htextarea
+  ~.fkp-desc, .item-count
+    // ss-display-flex(row nowrap, flex-end)
+    position: absolute
+    bottom: $space-small
+    right: $space-small
+    color: $placeholderColor
+
+.ss-form-textarea-single
+  .form-textarea
+    height: $inputHeight
+    padding-right: 54px;
+  .fkp-desc
+    bottom: calc(50% - 7px);

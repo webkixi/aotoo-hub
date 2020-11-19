@@ -1,0 +1,156 @@
+@import '../../css/_commonx/css/index'
+@import '../../css/_commonx/config/iconfont'
+@import '../../css/_commonx/css/icon'
+// @import '../../css/_commonx/css/button'
+// @import '../../css/_commonx/css/tag'
+// @import '../../css/_commonx/css/width'
+// @import '../../css/_commonx/css/padding'
+// @import '../../css/_commonx/css/margin'
+// @import '../../css/_commonx/css/pages/margin'
+// @import '../../css/_commonx/css/nodata'
+// //开关 按钮
+// @import '../../css/_commonx/css/switch'
+// //下拉控件
+// @import '../../css/_commonx/css/dropdown'
+//提示框
+@import '../../css/_commonx/css/tips'
+// //form表单
+// @import '../../css/_commonx/modules/form/index'
+//modal
+@import '../../css/_commonx/modules/modal'
+@import '../../css/_commonx/css/_animate'
+// //加载动画
+// @import '../../css/_commonx/modules/load/index'
+// //tabs组件
+// @import '../../css/_commonx/modules/tabs/index'
+// //upload上传组件
+// @import '../../css/_commonx/modules/uploader/index'
+// //日期控件
+// @import '../../css/_commonx/modules/datetimepicker/index'
+// //日历控件
+// @import '../../css/_commonx/modules/calendarx'
+
+//页面布局选择模板
+@import '../../css/_commonx/cssFunc/pages/routerconfig/routerStyle2'
+@import '../../css/_commonx/cssFunc/pages/adminrouter'
+// //input 偏业务
+// @import '../../css/_commonx/css/input'
+// @import '../../css/_commonx/css/pages/*'
+// //路由 布局
+// ss-admin()
+// .routerGroup
+//   >.routerMenus
+//     >.hlist
+//       padding-bottom: 30px
+// .admin-header
+//   padding-left: 30px
+// .wrap
+//   height: 100%
+//   ss-display-flex(column)
+//   ss-root-header()
+//   #root
+//     height: calc(100% - 60px)
+//     position: relative
+//     z-index: 1
+//   .root-header
+//     z-index: 2
+// //路由 end
+
+body
+  color: $color-text-title
+
+//路由  模板1 上下，左右结构
+// html, body, .container
+//   height: 100%
+.router-container
+  width: 100%
+  height: 100%
+  ss-display-flex(column)
+  .router-header
+    height: 60px
+  .router-body
+    flex: 1
+    height: calc(100% - 60px)
+
+
+ss-admin('.router-body')
+ss-root-header('.router-header')
+
+
+
+
+//业务
+.pages-title-lg
+  color: $color-primary
+  font-size: $size-title-lg
+  font-weight: bold
+  margin-bottom: 40px;
+
+.demo-grid
+  ss-func-grid('&', {$num: 5, $spacing: 10px})
+  .caption
+    font-size: $size-title-sm
+    color: $color-text-title
+    margin-top: 20px
+  .item-box
+    box-sizing: border-box
+    height: 100px
+    padding: 30px 15px
+    border-radius: $br-lg
+    color: #fff
+    ss-display-flex(column, center, center)
+  .item-dot-i
+    font-style: normal
+    display: block
+    font-size: 12px
+
+//色块
+.demo-bg-primary .item-box
+  background: $color-primary
+
+.demo-bg-aux-primary .item-box
+  background: $color-aux-primary
+.demo-bg-aux-success .item-box
+  background: $color-aux-success
+.demo-bg-aux-warning .item-box
+  background: $color-aux-warning
+.demo-bg-aux-fail .item-box
+  background: $color-aux-fail
+.demo-bg-aux-info .item-box
+  background: $color-aux-info
+
+
+.demo-bg-text .item-box
+  background: $color-text
+.demo-bg-text-title .item-box
+  background: $color-text-title
+
+
+.demo-bg-color .item-box
+  background: $color-bg
+.demo-bg-color-special .item-box
+  background: $color-bg-special
+  
+.demo-bg-border .item-box
+  background: $color-line
+.demo-bg-border-secondary .item-box
+  background:$color-line-secondary
+.demo-bg-border-input .item-box
+  background:$color-line-input
+
+.ss-modal
+  .close-circle-l
+    position: absolute
+    left : calc(50% - 15px)
+    bottom: -80px
+    &:before
+      font-size: 20px
+      width: 30px
+      height: @width
+      line-height: @width
+      border: 1px solid
+      border-radius: 100%
+      color: #fff
+      text-align: center
+  &.modal-2
+    margin-top: 22vh

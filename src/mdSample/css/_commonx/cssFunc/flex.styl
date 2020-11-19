@@ -1,0 +1,130 @@
+ss-display-flex($flex-flow = row nowrap, $justify-content = false, $align-items = false, $align-content = false)
+  display: flex
+  flex-flow: $flex-flow
+  justify-content: $justify-content if($justify-content)
+  align-items: $align-items if ( $align-items)
+  align-content: $align-content if ( $align-content)
+
+ss-display-flex-x($class='.hlist', $flex-flow = row nowrap, $justify-content = false, $align-items = false, $align-content = false)
+  {$class}
+    ss-display-flex($flex-flow, $justify-content, $align-items, $align-content)
+
+
+
+$flex-nowrap
+  ss-display-flex()
+$flex-nowrap-start-center
+  ss-display-flex($justify-content: flex-start, $align-items: center)
+$flex-nowrap-center-center
+  ss-display-flex($justify-content: center, $align-items: center)
+$flex-nowrap-between
+  ss-display-flex($justify-content: space-between)
+$flex-nowrap-between-center
+  ss-display-flex($justify-content: space-between, $align-items: center)
+
+$flex-wrap
+  ss-display-flex(row wrap)
+$flex-wrap-start-start
+  ss-display-flex(row wrap, flex-start, flex-start)
+$flex-wrap-center-center
+  ss-display-flex(row wrap, center, center)
+$flex-wrap-between
+  ss-display-flex(row wrap, space-between)
+
+$column
+  ss-display-flex(column)
+$column-center
+  ss-display-flex(column, center)
+$column-center-center
+  ss-display-flex(column, center, center)
+
+
+
+/*
+  扩展  需要与ss-display-flex()配合     $type = 1是普通的左间距， 2是两者之间带有边线的
+*/
+rowListCfg =  {
+  $color: $color
+  $activeColor: $color-hover
+  $size: $size-sm
+  $marginLeft: $space-minor
+  $marginBottom: $space-minor
+  $width: calc(100% / 6)
+}
+rhlConfig = {       
+  $color: $color-text-title
+  $mr: $space-minor
+  $size: $size-sm
+  $fw: false
+  $mb: false
+  $min-width: false
+  $text-align: false
+}
+
+
+ss-com-row-list($rlCfg = false)
+  font-size: $rlCfg.$size if ($rlCfg.$size)
+  margin-bottom: - $rlCfg.$marginBottom ||  $rlCfg.$marginLeft
+  if ($rlCfg.$type == 2)
+    margin-left: -($rlCfg.$marginLeft + $rlCfg.$paddingLeft) 
+  else 
+    margin-left: -($rlCfg.$marginLeft)
+  >li,>.ss-item
+    color: $rlCfg.$color if ($rlCfg.$color)
+    position: relative
+    margin-bottom: - @margin-bottom
+    width: $rlCfg.$width if ($rlCfg.$width)
+    a
+      color: @color
+    if ($rlCfg.$type == 2)
+      margin-left: $rlCfg.$marginLeft
+      padding-left: $rlCfg.$paddingLeft
+      &:not(:first-of-type)
+        &:before
+          content: ''
+          background: $rlCfg.$isBorder
+          width: 1px
+          height: $rlCfg.$borderHeight
+          position: absolute
+          left: -1px
+          top: calc((50% - @height)/2)
+    else 
+      margin-left: $rlCfg.$marginLeft
+      box-sizing: border-box
+    if ($rlCfg.$activeColor)
+      &:hover,&.active
+        color: $rlCfg.$activeColor
+        a
+          color: @color
+
+
+ss-row-list($class = '.hlist', $rlCfg = false)
+  cfg = merge({}, rowListCfg, $rlCfg)
+  if ($class != false)
+    {$class}
+      ss-display-flex(row wrap)
+      ss-com-row-list(cfg)
+  else 
+    ss-com-row-list(cfg)
+    
+/**
+ * row-head-list()  需要与ss-display-flex()配合
+ * 用于有大标题的 list
+ */
+row-head-list($class = '.itemCategory', $titleClass = '.caption', $rhlCfg = false, $rlConfig = false)
+  cfg = merge({}, rhlConfig, $rhlCfg)
+  {$class}
+    margin-bottom: cfg.$mb if (cfg.$mb)
+    ss-display-flex(row nowrap, flex-start)
+    ss-row-list('.property-ul', $rlConfig)
+    {$titleClass}
+      color: cfg.$color
+      display: block
+      font-size: cfg.$size
+      font-weight: cfg.$fw if (cfg.$fw)
+      margin-right: cfg.$mr
+      min-width: cfg.$min-width if (cfg.$min-width)
+      text-align: cfg.$text-align if (cfg.$text-align)
+
+  // .s-color
+  //   color: $s-color

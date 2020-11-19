@@ -1,0 +1,63 @@
+$iconColor = $color-text-info 
+$iconColor2 = $color-line-input
+$iconActiveColor = $color-text-title
+
+//nav  三横杆
+.icon-nav
+  ss-icon($icon-nav, 22px)
+//下拉
+.icon-select
+  ss-icon($inputSelect, $space: $tips-mg-sm)
+
+//问号 圆圈中间带问号 实心
+.icon-question
+  ss-icon('\e7b3', 16px, $iconColor, true, $space: $tips-mg-sm, $pseudo: after)
+
+.icon-warn-nothing
+  ss-icon('\e7b9', 16px, #98A0B3, true, $space: $tips-mg-sm, $pseudo: after)
+
+//del 
+.icon-del-primary
+  ss-icon($icon-del, 16px, $color-text,$activeColor: $color-aux-fail)
+.icon-del-small
+  ss-icon($icon-del-s, 12px)
+//圆圈中间带叉叉
+.icon-del
+  ss-icon($icon-fail, 16px, $iconColor2, $activeColor: $iconActiveColor)
+//搜索
+.icon-search
+  ss-icon($icon-search, 16px, false, $activeColor: false)
+.icon-exlain
+  ss-icon($icon-exlain, 16px, $color-text-info, $activeColor: false, $isFlex: flex, $space: $tips-mg-sm)
+
+
+.icon-arrow-left
+  ss-icon($arrow-left, $color: $iconActiveColor, $activeColor: $color-primary, $disabledColor: $iconColor2)
+.icon-arrow-right
+  ss-icon($arrow-right, $color: $iconActiveColor, $activeColor: $color-primary, $disabledColor: $iconColor2)
+
+.icon-warning
+  ss-icon($icon-warning, 16px, $color-warning, true, $space: $tips-mg-sm)
+
+//加载
+.icon-loading
+  ss-icon($icon-loading, 24px, $isFlex: true)
+  animation: rotating 2s linear infinite
+
+@keyframes rotating {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+
+.icon-lg
+  &:before
+    font-size: $size-title-lg
+.icon-sm
+  &:before
+    font-size: $size-sm

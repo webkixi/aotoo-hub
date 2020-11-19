@@ -1,0 +1,52 @@
+//TIPS 部分
+ss-tips-system(tipsSysCfg)
+ss-tips-system2()
+//模拟表单提示
+ss-tips-like-form('.form-tips')
+//文字提示
+abc = {
+  $color: #ff7e11
+  $size: 6px
+  $arrowBc: lighten(#ff7e11, 70%)
+  $arrowBg: lighten(#ff7e11, 90%)
+  $spc: false
+}
+ss-tips-arrow('.wz-tips', abc)
+// ss-tips-arrow($tips-size-sm, $tips-padding-sm, $tips-icon-color, lighten($tips-icon-color, 90%), lighten($tips-icon-color, 70%), $tips-arrow-size-sm)
+ss-tips-arrow('.ss-tips-fff')
+
+
+// absolute层里的，是无法根据内容的长度来撑开的 有两个办法，第一种 强制不换行，第二种，父级的宽度一定要足够的宽
+xx = {
+  $isNowrap: false
+}
+ss-tips-arrow('.ss-tips-widp100', xx)
+
+// //组件 提示框
+// popConfig =  {
+//   $icon: false
+//   $isNowrap: false
+//   $spc: true
+// }
+// .pop-title-arrow
+//   position: relative
+//   &:hover, &.active
+//     ss-arrow-direction(top, 6px, $tipsx-bc, $tipsx-bg, calc(100% - 3px))
+//   &.arrow-bottom
+//     &:before
+//       transform: rotateZ(135deg);
+//       top: inherit
+//       bottom: calc(100%)
+
+// ss-tips('.popup-box', popConfig)
+// //组件 提示框
+// popContentConfig =  {
+//   $icon: false
+//   $isNowrap: false
+//   $spc: true
+//   $max-width: 190px
+//   //arrow
+//   $arrowTop: -8px
+//   $arrowLeft: 15px
+// }
+// ss-tips-arrow-content('.popup-box-2', popContentConfig)

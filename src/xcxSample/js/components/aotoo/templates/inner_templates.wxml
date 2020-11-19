@@ -1,0 +1,504 @@
+<wxs src="../util.wxs" module="util" />
+<wxs module="inner">
+  function has(item, type){
+    if (item.form) return item.form[type]
+  }
+  function mixprops(input, profile){
+    if (typeof input == 'object') {
+      input.profile = profile
+    }
+    return input
+  }
+  module.exports = { 
+    has: has,
+    mixprops: mixprops
+  }
+</wxs>
+<import src="../../templates.wxml" />
+
+<!-- <template name="temp">
+  <template is="{{tempName}}" data="{{stuff}}" />
+</template> -->
+
+<!-- <template name="@button">
+  <block wx:if="{{input || profile}}">
+    <template is="button" data="{{props: inner.mixprops(input, profile) }}" />
+  </block>
+  <block wx:else>
+    <template is="button" data="{{ props }}" />
+  </block>
+</template> -->
+
+<template name="@component">
+  <block wx:if="{{util.isString(props.is)}}">
+    <template is="{{props.is}}" data="{{item: props, props}}" />
+  </block>
+</template>
+
+<template name="@ext">
+  <block wx:if="{{util.isString(props.is)}}">
+    <template is="{{props.is}}" data="{{item: props, props}}" />
+  </block>
+</template>
+
+<!-- <template name="a">
+  <view class="htitle {{item.class || item.itemClass}}" wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" bind:tap="aim" data-aim="{{item.aim}}">{{item.title}}</view>
+  <block wx:else>
+    <view class="htitle {{item.class || item.itemClass}}" bind:tap="aim" data-aim="{{item.aim}}">{{item.title}}</view>
+  </block>
+</template>
+
+<template name="img">
+  <image catch:tap="catchItemMethod" data-evt="{{util.dataEvt(item, ['catchtap', 'tap', 'longpress', 'aim', 'touchstart', 'tourchend', 'touchmove', 'touchcancel'])}}" wx:if="{{item.style||item.itemStyle}}" style="{{item.style||item.itemStyle}}" lazy-load="{{true}}" class="himg {{ item.class || item.itemClass }}" mode="{{item.mode || 'widthFix'}}" src="{{item.src}}" />
+  <block wx:else>
+    <image catch:tap="catchItemMethod" data-evt="{{util.dataEvt(item, ['catchtap', 'tap', 'longpress', 'aim', 'touchstart', 'tourchend', 'touchmove', 'touchcancel'])}}" class="himg {{ item.class || item.itemClass }}" mode="{{item.mode || 'widthFix'}}" lazy-load="{{true}}" src="{{item.src}}" />
+  </block>
+</template> -->
+
+<template name="@item">
+  <block wx:if="{{util.isObject(props)}}">
+    <block wx:if="{{props.text}}">
+      <text 
+        class="{{props.itemClass||''}}"
+        style="{{props.itemStyle||''}}"
+        id="{{props.id||''}}" 
+        data-treeid="{{props && util.isObject(props.attr) && (props.attr['data-treeid']||props.attr['treeid']||'')}}"
+        data-id="{{(props && util.isObject(props.attr) && (props.attr['id'] || props.attr['data-id']) || '')}}"
+        user-select="{{ props['user-select'] || props['selectable'] || '' }}"
+        space="{{props.space||''}}"
+        decode="{{props.decode||''}}"
+      >{{props.text}}</text>
+    </block>
+    <block wx:elif="{{props.fromComponent}}">
+      <ui-item item="{{props}}" class="ui-item {{props.containerClass}}" style="{{props.containerStyle||''}}" fromComponent="{{props.fromComponent}}"/>
+    </block>
+    <block wx:else>
+      <ui-item item="{{props}}" class="ui-item {{props.containerClass}}" style="{{props.containerStyle||''}}"/>
+    </block>
+  </block>
+</template>
+
+<template name="@list">
+  <block wx:if="{{util.isObject(props)}}">
+    <block wx:if="{{props.fromComponent || props.fromTree}}">
+      <ui-list class="ui-list {{props.containerClass}}" style="{{props.containerStyle||''}}" list="{{props}}" fromComponent="{{props.fromComponent||props.fromTree}}"/>
+    </block>
+    <block wx:else>
+      <ui-list list="{{props}}" class="ui-list"/>
+    </block>
+  </block>
+</template>
+
+<template name="@tree">
+  <block wx:if="{{util.isObject(props)}}">
+    <block wx:if="{{props.fromComponent}}">
+      <ui-tree class="ui-tree {{props.containerClass}}" style="{{props.containerStyle||''}}" list="{{props}}" fromComponent="{{props.fromComponent}}"/>
+    </block>
+    <block wx:else>
+      <ui-tree class="ui-tree {{props.containerClass}}" style="{{props.containerStyle||''}}" list="{{props}}"/>
+    </block>
+  </block>
+</template>
+
+<template name="@icon">
+  <block wx:if="{{util.isString(props)}}">
+    <icon class="iconfont {{props}}" />
+  </block>
+  <block wx:elif="{{util.isObject(props)}}">
+    <icon 
+      type="{{props.type||''}}" 
+      size="{{props.size||''}}" 
+      color="{{props.color||''}}" 
+      class="{{props.itemClass || props.class}}" 
+      style="{{props.style||''}}" 
+    /> 
+    <!-- <icon 
+      class="iconfont {{props.itemClass || props.class}}" 
+      catch:tap="{{props.aim||''}}" 
+      style="{{props.style||''}}" 
+    /> -->
+  </block>
+</template>
+
+<template name="@form">
+  <block wx:if="{{util.isObject(props)}}">
+    <ui-form class="ui-form" dataSource="{{props}}" />
+  </block>
+</template>
+
+<template name="@slip">
+  <ui-slip class="ui-slip" dataSource="{{props}}" />
+</template>
+
+<template name="@html">
+  <ui-markit dataSource="{{props}}" class="ui-markit" textType="html" />
+</template>
+
+<template name="@md">
+  <ui-markit dataSource="{{props}}" class="ui-markit" textType="md" />
+</template>
+
+<template name="@button">
+  <block wx:if="{{props && util.isArray(props.data)}}">
+    <block wx:for="{{props.data}}" wx:key="index">
+      <template is="@btn" data="{{props: item}}"></template>
+    </block>
+  </block>
+  <block wx:else>
+    <template is="@btn" data="{{props}}"></template>
+  </block>
+</template>
+
+<template name="@btn">
+  <button 
+    type="{{props.typeset||'default'}}" 
+    size="{{props.size||''}}"
+    plain="{{props.plain||''}}"
+    disabled="{{props.disabled||''}}"
+    loading="{{props.loading||''}}"    
+    lang="{{props.lang||'en'}}"
+
+    open-type="{{props['open-type']||''}}"
+    session-from="{{props['session-from']||''}}"
+    send-message-title="{{props['send-message-title']||''}}"
+    send-message-path="{{props['send-message-path']||''}}"
+    send-message-img="{{props['send-message-img']||''}}"
+    show-message-card	="{{props['show-message-card']||''}}"
+    bindcontact="{{props['open-type']=='contact' ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindgetphonenumber="{{props['open-type']=='getPhoneNumber' ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindgetuserinfo="{{props['open-type']=='getUserInfo' ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindopensetting="{{props['open-type']=='openSetting' ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bind:tap="{{props['form-type'] ? '' : props.__form ? 'inputItemMethod' : 'itemMethod'}}"
+
+    app-parameter	="{{props['app-parameter']||''}}"
+    bindlaunchapp="{{props['open-type']=='launchApp' ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    binderror="{{props['open-type']=='launchApp' ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+
+    class="{{props.itemClass||props.class||''}}"
+    style="{{props.itemStyle||props.style||''}}"
+    id="{{props.id||''}}"
+    data-address="{{props.uAddress||''}}"
+    data-evt="{{util.dataEvt(props, ['bindcontact', 'bindgetphonenumber', 'bindgetuserinfo', 'bindopensetting', 'bindlaunchapp', 'binderror', 'tap'])}}"
+  >
+    {{props.value}}
+  </button>
+</template>
+
+<template name="@url">
+  <!-- <block wx:if="{{props && props.url && (props.title||props.value)}}"> -->
+  <block wx:if="{{props && (props.title||props.value||props.__isAd)}}">
+    <block wx:if="{{props.value}}">
+      <template is="@button" data="{{props: props}}"/>
+    </block>
+    <block wx:elif="{{props.__isAd}}">
+      <template is="@ad" data="{{props: props}}"/>
+    </block>
+    <navigator 
+      wx:else
+      target="{{props.target||''}}"
+      url="{{props.url||''}}"
+      open-type="{{props['open-type']||'navigate'}}"
+      delta="{{props.delta||''}}"
+      app-id="{{props['app-id']||''}}"
+      path="{{props.path||''}}"
+      extra-data="{{props['extra-data']||''}}"
+      version="{{props.version||''}}"
+      hover-class	="{{props['hover-class']||''}}"
+      hover-stop-propagation="{{props['hover-stop-propagation']||''}}"
+      hover-start-time="{{props['hover-start-time']||''}}"
+      hover-stay-time="{{props['hover-stay-time']||''}}"
+      bindsuccess="{{props['bindsuccess']||''}}"
+      bindfail="{{props['bindfail']||''}}"
+      bindcomplete="{{props['bindcomplete	']||''}}"
+      class="{{props.itemClass||props.class||''}}"
+      style="{{props.itemStyle||props.style||''}}"
+    >
+      <block wx:if="{{util.isString(props.title)}}"><text>{{props.title}}</text></block>
+      <block wx:else>
+        <ui-item item="{{props.title}}" class="ui-item {{props.containerClass}}" style="{{props.containerStyle||''}}" />
+      </block>
+    </navigator>
+  </block>
+</template>
+
+
+<template name="@myinput">
+  <input 
+    class="{{props.itemClass||props.class||''}}"
+    style="{{props.itemStyle||props.style||''}}"
+    id="{{props.id||''}}"
+
+    value="{{props.value||''}}"
+    type="{{props.type||'text'}}"
+    passsword="{{props.passsword||''}}"
+    placeholder="{{props.placeholder||''}}"
+    placeholder-style="{{props['placeholder-style']||''}}"
+    placeholder-class="{{props['placeholder-class']||''}}"
+    disabled="{{props.disabled||''}}"
+    cursor-spacing="{{props['cursor-spacing']||''}}"
+    maxlength="{{props.maxlength||''}}"
+    focus="{{props.focus||''}}"
+    confirm-type="{{props['confirm-type']||''}}"
+    confirm-hold="{{props['confirm-hold']||''}}"
+    cursor="{{props.cursor||''}}"
+    selection-start="{{props['selection-start']||''}}"
+    selection-end="{{props['selection-end']||''}}"
+    adjust-position="{{props['adjust-position']||true}}"
+    hold-keyboard="{{props['hold-keyboard']||''}}"
+
+    catch:tap="{{props.tap||props.aim||props.catchtap ? 'itemMethod' : ''}}"
+
+    bindinput="{{props.bindinput ? 'itemMethod' : ''}}"
+    bindfocus="{{props.bindfocus ? 'itemMethod' : ''}}"
+    bindblur="{{props.bindblur ? 'itemMethod' : ''}}"
+    bindconfirm="{{props.bindconfirm ? 'itemMethod' : ''}}"
+    bindkeyboardheightchange="{{props.bindkeyboardheightchange ? 'itemMethod' : ''}}"
+    data-isform="{{true}}"
+    data-evt="{{util.dataEvt(props, ['tap', 'aim', 'catchtap','bindinput', 'bindfocus', 'bindblur', 'bindconfirm', 'bindkeyboardheightchange'])}}"
+  />
+</template>
+
+<template name="@input">
+  <block wx:if="{{util.isArray(props)}}">
+    <block wx:for="{{props}}" wx:key="index">
+      <template is="@myinput" data="{{props: item}}"></template>
+    </block>
+  </block>
+  <block wx:else>
+    <template is="@myinput" data="{{props}}"></template>
+  </block>
+</template>
+
+<template name="@textarea">
+  <textarea 
+    class="{{props.itemClass||props.class||''}} input-item-textarea"
+    style="{{props.itemStyle||props.style||''}}"
+    id="{{props.id||''}}"
+
+    value="{{props.value||''}}"
+    placeholder="{{props.placeholder||''}}"
+    placeholder-style="{{props['placeholder-style']||''}}"
+    placeholder-class="{{props['placeholder-class']||''}}"
+    disabled="{{props.disabled||''}}"
+    cursor-spacing="{{props['cursor-spacing']||''}}"
+    maxlength="{{props.maxlength||''}}"
+    auto-focus="{{props['auto-focus']||''}}"
+    focus="{{props.focus||''}}"
+    auto-height="{{props['auto-height']||''}}"
+    fixed="{{props.fixed||''}}"
+    confirm-type="{{props['confirm-type']||''}}"
+    confirm-hold="{{props['confirm-hold']||''}}"
+    cursor="{{props.cursor||''}}"
+    show-confirm-bar="{{props['show-confirm-bar']||''}}"
+    selection-start="{{props['selection-start']||''}}"
+    selection-end="{{props['selection-end']||''}}"
+    adjust-position="{{props['adjust-position']||true}}"
+    hold-keyboard="{{props['hold-keyboard']||''}}"
+    disable-default-padding="{{props['disable-default-padding']||''}}"
+
+    catchtap="{{props.tap||props.aim||props.catchtap ? 'itemMethod' : ''}}"
+
+    bindlinechange="{{props.bindlinechange ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindinput="{{props.__form ? 'inputItemMethod' : props.bindinput ? 'itemMethod' : ''}}"
+    bindfocus="{{props.bindfocus ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindblur="{{props.bindblur ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindconfirm="{{props.bindconfirm ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindkeyboardheightchange="{{props.bindkeyboardheightchange ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    data-isform="{{true}}"
+    data-address="{{props.__form ? props.uAddress : ''}}"
+    data-evt="{{util.dataEvt(props, ['tap', 'aim', 'catchtap', 'bindinput', 'bindfocus', 'bindblur', 'bindconfirm', 'bindkeyboardheightchange'])}}"
+  >
+  </textarea>
+</template>
+
+<template name="@switch">
+  <switch 
+    id="{{props.id}}" 
+    class="{{props.itemClass}} input-item-switch" 
+    style="{{props.itemStyle||''}}"
+
+    checked="{{props.value||props.checked||''}}" 
+    disabled="{{props.disabled}}" 
+    type="{{props.type||''}}"
+    color="{{props.color||''}}"
+
+    catch:tap="{{props.tap||props.aim||props.catchtap ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindchange="{{props.bindchange ? props.__form ? 'rcChange' : 'itemMethod' : ''}}"
+
+    data-isform="{{true}}"
+    data-address="{{props.uAddress}}" 
+    data-evt="{{util.dataEvt(props, ['tap', 'aim', 'catchtap', 'bindchange'])}}" 
+  />
+</template>
+
+<template name="@slider">
+  <slider 
+    id="{{props.id||''}}"
+    class="{{props.itemClass}} input-item-slider"
+    style="{{props.itemStyle||''}}"
+
+    value="{{props.value||''}}"
+    disabled="{{props.disabled||''}}"
+    min="{{props.min||0}}"
+    max="{{props.max||100}}"
+    step="{{props.step||1}}"
+    color="{{props.color||''}}"
+    selected-color="{{props['selected-color']||''}}"
+    activeColor="{{props.activeColor||''}}"
+    backgroundColor="{{props.backgroundColor||''}}"
+    block-size="{{props['block-size']||''}}"
+    block-color="{{props['block-color']||''}}"
+    show-value="{{props['show-value']||''}}"
+
+    catch:tap="{{props.tap||props.aim||props.catchtap ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindchange="{{props.bindchange ? props.__form ? 'rcChange' : 'itemMethod' : ''}}"
+    bindchanging="{{props.bindchanging ? props.__form ? 'rcChange' : 'itemMethod' : ''}}"
+
+    data-isform="{{true}}"
+    data-address="{{props.uAddress||''}}"
+    data-evt="{{util.dataEvt(props, ['tap', 'aim', 'catchtap', 'bindchange', 'bindchanging'])}}"
+
+  />
+</template>
+
+<template name="@editor">
+  <editor 
+    id="{{props.id||''}}"
+    class="{{props.itemClass}} input-item-editor"
+    style="{{props.itemStyle||''}}"
+
+    placeholder="{{props.placeholder||''}}"
+    show-img-size="{{props['show-img-size']||''}}"
+    show-img-toolbar="{{props['show-img-toolbar']||''}}"
+    show-img-resize="{{props['show-img-resize']||''}}"
+
+    catch:tap="{{props.tap||props.aim||props.catchtap ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindready="{{props.bindready ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindfocus="{{props.bindfocus ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindblur="{{props.bindblur ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindstatuschange="{{props.bindstatuschange ? props.__form ? 'inputItemMethod' : 'itemMethod' : ''}}"
+    bindinput="{{props.__form ? 'inputItemMethod' : props.bindinput ? 'itemMethod' : ''}}"
+
+    data-isform="{{true}}"
+    data-address="{{props.uAddress||''}}"
+    data-evt="{{util.dataEvt(props, ['tap', 'aim', 'catchtap', 'bindready', 'bindfocus', 'bindblur', 'bindstatuschange', 'bindinput'])}}"
+  />
+</template>
+
+<template name="@image">
+  <block wx:if="{{util.isString(props.src)}}">
+      <block wx:if="{{props.type&&props.type.is === 'cover'}}">
+        <cover-image 
+          src="{{props.src || (props.img&&props.img.src)}}" 
+          id="{{props.id||''}}"
+          data-treeid="{{(props.attr&&props.attr['data-treeid']) || props.treeid || ''}}"
+          class="{{props.itemClass||props.class||''}}"
+
+          catch:touchstart= "{{(props.touchstart || props.catchtouchstart) ? 'itemMethod' : ''}}"
+          catch:touchmove=  "{{(props.touchmove || props.catchtouchmove) ? 'itemMethod' : ''}}"
+          catch:touchend =  "{{(props.touchend  || props.catchtouchend) ? 'itemMethod' : ''}}"
+          catch:cancel=     "{{(props.cancel || props.catchcancel) ? 'itemMethod' : ''}}"
+
+          catch:tap=        "{{(props.tap || props.aim||props.catchtap) ? 'catchItemMethod' : props.preview ? 'imgPreview' : ''}}"
+          catch:longpress=  "{{props.longpress || props.catchlongpress ? 'catchItemMethod' : ''}}"
+          catch:longtap=    "{{props.longtap || props.catchlongtap ? 'catchItemMethod' : ''}}"
+          
+          binderror= "{{props.binderror ? 'itemMethod' : ''}}"
+          bindload= "{{props.bindload ? 'itemMethod' : ''}}"
+          data-evt="{{util.dataEvt(props, ['bindload', 'binderror', 'preview', 'tap', 'aim', 'catchtap', 'catchlongpress', 'catchlongtap', 'longtap', 'longpress', 'touchstart', 'touchmove', 'touchend', 'touchcancel', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'catchtouchcancel'])}}"
+        ></cover-image>
+      </block>
+      <image 
+        wx:else
+        id="{{props.id||''}}"
+        data-treeid="{{(props.attr&&props.attr['data-treeid']) || props.treeid || ''}}"
+        class="{{props.itemClass||props.class||''}}"
+        style="{{props.style||props.itemStyle||''}}" 
+        lazy-load="{{true}}" 
+        class="himg {{props.class||props.itemClass||''}}" 
+        mode="{{props.mode || 'widthFix'}}" 
+        src="{{props.src || (props.img&&props.img.src)}}" 
+        data-src = "{{props.src || (props.img&&props.img.src)}}"
+        webp="{{props.webp||''}}" 
+        show-menu-by-longpress="{{props['show-menu-by-longpress']||''}}"
+
+        catch:touchstart= "{{(props.touchstart || props.catchtouchstart) ? 'itemMethod' : ''}}"
+        catch:touchmove=  "{{(props.touchmove || props.catchtouchmove) ? 'itemMethod' : ''}}"
+        catch:touchend =  "{{(props.touchend  || props.catchtouchend) ? 'itemMethod' : ''}}"
+        catch:cancel=     "{{(props.cancel || props.catchcancel) ? 'itemMethod' : ''}}"
+
+        catch:tap=        "{{(props.tap || props.aim||props.catchtap) ? 'catchItemMethod' : props.preview ? 'imgPreview' : ''}}"
+        catch:longpress=  "{{props.longpress || props.catchlongpress ? 'catchItemMethod' : ''}}"
+        catch:longtap=    "{{props.longtap || props.catchlongtap ? 'catchItemMethod' : ''}}"
+
+        binderror=        "{{props.binderror ? 'itemMethod' : ''}}"
+        bindload=         "{{props.bindload ? 'itemMethod' : ''}}"
+        data-evt="{{util.dataEvt(props, ['bindload', 'binderror', 'preview', 'tap', 'aim', 'catchtap', 'catchlongpress', 'catchlongtap', 'longtap', 'longpress', 'touchstart', 'touchmove', 'touchend', 'touchcancel', 'catchtouchstart', 'catchtouchmove', 'catchtouchend', 'catchtouchcancel'])}}"
+      />
+    </block>
+</template>
+
+<template name="@video">
+  <block wx:if="{{util.isObject(props)}}">
+    <video 
+      id="{{props.id||''}}"
+      class="video-class {{props.itemClass}}"
+      style="{{props.itemStyle||''}}"
+
+      src="{{props.src||''}}"
+      title="{{props.title||''}}"
+      duration="{{props.duration||''}}"
+      controls="{{props.controls||'true'}}"
+      danmu-list="{{props['danmu-list']||''}}"
+      danmu-btn="{{props['danmu-btn']|| false }}"
+      enable-danmu="{{props['enable-danmu']|| false }}"
+      autoplay="{{props['autoplay']|| false }}"
+      loop="{{props['loop']|| false }}"
+      muted="{{props['muted']|| false }}"
+      initial-time="{{props['initial-time']||0}}"
+      page-gesture="{{props['page-gesture']|| false }}"
+      direction="{{props['direction']||''}}"
+      show-progress="{{props['show-progress']||true}}"
+      show-fullscreen-btn="{{props['show-fullscreen-btn']||true}}"
+      show-play-btn="{{props['show-play-btn']||true}}"
+      show-center-play-btn="{{props['show-center-play-btn']||true}}"
+      enable-progress-gesture="{{props['enable-progress-gesture']||true}}"
+      object-fit="{{props['object-fit']||'contain'}}"
+
+      poster="{{props['poster']||''}}"
+      show-mute-btn="{{props['show-mute-btn']||false}}"
+      play-btn-position="{{props['play-btn-position']||'bottom'}}"
+      enable-play-gesture="{{props['enable-play-gesture']||false}}"
+      auto-pause-if-navigate="{{props['auto-pause-if-navigate']||true}}"
+      auto-pause-if-open-native="{{props['auto-pause-if-open-native']||true}}"
+      vslide-gesture="{{props['vslide-gesture']||false}}"
+      vslide-gesture-in-fullscreen="{{props['vslide-gesture-in-fullscreen']||true}}"
+      ad-unit-id="{{props['ad-unit-id']||''}}"
+
+      poster-for-crawler="{{props['poster-for-crawler']||''}}"
+      show-casting-button="{{props['show-casting-button']||false}}"
+      picture-in-picture-mode="{{props['picture-in-picture-mode']||''}}"
+      picture-in-picture-show-progress="{{props['picture-in-picture-show-progress']|| false }}"
+      enable-auto-rotation="{{props['enable-auto-rotation']|| false }}"
+      show-screen-lock-button="{{props['show-screen-lock-button']|| false }}"
+      show-snapshot-button="{{props['show-snapshot-button']|| false }}"
+
+      bindplay="{{props['bindplay'] ? 'itemMethod' : ''}}"
+      bindpause="{{props['bindpause'] ? 'itemMethod' : ''}}"
+      bindended="{{props['bindended'] ? 'itemMethod' : ''}}"
+      bindtimeupdate="{{props['bindtimeupdate'] ? 'itemMethod' : ''}}"
+      bindfullscreenchange="{{props['bindfullscreenchange'] ? 'itemMethod' : ''}}"
+      bindwaiting="{{props['bindwaiting'] ? 'itemMethod' : ''}}"
+      binderror="{{props['binderror'] ? 'itemMethod' : ''}}"
+      bindprogress="{{props['bindprogress'] ? 'itemMethod' : ''}}"
+      bindloadedmetadata="{{props['bindloadedmetadata'] ? 'itemMethod' : ''}}"
+      bindcontrolstoggle="{{props['bindcontrolstoggle'] ? 'itemMethod' : ''}}"
+
+      bindenterpictureinpicture="{{props['bindenterpictureinpicture'] ? 'itemMethod' : ''}}"
+      bindleavepictureinpicture="{{props['bindleavepictureinpicture'] ? 'itemMethod' : ''}}"
+      bindseekcomplete="{{props['bindseekcomplete'] ? 'itemMethod' : ''}}"
+      
+      data-evt="{{util.dataEvt(props, ['bindplay', 'bindpause', 'bindended', 'bindtimeupdate', 'bindfullscreenchange', 'bindwaiting', 'binderror', 'bindprogress', 'bindloadedmetadata', 'bindcontrolstoggle', 'bindenterpictureinpicture', 'bindleavepictureinpicture', 'bindseekcomplete', 'tap', 'aim'])}}"
+    />
+  </block>
+</template>

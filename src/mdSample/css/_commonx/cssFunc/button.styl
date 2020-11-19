@@ -1,0 +1,34 @@
+/**
+ * 注意 +prefix-classes 不能为数字开头，如果颜色以数字开头的话 ，统一在前面加个字母 c 如： .c227ce1
+ * @type {[type]}
+ */
+
+btnConfig = {
+  $bgc: $btn-bgc-default
+  $pcolor: $btn-bgc-default
+}
+
+ss-btnFunc($class = '.btn-default', $config = false)
+  cfg = merge({}, btnConfig, $config)
+  {$class}
+    background-color: cfg.$bgc
+    border-color: @background-color
+    color: #fff
+    outline: none     //去除focus出现的边框
+    &:hover
+      background-color: darken(@background-color, 15%)
+      border-color: @background-color
+    &.plain
+      background-color: #fff
+      border-color: cfg.$bgc
+      color: cfg.$pcolor
+      &:hover
+        background-color: fade-out(@border-color, .9)
+        border-color: @border-color
+
+  // if (var(--icon))
+  //   ss-display-flex(row nowrap, center, center, center)
+  //     &:before
+  //       content: var(--icon)
+  //       margin-right: 10px
+  //       font-size: 16px

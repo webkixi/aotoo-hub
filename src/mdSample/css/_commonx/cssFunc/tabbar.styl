@@ -1,0 +1,104 @@
+@import '../config/config'
+ss-custom-tabbar()
+  .tab-boxer
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 112rpx
+    width: 100vw;
+    display: flex;
+    justify-content: flex-start
+    box-sizing: border-box;
+    background: #fff
+    box-shadow: $box-shadow-top
+    z-index 9999
+  .tab-item
+    box-sizing: border-box;
+    flex: 1 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-size: 24rpx;
+    color: #333
+    &.active
+      color: #2773F5
+    .himg
+      margin-bottom: 10rpx
+    .tab-item-red
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      min-width: 18rpx;
+      min-height: 18rpx;
+      border-radius: 18rpx;
+      background-color: red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      overflow: hidden;
+      top: 5px;
+      left: 60%;
+      font-size: 20rpx;
+      /* padding: 5rpx; */
+      &.len1 
+        top: -2px;
+        left: 58%;
+        width: 26rpx;
+        height: 26rpx;
+        padding: 5rpx;
+      &.len2
+        top: -2px;
+        left: 56%;
+        padding: 0 10rpx;
+      &.len3
+        top: -2px;
+        left: 56%;
+        padding: 0 10rpx;
+      &.len4
+        top: -2px;
+        left: 56%;
+        padding: 0 10rpx;
+    &.tab-icon .himg
+      width: 42rpx;
+    &.tab-icon.bigger
+      margin-top: -6px;
+      .himg
+        width: 48px
+  // .tab-item:nth-child(1):before{
+  //   content: '♘';
+  //   font-size: 40px;
+  //   height: 45px;
+  // }
+  // .tab-item:nth-child(2):before{
+  //   content: '♕';
+  //   font-size: 40px;
+  //   height: 45px;
+  // }
+  // .tab-item:nth-child(3):before{
+  //   content: '♔';
+  //   font-size: 40px;
+  //   height: 45px;
+  // }
+  // .tab-item:nth-child(4):before{
+  //   content: '♙';
+  //   font-size: 40px;
+  //   height: 45px;
+  // }
+  // .tab-item:nth-child(5):before{
+  //   content: '☆';
+  //   font-size: 40px;
+  //   height: 45px;
+  // }
+
+
+
+
+  // .tab-boxer .tab-item.tab-icon::before {
+  //   display: none;
+  // }
+
+

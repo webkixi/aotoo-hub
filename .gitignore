@@ -7,4 +7,8 @@ dist
 .vscode
 aotooExtends
 /src/*
+!/src/reactSample/
+!/src/mdSample/
 !/src/aotooSample/
+!/src/vueSample/
+!/src/xcxSample/

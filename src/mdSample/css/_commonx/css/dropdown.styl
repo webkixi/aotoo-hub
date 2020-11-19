@@ -1,0 +1,173 @@
+/*
+  下拉控件
+*/
+.item-tag-list
+  margin-bottom: -2px
+  display: inline;
+.valus-close
+  background: $color-bg-special
+  border: 1px solid $color-line-input
+  border-radius: 2px
+  color: $color-text-title
+  cursor pointer
+  display: inline-flex
+  padding: 3px 8px 3px 10px
+  margin-right: 2px
+  position: relative
+  margin-bottom: 2px
+  line-height: 20px
+  &.ellipsis-1
+    .item-title
+      ss-textellipsis(1)
+  [class*='close']
+    ss-icon($icon-del, 16px, $color-text, $isFlex: inline-block, $pseudo: after, $activeColor: $color-aux-fail)
+    color: $color-text
+    margin-left: auto
+    &:after
+      margin-left: 5px
+  &:hover
+    border-color: $color-primary 
+    background: #fff
+    color: @border-color
+  &:last-child
+    margin-right: 0
+
+.entertag
+  border: 1px solid $color-line-input
+  border-radius: 3px
+  padding: 3px 3px 1px 3px
+  // ss-display-flex(row wrap, flex-start, center)
+  display: block
+  input[type='text']
+    border: none
+    background: transparent
+    padding: 3px 7px;
+    height: 28px;
+    line-height: 28px;
+    width: auto
+    flex: 1
+    display: inline
+    &.disabled
+      display: none
+
+.dropdown
+  [class*='head-input']
+    @extends .entertag
+  &.pop-noscroll-width
+    .dropdown-pop
+      min-width: auto
+      overflow: hidden
+  .dropdown-head-input
+    >.item-close
+      ss-icon($icon-del, false, $borderColor, $isFlex: inline-block, $pseudo: after)
+      ss-position(absolute, $top: calc(50% - 8px), $right: 10px)
+      &.active
+        display: block
+  .dropdown-pop
+    position: absolute
+    left 0
+    min-width: 100%
+    margin-top: 1px
+    border: 1px solid $color-line-input
+    border-radius: $br
+    box-shadow: $box-shadow-pop
+    background: #fff
+    line-height: 32px
+    z-index $zidx-l 
+    display: none
+    ss-func-customscroll('&', {$height: 258px, $min-height: 32px})
+    &.active
+      display: block
+    .nodata
+      color: $color-text-info
+      padding: 0 10px
+    .nofind
+      color: $color-aux-fail
+      padding: 0 10px
+    .pop-list
+      .nofind
+        color: $color-aux-fail
+        // padding: 8px 10px
+
+.pop-list
+  color: $color-text-title
+  em 
+    font-weight: normal
+    font-style: normal
+    color: $color-primary
+  em
+    color: $color-primary
+  >.item
+    padding: 0 10px
+    &:not(.item-li)
+      color: $color-text-info
+  >.item-li
+    cursor pointer
+    display: flex
+    &:hover
+      background: $color-bg-special
+      color: $color-primary
+  &.item-poi
+    >.item-li
+      &:after
+        content: attr(data-name)
+        color: $color-text-info 
+        margin-left: auto
+        font-family: $font-family!important
+  &.checkRight
+    >.item-li
+      &.active
+        &:after
+          content: '\e7ea'
+          color: $color-primary
+          margin-left: auto
+  // &.norml
+  //   line-height: 20px
+  //   >.item
+  //     padding: 8px 10px
+
+
+
+
+
+.list-level
+  height: 258px
+  ss-display-flex(row nowrap, flex-start)
+  line-height: 32px
+  >.item
+    min-width: 178px
+    // flex: 1
+    border-left: 1px solid $color-line-input
+    ss-func-customscroll('&', {$height: 100%})
+    &:first-child
+      border-left: none
+    &.last
+      .item-li
+        &:after
+          display: none
+  .item-icon
+    &:before
+      content: $checkbox
+      color: $color-line-input
+      margin-right: 5px
+    &.active
+      &:before
+        content: $checkboxChecked
+        color: $color-primary
+  .item-li
+    padding: 0 10px
+    display: flex
+    cursor pointer
+    &:hover, &.clicked
+      background: $color-bg-special
+      color: $color-primary
+    &.has-child
+      &:after
+        content: $arrow-right
+        margin-left: auto
+    &.disabled
+       color: $color-text-disabled
+       .item-icon
+         &:before
+           color: $color-line
+           background: $color-bg-special

@@ -1,0 +1,44 @@
+//上传截图
+.cropWrap
+  max-height: none;
+  .cropper-wrapper
+    ss-display-flex(row nowrap, flex-start)
+  .crop-content
+  .crop-upload
+    ss-display-flex(row nowrap, flex-start)
+  .crop-upload-left,.cropper-container
+    width: 540px
+    height: 360px;
+    ss-display-flex(row nowrap, center, center)
+    position: relative;
+    background #E6E6EE
+  .crop-uoload-right,.cropper-right
+    background: $color-bg-special
+    padding: 20px;
+    flex: 1
+    .crropper-text
+      color: #98A0B3
+      line-height: 25px;
+      margin-top: 10px
+    .cropper-preview
+      margin: auto;
+      background #fff
+      border: 2px dashed $color-line-input
+      overflow: hidden;
+  .crop-upload-tips
+    margin-top: 10px
+    margin-bottom: -8px;
+    color: #f00;
+    display: none;
+    &:before
+      content: '\e7b8';
+      font-size: 16px;
+      color: #FC3230;
+      margin-bottom: -2px;
+  .crop-upload-file
+    position absolute;
+    clip: rect(1px,1px,1px,1px);
+    opacity: 0;
+  button
+    &:disabled
+      {btn-disabled}

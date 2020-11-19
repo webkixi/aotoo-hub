@@ -1,0 +1,428 @@
+@import '../../commonfunc'
+
+pickerInput = {
+  width: 130px
+  height: 34px
+  borderColor: #eee
+  activeBorderColor: $color-primary
+  errorBorderColor: #f00
+  icon: '\e605'
+  iconColor: #ccc
+  iconSize: 18px
+}
+
+tipsError = {
+  borderColor: #F5E2BB
+  bg: #FFFBE0
+  color: $color-warning
+  size: 12px
+  space: $padding-sm
+}
+pickerCalendar = {
+  borderColor: #d2d2d2
+  space: $space-small
+  boxShadow: $box-shadow-pop
+  width: 290px
+  doubleWidth: 580px
+  monthWidth: 260px
+
+  buttonWidth: 34px
+  buttonHoverBg: #f5f5f5
+  buttonDisabledColor: #ccc
+  buttonPrevIcon: $arrow-left
+  buttonNextIcon: $arrow-right
+
+  // doubleWidth: 498px
+  doubleDisabledSelectWidth: 208px
+}
+
+
+
+.datetimepicker-wrapper,.datepicker-wrapper
+  user-select: none; /* Non-prefixed version, currently not supported by any browser */
+  color: $color-text-title
+  &.datetimepicker-zIndex
+    z-index: 100;
+  .datetimepicker-inputs-list
+    ss-display-flex(row wrap, flex-start, center)
+    position: relative
+  .datetimepicker-input
+    width: pickerInput.width
+    height: pickerInput.height
+    cursor: pointer
+    border: 1px solid pickerInput.borderColor
+    outline: none;
+    &.focus
+      border: 1px solid pickerInput.activeBorderColor
+    &.datetimepicker-input-error-border
+      border-color: pickerInput.errorBorderColor
+  .datetimepicker-separator
+    line-height: pickerInput.height
+    padding: 0 10px
+  .datetimepicker-input-wrap
+    position: relative;
+    display: inline-block;
+    &:before
+      content: pickerInput.icon
+      position: absolute;
+      top: calc(50% - 8px);
+      right: 6px;
+      color: pickerInput.iconColor
+      font-size: pickerInput.iconSize
+  .datetimepicker-input-error
+    border: 1px solid tipsError.borderColor
+    background: tipsError.bg
+    color: tipsError.color
+    font-size: tipsError.size
+    padding: tipsError.space
+    position: absolute
+    bottom: calc(-100%);
+    left: 0;
+    z-index: 1;
+    min-width: 290px
+    &:before
+      content: ''
+      ss-triangle-hollow(left, $color: tipsError.bg, $bg: tipsError.bg)
+      // triangle-hollow( 1px solid transparent, 1px solid #F5E2BB, 1px solid #F5E2BB, 1px solid transparent, $transform: rotate(-45deg))    
+      // background: #FFFBE0;
+      position: absolute;
+      top: -4px;
+      left: 20px;  
+  .datetimepicker-calendar-wrapper
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 2px;
+    border: 1px solid pickerCalendar.borderColor
+    padding: pickerCalendar.space
+    box-shadow: pickerCalendar.boxShadow
+    border-radius: $br
+    background #fff;
+    display: none;
+    &.datetimepicker-calendar-default
+      width: pickerCalendar.width
+    &.datetimepicker-calendar-double
+      width: pickerCalendar.doubleWidth
+    &.datetimepicker-calendar-month
+      width: pickerCalendar.monthWidth
+      padding: 10px 20px 20px
+      .datetimepicker-calendar-header
+        .datetimepicker-select-header
+          width: 100px;
+  .datetimepicker-calendar-header
+    @extends $flex-wrap-center-center
+    .datetimepicker-calendar-button
+      width: pickerCalendar.buttonWidth
+      height: @width
+      border-radius: @width / 2
+      background: none;
+      border: none;
+      font-size: 14px;
+      &:hover
+        background: pickerCalendar.buttonHoverBg
+      &:disabled
+        color: pickerCalendar.buttonDisabledColor
+        &:hover
+          background: none;
+    .datetimepicker-calendar-prev:before
+      content: pickerCalendar.buttonPrevIcon
+    .datetimepicker-calendar-next:before
+      content: pickerCalendar.buttonNextIcon
+    .datetimepicker-select-header
+      position: relative;
+      flex: 1;
+      @extends $flex-wrap-center-center
+      .datetimepicker-select
+        position: relative;
+        height: (pickerCalendar.buttonWidth - 2)
+        line-height: @height
+        text-align: center;
+        background: #fff;
+        &:nth-child(1)
+          width: 80px;
+          margin-right: 10px;
+        &:nth-child(2)
+          width: 60px;
+        .datetimepicker-select-label
+          position: relative;
+          display: inline-block;
+          height: 100%;
+          cursor: pointer;
+          .datetimepicker-select-input
+            width: 100%;
+            height: @width
+            padding-left: pickerCalendar.space
+            cursor: pointer;
+          &:after
+            content: '\e64e';
+            position: absolute;
+            right: 8px;
+            font-size: 12px;
+        .datetimepicker-select-list
+          position: absolute;
+          top: calc(100% + 2px);
+          width: 120px;
+          height: 185px;
+          border: 1px solid pickerCalendar.buttonDisabledColor
+          background #fff;
+          box-shadow: 0px 3px 8px 0px rgba(0,0,0,0.2)
+          overflow-y: hidden;
+          z-index: 3;
+          visibility: hidden;
+          @extends $flex-wrap-start-start
+          .datetimepicker-select-item
+            width: (@width / 2) - 1
+            line-height: pickerCalendar.buttonWidth
+            color #666;
+            cursor: pointer;
+            &:nth-child(odd)
+              border-right: 1px solid #f3f3f3;
+            &:hover, &.selected
+              color: pickerInput.activeBorderColor
+              background #f0f7ff;
+            &.disabled
+              background #fff;
+              color: pickerCalendar.buttonDisabledColor
+              cursor: no-drop;
+        &:nth-child(1)
+          width: 80px;
+          margin-right: 10px;
+        &:nth-child(2)
+          width: 60px;
+        &.disabled
+          .datetimepicker-select-label
+            cursor: no-drop;
+            .datetimepicker-select-input
+              cursor: no-drop;
+            &:after
+              color: #ccc;
+              font-size: 12px;
+    .datetimepicker-double-header
+      ss-display-flex(row wrap, space-between, center)
+      // width: pickerCalendar.doubleWidth
+      flex: 1
+      .datetimepicker-double-month
+        width: 50%;
+        text-align: center;
+      &.disabledSelect
+        width: doubleDisabledSelectWidth
+        .datetimepicker-double-month
+          width: 100%;
+  .datetimepicker-calendar-bodys
+    ss-display-flex(row wrap, space-between, flex-start);
+    .datetimepicker-calendar-item
+      flex: 1
+      &:not(:first-child)
+        margin-left: 4%;
+    .datetimepicker-calendar-weeks
+      @extends $flex-wrap-center-center
+      width: 100%;
+      margin-top: 18px;
+      .datetimepicker-calendar-week
+        @extends $flex-wrap-center-center
+        &:only-child
+          width: 100%;
+        &:not(:only-child)
+          width: 48%;
+        &:not(:first-child)
+          margin-left: 4%;
+      .item
+        // width: calc(100% / 7.1);
+        flex: 1
+        text-align: center;
+        &:first-child, &:last-child
+          color: #ff7e11
+    .datetimepicker-calendar-wrap
+      @extends $flex-wrap-center-center
+    // .datetimepicker-calendar
+    .datetimepicker-calendar
+      @extends $flex-wrap
+      &:only-child
+        width: 100%
+      &:not(:only-child)
+        justify-content: space-between
+        width: 48%
+      &:not(:first-child)
+        margin-left: 4%
+      .datetimepicker-calendar-day
+        // @extends $flex-wrap-center-center
+        position: relative;
+        width: calc(100% / 7);
+        // height: 30px;
+        // line-height: 30px;
+        text-align: center;
+        cursor: pointer;
+        &:empty
+          height: 0;
+        &.character
+          .datetimepicker-calendar-date
+            font-size: 12px
+        &.datetimepicker-calendar-current
+          .datetimepicker-calendar-date
+            color: pickerInput.activeBorderColor
+            background: #ecf5ff
+            &:hover
+              background: pickerInput.activeBorderColor
+              color: #fff;
+        &.datetimepicker-calendar-disabled
+          .datetimepicker-calendar-date
+            color: #ccc;
+            cursor: no-drop;
+          &:not(.scopeDate)
+            .datetimepicker-calendar-date
+              &:hover
+                background: none;
+                color: #ccc;
+        .datetimepicker-calendar-date
+          display: inline-block;
+          min-width: pickerCalendar.buttonWidth
+          line-height: @min-width
+          text-align: center;
+          border-radius: (@line-height / 2)
+          position: relative;
+          z-index: 2;
+          &:hover
+            background: pickerInput.activeBorderColor
+            color: #fff;
+        &.scopeDate, &.scopeDate-hover
+          .datetimepicker-calendar-date
+            color: #fff;
+            background: pickerInput.activeBorderColor
+        &.scope-l-bg:before, &.scope-l-bg-hover:before
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: 50%;
+          height: 100%;
+          background #ecf5ff;
+        &.scope-r-bg:before, &.scope-r-bg-hover:before
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 50%;
+          height: 100%;
+          background #ecf5ff;
+        &.scope, &.scope-hover
+          background #ecf5ff
+    .datetimepicker-month-list
+      @extends $flex-wrap;
+      .datetimepicker-month
+        width: calc(100% / 3 - 17px);
+        margin-top: 20px
+        &:not(:nth-child(3n-2))
+          margin-left: 25px;
+        .datetimepicker-month-btn
+          width: 100%;
+          height: pickerCalendar.buttonWidth
+          text-align: center;
+          background: none;
+          border: none;
+          border-radius: 3px
+          &.active
+            // color: pickerInput.activeBorderColor
+            background: $color-bg-special
+          &:hover
+            background: pickerInput.activeBorderColor
+            color: #fff;
+          &:disabled
+            color: $color-text-disabled
+            &:hover
+              background: none;
+
+
+.back-datepicker
+  .datetimepicker-wrapper
+    .datetimepicker-input-error
+      border: 1px solid #fff4de
+      background: #fffce9
+      color: #333
+      padding: 6px 10px 4px 30px
+      position: absolute
+      bottom: -14px;
+      left: 9px
+      z-index: 10
+      max-width: 370px;
+      min-width: auto
+      white-space: nowrap;
+      &:before
+        content: '\e7b8';
+        color: #FC3230;
+        vertical-align: bottom;
+        position: absolute;
+        left: 10px;
+        font-size: 16px;
+        top: initial;
+        transform: initial;
+        border: none;
+        width: auto;
+        height: auto;
+.datetimepicker-wrapper
+  position: relative;
+.datepicker-wrapper
+  position: absolute;
+  display: none;
+  .datetimepicker-calendar-wrapper
+    top: 0;
+    display: block;
+.visH
+  visibility: hidden;
+.datetimepicker-time-list
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 290px;
+  margin-top: 2px;
+  border: 1px solid pickerCalendar.borderColor
+  box-shadow: pickerCalendar.boxShadow
+  background #fff;
+  display: none;
+  .datetimepicker-time-header
+    @extends $flex-wrap-center-center
+    padding: 10px 10px 0;
+    .datetimepicker-time-btn
+      width: pickerCalendar.buttonWidth
+      height: @width
+      background: none;
+      border: none;
+      &.return
+        border-radius: @width / 2
+        font-size: 14px;
+        &:hover
+          background: #f5f5f5
+        &:before
+          content: '\e615';
+    .datetimepicker-time-date
+      flex: 1
+      font-size: 14px;
+      text-align: center;
+  .datetimepicker-time-body
+    // @extends $flex-wrap
+    position: relative;
+    margin-top: 18px;
+    height: 218px;
+    .datetimepicker-time-wrap
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      &:first-child
+        left: 0;
+        border-right: 1px solid #f3f3f3;
+      &:last-child
+        right: 0;
+    .datetimepicker-hours,.datetimepicker-minus
+      height: 100%;
+      overflow-y: hidden;
+      .datetimepicker-time-item
+        text-align: center;
+        line-height: pickerCalendar.buttonWidth
+        color: #666;
+        cursor: pointer;
+        &.active
+          font-weight: bold;
+          background: #f5f5f5;
+        &:hover
+          color: pickerInput.activeBorderColor
+          background #f0f7ff;

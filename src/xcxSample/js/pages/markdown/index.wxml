@@ -1,0 +1,3 @@
+<view class="container">
+  <ui-markit dataSource="{{markdownConfig}}" textType="md" />
+</view>

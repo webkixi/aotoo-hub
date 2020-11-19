@@ -1,0 +1,287 @@
+ 
+/**
+  基本参数
+*/
+
+//lh
+// 14px-> 20 = 3
+// 16px-> 22 = 3
+// 18px -> 25 = 3.5
+
+$font-family = "Microsoft yahei", arial, Simsun, sans-serif
+
+//zindex
+$zidx-h                   = 99    //tip,屏幕垂直居中
+$zidx-m                   = 88    // fixed层 modal?
+$zidx-l                   = 77    // 下拉
+
+$zidx-ft                  = 20    // form 提示语，
+
+
+//色值分类
+
+//backgroundColor
+$color-bg               = #F0F2F5
+$color-bg-special       = #F5F6FA                           //特殊背景
+$color-bg-primary       = #fff
+
+//borderColor
+$color-line             = #E5E6ED                           //下划线
+$color-line-secondary   = $color-line                         //边框线
+$color-line-input       = #CFD2D6                           //input边线
+
+//textColor
+$color-text             = #777D8D                           //默认色
+$color-text-title       = #272E40                           //标题色
+$color-text-info        = #98A0B4                           //说明信息
+$color-text-disabled    = $color-line-input                   //禁止色
+$color-text-placeholder = $color-line-input                  //input placeholder
+
+//网站主色调
+$color-primary          = #0076FF                           //品牌色
+
+//辅助色，
+$color-aux-primary      = #4B9AFC                           // 用于辅助及搜索按钮 提示性文字链/按钮
+$color-aux-success      = #68BF7B                           // 用于保存提交成功性提示
+$color-aux-warning      = #FF7400                           // 用于副按钮，特殊按钮 提示性ICON/文字
+$color-aux-fail         = #FC3230                           // 用于网站价格显示
+
+                                
+
+//鼠标经常效果
+$color-hover            = $color-primary
+
+//字体大小
+$size-sm                = 12px    // 行高 18
+$size                   = 14px    //用于网站整体字体的大小 行高 20
+$size-info              = 18px    //适用于重要文字信息，特殊标签页 行高 24
+$size-title-sm          = 16px    //小标题 行高 26
+$size-title             = 20px    //大标题 行高 28
+$size-title-lg          = 24px    //特殊 行高 32
+
+
+
+
+/*
+  距离
+*/
+$space = 30px
+$space-minor = 20px      //比如
+$space-small = 10px      //比如按钮之间
+
+$space-dispaly = 10px 20px  //文字 上下左右 比如层里的
+
+$icon-dist = 8px                      //文字与图标之前的距离
+
+//padding  用于框框包住的文字...
+$padding = 6px 20px
+$padding-sm = 6px $space-small
+
+/*
+  圆角
+*/
+$br = 3px
+$br-lg = 10px       //列表 modal
+
+
+/*
+  按钮   色值, 大小
+*/
+$btn-radius = $br
+$btn-radius-lg = 20px
+
+//失效
+$btn-dislabel-color = #ccc
+$btn-dislabel-bgc = $color-bg
+$btn-dislabel-bc = $color-line
+
+//背景实色  文字统一白色
+$btn-bgc-default = $color-primary     //背景色
+$btn-bc-default = $color-primary      //边线
+
+$btn-bgc-primary = $color-aux-primary     //背景色
+$btn-bc-primary = $color-aux-primary      //边线
+// $btn-c-primary = #fff       //文字色
+
+$btn-bgc-minor = $color-aux-warning     //背景色
+$btn-bc-minor = $color-aux-warning      //边线
+// $btn-c-minor = #fff       //文字色
+
+
+//背景是白色    默认背景统一白色  因为色值跟同上 所以无需再写
+$btn-bgc-grey = $color-line-input      //边线
+$btn-bc-grey = #fff      //文字色
+
+
+btn-default = {
+  // width: 326px
+  padding: 0 20px
+  line-height: 32px
+  font-size: $size
+}
+btn-lg = {
+  padding: 0 50px
+  line-height: 50px
+  font-size: $size-lg
+  font-weight: bold
+}
+btn-sm = {
+  padding: 0 12px
+  line-height: 24px
+  font-size: $size-sm
+}
+btn-disabled = {
+  background: $btn-dislabel-bgc
+  border: $btn-dislabel-bc
+  color: $btn-dislabel-color
+}
+
+
+//tag
+tag-default = {
+  padding: 0 5px
+  line-height: 16px
+  font-size: $size-sm
+}
+tag-lg = {
+  font-size: $size
+}
+
+
+
+
+//图片大小
+pic-default = {
+  width: 100%
+  height: auto
+}
+
+pic-lg = {
+  width: 100%
+  height: 214px
+}
+pic-sm = {
+  width: 48%
+  height: 186px
+}
+pic-banner = {
+  width: 100%
+  height: 340px
+}
+
+//正方形图片大小  s代表square正方形
+pic-default-s = {
+  width: 100px
+  height: 100px
+  border-radius: 0
+}
+pic-lg-s = {
+  width: 150px
+  height: 150px
+  border-radius: 0
+}
+pic-sm-s = {
+  width: 80px
+  height: 80px
+  border-radius: 0
+}
+
+pic-special-s = {
+  width: 400px
+  height: 400px
+  border-radius: 0
+}
+
+//圆角 border-radius
+$br-default = 8px
+$br-lg = 12px
+$br-sm = 4px
+$br-circle = 100%
+
+// $tag-br = 4px
+// $tag-default-color = $color-aux-primary
+// $tag-primary-color = $color-aux-warning
+// $tag-minor-color = $color-aux-fail
+// $tag-special-color = $color-aux-success
+
+// $tag-padding = 0 16px
+// $tag-height = 32px
+// $tag-fs = 22px
+// $tag-lh = 32px
+
+// $tag-br2 = 4px
+// $tag-padding2 = 0 8px
+// $tag-height2 = 30px
+// $tag-fs2 = 18px
+// $tag-lh2 = 30px
+
+
+$line-height-title = 70px
+
+
+
+//箭头色
+$arrow-default-color = #ccc
+
+
+//阴影
+$box-shadow = 0px 5px 15px 0px rgba(38,47,64,0.15);         //四周
+$box-shadow-tips = 1px 5px 15px 0px rgba(38,48,64,0.15);      //适用于tips modal
+$box-shadow-pop = 0px 4px 15px 0px rgba(0, 0, 0, 0.1);      //适用于pop
+$box-shadow-top = 0px 0px 15px 0px rgba(38,48,64,0.15);
+// $box-shadow-bottom = 0px 10px 12px 0px rgba(0, 0, 0, 0.05);
+// $box-shadow-btn = 0px 0px 12px 0px rgba(0,69,186,0.5)
+//透明层
+$mask-bg = fade-out(#000, .5)
+
+
+/*
+  tips
+*/
+$tips-icon = $icon-warning
+$tips-icon-color = $color-aux-warning
+$tips-icon-sucess = $icon-sucess
+$tips-icon-sucess-color = $color-aux-success 
+$tips-icon-fail = $icon-fail
+$tips-icon-fail-color = $color-aux-fail 
+$tips-icon-size = 24px
+$tips-icon-size-sm = 16px   //表单性提示
+$tips-size = $size 
+$tips-size-sm = 10px      //表单性提示
+$tips-color = $color-text-title
+$tips-mg = 12px     //icon与文字之间的间距
+$tips-mg-sm = 6px     //icon与文字之间的间距
+
+$tips-padding = $padding
+$tips-padding-sm = $padding-sm
+
+tips-form = {
+ position: absolute
+ bottom: -20px 
+ left: 10px
+}
+
+//tips框带箭头
+$tips-arrow-size = 10px
+$tips-arrow-size-sm = 5px
+
+$tips-bg = lighten($color-aux-fail, 90%)
+$tips-bc = lighten($color-aux-fail, 70%)
+
+$tipsx-bg-2 = #fff
+$tipsx-bc-2 = $color-line-input
+
+//背景白色
+$tipsx-bg = #fff
+$tipsx-bc = $color-line-input
+
+/*
+  modal
+*/
+
+
+
+
+@import './icon'
+@import './input'
+@import './pagesConfig'

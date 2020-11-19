@@ -1,0 +1,83 @@
+
+defaultCfg = {
+  $width: 300px
+  $bg: fade-out(#000, .5)
+  $bg2: $color-bg-primary
+  $br: $br
+  $padding: $space
+  $inputHei: 40px
+  $br: $br-lg
+  $formMl: 80px
+  $center: false
+}
+ss-login($class = '.login-form', $config = false)
+  cfg = merge({}, defaultCfg, $config)
+  .pages-login
+    background: cfg.$bg
+    background-size: cover
+    background-position: 50% 50%
+    width: 100%
+    height: 100%
+    position: relative
+    @extends $column-center-center
+    .item-copyright
+      margin-top: 40px
+      color: $color-text-disabled
+      font-size: $size-sm
+  .pages-login-logo
+    position: absolute
+    top: -60px
+    left: 0
+  .pages-login-body
+    @extends $flex-nowrap
+    background: cfg.$bg2
+    border-radius: cfg.$br
+    padding: cfg.$padding
+    position: relative
+  {$class}
+    width: cfg.$width
+    margin-left: cfg.$formMl if cfg.$formMl
+    margin-bottom: -15px
+    ss-display-flex(column, center) if cfg.$center
+    .checkboxGroup
+      margin-bottom: 32px
+    .inputItem
+      margin-bottom: 15px
+      &.item-code
+        position: absolute
+        right: 0
+        bottom: 0
+        height: cfg.$inputHei
+        width: 110px
+        border-left: 1px solid $borderColor
+        cursor: pointer
+        margin: 0
+        .form-span
+          display: block
+          height: 100%
+        img
+          width: 100%
+          height: 100%
+      &.item-btn
+        font-weight: bold
+        font-size: 16px
+        margin-top: 30px
+    .fkp-content
+      flex: 1
+      @extends $column
+      input
+        order: 2
+    button, input
+      border-radius: @border-radius
+      width: 100%
+      height: cfg.$inputHei
+    .checkboxItem
+      margin: 0
+      color: #666
+      .fkp-content
+        flex: inherit
+    .warning,.error
+      margin-bottom: 10px
+      position: initial
+    .ss-button
+      box-shadow:1px 5px 10px 0px rgba(0,118,255,0.3);

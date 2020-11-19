@@ -1,0 +1,59 @@
+stepsColumnCfg = {
+  $iconWid: 16px
+  $space: 20px
+}
+
+ss-func-steps-list-column-dot($class= '.steps-list-column-dot', $config = false)
+  cfg = merge({}, stepsColumnCfg, $config)
+  {$class}
+    .item-del
+      position: absolute
+      top: $space-minor
+      right: $space-minor
+      cursor: pointer
+      @extends $color-primary
+    .ss-item
+      position: relative
+      padding-bottom: cfg.$space
+      @extends $flex-nowrap
+      &:before 
+        content: ''
+        border: 2px solid $color-primary
+        background: #fff
+        box-sizing: border-box
+        width: cfg.$iconWid
+        height: @width
+        border-radius: @width
+        display: block
+        position: relative
+        z-index 2
+        margin-top: cfg.$space
+        flex: 0 0 auto
+      &:after
+        content: ''
+        width: 2px
+        background: $color-line
+        position: absolute
+        top: cfg.$space
+        left: (cfg.$iconWid / 2) - 1
+        height: 100%
+        display: block
+        z-index 1
+      &.last
+        align-items: center
+        &:before
+          content: '+'
+          margin-top: 0
+          line-height: 10px
+          font-size: cfg.$iconWid
+          color: #fff
+          background: $color-primary
+          font-weight: bold;
+          text-align: center;
+        &:after
+          display: none
+  .demo-steps-form
+    background: $color-bg
+    padding: 20px
+    flex: 1
+    ss-func-absolute-triangle($absoluteCfg: {$top: cfg.$space, $left: -16px}, $triangleCfg: {$direction: 'left', $size: 8px, $color: $color-bg})

@@ -1,0 +1,109 @@
+$height = 88rpx
+$color = #333
+$padding = 0 20rpx
+
+
+.hkv-between
+  height: 100%
+  >ui-item
+    >.hkv
+      ss-display-flex(column, space-between)
+      height: 100%
+.hkv-around
+  height: 100%
+  >ui-item
+    >.hkv
+      ss-display-flex(column, space-around)
+      height: 100%
+
+// .item-bodyx
+//   ss-display-flex(row nowrap, flex-start)
+//   >.hkv
+//     flex: 1
+
+
+// .item-bodyx-aim
+//   >.hb-item
+//    @extends .item-bodyx
+  
+// .item-bodyx-aim-between
+//   @extends .item-bodyx-aim
+//   >.hb-item
+//     @extends .hkv-between
+// .item-bodyx-aim-around
+//   @extends .item-bodyx-aim
+//   >.hb-item
+//     @extends .hkv-around
+
+   
+.item-normal-row
+  ss-display-flex(row nowrap, flex-start)
+  &:last-child
+    border-bottom: none
+  .hbody
+    border-bottom: 1rpx solid #e3e3e3
+    margin-left: 20rpx
+    padding: 20rpx 0
+    flex: 1
+
+
+//选中后 后边出现打勾
+.item-check
+  line-height: $height
+  color: $color
+  padding: $padding
+  ss-display-flex(row nowrap, space-between, center)
+  &.bb-line
+    border-bottom: 1rpx solid $color-border
+  &.nopd
+    padding: 0
+  &.active
+    color: $color-primary
+    &:after
+      content: '\e792'
+
+ssfunc-item-c-progress()
+  .item-c-progress
+    padding-left: 40rpx
+    position: relative
+    &:before
+      content: ''
+      border: 4rpx solid #ccc
+      width: 20rpx
+      height: @width 
+      position: absolute
+      top: 10rpx
+      left: 0rpx
+      border-radius: @width
+      z-index 2
+      background: #fff
+      box-sizing: border-box
+    &:after
+      content: ''
+      width: 1rpx
+      height: 100%
+      position: absolute
+      top: 12rpx
+      left: 9.5rpx
+      background: #ccc
+      z-index 1
+    &.noborder
+      &:after
+        display: none
+    &.current
+      &:before
+        background: #ccc
+
+ssfunc-adder()
+  .adderSubtractor
+    ss-display-flex(row nowrap, flex-start, center)
+    color: $color-hover
+    .itemx
+      color: $color-primary
+      font-size: 48rpx
+      &.disabled
+        color: #ccc
+    .item-val
+      min-width: 40rpx
+      text-align: center
+      margin: 0 9rpx

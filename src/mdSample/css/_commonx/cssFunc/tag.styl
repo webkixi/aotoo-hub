@@ -1,0 +1,31 @@
+
+// ss-tag($backgroud = #fff, $border = 1rpx solid #ccc,$color = #333, $br = 0, $padding = 0 8px, $height = 18px, $font-size = 12px, $line-height = 18px, $isflex = true)
+//   background: $backgroud
+//   border: $border
+//   border-radius: $br
+//   color: $color
+//   font-size: $font-size
+//   font-style: normal
+//   padding: $padding
+//   height: $height
+//   line-height: $line-height
+//   box-sizing: border-box
+//   // if ($isflex == true)
+//   //   ss-display-flex(row nowrap, flex-start, center, center)
+
+
+btnConfig = {
+  $bgc: $btn-bgc-default
+  $pcolor: $btn-bgc-default
+}
+
+ss-tagFunc($class = '.tag-default', $config = false)
+  cfg = merge({}, btnConfig, $config)
+  {$class}
+    background-color: cfg.$bgc
+    border-color: @background-color
+    color: #fff
+    &.plain
+      background-color: #fff
+      border-color: @border-color
+      color: cfg.$pcolor

@@ -1,0 +1,74 @@
+iconfont()
+  +cache()
+    font-family:"iconfont" !important
+    font-style:normal
+    -webkit-font-smoothing: antialiased
+    // -webkit-text-stroke-width: 0.2px
+    -moz-osx-font-smoothing: grayscale
+    // font-size: 16px
+
+content(n, isIcfont = true)
+  //判断isIcfont是否存在，来区别如果不是iconfont的话 不需要上面的
+  if (isIcfont == true)
+    if (n != '')
+      iconfont()
+  content: n
+
+ss-icon-func($class='.item-icon', $icon = false)
+  {$class}
+    &:before
+      content: $icon
+
+//新增 $pseudo 来替换$before
+ss-icon($content = '\e620', $fontSize = 12px, $color = inherit, $before = false, $activeColor = false, $disabledColor = false, $isFlex = false, $space = false, $pseudo = before)
+  if ($isFlex == center)
+    ss-display-flex(row nowrap, center, center)
+  else if ($isFlex == true)
+    display: inline-flex
+    align-items: center
+  else if ($isFlex == flex)
+    display: flex
+    line-height: $fontSize
+  else 
+    display: $isFlex if $isFlex
+  &:{$pseudo}
+    if ($content == 'default')
+      content: ''
+    else 
+      content: $content if $content
+    color: $color if $color
+    font-size: $fontSize if $fontSize
+    if ($space)
+      margin-right: $space if $pseudo == before
+      margin-left: $space if $pseudo == after
+    if ($isFlex == false)
+      display: inline-block
+      vertical-align: middle
+  if ($activeColor)
+    &:hover, &.active
+      cursor: pointer
+      &:{$pseudo}
+        color: $activeColor
+  if ($disabledColor)
+    &.disabled
+      &:{$pseudo}
+        color: $disabledColor
+  // else
+  //   &:after
+  //     content: $content
+  //     color: $color
+  //     font-size: $fontSize
+  //     margin-left: $space if $space
+  //     if ($isFlex == false)
+  //       display: inline-block
+  //       vertical-align: middle
+  //   if ($activeColor)
+  //     &:hover, &.active
+  //       &:after
+  //         color: $activeColor
+  //   if ($disabledColor)
+  //     &.disabled
+  //       &:after
+  //         color: $disabledColor
+
+    

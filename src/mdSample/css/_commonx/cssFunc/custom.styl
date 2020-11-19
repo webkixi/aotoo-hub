@@ -1,0 +1,106 @@
+box-shadow(args...)
+  if (args != 'none')
+    box-shadow: args
+    -webkit-box-shadow: args
+
+//背景透明度
+ss-bg-opacity($background = #333, $height = 54px, $opacity = 0.6, $abs = bottom)
+  background: $background
+  width: 100%;
+  height: $height
+  opacity: $opacity
+  position: absolute;
+  left: 0;
+  if ($abs == bottom)
+    bottom: 0
+  else if($abs == top)
+    top: 0
+  z-index: 15
+
+//自定义滚动条
+customScrollCfg = {
+  $height: 300px
+  $scrollbar: 5px
+  $scrollbarHei: 1px
+  $br: 3px
+  $hoverbg: fade-out(#999, .7)
+  $min-height: false
+  $scroll: y
+}
+ss-func-customscroll($class = '.hlist', $config = false)
+  cfg = merge({}, customScrollCfg, $config)
+  {$class}
+    if (cfg.$scroll == x)
+      overflow-x: auto
+      width: 100%
+    else
+      overflow-y: auto
+      if (cfg.$height != false)
+        if (cfg.$min-height != false)
+          min-height: cfg.$min-height
+          max-height: cfg.$height
+        else 
+          height: cfg.$height
+    
+    &::-webkit-scrollbar      /*滚动条整体样式*/
+      width: cfg.$scrollbar    /*高宽分别对应横竖滚动条的尺寸*/
+      height: cfg.$scrollbarHei
+    &::-webkit-scrollbar-thumb        /*滚动条里面小方块*/
+      border-radius: cfg.$br 
+      background: rgba(153,153,153, .5)
+      &:hover
+        background: rgba(153,153,153, 1)
+        cursor: pointer
+        // background: cfg.$hoverbg       //色值不对，
+    &::-webkit-scrollbar-track        /*滚动条里面轨道*/
+      border-radius: cfg.$br 
+
+//块状
+ss-func-display-div($class='.display', $config = false)
+  cfg = merge({}, displayDivCfg, $config)
+  {$class}
+    background: cfg.$bg if cfg.$bg
+    border: cfg.$border if cfg.$border
+    border-radius: cfg.$br if cfg.$br
+    box-shadow: cfg.$bs if cfg.$bs
+    color: cfg.$color if cfg.$color
+    padding: cfg.$padding if cfg.$padding
+
+
+
+// 中间线
+hrCfg = {
+  $lineColor: #818078
+  $color: #818078
+  $bg: #fcfcfa
+  $pointer: false
+}
+ss-hr-text($class ='.hr-text', $config = false)
+  cfg = merge({}, hrCfg, $config)
+  {$class}
+    line-height: 1em
+    position: relative
+    outline: 0
+    border: 0
+    color: black
+    text-align: center
+    height: 1.5em
+    cursor: pointer if (cfg.$pointer)
+    // opacity: 0.5
+    &:before
+      content: ''
+      background: linear-gradient(to right, transparent, cfg.$lineColor, transparent)
+      position: absolute
+      left: 0
+      top: 50%
+      width: 100%
+      height: 1px
+    &:after
+      content: attr(data-content)
+      position: relative
+      display: inline-block
+      color: black
+      padding: 0 0.5em
+      line-height: @height
+      color: cfg.$color
+      background-color: cfg.$bg

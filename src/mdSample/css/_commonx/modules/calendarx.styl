@@ -1,0 +1,279 @@
+vendors = official
+/*
+  如果日历里有popup,需要在业务上引用popup样式, '.popup-box-2'
+*/
+.calendar
+  width: 100%
+  border: 1px solid $color-line-secondary
+.calendar-header
+  ss-display-flex(row nowrap, space-between)
+  padding: 12px 10px
+  border-bottom: 1px solid $color-line-secondary
+.calendar-bodys
+  ss-display-flex(row nowrap, flex-start, center,center)
+  min-height: 380px
+  padding: 0 10px
+  .calendar-day-right
+    width: 100%
+.calendar-week-list
+  background: #fff
+  border-bottom: 1px solid $color-line-secondary
+  color: $color-text
+  line-height: 40px
+  font-size: 14px
+  position: relative
+  z-index 1
+  ss-display-flex(row nowrap)
+  .item
+    width: 14.25%
+    text-align: center;
+.calendar-day
+  ss-display-flex(row wrap, flex-start,flex-start,flex-start)
+  // height: 340px
+  flex: 1
+  font-size: 14px
+  position: relative
+  margin-left: -20px
+  margin-top: -2px
+  // &:before
+  //   content: ''
+  //   width: 2px 
+  //   height: 100%
+  //   background: fade-out(#FF7400, .4)
+  //   position: absolute
+  //   top: 0
+  //   left:0
+  //   z-index: 1
+  .item
+    border-top: 2px solid $color-line
+    width: (1 / 7) * 100% - 2%
+    margin-left: 2%
+    height: 120px
+    position: relative
+    padding: 10px
+    &.calendar-disabled
+      color: $color-text-disabled 
+    &.calendar-optional
+      &:hover
+        border-color: $color-aux-warning
+        background-color: fade-out(#FF7400, .9)
+        .popup-box-2
+          display: block
+    &:nth-child(7n)
+      .popup-box-2
+        right: 0;
+        left: inherit;
+        &:before
+          right: 25px
+          left: inherit;
+    .popup-box-2
+      display: none
+      position: absolute
+      top: 100%
+    >div
+      z-index: 3
+    .cdh-date
+      font-weight: bold
+      font-size: $size-title-sm
+  .calendar-day-head
+    ss-display-flex(row nowrap, space-between, center)
+  .item-lr
+    ss-display-flex(row nowrap, flex-start, center)
+    font-size: $size-sm
+    margin-top: 2px
+    .item-title
+      min-width: 80px
+      color: $color-text
+//   &.calendar-noleft
+//     width: 694px;
+//     border: 2px solid #f8f8f8
+//     padding: 0
+//     // border-left: 1px solid #6aaadb
+//     .calendar-wrap
+      
+//       .calendar-bodys
+//         border: none
+//         margin: 0
+//       .calendar-day-right
+//         padding: 0
+//         border-left: none
+//   .calendar-wrap
+//     width 100%;
+//     .calendar-header
+//       ss-display-flex(row nowrap,center,center,center)
+//       height: 42px;
+//       background #4b9afc
+//       color: #fff;
+//       width: 100%
+//       font-size: 16px
+//     .calendar-prev,.calendar-next
+//       width: 42px;
+//       height: 42px;
+//       border: none;
+//       background: none;
+//       color: #fff;
+//       &:before
+//         font-size: 22px;
+//     .calendar-prev
+//       &:before
+//         content: '\e615';
+//     .calendar-next
+//       &:before
+//         content: '\e618';
+//     .calendar-month
+//       width: 100%;
+//       height: 50px;
+//       text-align: center;
+//       line-height: @height
+//       flex: 1
+//     .calendar-month-list
+//       width: 100%;
+//       height: 50px;
+//       text-align: center;
+//       line-height: 42px;
+//       flex: 1
+//       ss-display-flex(row wrap,flex-start,center,center)
+//       font-size: 16px
+//       font-weight: bold
+//       .item
+//         height: 40px;
+//         margin: 0 19px;
+//         padding: 0 10px;
+//         border-bottom: 4px solid transparent;
+//         cursor: pointer;
+//         color: #999;
+//         &.active
+//           color: #227ce1;
+//           border-bottom-color: #227ce1;
+    
+//     .calendar-day-left
+//       ss-display-flex(row, center, center, center)
+//       width: 40px;
+//       height: 100%;
+//       text-align: center
+//     .calendar-day-right,.datepick-day-wrap
+//       width: 100%
+//       height: 100%;
+//       // overflow: hidden;
+//     .calendar-day-right
+//       padding: 14px
+//       border-left: 1px solid #6aaadb
+//     .datepick-day-wrap
+//       ss-display-flex(column,flex-start)
+//     .calendar-week-list
+//       line-height: 40px
+//       font-size: 14px
+//       color: $color-text
+//       ss-display-flex(row nowrap)
+//       background: #fff
+//       z-index 1
+//       border-bottom: 1px solid $color-line
+//       .item
+//         width: 14.25%
+//         text-align: center;
+        
+//     .calendar-day-head
+//       ss-display-flex(row nowrap, space-between, center)
+//       width: 100%
+//       min-height: 12px
+//       .cdh-date
+//         color: $color-text-title
+//         font-weight: bold
+//         font-size: 16px
+//       .cdh-state
+//         color: #666
+//         font-size: 12px
+//         font-weight: bold
+//     .calendar-day-content
+//       line-height: 14px
+//       flex: 1;
+//       margin: initial; 
+//     .item-login
+//       display: block
+//       font-size: 12px
+//       margin-top: 10px
+//       white-space: nowrap;
+//       position: relative
+//       z-index: 2
+    
+//         // &:nth-child(7n)
+//         //   .calendar-item
+//         //     &.selectedDate,&.fullDate,&.calendar-optional:hover
+//         //       &:before
+//         //         border-right: none
+//     .calendar-item
+//       .calendar-item-wrap
+//         position: relative
+//         padding: 8px 10px
+//         line-height: 12px
+//         height: 100%
+//         ss-display-flex(column, space-between, flex-start)
+//         &:before
+//           content: ''
+//           position: absolute;
+//           top: -1px;
+//           left: -1px;
+//           width: calc(100% - 2px);
+//           height: calc(100% - 2px);
+//           z-index: 1
+//       &:nth-child(7n)
+//         // color: #000
+//         .popup-box-2
+//           right: 0;
+//           left: inherit;
+//           &:before
+//             right: 25px
+//             left: inherit;
+//       &.selectedDate
+//         background: #ff7e11;
+//         color: #fff
+//         .calendar-item-wrap
+//           &:before
+//             border: 2px solid #ff7e11;
+//             z-index: 1
+//           .cdh-date,.color-ff5552,.color-ff7e11,.color-999
+//             color: #fff
+//           a 
+//             color: #fff
+//         .cdh-content
+//           font-weight: bold
+//           span
+//             color: #fff
+//       &.calendar-optional:hover
+//         .calendar-item-wrap
+//           &:before
+//             border: 2px solid #ff7e11;
+//             z-index: 2
+        
+
+//       &.disableDate
+//         background: #f7f7f7
+//         color: #ccc
+//         .calendar-item-wrap
+//           &:hover:before
+//             border: none !important
+//       >.property-ul
+//         height: 100%
+//         >li:first-child
+//           height: 100%
+
+//     .calendar-disabled
+//       // background: #f7f7f7
+//       .cdh-date
+//         color: #ccc
+//     .calendar-optional
+//       cursor: pointer
+//       &:hover
+//         .popup-box-2
+//           display: block
+//     .popup-box-2
+//       display: none
+//       box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+
+// .calendar-wrap-disabled
+//   .calendar
+//     .calendar-wrap
+//       .calendar-day-head .cdh-date
+//         color: #ccc;
+//       .calendar-day-left
+//         color: #ccc;

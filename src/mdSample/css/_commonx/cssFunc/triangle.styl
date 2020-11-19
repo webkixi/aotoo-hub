@@ -1,0 +1,82 @@
+/*
+  参数说明：
+    type: 'default' : 上(tblr)， 下(btlr)， 左(rltb)， 右(lrtb) 第一个值是实际色值，其它是transparent
+    type: 'second'(其次) : 左上(tr)，左下(lt)， 右上(tl)，右下(rt)  第一个值是实际色值，其它是transparent
+*/
+triangleCfg = {
+  $direction: top
+  $type: 'default'
+  $size: 4px
+  $color: #666
+  $size2: false
+}
+ss-triangle($config = false)
+  cfg = merge({}, triangleCfg, $config)
+  +cache()
+    width: 0;
+    height: 0;
+  if (cfg.$type == 'second')
+    if (cfg.$direction == 'tr') 
+      border-top: cfg.$size solid cfg.$color
+      border-right: cfg.$size2 || cfg.$size solid transparent
+    else if (cfg.$direction == 'lt') 
+      border-left: cfg.$size solid cfg.$color
+      border-top: cfg.$size2 || cfg.$size solid transparent
+    else if (cfg.$direction == 'tl') 
+      border-top: cfg.$size solid cfg.$color
+      border-left: cfg.$size2 || cfg.$size solid transparent
+    else
+      border-right: cfg.$size solid cfg.$color
+      border-top: cfg.$size2 || cfg.$size solid transparent
+  else
+    border-color: transparent
+    border-style: solid
+    border-width: cfg.$size2 || cfg.$size
+    if (cfg.$direction == bottom) 
+      border-top-color: cfg.$color
+    else if (cfg.$direction == left) 
+      border-right-color: cfg.$color
+    else if (cfg.$direction == right) 
+      border-left-color: cfg.$color
+    else
+      border-bottom-color: cfg.$color
+
+//有边线
+ss-triangle-hollow($direction = top, $width = 10px, $color = #ccc, $bg = #fff, $transform = rotate(-45deg))
+  width: $width
+  height: @width
+  border: 1px solid transparent
+  background: $bg
+  transform: $transform
+  if ($direction == bottom) 
+    border-left-color: $color
+    border-bottom-color: @border-left-color
+  else if ($direction == left) 
+    border-right-color: $color
+    border-bottom-color: @border-right-color
+  else if ($direction == right) 
+    border-left-color: $color
+    border-top-color: @border-left-color
+  else 
+    border-right-color: $color
+    border-top-color: @border-right-color
+  
+
+triangleAbsoluteCfg = {
+  $top: -10px
+  $left: 10px
+  $right: false 
+  $bottom: false
+}
+ss-func-absolute-triangle($absoluteCfg = false, $triangleCfg = false)
+  cfg = merge({}, triangleAbsoluteCfg, $absoluteCfg)
+  position: relative
+  &:before
+    content: ''
+    ss-triangle( $triangleCfg)
+    position: absolute
+    top: cfg.$top if (cfg.$top)
+    left: cfg.$left if (cfg.$left)
+    right: cfg.$right if (cfg.$right)
+    bottom: cfg.$bottom if (cfg.$bottom)
+

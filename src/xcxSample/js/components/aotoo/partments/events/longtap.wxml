@@ -1,0 +1,93 @@
+<wxs src="../../util.wxs" module="util" />
+
+<template name="bindEvent">
+  <view 
+    data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid']||'')}}" 
+    data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}" 
+    id="{{item.id || id||''}}" 
+    animation="{{item.animation||''}}"
+    style="{{item.style||item.itemStyle||''}}"
+    class="{{item.class||item.itemClass}}"  
+    data-evt="{{util.dataEvt(item, ['tap', 'longtap', 'longpress'])}}"
+    bind:tap= "{{item.tap ? 'itemMethod' : ''}}" 
+    bind:longtap= "{{item.longtap ? 'itemMethod' : ''}}"
+    bind:longpress= "{{item.longpress ? 'itemMethod' : ''}}"
+  >
+    <include src="../slot.wxml" />
+  </view>
+</template>
+
+<template name="catchEvent">
+  <view 
+    data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid']||'')}}" 
+    data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
+    id="{{item.id || id||''}}" 
+    animation="{{item.animation||''}}"
+    style="{{item.style||item.itemStyle||''}}"
+    class="{{item.class||item.itemClass}}"  
+    data-evt="{{util.dataEvt(item, ['catchtap', 'catchlongtap', 'catchlongpress'])}}"
+    catch:tap= "{{item.catchtap ? 'catchItemMethod' : ''}}" 
+    catch:longtap= "{{item.catchlongtap ? 'catchItemMethod' : ''}}"
+    catch:longpress= "{{item.catchlongpress ? 'catchItemMethod' : ''}}"
+  >
+    <include src="../slot.wxml" />
+  </view>
+</template>
+
+<template name="noEvent">
+  <view 
+    data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid']||'')}}" 
+    data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
+    id="{{item.id || id||''}}" 
+    animation="{{item.animation||''}}"
+    style="{{item.style||item.itemStyle || ''}}"
+    class="{{item.class||item.itemClass}}"  
+  >
+    <include src="../slot.wxml" />
+  </view>
+</template>
+
+
+<block wx:if="{{item.tap||item.longtap||item.longpress}}">
+  <template is="bindEvent" data="{{item}}"></template>
+</block>
+<block wx:elif="{{item.catchtap||item.aim||item.catchlongtap || item.catchlongpress}}">
+  <template is="catchEvent" data="{{item}}"></template>
+</block>
+<block wx:else>
+  <template is="noEvent" data="{{item}}"></template>
+</block>
+
+<!-- <block wx:if="{{item.longtap||item.longpress}}">
+  <view 
+    data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid']||'')}}" 
+    data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}" 
+    id="{{item.id || id||''}}" 
+    animation="{{item.animation||''}}"
+    style="{{item.style||item.itemStyle||''}}"
+    class="{{item.class||item.itemClass}}"  
+    data-evt="{{util.dataEvt(item, ['tap', 'longtap', 'longpress'])}}"
+    bind:tap= "{{item.tap ? 'itemMethod' : ''}}" 
+    bind:longtap= "{{item.longtap ? 'itemMethod' : ''}}"
+    bind:longpress= "{{item.longpress ? 'itemMethod' : ''}}"
+  >
+    <include src="../slot.wxml" />
+  </view>
+</block>
+<block wx:elif="{{item.catchlongtap || item.catchlongpress}}">
+  <view 
+    data-treeid="{{item && util.isObject(item.attr) && (item.attr['data-treeid'] || item.attr['treeid']||'')}}" 
+    data-id="{{(item && util.isObject(item.attr) && (item.attr['id'] || item.attr['data-id']) || '')}}"
+    id="{{item.id || id||''}}" 
+    animation="{{item.animation||''}}"
+    style="{{item.style||item.itemStyle||''}}"
+    class="{{item.class||item.itemClass}}"  
+    data-evt="{{util.dataEvt(item, ['catchtap', 'catchlongtap', 'catchlongpress'])}}"
+    catch:tap= "{{item.catchtap ? 'catchItemMethod' : ''}}" 
+    catch:longtap= "{{item.catchlongtap ? 'catchItemMethod' : ''}}"
+    catch:longpress= "{{item.catchlongpress ? 'catchItemMethod' : ''}}"
+  >
+    <include src="../slot.wxml" />
+  </view>
+</block> -->
+

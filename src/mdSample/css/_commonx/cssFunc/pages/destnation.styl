@@ -1,0 +1,152 @@
+/*
+ * 目的地控件
+ *  .ss-destination 二级数据 正常每行六列     $tier = '2'   $type = 'row' 控件1
+    .ss-destination-title 带标题 三级数据     $tier = '3'   column    控件1
+    .ss-destination-title-two 左右排序    三级数据    $type = 'row' $tier = '3'     控件2
+    .ss-destination-x 二级数据 正常每行4列 $tier = '2'  $type = 'row' 控件3
+ */
+
+
+ss-func-destination($class = '.ss-destination', $type = 'column', $tier = 2, $rhlConfing = false, $rlConfig = false)
+  {$class}
+    if ($type == 'row')
+      ss-display-flex(row wrap, space-between, flex-start)
+      if ($type == 'column')
+        .level0
+          width: 47%
+    if ($tier == 3)
+      .level0
+        row-head-list('>.itemCategory', '>.caption', $rhlConfing, $rlConfig)
+        if ($type == 'column')
+          >.itemCategory>ul 
+            flex: 1
+    else
+      justify-content: flex-start
+      ss-row-list(false, $rlConfig)
+
+// //前台目的地展示
+// .tabs-hot-likecity
+//   margin: 46px 0 0 0
+//   &.custom-scroll
+//     .tabsBoxes
+//       customscroll()      //_common/_customfunc.styl
+//   .tabsMenus
+//     .hlist
+//       margin:0 auto
+//     ss-tabsMenus($font-size: 18px, $ulBorderBottom: none, $isBoderLeft: true, $uljustify: center)
+//   .tabsBoxes
+//     .hlist
+//       &:first-child
+//         margin: 0 50px 38px 50px;
+//         padding-bottom: 38px
+//       .itemrootCkb
+//         display: none
+//     span.fkp-checked-value
+//       color: #333
+//       font-weight: bold
+//       font-size: 16px
+//       margin-right: 10px 
+//       min-width: 2em
+//     a.fkp-checked-value
+//       color: #666
+//       &:hover
+//         color: $color227ce1
+//         text-decoration: underline;
+//       &.s-color
+//         color: #227ce1
+//         &:hover
+//           color: #227ce1
+//     li, a ,span
+//       line-height: 24px
+
+// .front-mudd-much    //多级数据 
+//   padding: 10px 0;
+//   display-flex(row wrap, space-between, flex-start)
+//   .level0
+//     min-height: 48px
+//     width: 47%
+//     >.itemCategory
+//       padding:16px 0
+//       border-bottom: 1px dashed $borderColor
+//       row-head-list( $marginLeft: 16px,  $align-items2: flex-start, $color2: #666 )
+//       >ul 
+//         flex: 1
+//       >a,>span
+//         min-width:2em
+//       span.fkp-checked-value
+//         font-weight: bold;
+//         font-size: 16px
+//         color: #333
+//         display: block
+//         min-width: 50px
+
+// .front-mudd-single    //一级数据 
+//   display-flex(row wrap, flex-start, flex-start)
+//   margin: 0 10% 0 19%;
+//   >li 
+//     margin-bottom: 15px
+//     width: 25%;
+//     max-width: 25%;
+
+// .front-mudd-much-2
+//   display-flex(row wrap, space-between, flex-start)
+//   // margin-top: -20px
+//   .level0
+//     // min-height: 48px
+//     // break-inside: avoid;
+//     width: 47%
+//     color: #ccc
+//     margin-bottom: 17px
+//     >.itemCategory
+//       // padding: 20px 0 0 0
+//       row-head-list($isCustomCaption: checked-value, $margin-right: 10px, $marginLeft: 10px,  $align-items2: flex-start, $color2: #666, $min-width: 40px, $captionFs: 12px, $isBorder: false, $height: 24px, $font-size: 12px)
+//       >ul 
+//         flex: 1
+//       >a,>span
+//         min-width:2em
+// .front-mudd-much-3
+//   display-flex(row wrap, space-between, flex-start)
+//   .level0
+//     width: 100%
+//     color: #ccc
+//     >.itemCategory
+//       row-head-list($isCustomCaption: checked-value, $margin-right: 20px, $marginLeft: 20px,  $align-items2: flex-start, $color2: #333,$marginBottom: 10px, $min-width: 40px, $captionFs: 12px, $isBorder: false, $height: 24px, $font-size: 12px)
+//       >ul 
+//         flex: 1
+//         >li
+//           min-width: 51px
+//       >a,>span
+//         min-width: 2em
+
+// .front-mudd-much-3-t2
+//   @extends .front-mudd-much-3
+//   .level0
+//     >.itemCategory
+//       >ul
+//         margin-left: -10px;
+//         >li
+//           width: 70px
+//           margin-left: 10px;
+//           color: #666
+//           @extends .textellipsis-auto-1
+//         a
+//           color: #666
+
+// .front-mudd-single-2    //一级数据 
+//   display-flex(row wrap, flex-start, flex-start)
+//   // margin-top: 5px
+//   font-size: 12px
+//   margin-top: -10px
+//   >li 
+//     margin-top: 10px
+//     width: 25%;
+//     max-width: 25%;
+
+// .front-mudd-single-3    //一级数据 
+//   display-flex(row wrap, flex-start, flex-start)
+//   font-size: 12px
+//   margin-top: -10px
+//   >li 
+//     width: 20%
+//     margin-top: 10px
+//     @extends .textellipsis-auto-1
