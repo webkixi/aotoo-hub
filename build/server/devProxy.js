@@ -106,12 +106,10 @@ function* getValidProxyPort(port) {
 
 function* browserOpen(name, port, isXcx) {
   if (!isXcx) {
-    setTimeout(() => {
-      browserSync.browserOpen({
-        name: name,
-        PORT: port
-      })
-    }, 3000);
+    browserSync.browserOpen({
+      name: name,
+      PORT: port
+    })
   }
 }
 
@@ -160,7 +158,7 @@ function* wpDevProxyerer(compiler, asset) {
       depth: false,
       entrypoints: true,
       excludeAssets: /app\/assets/,
-      hash: false,
+      hash: true,
       maxModules: 15,
       modules: false,
       performance: true,
@@ -217,10 +215,14 @@ function* wpProductionDone(compiler, asset) {
 }
 
 function* selectConfig(asset, ifStart) {
-  let { SRC, DIST, argv } = asset
-  const DISTSERVER = path.join(SRC, 'server')
-  const starts = argv.start ? [].concat(argv.start) : undefined
-  const path_config_file = path.join(DISTSERVER, 'configs.js')
+  let { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv, onlynode } = asset
+  
+  let DISTSERVER = path.join(SRC, 'server')
+  let starts = argv.start ? argv.start !== true ? [].concat(argv.start) : false : false
+  let path_config_file = path.join(DISTSERVER, 'configs.js')
+  if ((starts && starts.length && starts.indexOf(name) > -1) || onlynode) {
+    return asset
+  }
 
   if (ifStart) {  //非hooks传入，检测是否只是启动node
     if (starts && starts.length) {
@@ -229,7 +231,6 @@ function* selectConfig(asset, ifStart) {
       if (typeof oldConfig == 'function') {
         oldConfig = oldConfig()
       }
-      // console.log(asset);
       asset = _.merge({}, asset, oldConfig, {PORT: (argv.port||oldConfig.PORT)})
       DIST = asset.DIST
       process.env.NODE_ENV = asset.isDev ? 'development' : 'production'
@@ -244,8 +245,8 @@ function* selectConfig(asset, ifStart) {
   yield sleep(500, '==========  babel配置文件写入完成  ===========')
   yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
   yield sleep(500, '=========  server端的configs文件写入完成  ===============')
-
-  return yield asset
+  // return yield asset
+  return asset
 }
 
 const names = []
@@ -253,8 +254,7 @@ module.exports = function* myProxy(compilerConfig, asset) {
   asset = yield selectConfig(asset, true)
   const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv, onlynode } = asset
   const isXcx = (TYPE == 'mp' || TYPE == 'ali')
-  const starts = argv.start ? [].concat(argv.start) : undefined
-  
+  const starts = argv.start ? argv.start !== true ? [].concat(argv.start) : false : false
   if ((starts && starts.length && starts.indexOf(name) > -1) || onlynode) {
     yield startupNodeServer(asset)
     if (isDev) {
@@ -267,17 +267,6 @@ module.exports = function* myProxy(compilerConfig, asset) {
       if (names.indexOf(name) == -1) {
         names.push(name)
         co(function* () {
-          // const path_mapfile = path.join(DIST, 'mapfile.json')
-          // const path_config_file = path.join(DISTSERVER, 'configs.js')
-
-          // yield fillupMapfile(asset)
-          
-          // yield generateBabelCfgFile(DISTSERVER)
-          // yield sleep(500, '==========  babel配置文件写入完成  ===========')
-  
-          // yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
-          // yield sleep(500, '=========  server端的configs文件写入完成  ===============')
-
           yield selectConfig(asset)
           if (isDev && !argv.onlybuild) {
             yield startupNodeServer(asset)

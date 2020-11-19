@@ -1,81 +1,65 @@
-# 近期更新
-aotoo-hub是一套支持小程序与web/h5的开发脚手架，当然文档暂时不完善，大家参考代码为主吧，注释我都尽量写完整了  
-
-近期从aotoo-hub从分离独立的小程序原生库(很容易回归hub)，[aotoo-xquery](https://github.com/webkixi/aotoo-xquery)，欢迎关注
-
 # aotoo-hub
-aotoo-hub是一套全栈脚手架，以新版webpack4为基础，支持多项目开发，多环境部署，支持小程序，WEB, H5的开发和部署，  
-aotoo-hub只提供环境支撑，并无特定库的依赖(不包括基础库如react,vue等，暂时只支持react，后期支持vue环境)，你可以根据自身项目引入router、reducx等其他类库
+
+`aotoo-hub`是一套前端/NODE 端深度融合的全栈系统，`aotoo-hub`关注点在于编译，无任何库依赖，`hub`包含 4 套 DEMO 演示项目（REACT/VUE/小程序/MD 文档系统），方便快速上手各套环境。
+
+`MD文档系统`是一套基于 markdown 的文档系统，正是你看到的这个，是使用`hub`的一个典型范例，包含前端编译，自定义前端路由(仿小程序)，NODE 端自动镜像路由，NODE 端插件使用，NODE 端自定义路由，命令行的使用等等，较全面的介绍了`hub`系统的使用[**_说明_**](http:www.agzgz.com/doc)
+
+`hub`项目可以做到非常精简，这得益于`hub`**_从业务 JS 开始构建_**的独特编译流程，编译器基于业务 JS 结构衍生出其所需要的各项资源，如自动生成所需模板，自动构建 node 端的 controler 文件，自动归类输出静态资源等，当然编译器也能够支持复杂的自定义结构
+
+[更多说明](http://www.agzgz.com)
 
 ## FEATHER
-1. 前端与node(koa2)端的融合式开发环境
-2. 多项目开发、运行、部署
-3. 多环境支持，可以快速切换开发环境，测试环境，生产环境等
-4. 支持aotoo(基于react)的开发套件
-5. 支持小程序开发(支持npm包，支持stylus样式编译，维持小程序原有架构)
+
+* 多项目开发、运行、部署
+* 多环境支持，可以快速切换开发环境，测试环境，生产环境等
+* 支持小程序开发
+* 前端与node(koa2)端的融合式开发环境
 
 ## INSTALL
+
 ```bash
-$ npm install -g yarn
-$ npm install -g aotoo-cli
-$ aotoo -V
-$ aotoo init xxx   # 新建xxx项目
+npm install -g yarn
+npm install -g aotoo-cli
+aotoo -V
+aotoo init workspace   # 新建工作空间
 ```
 
-## 简单使用(web)
-默认环境已经有一套简单的前端环境，使用以下命令运行即可
+## 快速开始
+
+`aotoo-hub`包含前端/node端，开发会同时启动这两个部分，使之形成有机整体，node端由koa2封装而来
+
+__新建项目__
+
 ```bash
-  # 开发模式，启动默认demo的开发环境，非第一次运行不会编
-  # 译common缓存
-  $ aotoo dev  
-
-  # 开发模式，启动默认demo的开发环境，并清除common缓存，
-  # 非第一次运行或者vendors目录的内容更改后
-  $ aotoo dev-clean  
-
-  # 开发模式，编译默认demo的静态文件，不启动开发环境
-  $ aotoo dev-build  
-
-  # 生产模式，编译生产静态文件
-  $ aotoo build 
-
-  # 以下yarn命令等效
-  $ yarn run dev
-  $ yarn run dev-clean
-  $ yarn run dev-build
-  $ yarn run build
-
-  # 以下npm命令等效
-  $ npm run dev
-  $ npm run dev-clean 
-  $ npm run dev-build 
-  $ npm run build
+aotoo create project # 新建项目
 ```
 
-## 简单使用(小程序) 
-aotoo-hub遵循腾讯小程序的原有开发架构，在原有架构的基础上增强了一下特性，如支持npm包，样式的编译(stylus)，引入aotoo的小程序套件(可以不用)，热更新编译等等  
+__配置项目__  
+打开aotoo.config.js，编辑apps字段
 
-#### 小程序开发配置
-开发小程序需要专门指定配置，web/h5可以省略(通过命令操作)，以下为小程序的配置
-
-1. 打开项目配置文件, `aotoo.config.js`
-2. 编写小程序的配置文件   
 ```js
-...
-...
 apps: [
-  {
-    name: 'xcxdemo',
-    type: 'mp',   // 将类型设置为mp ==> miniprograme，默认为web项目
-    startup: true,  // true为启动项目，false为非启动项目
-    src: path.join(ROOT, 'src/xcxdemo')  // 指定小程序项目目录
-  }
-]
-```  
+ // 默认项目，hub自带项目
+   {
+      name: 'aotooSample',
+      startup: false,    // 改为false，使该项目默认不启动
+      ...
+    },
 
-3. 保存，完成
+ // 新建的自定义项目
+    {
+      name: 'project',
+      startup: true,    // 设为true，命令行不用指定--name参数
+      server: true, // 是否需要node提供服务
+      src: path.join(ROOT, 'src/project'),  // 指定项目源码目录
+      port: 8500  // 指定项目端口
+    }
+  ]
+}
+```
 
-## 更多命令及参数
-指定环境、指定项目等更多启动命令请参考`aotoo-cli`的说明文档   
-#### [https://www.npmjs.com/package/aotoo-cli](https://www.npmjs.com/package/aotoo-cli)
+__启动项目__
 
+```bash
+aotoo dev
+```

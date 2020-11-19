@@ -1,61 +1,44 @@
-var _ = require('lodash')
-var fs = require('fs')
-var del = require('del')
-var path = require('path')
-var globby = require('globby')
-var mkdirp = require('mkdirp') 
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-  , getEntryTrunks = require('./util/entry');
-
-const _tempC = `
-  <!doctype html>
-  <html class="no-js" lang="en">
-    <head>
-      <title><%=title%></title>
-      <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    </head>
-    <body>
-      <div class="container" id="root">~~root~~</div>
-    </body>
-  </html>
-`
-function tempC(asset) {
-  const {SRC, argv} = asset
-  const startFromServer = argv.server || checkIsProxy(SRC)
-  if (startFromServer) {
-    return _tempC.replace('~~root~~', '<%- root %>')
-  } else {
-    return _tempC.replace('~~root~~', '')
-  }
-}
+let _ = require('lodash')
+let fs = require('fs')
+let fse = require('fs-extra')
+let del = require('del')
+let path = require('path')
+let globby = require('globby')
+let mkdirp = require('mkdirp') 
+let HtmlWebpackPlugin = require('html-webpack-plugin') // HtmlWebpackTagsPlugin
+let HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+let getEntryTrunks = require('./util/entry');
+let createHtmlTemplate = require('./util/htmltemplate')
+let Memfs = require('./plugins/memfs')
+let pp = require('preprocess');
 
 const path_join = function() {
   const args = Array.from(arguments)
   return args.reduce((pre, next)=>{
-      const lastChar = pre.charAt(pre.length-1)
-      if (lastChar == path.sep) {
-        if (pre==path.sep) {
-          if (pre != next) {
-            return pre + next
-          } else {
-            return next
-          }
-        }
-        return pre + next
-      } else {
-        if (pre == '' && next.indexOf('http') == 0) {
+    const lastChar = pre.charAt(pre.length-1)
+    if (lastChar == path.sep) {
+      if (pre==path.sep) {
+        if (pre != next) {
+          return pre + next
+        } else {
           return next
         }
-
-        if (pre == path.sep) {
-          return path.sep + next
-        } else {
-          let combineStr = pre + path.sep + next
-          const re = /[\/]+/g
-          combineStr = combineStr.replace(re, path.sep)
-          return combineStr
-        }
       }
+      return pre + next
+    } else {
+      if (pre == '' && next.indexOf('http') == 0) {
+        return next
+      }
+
+      if (pre == path.sep) {
+        return path.sep + next
+      } else {
+        let combineStr = pre + path.sep + next
+        const re = /[\/]+/g
+        combineStr = combineStr.replace(re, path.sep)
+        return combineStr
+      }
+    }
   }, '')
 }
 
@@ -69,7 +52,7 @@ function getPublicPath(options) {
 
 function re_TemplateContent(template, asset, isContent) {
   const {isDev, SRC, argv} = asset
-  const startFromServer = checkIsProxy(SRC) 
+  const startFromServer = argv.server || checkIsProxy(asset)
 
   let tpC = ''
   const precommonKey = ['precommon', 'vendors']
@@ -82,19 +65,38 @@ function re_TemplateContent(template, asset, isContent) {
   }
 
   let precommonFile = isDev ? path_join(publicPath.js, 'vendors.js') : ''
+  let preCssCommonFile = ''
   const {DIST} = asset
   const js_dist = path.join(DIST, 'js')
+  const css_dist = path.join(DIST, 'css')
   globby.sync(js_dist).forEach(file=>{
     const fileObj = path.parse(file)
     if (fileObj.ext == '.js' && (fileObj.name.indexOf(precommonKey[0]) > -1 || fileObj.name.indexOf(precommonKey[1]) > -1)) {
       precommonFile = path_join(publicPath.js, fileObj.base)
     }
   })
+  globby.sync(css_dist).forEach(file => {
+    const fileObj = path.parse(file)
+    if (fileObj.ext == '.css' && (fileObj.name.indexOf('common') === 0)) {
+      preCssCommonFile = path_join(publicPath.css, fileObj.base)
+    }
+  })
+
   if (isContent) {
     tpC = template
   } else {
     tpC = fs.readFileSync(template, 'utf-8')
   }
+
+  tpC = pp.preprocess(tpC, {}, {srcDir: SRC})
+
+  if (startFromServer) {
+    tpC = tpC.replace('~~root~~', '<%- root %>').replace('~~env~~', '<%- env %>').replace('~~pagetitle~~', '<%= pageTitle %>')
+  } else {
+    tpC = tpC.replace('~~root~~', '').replace('~~pagetitle~~', '<%= title %>');
+    tpC = tpC.replace('~~env~~', '<script>var noserver=true; </script>');
+  }
+
   const re_prescript = /<script>[\s\S]+?<\/script>/i
   const re_script = /<script>[\s\S]+?<\/script>/ig
   const scripts = tpC.match(re_script)||[]
@@ -111,6 +113,12 @@ function re_TemplateContent(template, asset, isContent) {
   }
   str_scripts += scripts.join('\n')
   tpC = precommonFile ? tpC.replace('</body>', str_scripts) : tpC
+
+  if (preCssCommonFile) {
+    tpC = tpC.replace('~~commoncss~~', `<link rel="stylesheet" type="text/css" href="${preCssCommonFile}">`)
+  } else {
+    tpC = tpC.replace('~~commoncss~~', '')
+  }
   
   return tpC
 }
@@ -124,6 +132,7 @@ function newHtmlPlugin(trunkname, param, asset) {
       title: param.title,
       templateContent: tpC,
       inject: 'body', // Inject all scripts into the body 
+      // chunks: ['common', trunkname],
       chunks: ['common', trunkname],
       filename: `html/${trunkname}.html`,
     }
@@ -134,9 +143,9 @@ function generateHtmlDir(target) {
   mkdirp.sync(target)
 }
 
-function getHtmlEntry(src, params) {
+function getEntry(src, params) {
   if (src) {
-    const HTMLSRC = path.join(src, 'html')
+    const HTMLSRC = path.join(src, params.dir)
     if (!fs.existsSync(HTMLSRC)) {
       // generateHtmlDir(HTMLSRC)
       return {}
@@ -145,13 +154,15 @@ function getHtmlEntry(src, params) {
   }
 }
 
-function checkIsProxy(src) {
+function checkIsProxy(asset) {
+  const {SRC, server} = asset
+  const src = SRC
   const serverPath = path.join(src, 'server')
-  return fs.existsSync(serverPath)
+  return fs.existsSync(serverPath) && server
 }
 
 module.exports = function createWpConfig(asset, envAttributs, buildType) { // buildType = 'vendors' / 'xcx'
-  const isVendors = buildType && (buildType == 'vendors' || buildType == 'common')
+  const isVendors = buildType && (buildType == 'vendors' || buildType == 'common' || buildType == 'xcx')
   const isXcx = buildType && buildType == 'xcx'
 
   if (isXcx) {
@@ -170,10 +181,12 @@ module.exports = function createWpConfig(asset, envAttributs, buildType) { // bu
 }
 
 function delDist(asset, buildType, isXcx) {
-
-  const {DIST, SRC, argv, isDev} = asset
+  const {DIST, SRC, argv, isDev, onlynode} = asset
+  if (onlynode || argv.start) {
+    return
+  }
   let delSomething = [
-    DIST + '/css/***',
+    DIST + '/css/**',
     DIST + '/html/**',
     DIST + '/js/*',
     DIST + '/*.hot-update.*',
@@ -193,11 +206,18 @@ function delDist(asset, buildType, isXcx) {
       delTarget = [].concat(delSomething).concat(delCommonFiles)
     }
   } else {
-    delTarget = [].concat(delSomething).concat(delCommonFiles)
+    if (buildType) {
+      delTarget = [].concat(delSomething);  
+    } else {
+      delTarget = [].concat(delSomething).concat(delCommonFiles)
+    }
   }
 
   if (isXcx) {
-    delTarget = [DIST + '/***']
+    delTarget = [DIST + '/**']
+    if (!argv.rebuild) {
+      delTarget = []
+    }
   }
 
   // 只启动node端
@@ -223,13 +243,18 @@ function createBusinessConfig(asset, envAttributs) {
   try {
 
     const { startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT, argv } = asset
-    const isProxy = checkIsProxy(SRC)
+    const isProxy = checkIsProxy(asset)
     const wpBaseConfig = require('./webpack.base.config')(asset, envAttributs)
   
 
     // html入口集合
-    const html_entries = getHtmlEntry(SRC, { type: 'html' })
-    
+    const html_entries = getEntry(SRC, { dir: 'html', type: 'html' })
+
+    // css入口集合
+    const css_entries = getEntry(SRC, { dir: 'css', type: 'styl' })
+
+    const js_entries_css = getEntry(SRC, { dir: 'js', type: 'styl' })
+    const js_entries_html = getEntry(SRC, { dir: 'js', type: 'html' })
     
     // js入口集合
     const js_entries   = envAttributs('entries', path.join(SRC, 'js'), {
@@ -237,20 +262,41 @@ function createBusinessConfig(asset, envAttributs) {
       isProxy
     })
 
+    const resause_entries = (()=>{
+      let result = {}
+
+      Object.keys(js_entries).forEach(ky=>{
+        let cssTrunk = css_entries[ky]
+        if (css_entries[ky]) {
+          result[ky] = [].concat(js_entries[ky]).concat(cssTrunk)
+        } else {
+          result[ky] = js_entries[ky]
+        }
+
+        if (js_entries_css[ky]) {
+          result[ky] = result[ky].concat(js_entries_css[ky])
+        }
+      })
+      return result
+    })()
+
     
     // 生成htmlplugins的配置
     const htmlPlugins = []
     _.forEach(js_entries, function(val, key) {
-      if (html_entries[key]) {
+      let rithtTemplate = js_entries_html[key] || html_entries[key]
+      if (rithtTemplate) {
+        let template = fse.readFileSync(rithtTemplate[0])
         htmlPlugins.push(newHtmlPlugin(key, {
-          template: html_entries[key][0],
+          alwaysWriteToDisk: true,
+          template: rithtTemplate[0],
           title: 'Custom template'
         }, asset))
       } else {
         htmlPlugins.push(
           new HtmlWebpackPlugin({
             alwaysWriteToDisk: true,
-            templateContent: re_TemplateContent(tempC(asset), asset, true),
+            templateContent: re_TemplateContent(createHtmlTemplate(asset, {checkIsProxy}), asset, true),
             inject: 'body',
             title: 'Auto template',
             chunks: ['common', key],
@@ -259,6 +305,14 @@ function createBusinessConfig(asset, envAttributs) {
         )
       }
     })
+    htmlPlugins.push(new HtmlWebpackHarddiskPlugin())
+    htmlPlugins.push(new Memfs({
+      mapfile: {
+        js: /\.js(x?)/,
+        css: ['.css'],
+        html: /\.html/
+      }
+    }))
     
     wpBaseConfig.plugins = wpBaseConfig.plugins.concat(htmlPlugins)
 
@@ -269,7 +323,8 @@ function createBusinessConfig(asset, envAttributs) {
 
 
     return Object.assign({}, wpBaseConfig, {
-      entry: js_entries
+      // entry: js_entries
+      entry: resause_entries
     })
 
   } catch (error) {

@@ -1,7 +1,0 @@
-<view class="boxer">
-  <!-- <ui-tab dataSource="{{selection}}" /> -->
-  <ui-list list="{{selectionHeader}}"/>
-  <ui-tab-choose source="{{tabChoose}}" />
-  <!-- <ui-item class="selectionBody" item="{{selectionBody}}"/> -->
-  <!-- <ui-item item="{{letterToast}}" /> -->
-</view>

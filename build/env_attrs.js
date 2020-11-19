@@ -1,5 +1,7 @@
 var webpack = require('webpack')
 var _ = require('lodash')
+var fse = require('fs-extra')
+var marked = require("marked");
 var path = require('path')
   , autoprefix = require('autoprefixer')
   // , Memfs = require('webpack-memory2fs-plugin')
@@ -7,6 +9,7 @@ var path = require('path')
   , UglifyJsPlugin = require("uglifyjs-webpack-plugin")
   , OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
   , HtmlWebpackPlugin = require('html-webpack-plugin')
+  , CopyPlugin = require('copy-webpack-plugin')
   , getEntryTrunks = require('./util/entry');
 
 
@@ -69,7 +72,9 @@ module.exports = function (asset) {
 
 
       case 'devtool':
-        return 'cheap-source-map'
+        // return 'cheap-source-map' // 微信公众号h5要用cheap类型的map
+        // return isDev ? 'eval-source-map' : 'hidden-source-map'
+        return isDev ? 'cheap-module-eval-source-map' : 'nosources-source-map'
         break;
 
 
@@ -81,19 +86,42 @@ module.exports = function (asset) {
         if (param == 'precommon' || param == 'vendors') {
           return {
             path: DIST,
-            filename: isDev ? 'js/[name].js' : 'js/[name]__[hash:10].js',
+            filename: isDev ? 'js/[name].js' : 'js/[name]__[chunkhash:10].js',
             chunkFilename: 'js/[name]_[id].js',
             publicPath: publicPath
           }
         }
         return {
           path: DIST,
-          filename: isDev ? 'js/[name].js' : 'js/[name]__[hash:10].js',
+          filename: isDev ? 'js/[name].js' : 'js/[name]__[chunkhash:10].js',
           publicPath: publicPath
           // chunkFilename: isDev ? 'js/[name]_[id].js' : 'js/[name]_[id]_[hash:10].js'
         }
         break;
-
+      
+      case 'markdown-loader': 
+        return {
+          test: /\.md$/,
+          use: [{
+              loader: "html-loader"
+            },
+            {
+              loader: "markdown-loader",
+              options: {
+                // renderer: new marked.Renderer(),
+                // pedantic: false,
+                // gfm: true,
+                // tables: true,
+                // breaks: false,
+                // sanitize: false,
+                // smartLists: true,
+                // smartypants: false,
+                // xhtml: false
+              }
+            }
+          ]
+        }
+        break;
 
 
 
@@ -113,7 +141,7 @@ module.exports = function (asset) {
       case 'styl': // styl loader
         const cssLoaders = param
         if (isDev) {
-          cssLoaders.unshift('css-hot-loader')
+          // cssLoaders.unshift('css-hot-loader')
         }
         return cssLoaders
         break;
@@ -127,11 +155,11 @@ module.exports = function (asset) {
           return [ new OptimizeCSSAssetsPlugin({}) ]
         } else {
           return [
-            new UglifyJsPlugin({
-              cache: true,
-              parallel: true,
-              sourceMap: true // set to true if you want JS source maps
-            }),
+            // new UglifyJsPlugin({
+            //   cache: true,
+            //   parallel: true,
+            //   sourceMap: true // set to true if you want JS source maps
+            // }),
             new OptimizeCSSAssetsPlugin({})
           ]
         }
@@ -171,49 +199,60 @@ module.exports = function (asset) {
         }
         break;
 
-
-        
-
-
       case 'plugins':
         const commonPlugins = param
+        let target = []
         if (isDev) {
-          return commonPlugins.concat([
+          target = commonPlugins.concat([
             new webpack.DefinePlugin({
               'process.env.NODE_ENV': JSON.stringify('development'),
               '__DEV__': true
             }),
             // new webpack.NamedModulesPlugin(),
             new webpack.HotModuleReplacementPlugin(),
-            new Memfs({
-              mapfile: {
-                js: /\.js(x?)/,
-                css: ['.css'],
-                html: /\.html/
-              }
-            })
           ])
         } else {
-          return commonPlugins.concat([
+          target = commonPlugins.concat([
             new webpack.DefinePlugin({
               'process.env.NODE_ENV': JSON.stringify('production'),
               '__DEV__': false
             }),
-            new Memfs({
-              mapfile: {
-                js: /\.js(x?)/,
-                css: ['.css'],
-                html: /\.html/
-              }
-            })
+            new OptimizeCSSAssetsPlugin({}),
           ])
         }
-        break;
 
+        if (fse.pathExistsSync(path.join(SRC, 'js/3ds'))) {
+          target = target.concat(
+            [
+              new CopyPlugin((()=>{
+                let cfg = {
+                  patterns: [
+                    {
+                      from: '**/*',
+                      to: path.join(DIST, 'js/3ds'),
+                      context: path.join(SRC, 'js/3ds'),
+                      // globOptions: {
+                      //   ignore: ['cloudfunctions/**/*', 'project.config.json'],
+                      // }
+                    }
+                  ]
+                }
+                return cfg
+              })(), { context: SRC })
+            ]
+          )
+        }
 
-
-
-      default:
+        // target = target.concat([
+        //   new Memfs({
+        //     mapfile: {
+        //       js: /\.js(x?)/,
+        //       css: ['.css'],
+        //       html: /\.html/
+        //     }
+        //   })
+        // ])
+        return target
         break;
     }
   }

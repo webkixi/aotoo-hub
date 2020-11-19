@@ -12,7 +12,7 @@ const webpack = require('webpack')
 const React = require('react')
 const ReactDomServer = require('react-dom/server')
 const WebpackDevServer = require('webpack-dev-server')
-const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin')
+// const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin')
 
 const browserSync = require('../util/openBrowser')
 const fillupMapfile = require('../util/fillupMapfile3ds')
@@ -33,7 +33,8 @@ function* wpDevServer(compiler, asset) {
     SRC,
     DIST,
     options,
-    name
+    name,
+    argv
   } = asset
   
   let publicPath = getPublicPath(options)
@@ -41,6 +42,7 @@ function* wpDevServer(compiler, asset) {
   const DISTCSS = path.join(DIST, 'css')
   const DISTJS = path.join(DIST, 'js')
   const DISTIMG = SRC
+  // const DISTIMG = path.join(SRC, 'images')
 
   new WebpackDevServer(compiler, {
     headers: {
@@ -79,7 +81,7 @@ function* wpDevServer(compiler, asset) {
       // excludeAssets: /app\/assets/,
       errors: true,
       errorDetails: true,
-      hash: false,
+      hash: true,
       maxModules: 15,
       modules: false,
       performance: true,
@@ -96,40 +98,48 @@ function* wpDevServer(compiler, asset) {
       app.engine('html', ejs.renderFile)
       app.set('view engine', 'html')
       app.set('views', DISTHTML)
+      app.locals.env = "";
+      app.locals.root = "";
 
-      app.get(/\/img\/(.*)\.(ico|jpg|jpeg|png|gif)$/, function (req, res) {
-        const staticPath = path.join(DISTIMG, req._parsedUrl._raw)
-        if (fs.existsSync(staticPath)) {
-          res.sendFile(staticPath)
-        } else {
-          res.status(404).send('Sorry! file is not exist.')
-        }
-      })
-
-      app.get(/\/images\/(.*)\.(ico|jpg|jpeg|png|gif)$/, function (req, res) {
-        const staticPath = path.join(DISTIMG, req._parsedUrl._raw)
-        if (fs.existsSync(staticPath)) {
-          res.sendFile(staticPath)
-        } else {
-          res.status(404).send('Sorry! file is not exist.')
-        }
-      })
-
-      app.get('/', function (req, res) {
-        res.render('index', {
-          title: 'aotoo-hub 多项目全栈脚手架'
-        })
-      })
-
-      app.get('/*.html', function (req, res) {
-        const urlPath = req.url.substr(1, (req.url.indexOf('.html')-1))
-        const filePath = path.join(DISTHTML, req.url)
-        if (fs.existsSync(filePath)) {
-          res.render(urlPath, {
+      app.get('/*', function (req, res) {
+        let url = req.url
+        let mypath = req.path
+        let ary = url.split('/').splice(1)
+        if (url === '/') {
+          res.render('index', {
             title: 'aotoo-hub 多项目全栈脚手架'
           })
-        } else {
-          res.send('404！找不到页面')
+        } 
+        else if (mypath === '/docs') {
+          let DISTDOCS = path.join(SRC, 'docs')
+          let query = req.query
+          if (query.filename) {
+            let docpath = path.join(DISTDOCS, query.filename)
+            if (fs.existsSync(docpath)) {
+              res.sendFile(docpath)
+            } else {
+              res.status(404).send('Sorry! file is not exist.')
+            }
+          }
+        }
+        else {
+          let aim = ary.join('/')
+          let filename = ary[ary.length-1]
+          if (filename.lastIndexOf('.') > -1) {
+            let staticPath = path.join(DIST, req._parsedUrl._raw)
+            if (url.indexOf('/images')>-1 || url.indexOf('/img')>-1) {
+              staticPath = path.join(SRC, req._parsedUrl._raw);
+            }
+            if (fs.existsSync(staticPath)) {
+              res.sendFile(staticPath)
+            } else {
+              res.status(404).send('Sorry! file is not exist.')
+            }
+          } else {
+            res.render(aim, {
+              title: 'aotoo-hub 多项目全栈脚手架'
+            })
+          }
         }
       })
     },
@@ -138,6 +148,7 @@ function* wpDevServer(compiler, asset) {
     const destPort = chalk.green.bold(`【${port}】`)
     console.log(`
 ============================
++ 开发模式
 + webpack-dev-server    +
 + 服务名: ${name}       +
 + 端口: ${destPort}      +
@@ -178,7 +189,7 @@ function* wpProductionDone(compiler, asset) {
 
 // 启动webpack-dev-server服务
 module.exports = function* (compilerConfig, asset) {
-  const { TYPE, contentBase, host, port, SRC, DIST, isDev, argv } = asset
+  const { TYPE, contentBase, host, port, SRC, DIST, isDev, argv, checkIsXcx } = asset
   const DISTHTML = path.join(DIST, 'html')
   const DISTCSS = path.join(DIST, 'css')
   const DISTJS = path.join(DIST, 'js')
@@ -188,10 +199,10 @@ module.exports = function* (compilerConfig, asset) {
     if (!isXcx) {
       compilerConfig.plugins.push(browserSync.openBrowser(asset))
     } else {
-      compilerConfig.plugins.push(new WriteAssetsWebpackPlugin({
-        force: true,
-        extension: ['js', 'wxml', 'wxs', 'wxss', 'json', 'map']
-      }))
+      // compilerConfig.plugins.push(new WriteAssetsWebpackPlugin({
+      //   force: true,
+      //   extension: ['js', 'wxml', 'wxs', 'wxss', 'json', 'map']
+      // }))
     }
   }
   const compiler = webpack(compilerConfig)
@@ -200,6 +211,10 @@ module.exports = function* (compilerConfig, asset) {
       co(function* () {
         yield fillupMapfile(asset)
       })
+    } else {
+      setTimeout(() => {
+        checkIsXcx && checkIsXcx(asset)
+      }, 3000);
     }
   })
 

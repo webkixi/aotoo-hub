@@ -1,0 +1,70 @@
+@import "../common/common.wxss";
+
+page{
+  background-color: #fff;
+  --slip-list-item-height: 80px;
+  --search-zone-height: 60px;
+}
+
+@import "./widgets/search.wxss";
+@import "./widgets/badge.wxss";
+@import "./widgets/menus.wxss";
+
+.container{
+  padding: 0;
+}
+
+.demo-slip-list{
+  width: 100vw;
+  background: linear-gradient(to right, #fff 20%, #eee 20%);
+  overflow-x: hidden;
+}
+
+.demo-slip-list-item{
+  width: 100%;
+  height: var(--slip-list-item-height);
+  box-sizing: border-box;
+  padding: 0 10px;
+  padding-left: 4%;
+  background-color: #fff;
+  /* border-bottom: 1px solid red; */
+  display: flex;
+  align-items: center;
+  margin-bottom: 1px;
+  position: relative;
+}
+
+.demo-slip-list-item:active {
+  background-color: #efefef;
+}
+
+.demo-slip-list-item image{
+  flex: 0 0 auto;
+}
+
+.demo-slip-list-item>.htitles {
+  flex: 2;
+  box-sizing: border-box;
+  margin-left: 16px;
+}
+
+.demo-slip-list-item > .htitles .t-item:first-child {
+  font-size: 36rpx;
+  margin-bottom: 6px;
+}
+.demo-slip-list-item > .htitles .t-item:last-child {
+  font-size: 26rpx;
+  color: #999
+}
+
+
+.demo-slip-list-item .message {
+  position: absolute;
+  top: 32rpx;
+  right: 30rpx;
+  font-size: 12px;
+  color: #ccc;
+}
+
+
+

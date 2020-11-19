@@ -44,14 +44,17 @@ function* buildCommonFiles(asset, dllConfig) {
   const { startup, isDev, SRC, DIST, HOST, PORT, argv, name } = asset
   if (!commonFileExist(DIST, isDev, Commonds.rebuild)) {
     const start = argv.start
-    if (start && start.length && start.indexOf(name)>-1) {
-      /** nothing to do */
-    } else {
+    if (start) {
+      if (start.length && start.indexOf(name) > -1) {
+        /** nothing to do */
+      }
+    }
+    else {
       return new Promise((res, rej) => {
-        return webpack(dllConfig).run((err, stats) => {
-          if (err) return rej(err)
+        webpack(dllConfig).run((err, stats) => {
+          if (err) rej(err)
           else {
-            return res(stats)
+            res(stats)
           }
         })
       })
@@ -116,9 +119,12 @@ function* proxyServer(compilerConfig, assets) {
 }
 
 function* wpDevServers(compilerConfig, assets) {
+  assets.checkIsXcx = checkIsXcx
   yield devServer(compilerConfig, assets)
-  yield sleep(3000)
-  checkIsXcx(assets)
+  // yield sleep(3000)
+  // setTimeout(() => {
+  //   checkIsXcx(assets)
+  // }, 10000);
 }
 
 // 启动服务前检查端口 portOccupied
@@ -352,7 +358,7 @@ function* valideAttribut(key, val, param, param1) {
  * yarn run dev --name aaa --name bbb --name bbb
  */
 module.exports = function* main(assets, opts) {
-  const {
+  let {
     localPath,
     configs_aotoo,
     argv
@@ -372,16 +378,30 @@ module.exports = function* main(assets, opts) {
   //   configs_aotoo.dist = path.join(localPath, 'dist')
   // }
 
+  if (argv_name && argv_name.length) {
+    argv_name.forEach(nm=>{
+      let index = _.findIndex(assets, {name: nm})
+      if (index === -1) {
+        let srcRoot = path.join(localPath, 'src', nm)
+        if (fs.existsSync(srcRoot)) {
+          assets.push({
+            name: nm,
+            startup: true,
+            src: srcRoot
+          })
+        }
+      }
+    })
+  }
+
   // 抽取编译配置
   for (let config of assets) {
 
-    // if (argv_name) {
-    //   if (argv_name.indexOf(config.name) > -1) {
-    //     config.startup = true
-    //   } else {
-    //     config.startup = false
-    //   }
-    // }
+    if (argv_name) {
+      if (argv_name.indexOf(config.name) > -1) {
+        config.startup = true
+      }
+    }
 
     if (!config.startup) {
       continue;
@@ -402,7 +422,7 @@ module.exports = function* main(assets, opts) {
       server: config.server,
       TYPE: config.type||'web',    // mp(小程序), web
       startup: config.startup,
-      isDev: config.isDev || process.env.NODE_ENV == 'development',
+      isDev: process.env.NODE_ENV == 'development',
       SRC: yield valideAttribut('src', config.src),
       DIST: yield valideAttribut('dist', config.dist, config),
       HOST: yield valideAttribut('host', config.host),
@@ -411,6 +431,32 @@ module.exports = function* main(assets, opts) {
       options: config.options||{},
       argv
     }
+
+    // 只启动node服务(server目录存在)
+    let onlyNodeBoolean = argv.start === true || build_asset.onlynode || argv.onlynode || argv.node
+    if (typeof onlyNodeBoolean === 'boolean' && onlyNodeBoolean) {
+      build_asset.onlynode = true
+      if (!build_asset.isDev) {
+        build_asset.server = true
+      }
+    } else {
+      let onlyNodeNames = [].concat((argv.onlynode || argv.node)) || []
+      if (onlyNodeNames.length && onlyNodeNames.includes(build_asset.name)) {
+        build_asset.onlynode = true
+      }
+    }
+
+    if (build_asset.isDev === false) {
+      build_asset.server = true
+    }
+
+    if (build_asset.onlynode) {
+      if (!fs.existsSync(build_asset.DIST)) {
+        console.log(chalk.red.bold(`请先完成${build_asset.name}项目的生产编译`))
+        continue;
+      }
+    }
+
 
     // src目录不存在
     if (!build_asset.name) {

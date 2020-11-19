@@ -1,3 +1,0 @@
-<view class="boxer demowrap-x">
-  <ui-form dataSource="{{motto}}" />
-</view>

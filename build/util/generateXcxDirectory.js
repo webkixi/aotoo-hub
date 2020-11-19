@@ -6,7 +6,7 @@ const generateServerConfigsFile = require('./generateServerConfigsFile')
 
 
 module.exports = function* (asset) {
-  const {TYPE, isDev, SRC, DIST, options, PORT, PROXYPORT } = asset
+  const {TYPE, isDev, SRC, DIST, options, PORT, PROXYPORT, server } = asset
   const cloud = options.cloud
   
   const jsSrcPath = path.join(SRC, 'js')
@@ -45,6 +45,9 @@ module.exports = function* (asset) {
       fs.copySync(xcxCloudFunsTemplateFiles, cloudFunsPath)
     }
   }
-  yield generateServerConfigsFile('', 'nomapfile', path.join(jsSrcPath, 'envconfigs.js'), asset)
+  
+  // if (server) {
+  //   yield generateServerConfigsFile('', 'nomapfile', path.join(jsSrcPath, 'envconfigs.js'), asset)
+  // }
   return asset
 }

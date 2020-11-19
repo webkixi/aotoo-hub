@@ -1,7 +1,7 @@
 
 var fs = require('fs');
 var path = require('path');
-var md5 = require('blueimp-md5');
+var md5 = require('md5');
 var _ = require('lodash')
 const { ConcatSource } = require("webpack-sources");
 

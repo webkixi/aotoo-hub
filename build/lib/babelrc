@@ -1,17 +1,36 @@
 {
   "presets": [
-    "react",
-    "env",
-    "stage-0"
+    ["@babel/preset-env", {
+        "useBuiltIns": "usage",
+        "corejs": 3
+    }],
+    ["@babel/preset-react", {
+      "useSpread": false
+    }]
   ],
+  "env": {
+    "development": {
+      "presets": [["@babel/preset-react", { "development": true }]]
+    }
+  },
   "plugins": [
+    "react-hot-loader/babel",
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-proposal-export-default-from",
+    "@babel/plugin-proposal-export-namespace-from",
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    "@babel/plugin-proposal-function-bind",
+    "@babel/plugin-proposal-function-sent",
+    "@babel/plugin-transform-computed-properties",
     [
-      "add-module-exports",
-      "transform-runtime",
+      "@babel/plugin-transform-runtime",
       {
+        "absoluteRuntime": false,
+        "corejs": false,
         "helpers": true,
-        "polyfill": true,
-        "regenerator": true
+        "regenerator": true,
+        "useESModules": false
       }
     ]
   ]

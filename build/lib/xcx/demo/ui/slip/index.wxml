@@ -1,3 +1,0 @@
-<view class="boxer">
-  <ui-list list="{{motto}}" />
-</view>

@@ -91,6 +91,9 @@ module.exports = function (opts) {
   } else {
     wx.CONFIG.ROOT = nRoot
   }
+
+  process.env.APPENV_DIST = asset.DIST
+  process.env.APPENV_SRC = asset.SRC
   return asset
 }
 `

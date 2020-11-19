@@ -1,85 +1,27 @@
 {
-  "pages":[
+  "pages": [
     "pages/index/index",
-    "pages/empty/index",
-    "pages/logs/logs"
+    "pages/html/index",
+    "pages/markdown/index"
   ],
-  "subpackages": [
-    {
-      "root": "demo/",
-      "name": "mydemo",
-      "pages": [
-        "ui/list/index",
-        "ui/slip/index",
-        "ui/swiper/index",
-        "ui/stickybar/index",
-        "ui/sidescroll/index",
-        "form/union/index",
-        "form/checkbox/index",
-        "form/radio/index",
-        "form/input/index",
-        "form/number/index",
-        "form/icon/index",
-        "form/switch/index",
-        "form/slider/index",
-        "form/singlepicker/index",
-        "form/multipypicker/index",
-        "form/dropdown/index",
-        "form/index/index",
-        "ui/button/index",
-        "ui/utility/index",
-        "ui/tag/index",
-        "ui/article/index",
-        "ui/modal/index",
-        "ui/list/normal/index",
-        "ui/list/wxchat/index",
-        "ui/list/tbpic/index",
-        "ui/list/lrpic/index",
-        "ui/tabs/index",
-        "ui/tabs/normal/index",
-        "ui/tabs/scroll/index",
-        "ui/tabs/fnormal/index",
-        "ui/tabs/fscroll/index",
-        "ui/toast/index",
-        "ui/screen/index",
-        "ui/score/index",
-        "spiderchar/index",
-        "uploads/index"
-      ]
-    },
-    {
-      "root": "demo2/",
-      "name": "city",
-      "pages": [
-        "selection/index",
-        "car/index"
-      ]
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "queryui",
+    "navigationBarTextStyle": "black"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
     }
-  ],
+  },
   "usingComponents": {
     "ui-item": "/components/aotoo/item/index",
     "ui-list": "/components/aotoo/list/index",
     "ui-tree": "/components/aotoo/tree/index",
-    "action-side": "/components/actionSide/index",
     "ui-pop": "/components/actionSide/index",
-    "ui-ss-pop": "/components/ssPop/index",
-    "ui-tab": "/components/tab/index",
-    "ui-tab2": "/components/tabColumn/index",
-    "ui-tab-choose": "/components/tabChoose/index",
-    "ui-form": "/components/form/index",
-    "ui-collapse": "/components/collapse/index",
-    "ui-uploads": "/components/uploads/index",
-    "ui-slip": "/components/slip/index",
-    "ui-markit": "/components/markit/index",
-    "ui-chart": "/components/charts/index",
-    "ui-switch": "/components/switch/index",
-    "ui-calendar": "/components/calendar/index"
+    "ui-markit": "/components/markit/index"
   },
-  "tabBar": { "custom": true, "list": [{ "pagePath": "pages/index/index"}, { "pagePath": "pages/index/index"}] },
-  "window":{
-    "backgroundTextStyle":"dark",
-    "navigationBarBackgroundColor": "#2567FF",
-    "navigationBarTitleText": "SAUI",
-    "navigationBarTextStyle": "white"
-  }
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
 }

@@ -26,12 +26,21 @@ function clearObjectEmptyKey(obj) {
   return entry
 }
 
+let types = {
+  html: ['html'],
+  styl: ['styl', 'sass', 'scss', 'less', 'css'],
+  style: ['styl', 'sass', 'scss', 'less', 'css'],
+  js: ['js', 'jsx', 'ts', 'tsx']
+}
+
 module.exports = function (dir, opts, asset) {
   if (!fs.existsSync(dir)) return;
   const stat = fs.statSync(dir)
   if (!stat.isDirectory()) return
+  let ext = opts.type || 'js'  // 扩展名
 
-  let _partten = /[\/|\\][_](\w)+/;   // 兼容windows?
+  // let _partten = /[\/|\\][_](\w)+/;   // 兼容windows?
+  let _partten = /[\/|\\][_\.]+(\w)+/;   // 兼容windows?
   let target = [`${dir}/**/*`];
   let ignoreTarget = []
   if (opts.exclude) {
@@ -49,10 +58,21 @@ module.exports = function (dir, opts, asset) {
 
   var newEntry = {}
   var syncNameFile = []
+
   glob.sync(target, {onlyFiles: false}).forEach(function(item){
     const itemObj = path.parse(item)
     const itemStat = fs.statSync(item)
     const accessTarget = _partten.test(item)
+    // const accessTarget = (()=>{
+    //   let bol = _partten.test(item)
+    //   if (!bol) {
+    //     let re = /[\/]3ds[\/]?/g
+    //     if (re.test(item)) {
+    //       bol = true
+    //     }
+    //   }
+    //   return bol
+    // })()
     if (!accessTarget) {
       if (itemStat.isDirectory()) {
         let itemKey = item.replace(dir, '')
@@ -65,10 +85,22 @@ module.exports = function (dir, opts, asset) {
         let key = getKey(item, itemObj, dir, opts)
         key = key ? key : itemObj.name
   
-        // if (opts.type && opts.type == 'html') {
-        //   _key = key ? path.join(key, path.sep, itemObj.name) : itemObj.name
-        //   newEntry[_key] = newEntry[_key] ? newEntry[_key].push(item) : [item]
-        // } else {
+        // // if (opts.type && opts.type == 'html') {
+        // //   _key = key ? path.join(key, path.sep, itemObj.name) : itemObj.name
+        // //   newEntry[_key] = newEntry[_key] ? newEntry[_key].push(item) : [item]
+        // // } else {
+        //   const keyObj = path.parse(key)
+        //   if (keyObj.name == itemObj.name) {
+        //     syncNameFile.push(key)
+        //     newEntry[key] = [item]
+        //   } else {
+        //     if (syncNameFile.indexOf(key)==-1) {
+        //       newEntry[key] ? newEntry[key].push(item) : newEntry[key] = [item]
+        //     }
+        //   }
+        // // }
+
+        if (types[ext].indexOf(ext) > -1 && ('.'+ext) === itemObj.ext ) {
           const keyObj = path.parse(key)
           if (keyObj.name == itemObj.name) {
             syncNameFile.push(key)
@@ -78,7 +110,7 @@ module.exports = function (dir, opts, asset) {
               newEntry[key] ? newEntry[key].push(item) : newEntry[key] = [item]
             }
           }
-        // }
+        }
       }
     }
   })

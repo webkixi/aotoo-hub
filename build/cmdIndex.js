@@ -37,6 +37,12 @@ function cmdIndex(params) {
       argv.name = [].concat(argv.start)
     }
   }
+  if (argv && !argv._.length) {
+    delete argv._
+    if (_.isEmpty(argv) && process.env.NODE_ENV === 'production') {
+      argv.start = true
+    }
+  }
   configs_aotoo = require(configPath);
   configs_aotoo.localPath = localPath
   process.aotooConfigs = configs_aotoo

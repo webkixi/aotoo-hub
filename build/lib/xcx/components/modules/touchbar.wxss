@@ -59,6 +59,8 @@
   line-height: 20px;
   text-align: center;
   border-radius: 48%;
+  color: var(--t-bar-color);
+  background-color: var(--t-bar-bg)
 }
 
 .touchbar-cat .item.active {

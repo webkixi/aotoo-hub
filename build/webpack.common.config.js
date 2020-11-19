@@ -4,60 +4,100 @@ const path = require('path')
     , MiniCssExtractPlugin = require('mini-css-extract-plugin')
     , aotooConfigs = process.aotooConfigs
     , generateVendorsDftsFile = require('./util/generateVendors')
+    , VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = function (asset, envAttributs) {
   const { startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT } = asset
   const alias = require('./webpack.alias.config')(aotooConfigs, asset)
   
-  const commonFile = path.join(SRC, 'js/vendors', 'index.js')
+  const commonFile = [path.join(SRC, 'js/vendors', 'index.js')]
   generateVendorsDftsFile(asset)
+
+  let commonCssFile = path.join(SRC, 'css/common.css')
+  let commonStylusFile = path.join(SRC, 'css/common.styl')
+  if (fs.existsSync(commonStylusFile)) {
+    commonFile.push(commonStylusFile)
+  }
+  if (fs.existsSync(commonCssFile)) {
+    commonFile.push(commonCssFile)
+  }
 
   return {
     mode: envAttributs('mode'),
     entry: {
-      vendors: [
-        'babel-polyfill',
-        commonFile
-      ]
+      vendors: commonFile
     },
     devtool: envAttributs('devtool'),
     output: envAttributs('output', 'vendors'),
     optimization: {
-      minimizer: envAttributs('minimizerCss')
+      minimize: isDev ? false : true,
+      // minimizer: envAttributs('minimizerCss')
     },
     module: {
-      rules: [{
+      rules: [
+        {
+          test: /\.vue$/,
+          exclude: /node_modules/,
+          loader: 'vue-loader'
+        },
+        {
+          test: /\.json$/,
+          loader: 'json-loader'
+        }, 
+        {
           test: /\.js(x?)$/,
           use: {
             loader: 'babel-loader',
             options: {
-              cacheDirectory: true,
-              presets: ["env", "react", "stage-0"],
+              cacheDirectory: true
             }
           },
           exclude: /node_modules/,
         },
         {
-          test: /\.styl$/,
+          test: /\.css$/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader'
+          ]
+        },
+        {
+          test: /\.s[ac]ss$/i,
+          use: [
+            MiniCssExtractPlugin.loader,
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 2,
+              }
+            },
+            'postcss-loader',
+            'sass-loader',
+          ],
+        },
+        {
+          test: /\.styl(us)?$/,
           use: envAttributs('styl', [
             MiniCssExtractPlugin.loader,
             {
               loader: 'css-loader',
               options: {
-                importLoaders: 2
+                importLoaders: 2,
               }
             },
             'postcss-loader',
             'stylus-loader'
           ])
-        }
+        },
+        envAttributs('markdown-loader'),
       ]
     },
     resolve: {
       alias: alias,
-      extensions: ['.js', '.styl', '.stylus', '.css', '.jsx', '.json', '.md']
+      extensions: ['.js', '.vue', '.styl', '.stylus', '.css', '.jsx', '.json', '.md']
     },
     plugins: [
+      new VueLoaderPlugin(),
       new MiniCssExtractPlugin({
         filename: isDev ? "css/common.css" : "css/common__[hash:10].css",
         chunkFilename: isDev ? "css/[id].css" : "css/[id]__[hash:10].css"

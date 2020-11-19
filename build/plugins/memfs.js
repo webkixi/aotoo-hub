@@ -2,7 +2,7 @@
 const fs = require('fs');
 const fse = require('fs-extra')
 const path = require('path');
-const md5 = require('blueimp-md5');
+const md5 = require('md5');
 const mkdirp = require('mkdirp')
 const _ = require('lodash')
 const { ConcatSource } = require("webpack-sources");
@@ -36,16 +36,17 @@ module.exports = class memeryTofs {
         })()
         
         _.map(assets, (file, filename) => {
-          let directory = path.dirname(file.existsAt)
-          let extname   = path.extname(file.existsAt)
-          let existsAt  = file.existsAt
+          // let existsAt  = file.existsAt
+          let existsAt  = path.join(outputPath, filename)
+          let directory = path.dirname(existsAt)
+          let extname   = path.extname(existsAt)
           let profile = path.parse(existsAt)
           let newProfile
   
           let willWrite = true
           if (opts.exclude) {
             if (opts.exclude instanceof RegExp) {
-              willWrite = opts.exclude.test(file.existsAt)
+              willWrite = opts.exclude.test(existsAt)
             }
             
             if (Array.isArray(opts.exclude)) {
@@ -150,6 +151,7 @@ module.exports = class memeryTofs {
             })
           }
 
+          mapAsset.root = outputPath
           fs.writeFileSync(path.join(outputPath, 'mapfile.json'), JSON.stringify(mapAsset), {encoding: 'utf8'})
         }
       } catch (error) {

@@ -25,9 +25,12 @@ function baseConfig(asset, envAttributs) {
     devtool: envAttributs('devtool'),
     output: envAttributs('output'),
     optimization: {
+      runtimeChunk: 'single',
       noEmitOnErrors: true,
-      namedModules: true,
-      minimizer: envAttributs('minimizerCss'),
+      namedModules: isDev ? true : false,
+      hashedModuleIds: isDev ? false : true,
+      minimize: isDev ? false : true,
+      // minimizer: envAttributs('minimizerCss'),
       splitChunks: envAttributs('splitChunks', asset),
       occurrenceOrder: true
     },
@@ -43,7 +46,12 @@ function baseConfig(asset, envAttributs) {
         },
         {
           test: /\.vue$/,
-          use: 'vue-loader'
+          exclude: /node_modules/,
+          loader: 'vue-loader'
+        },
+        {
+          test: /\.json$/,
+          loader: 'json-loader'
         },
         {
           test: /\.js(x?)$/,
@@ -56,9 +64,53 @@ function baseConfig(asset, envAttributs) {
           exclude: /node_modules/,
         },
         {
-          test: /\.stylus/,
-          use: envAttributs('stylus', [
-            'style-loader',
+          test: /\.css$/,
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                hmr: process.env.NODE_ENV === 'development',
+                reloadAll: true,
+              }
+            },
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 2
+              }
+            },
+          ]
+        },
+        {
+          test: /\.s[ac]ss$/i,
+          use: envAttributs('styl', [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                hmr: process.env.NODE_ENV === 'development',
+                reloadAll: true,
+              }
+            },
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 2
+              }
+            },
+            'postcss-loader',
+            'sass-loader'
+          ]),
+        },
+        {
+          test: /\.styl(us)?$/,
+          use: envAttributs('styl', [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                hmr: process.env.NODE_ENV === 'development',
+                reloadAll: true,
+              }
+            },
             {
               loader: 'css-loader',
               options: {
@@ -69,20 +121,7 @@ function baseConfig(asset, envAttributs) {
             'stylus-loader'
           ])
         },
-        {
-          test: /\.styl$/,
-          use: envAttributs('styl', [
-            MiniCssExtractPlugin.loader,
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2
-              }
-            },
-            'postcss-loader',
-            'stylus-loader'
-          ])
-        }
+        envAttributs('markdown-loader'),
       ]
     },
     resolve: {
@@ -92,8 +131,8 @@ function baseConfig(asset, envAttributs) {
     plugins: envAttributs('plugins', [
       new VueLoaderPlugin(),
       new MiniCssExtractPlugin({
-        filename: isDev ? "css/[name].css" : "css/[name]__[hash:10].css",
-        chunkFilename: isDev ? "css/[id].css" : "css/[id]__[hash:10].css"
+        filename: isDev ? "css/[name].css" : "css/[name]__[contenthash:10].css",
+        chunkFilename: isDev ? "css/[id].css" : "css/[id]__[contenthash:10].css"
       }),
       new HappyPack({
         id: "babel",
@@ -101,8 +140,7 @@ function baseConfig(asset, envAttributs) {
         loaders: [{
           loader: 'babel-loader',
           options: {
-            cacheDirectory: true,
-            presets: ["env", "react", "stage-0"],
+            cacheDirectory: true
           }
         }],
         threadPool: happyThreadPool

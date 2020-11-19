@@ -1,0 +1,11 @@
+@import "../../css/icono.wxss";
+@import "../../components/modules/button.wxss";
+@import "../../css/shadow.wxss";
+@import "../../css/loading.wxss";
+@import "../../css/tag.wxss";
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+}

@@ -20,6 +20,13 @@ if (argv.start && (typeof argv.start == 'string' || Array.isArray(argv.start))) 
   }
 }
 
+if (!argv._.length) {
+  delete argv._
+  if (_.isEmpty(argv) && process.env.NODE_ENV === 'production') {
+    argv.start = true
+  }
+}
+
 const Commonds = {
   name: argv.name,
   port: argv.port,

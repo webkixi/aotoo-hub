@@ -17,7 +17,7 @@ inject.css(`
 `)
 
 inject.js([
-  'https://cdn.bootcss.com/jquery/3.3.1/jquery.js'
+  'jquery'
 ], function () {
   window.$ = jQuery
   $('#root').html(`

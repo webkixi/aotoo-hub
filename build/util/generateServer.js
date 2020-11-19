@@ -5,9 +5,9 @@ const mkdirp = require('mkdirp')
 const excludes = ['common', 'precommon', 'vendor', 'vendors']
 
 function accessStat(fobj, dobj, file) {
-  const re = /[\/\\](common|precommon|vendor|vendors|_)\/?/g
+  const re = /[\/\\](common|precommon|vendor|vendors|_|\.)\/?/g
   if (re.test(file)) return false
-  else return true
+  return true
 }
 
 module.exports = function* (asset) {
@@ -32,7 +32,7 @@ module.exports = function* (asset) {
     if (isXcx) {
       fs.copySync(content_controlIndex, controlIndex)
     } else {
-      globby.sync([`${jsPath}/**/*`]).forEach(file => {
+      globby.sync([`${jsPath}/**/*.js`]).forEach(file => {
         const fileObj = path.parse(file)
         const dirObj = path.parse(fileObj.dir)
         if (accessStat(fileObj, dirObj, file)) {
@@ -41,5 +41,16 @@ module.exports = function* (asset) {
         }
       })
     }
+  } else {
+    globby.sync([`${jsPath}/**/*.js`]).forEach(file => {
+      const fileObj = path.parse(file)
+      const dirObj = path.parse(fileObj.dir)
+      if (accessStat(fileObj, dirObj, file)) {
+        const servFile = file.replace(jsPath, controlPath)
+        if (!fs.existsSync(servFile)) {
+          fs.copySync(content_controlIndex, servFile)
+        }
+      }
+    })
   }
 }

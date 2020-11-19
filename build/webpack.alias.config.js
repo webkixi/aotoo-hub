@@ -5,11 +5,16 @@ module.exports = function (atc, asset) {
   return {
     root: SRC,
     css: path.join(SRC, 'css'),
-    component: path.join(SRC, 'component'), 
-    components: path.join(SRC, 'js/components'),
+    // component: path.join(SRC, 'component'), 
+    components: path.join(SRC, 'components'),
+    docs: path.join(SRC, 'docs'),
     common: path.join(SRC, 'common'),
-    sync: path.join(SRC, 'sync'),
-    ssr: path.join(SRC, 'ssr'),
-    vue: 'vue/dist/vue.js'
+    
+    vue: 'vue/dist/vue.js',
+    '@': path.join(SRC, 'js'), // vue项目中需要用到
+    
+    $vendors: path.join(SRC, 'mdSample/js/vendors'),
+    $ajax: path.join(SRC, 'mdSample/js/vendors/ajax'),
+    $pager: path.join(SRC, 'mdSample/js/vendors/page'),
   }
 }
