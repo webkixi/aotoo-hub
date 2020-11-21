@@ -208,9 +208,9 @@ module.exports = function* (compilerConfig, asset) {
   const compiler = webpack(compilerConfig)
   compiler.hooks.done.tap('start-node-server', stats => {
     if (!isXcx) {
-      co(function* () {
-        yield fillupMapfile(asset)
-      })
+      // co(function* () {
+      //   yield fillupMapfile(asset)
+      // })
     } else {
       setTimeout(() => {
         checkIsXcx && checkIsXcx(asset)

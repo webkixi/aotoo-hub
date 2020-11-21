@@ -240,7 +240,7 @@ function* selectConfig(asset, ifStart) {
   }
 
   const path_mapfile = path.join(DIST, 'mapfile.json')
-  yield fillupMapfile(asset)
+  // yield fillupMapfile(asset)
   yield generateBabelCfgFile(DISTSERVER)
   yield sleep(500, '==========  babel配置文件写入完成  ===========')
   yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)

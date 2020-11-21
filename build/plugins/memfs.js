@@ -6,6 +6,7 @@ const md5 = require('md5');
 const mkdirp = require('mkdirp')
 const _ = require('lodash')
 const { ConcatSource } = require("webpack-sources");
+const globby = require('globby')
 
 /**
  * opts
@@ -147,6 +148,48 @@ module.exports = class memeryTofs {
               const itemObj = path.parse(item)
               if (itemObj.ext == '.js' && itemObj.name.indexOf('vendors') == 0) {
                 mapAsset['js']['vendors'] = itemObj.base
+              }
+              if (itemObj.ext == '.js' && itemObj.name.indexOf('common') == 0) {
+                mapAsset['js']['common'] = itemObj.base
+              }
+            })
+          }
+
+          const path_3ds_path = path.join(outputPath, 'js/3ds')
+          if (fse.pathExistsSync(path_3ds_path)) {
+            let mapfileJson = mapAsset
+            globby.sync(path_3ds_path, {onlyFiles: false}).forEach(function(item){
+              let fileObj = path.parse(item)
+              let fileStat = fs.statSync(item)
+              let extname = fileObj.ext
+              let re = /^\/(.*)/
+              let relativePath = fileObj.dir.replace(path_3ds_path, '').replace(re, '$1')
+              let relativeName = path.join(relativePath, fileObj.name).replace(re, '$1')
+              let relativeFile = path.join(relativePath, fileObj.base).replace(re, '$1')
+              if (fileStat.isDirectory()) {
+                if (fileObj.dir == path_3ds_path) {
+                  /** do nothing */
+                }
+              } else {
+                relativeName = path.join('3ds', relativeName)
+                if (fileObj.dir == path_3ds_path) {
+                  if (extname.indexOf('.js')>-1 || extname.indexOf('.map')>-1) {
+                    if (extname.indexOf('.js')>-1) {
+                      mapfileJson.js[relativeName] = relativeFile
+                    }
+                  }
+                  if (extname.indexOf('.css')>-1) {
+                    mapfileJson.css[relativeName] = relativeFile
+                  }
+                } else {
+                  if (extname.indexOf('.js')>-1 || extname.indexOf('.css')>-1) {
+                    if (extname.indexOf('.js')>-1) {
+                      mapfileJson.js[relativeName] = relativeFile
+                    } else {
+                      mapfileJson.css[relativeName] = relativeFile
+                    }
+                  }
+                }
               }
             })
           }

@@ -221,7 +221,7 @@ module.exports = function (asset) {
           ])
         }
 
-        if (fse.pathExistsSync(path.join(SRC, 'js/3ds'))) {
+        if (fse.pathExistsSync(path.join(SRC, 'js/vendors/3ds'))) {
           target = target.concat(
             [
               new CopyPlugin((()=>{
@@ -230,7 +230,7 @@ module.exports = function (asset) {
                     {
                       from: '**/*',
                       to: path.join(DIST, 'js/3ds'),
-                      context: path.join(SRC, 'js/3ds'),
+                      context: path.join(SRC, 'js/vendors/3ds'),
                       // globOptions: {
                       //   ignore: ['cloudfunctions/**/*', 'project.config.json'],
                       // }
