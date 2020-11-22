@@ -26,7 +26,7 @@ inject.js(['https://unpkg.com/vue-router/dist/vue-router.js'], function(){
   Vue.use(VueRouter);
   const router = new VueRouter({ routes })
   var app = new Vue({
-    el: '#root',
+    el: '#vueroot',
     router,
     render: h => h(App),
     created: function() {}

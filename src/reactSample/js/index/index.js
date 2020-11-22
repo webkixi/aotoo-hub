@@ -15,7 +15,7 @@ inject.css(`
     )
   }
   
-  ReactDOM.render(<App />, document.body)
+  ReactDOM.render(<App />, document.getElementById('reactroot'))
 })
 
 
