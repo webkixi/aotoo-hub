@@ -427,6 +427,7 @@ module.exports = function* main(assets, opts) {
       DIST: yield valideAttribut('dist', config.dist, config),
       HOST: yield valideAttribut('host', config.host),
       PORT: _port,
+      micro: config.micro,  // 微服务模式
       PROXYPORT: _proxyPort,
       options: config.options||{},
       argv

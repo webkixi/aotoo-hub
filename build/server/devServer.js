@@ -1,6 +1,7 @@
 const co = require('co')
 const fs = require('fs')
 const fse = require('fs-extra')
+const axios = require('axios')
 const globby = require('globby')
 const del = require('del')
 const net = require('net')
@@ -122,6 +123,30 @@ function* wpDevServer(compiler, asset) {
             }
           }
         }
+        else if (mypath === '/mapper') {
+          let DISTMAPPER = path.join(DIST, 'mapfile.json')
+          if (fs.existsSync(DISTMAPPER)) {
+            let mapper = fse.readJsonSync(DISTMAPPER)
+            mapper.origin = req.protocol + '://' + req.hostname + ':' + port
+            res.json(mapper)
+          }
+        }
+        else if (mypath === '/_redirect_') {
+          let url = req.query._redirect_
+          axios({
+            method: req.method,
+            headers: Object.assign({ "Content-Type": "application/x-www-form-urlencoded" }, ((req.query&&req.query.headers) || (req.body&&req.body.headers) || {})),
+            url: url,
+            data: (()=>{
+              let body = req.body||req.query||{}
+              delete body.headers
+              return body
+            })()
+          }).then(response=>{
+            res.send(response.data)
+          })
+
+        }
         else {
           let aim = ary.join('/')
           let filename = ary[ary.length-1]
@@ -189,14 +214,14 @@ function* wpProductionDone(compiler, asset) {
 
 // 启动webpack-dev-server服务
 module.exports = function* (compilerConfig, asset) {
-  const { TYPE, contentBase, host, port, SRC, DIST, isDev, argv, checkIsXcx } = asset
+  const { TYPE, contentBase, host, port, SRC, DIST, isDev, argv, checkIsXcx, micro } = asset
   const DISTHTML = path.join(DIST, 'html')
   const DISTCSS = path.join(DIST, 'css')
   const DISTJS = path.join(DIST, 'js')
   const DISTIMG = SRC
   const isXcx = (TYPE == 'mp' || TYPE == 'ali')
   if (isDev) {
-    if (!isXcx) {
+    if (!isXcx && !micro) {
       compilerConfig.plugins.push(browserSync.openBrowser(asset))
     } else {
       // compilerConfig.plugins.push(new WriteAssetsWebpackPlugin({

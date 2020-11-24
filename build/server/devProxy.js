@@ -104,8 +104,8 @@ function* getValidProxyPort(port) {
 
 
 
-function* browserOpen(name, port, isXcx) {
-  if (!isXcx) {
+function* browserOpen(name, port, micro, isXcx) {
+  if (!isXcx && !micro) {
     browserSync.browserOpen({
       name: name,
       PORT: port
@@ -252,13 +252,13 @@ function* selectConfig(asset, ifStart) {
 const names = []
 module.exports = function* myProxy(compilerConfig, asset) {
   asset = yield selectConfig(asset, true)
-  const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv, onlynode } = asset
+  const { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv, onlynode, micro } = asset
   const isXcx = (TYPE == 'mp' || TYPE == 'ali')
   const starts = argv.start ? argv.start !== true ? [].concat(argv.start) : false : false
   if ((starts && starts.length && starts.indexOf(name) > -1) || onlynode) {
     yield startupNodeServer(asset)
     if (isDev) {
-      yield browserOpen(asset.name, asset.PORT, isXcx)
+      yield browserOpen(asset.name, asset.PORT, micro, isXcx)
     }
   } else {
     const DISTSERVER = path.join(SRC, 'server')
@@ -270,7 +270,7 @@ module.exports = function* myProxy(compilerConfig, asset) {
           yield selectConfig(asset)
           if (isDev && !argv.onlybuild) {
             yield startupNodeServer(asset)
-            yield browserOpen(asset.name, asset.proxyPort, isXcx)
+            yield browserOpen(asset.name, asset.proxyPort, micro, isXcx)
           }
         })
       }

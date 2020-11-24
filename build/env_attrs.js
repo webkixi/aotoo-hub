@@ -4,8 +4,6 @@ var fse = require('fs-extra')
 var marked = require("marked");
 var path = require('path')
   , autoprefix = require('autoprefixer')
-  // , Memfs = require('webpack-memory2fs-plugin')
-  , Memfs = require('./plugins/memfs')
   , UglifyJsPlugin = require("uglifyjs-webpack-plugin")
   , OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
   , HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -242,16 +240,6 @@ module.exports = function (asset) {
             ]
           )
         }
-
-        // target = target.concat([
-        //   new Memfs({
-        //     mapfile: {
-        //       js: /\.js(x?)/,
-        //       css: ['.css'],
-        //       html: /\.html/
-        //     }
-        //   })
-        // ])
         return target
         break;
     }

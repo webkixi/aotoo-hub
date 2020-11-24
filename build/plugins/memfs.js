@@ -194,7 +194,8 @@ module.exports = class memeryTofs {
             })
           }
 
-          mapAsset.root = outputPath
+          // 设置资源狗目录
+          // mapAsset.root = outputPath
           fs.writeFileSync(path.join(outputPath, 'mapfile.json'), JSON.stringify(mapAsset), {encoding: 'utf8'})
         }
       } catch (error) {
