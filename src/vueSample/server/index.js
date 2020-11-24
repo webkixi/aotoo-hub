@@ -18,6 +18,7 @@ app.listen(PORT, function (err, stat) {
   const destPort = chalk.green.bold(`【${PORT}】`)
   console.log(`
   ============================
+  + ${process.env.NODE_ENV === 'production' ? isDev ? '开发模式' : '生产模式' : '开发模式'}
   + node-server           +
   + 服务名: ${name}       +
   + 端口: ${destPort}      +

@@ -1,6 +1,6 @@
 
 const path = require('path')
-const asset = {"name":"vueSample","ROOT":"/Users/yc/git/project/aotoohub-react","version":"1.1.0","server":true,"TYPE":"web","startup":true,"isDev":true,"SRC":"/Users/yc/git/project/aotoohub-react/src/vueSample","DIST":"/Users/yc/git/project/aotoohub-react/src/vueSample/dist/1.1.0/dev","HOST":"localhost","PORT":8300,"PROXYPORT":8317,"options":{"scenes":"default"},"argv":{"_":["dev"]},"host":"localhost","port":8300,"proxyPort":8317,"contentBase":"/Users/yc/git/project/aotoohub-react/src/vueSample/dist/1.1.0/dev"} 
+const asset = {"name":"vueSample","ROOT":"/Users/yc/git/project/aotoohub-react","version":"1.1.0","server":true,"TYPE":"web","startup":true,"isDev":true,"SRC":"/Users/yc/git/project/aotoohub-react/src/vueSample","DIST":"/Users/yc/git/project/aotoohub-react/src/vueSample/dist/1.1.0/dev","HOST":"localhost","PORT":8500,"PROXYPORT":8517,"options":{"scenes":"default"},"argv":{"_":["dev-clean"],"rebuild":true},"host":"localhost","port":8500,"proxyPort":8517,"contentBase":"/Users/yc/git/project/aotoohub-react/src/vueSample/dist/1.1.0/dev"} 
 const scene = 'default'
 module.exports = function (opts) {
   let targetConfig = require('../configs/default')(asset)

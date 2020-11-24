@@ -2,7 +2,7 @@
 import Vue from 'vue'
 import App from './_pages/app.vue'
 import Foo from "./_pages/foo.vue";
-// import Bar from "./_pages/bar.vue";
+import Bar from "./_pages/bar.vue";
 
 const routes = [
   // 全量加载
@@ -16,7 +16,7 @@ const routes = [
   { 
     path: '/bar', 
     name: 'bar',
-    component: resolve => require(['@/index/_pages/bar'],resolve) 
+    component: Bar
   },
 
   { path: '*', redirect: 'foo' }

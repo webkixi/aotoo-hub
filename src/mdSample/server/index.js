@@ -6,7 +6,7 @@ require('@babel/register')({
 require('@babel/polyfill')
 const chalk = require('chalk')
 const appConfigs = require('./configs')()
-const { TYPE, PORT, name, isDev } = appConfigs
+const { TYPE, PORT, name, isDev, micro } = appConfigs
 const isXcx = (TYPE == 'mp' || TYPE == 'ali')
 const app = require('./lib')(appConfigs)
 
@@ -22,6 +22,7 @@ app.listen(PORT, function (err, stat) {
   + node-server           +
   + 服务名: ${name}       +
   + 端口: ${destPort}      +
+  + 模式: ${micro ? '微服务模式' : '服务模式'}      +
   +===========================
       `);
 

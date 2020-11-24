@@ -204,7 +204,9 @@ module.exports = function (asset) {
 
         '/mapper': {
           customControl: async function (ctx, next) {
-            ctx.body = CONFIG.mapper
+            let mapper = CONFIG.mapper
+            mapper.origin = ctx.origin
+            ctx.body = mapper
           }
         }
       }

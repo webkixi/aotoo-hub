@@ -48,7 +48,7 @@ function checkExist(filename, cb, falseCb) {
 module.exports = function (appConfigs) {
   // const AssetConfigs = require('./configs')() || defaultConfig
   const AssetConfigs = appConfigs || defaultConfig
-  global.CONFIG = AssetConfigs
+  global.CONFIG = AssetConfigs.options.scenes
   const { TYPE, DIST, SRC, PORT, isDev, name, options } = AssetConfigs
   const SCENES = options.scenes // === CONFIG
   const isXcx = (TYPE == 'mp' || TYPE == 'ali')
