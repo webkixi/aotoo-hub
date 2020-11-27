@@ -1,5 +1,8 @@
 export function RouterHeader({content}) {
   if (!content) return null
+  if (typeof content === 'function') {
+    return content()
+  }
   return (
     <div className="router-header">
       {content}
@@ -9,6 +12,9 @@ export function RouterHeader({content}) {
 
 export function RouterFooter({content}) {
   if (!content) return null
+  if (typeof content === 'function') {
+    return content()
+  }
   return (
     <div className="router-footer">
       {content}
@@ -18,6 +24,9 @@ export function RouterFooter({content}) {
 
 export function RouterMenus({content}) {
   if (!content) return null
+  if (typeof content === 'function') {
+    return content()
+  }
   return (
     <div className="router-menus">
       {content}
@@ -26,6 +35,9 @@ export function RouterMenus({content}) {
 }
 
 export function RouterItem({content}) {
+  if (typeof content === 'function') {
+    return content()
+  }
   return (
     <div className="router-item">
       {content}

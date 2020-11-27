@@ -1,6 +1,6 @@
 module.exports = function(type){
   let header = ui_item({
-    title: '格子前端',
+    title: {title: '格子前端', itemClass: 'logo'},
     '@list': {
       data: [
         {title: '脚手架', url: '/', select: type === 'index'},
