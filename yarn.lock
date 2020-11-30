@@ -32,9 +32,9 @@
     socket.io "^2"
 
 "@aotoo/aotoo@^6.0.0":
-  version "6.1.25"
-  resolved "https://registry.yarnpkg.com/@aotoo/aotoo/-/aotoo-6.1.25.tgz#3a00ae95d6af3f7e8d231a75edb684de917705d6"
-  integrity sha512-B3n61154GIiW4+4+pGIGc2PAxqczaCbR88endChxUMWsKt2kvSJPeDvg9O87b43n7lGIMsrhypE3ZgXXqRrF+Q==
+  version "6.1.27"
+  resolved "https://registry.yarnpkg.com/@aotoo/aotoo/-/aotoo-6.1.27.tgz#0cad9287f9b47d177468d25cf6584cd8f4e00a8e"
+  integrity sha512-7esmRCACgujtPzA48XewlVazr7FjUsI/51PNmEZ0+Q0dIbG/ThQ0agVv71sF83ZZc2irJb+9v5XEvOs6QsHS1w==
   dependencies:
     lodash "^4.17.4"
     react "^16.0.0"
