@@ -28,7 +28,6 @@ let argv = {}
 let Commonds = { }
 
 function processArgv(argv) {
-  argv = argv
   Commonds = {
     name: argv.name,
     port: argv.port,

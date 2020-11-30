@@ -9,6 +9,7 @@ let _tempC = `
     </head>
     <body>
       <div class="container" id="root">~~root~~</div>
+      ~~commonscript~~
     </body>
   </html>
 `

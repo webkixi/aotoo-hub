@@ -97,22 +97,28 @@ function re_TemplateContent(template, asset, isContent) {
     tpC = tpC.replace('~~env~~', '<script>var noserver=true; </script>');
   }
 
-  const re_prescript = /<script>[\s\S]+?<\/script>/i
-  const re_script = /<script>[\s\S]+?<\/script>/ig
-  const scripts = tpC.match(re_script)||[]
-  tpC = tpC.replace(re_prescript, '')
+//   const re_prescript = /<script>[\s\S]+?<\/script>/i
+//   const re_script = /<script>[\s\S]+?<\/script>/ig
+//   const scripts = tpC.match(re_script)||[]
+//   tpC = tpC.replace(re_prescript, '')
 
-  // scripts.push(`<script src="${precommonFile}"></script>`)
-  // const str_scripts = scripts.join('\n') + '</body>'
+//   // scripts.push(`<script src="${precommonFile}"></script>`)
+//   // const str_scripts = scripts.join('\n') + '</body>'
 
-  let str_scripts = `
-<script src="${precommonFile}"></script>
-</body>`
-  if (startFromServer) {
-    scripts.shift('<%- attachJs %>')
+//   let str_scripts = `
+// <script src="${precommonFile}"></script>
+// </body>`
+//   if (startFromServer) {
+//     scripts.shift('<%- attachJs %>')
+//   }
+//   str_scripts += scripts.join('\n')
+//   tpC = precommonFile ? tpC.replace('</body>', str_scripts) : tpC
+
+  if (precommonFile) {
+    tpC = tpC.replace('~~commonscript~~', `<script src="${precommonFile}"></script>`)
+  } else {
+    tpC = tpC.replace('~~commonscript~~', '')
   }
-  str_scripts += scripts.join('\n')
-  tpC = precommonFile ? tpC.replace('</body>', str_scripts) : tpC
 
   if (preCssCommonFile) {
     tpC = tpC.replace('~~commoncss~~', `<link rel="stylesheet" type="text/css" href="${preCssCommonFile}">`)
