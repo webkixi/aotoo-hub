@@ -1,22 +1,36 @@
 const nav = Pager.nav
 const lib = ao2.lib
+import _message from "components/items/message";
+const ad = require('../_common/advertising')
+
+const message = _message()
+
+
+// console.log('isDuringDate', isDuringDate('2018/09/17', '2030/09/17'));
+
+
+function onCovering() {
+  const pageshead = $$('#pageshead')
+  pageshead.removeClass('activeSwitch')
+}
 
 let menuInstance = ui_tree({
+  $$id: 'abc',
   data: [
-    {title: '通用', itemClass: 'menu-caption', idf: 'normal'},
-    {title: '字体', attr: {file: '/normal/font'}, select: true, parent: 'normal'}, 
-    {title: '图标', attr: {file: '/normal/icon'}, parent: 'normal' },
-    {title: '色块', attr: {file: '/normal/color'}, parent: 'normal' },
-    {title: '按钮', attr: {file: '/normal/button'}, parent: 'normal' },
+    {title: '通用', itemClass: 'menu-caption', idf: 'normal', aim: 'aimx'},
+    {title: '字体', attr: {file: '/normal/font'}, select: true, parent: 'normal', aim: 'aimx'}, 
+    {title: '图标', attr: {file: '/normal/icon'}, parent: 'normal' , aim: 'aimx'},
+    {title: '色块', attr: {file: '/normal/color'}, parent: 'normal' , aim: 'aimx'},
+    {title: '按钮', attr: {file: '/normal/button'}, parent: 'normal' , aim: 'aimx'},
 
     // {title: '数据展示', itemClass: 'menu-caption', idf: 'show'},
-    {title: '反馈', itemClass: 'menu-caption', idf: 'feedback'},
-    {title: '提示框', attr: {file: '/feedback/tip'}, parent: 'feedback'}, 
-    {title: '弹出层', attr: {file: '/feedback/modal'}, parent: 'feedback'}, 
-    {title: '通知', attr: {file: '/feedback/notice'}, parent: 'feedback'},
+    {title: '反馈', itemClass: 'menu-caption', idf: 'feedback', aim: 'aimx'},
+    {title: '提示框', attr: {file: '/feedback/tip'}, parent: 'feedback', aim: 'aimx'}, 
+    {title: '弹出层', attr: {file: '/feedback/modal'}, parent: 'feedback', aim: 'aimx'}, 
+    {title: '通知', attr: {file: '/feedback/notice'}, parent: 'feedback', aim: 'aimx'},
   ],
   itemMethod: {
-    aim(e, param, inst){
+    aimx(e, param, inst){
       let file = inst.attr('file')
       let parent = inst.parent().parent()
       if (parent) {
@@ -34,17 +48,99 @@ let menuInstance = ui_tree({
           }, 50);
         }
       }
+      onCovering()
     }
   },
-  listClass: 'router-menu-list'
+  listClass: 'router-menu-list router-menus flex-column justify-between',
+  footer: {
+    title: [
+      {
+        '@list': {
+          data: [
+            {
+              title: '',
+              itemClass: 'item-qq',
+              tap: 'onPop?type=qq'
+            },
+            {
+              title: '',
+              itemClass: 'item-code',
+              tap: 'onPop?type=ui'
+            },
+            {
+              title: '',
+              itemClass: 'item-github',
+              url: '__ https://github.com/webkixi/aotoo-hub'
+            },
+            {
+              title: '',
+              itemClass: 'item-saui',
+              tap: 'onPop?type=saui'
+            },
+          ],
+          listClass: 'menus-footer',
+          onPop(e, param, inst) {
+            e.stopPropagation()
+            const type = param.type
+            if (type !== 'saui') {
+              const kk = ui_item({
+                body: type === 'qq' ? [{img: {src: '/images/ui/qqqun.jpg'}, itemClass: 'item-pic-lg'}] : [
+                  {
+                    img: { src: '/images/ui/xquery.png'},
+                    title: 'QueryUI',
+                    itemClass: 'item-pic'
+                  },
+                  {
+                    img: { src: '/images/ui/saui.jpeg' },
+                    title: 'SAUI',
+                    itemClass: 'item-pic'
+                  },
+                ],
+                footer: type !== 'qq' ? [
+                  {title: '', itemClass: 'icon-scan'},
+                  {title: '微信扫码查看更多'}
+                ] : [],
+                dot: [{title: ' ', itemClass: 'item-close close-circle-2', aim: 'onClosex'}],
+                footerClass: type !== 'qq' ? 'item-footer' : '',
+                bodyClass: 'item-body',
+                itemClass: type === 'qq' ? 'ss-modal item-img' : 'ss-modal item-ad',
+                methods: {
+                  onClosex() {
+                    message.close()
+                  }
+                }
+              })
+              message.modal(<kk.UI/>)
+            }
+            else {
+              ad()
+            }
+          }
+        },
+        itemClass: 'menus-foot'
+      },
+      {
+        title: '',
+        itemClass: 'covering',
+        aim() {
+          onCovering()
+        }
+      }
+    ]
+  },
+  methods: {
+    __ready() {
+      ad('2020/12/24', '2020/12/26')
+    }
+  }
 })
 
 let header = ui_item({
+  $$id: 'pageshead',
   title: [
     {
-      img: {
-        src: './images/ui/saui-logo.png'
-      },
+      title: ' ',
+      itemClass: 'icon-saui'
     },
     {
       title: 'SAUI', itemClass: 'item-logo-title'
@@ -53,23 +149,36 @@ let header = ui_item({
   body: [
     {
       title: '欢迎您',
-      itemClass: 'flex-row al-item-center flex-1 size'
+      itemClass: 'flex-row al-item-center size'
     },
     {
-      title: [
-        {
-          title: 'lgh',
-          itemClass: 'mlr-default'
-        },
-        {
-          title: '退出'
-        }
-      ],
-      titleClass: 'flex-row al-item-center'
-    }
+      title: 'lgh',
+      itemClass: 'ml-default'
+    },
+    {
+      title: '搜索功能待完善',
+      itemClass: 'like-search ml-auto',
+      aim: 'onSearchPop'
+    },
+    // {
+    //   title: [
+    //     {title: '默认主题', tap: 'onTheme?type=default', itemClass: 'link-primary'},
+    //     {title: '橙', tap: 'onTheme?type=orange', itemClass: 'link-primary'},
+    //     {title: '绿', tap: 'onTheme?type=green', itemClass: 'link-primary'},
+    //   ],
+    //   titleClass: 'item-theme'
+    // },
+    {
+      title: ' ',
+      itemClass: 'icon-nav color-primary ',
+      tap: 'onNav'
+    },
   ],
-  itemClass: 'admin-header',
-  titleClass: 'item-logo'
+  itemClass: 'admin-header router-header',
+  titleClass: 'item-logo color-primary',
+  onNav(e, param, inst) {
+    header.toggleClass('activeSwitch')
+  }
 })
 
 const path = location.hash.slice(1)
@@ -84,29 +193,11 @@ export default Pager.pages([
   {url: '/feedback/modal', content: import('./_feedback/modal')},
   {url: '/feedback/notice', content: import('./_feedback/notice')},
 ], {
-  header: <header.UI/>,
-  menus: <menuInstance.UI />,
+  header: function () {
+    return <header.UI/>
+  },
+  menus: function() {
+    return <menuInstance.UI />
+  },
   select: path || '/normal/button'
 })
-
-
-
-// import {render} from '@aotoo/aotoo'
-// let list = ui_tree({
-//   data: [
-//     {title: '通用', itemClass: 'menu-caption', idf: 'normal'},
-//     {title: '字体', parent: 'normal'},  // webpack支持
-//     {title: '图标', parent: 'normal' },  // 编译模式易扩展
-//     {title: '色块', parent: 'normal' },
-//     {title: '按钮', parent: 'normal' },
-//   ],
-//   itemMethod: {
-//     onClick(e, param, inst){
-//       // e.stopPropagation()
-//       console.log('===== 9999')
-//       inst.addClass('xxx')
-//     }
-//   }
-// })
-
-// render(<list.UI />, 'root')

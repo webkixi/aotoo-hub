@@ -1,268 +1,244 @@
-/*
-Google Code style (c) Aahan Krish <geekpanth3r@gmail.com>
-*/
+@import '../_commonx/config/markdown'
 
-code, pre {
-  border-radius: 3px;
-  color: inherit;
-}
-
-code {
-  // font-family: Consolas, Monaco, Andale Mono, monospace;
-  margin: 0 2px;
-  padding 2px 4px;
-  // color: #666555;
-  color: #c7254e;
-  background: #f9f2f4;
-}
-
-pre {
-  line-height: 1.3em;
-  overflow: auto;
-  padding: 6px 10px;
-  background-color:#f7f7f7;
-  // border-left: 5px solid #6CE26C;
-  margin-bottom 1em;
-}
-
-pre > code {
-  border: 0;
-  display: inline;
-  max-width: initial;
-  padding: 0;
-  margin: 0;
-  overflow: initial;
-  line-height: inherit;
-  font-size: .85em;
-  white-space: pre;
-  // background: 0 0;
-}
-.markdown-body {
+.markdown-body 
   font-family: "Helvetica Neue", Arial, "Hiragino Sans GB", STHeiti, "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, Song, sans-serif;
-  color: #2c3f51
+  color: $md-color-text
+  line-height: 1.6em
+  font-size: $md-size
+  code, pre 
+    border-radius: $md-br
+    color: inherit;
+    box-sizing: border-box
+  code 
+    color: $md-key-color
+    background: fade-out($md-key-color, .9)
+    padding: .1em .3em;
+  pre 
+    line-height: 1.3em;
+    overflow: auto;
+    max-height: 45em
+  pre, .markdown-section>p, table
+    margin: 0 0 1em
+    color: $md-color-title
 
-  pre {
-    padding 0
-  }
-
-  pre > code {
+  pre > code 
     font-family: Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;
-    padding 0.8rem 1rem
-  }
+    padding 1rem
+    display: block;
+    max-width: initial;
+    margin: 0;
+    line-height: inherit;
+    font-size: .85em;
+    white-space: pre;
+    color: transparent
+  
 
 
-  @media screen and (min-width: 768px) {
-    body {
+  @media screen and (min-width: 768px) 
+    body 
       width: 748px;
-      margin: 10px auto;
-    }
-  }
-  h1, h2, h3, h4 {
-    color: #111111;
-    font-weight: 400;
-    margin-top: 1em;
-  }
-  h1, h2, h3, h4, h5, p , dl{
-    margin-bottom: 16px;
-    padding: 0;
-  }
-  h1, h2, h3, h4, h5{
-    font-weight 600
-    margin: 1.2em 0 .6em 0;
-  }
-  h1 {
-    font-size: 48px;
-    line-height: 54px;
-  }
-  h2 {
-    font-size: 36px;
-    line-height: 42px;
-    border-bottom: 1px solid #EFEAEA;
-  }
-  h1, h2 {
-    padding-bottom: 10px;
-  }
-  h3 {
-    font-size: 24px;
-    line-height: 30px;
-  }
-  h4 {
-    font-size: 21px;
-    line-height: 26px;
-  }
-  h5 {
-    font-size: 18px;
-    list-style: 23px;
-  }
-  h1 {
-    margin-top 0.3em;
-  }
-  a {
-    color: #0099ff;
-    margin: 0;
-    padding: 0;
+
+  h1, h2, h3, h4 
+    color: $md-color-title
+    font-weight: bold;
+  
+  h1 
+    font-size: $md-size-title-1
+    margin-bottom: 1.5em
+  
+  h2 
+    font-size: $md-size-title-2
+
+  h3 
+    font-size: $md-size-title-3
+  
+  h4 
+    font-size: $md-size-title-4
+  
+  h5 
+    font-size: $md-size-title-5
+  
+  h2, h3, h4, h5
+    margin: 1em 0 
+
+  a 
+    color: $md-color-link
     vertical-align: baseline;
-  }
-  a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  
+  a:hover 
     text-decoration: none;
-    color: #ff6600;
-  }
-  a:visited {
+    color: $md-color-link-active
+  
+  a:visited 
     /*color: purple;*/
-  }
-  ul, ol {
-    padding: 0;
+  
+  ul, ol 
     padding-left: 24px;
-    margin: 0;
-  }
-  li {
-    line-height: 24px;
-  }
-  p, ul, ol {
-    font-size: 16px;
-    line-height: 24px;
-  }
+  
+  // li 
+  //   // line-height: 24px;
+  
+  // p, ul, ol 
+  //   font-size: 16px;
+  //   // line-height: 24px;
+  
 
-  ol ol, ul ol {
+  ol ol, ul ol 
     list-style-type: lower-roman;
-  }
+  
 
-  /*pre {
-    padding: 0px 24px;
-    max-width: 800px;
-    white-space: pre-wrap;
-  }
-  code {
-    font-family: Consolas, Monaco, Andale Mono, monospace;
-    line-height: 1.5;
-    font-size: 13px;
-  }*/
-
-
-  /** markdown preview plus 对于代码块的处理有些问题, 所以使用统一的颜色 */
-  /*code .keyword {
-    color: #8959a8;
-  }
-
-  code .number {
-    color: #f5871f;
-  }
-
-  code .comment {
-    color: #998
-  }*/
-
-  aside {
+  aside 
     display: block;
     float: right;
     width: 390px;
-  }
-  blockquote {
-    border-left:.5em solid #eee;
-    padding: 0 0 0 1em;
-    margin-left:0;
-  }
-  blockquote  cite {
+  
+  blockquote 
+    width 100%;
+    position: relative
+    box-sizing: border-box
+    &:before
+      content: ''
+      width: .5em
+      background: $md-key-color
+      height: 100%
+      position: absolute;
+      top: 0;
+      left: 0;
+    >p
+      padding: 1em
+      color: $md-color-title
+      background-color: fade-out($md-key-color, .95)
+      margin-bottom: 1em
+  blockquote > blockquote
+    color: #856404;
+    &:before
+      background: #ffeeba;
+    > p 
+      background-color: #fff3cd;
+      color: #856404;
+    
+    > blockquote
+      width 100%
+      color: #155724;
+      border-color: #c3e6cb;
+      &:before
+        background: #c3e6cb;
+      > p 
+        background-color: #d4edda;
+        color: #155724;
+      
+      > blockquote 
+        color: #721c24;
+        border-color: #f5c6cb;
+        &:before
+          background: #f5c6cb;
+        > p
+          background-color: #f8d7da;
+          color: #721c24;
+        
+        > blockquote
+          color: #004085;
+          border-color: #b8daff;
+          &:before
+            background: #b8daff;
+          > p
+            background-color: #cce5ff;
+            color #004085
+
+  blockquote  cite 
     font-size:14px;
     line-height:20px;
     color:#bfbfbf;
-  }
-  blockquote cite:before {
+  
+  blockquote cite:before 
     content: '\2014 \00A0';
-  }
 
-  blockquote p {
-    color: #666;
-  }
-  hr {
+  
+  hr 
     text-align: left;
-    color: #999;
+    color: $md-color-desc
     height: 2px;
     padding: 0;
-    margin: 16px 0;
-    background-color: #e7e7e7;
+    margin: 1em 0;
+    background-color: $border-color
     border: 0 none;
-  }
-
-  dl {
+  dl 
     padding: 0;
-  }
-
-  dl dt {
+  dl dt 
     padding: 10px 0;
-    margin-top: 16px;
+    margin-top: 1em
     font-size: 1em;
     font-style: italic;
     font-weight: bold;
-  }
+  dl dd 
+    padding: 0 1em
+    margin-bottom: 1em
+  
 
-  dl dd {
-    padding: 0 16px;
-    margin-bottom: 16px;
-  }
-
-  dd {
+  dd 
     margin-left: 0;
-  }
+  
 
   /* Code below this line is copyright Twitter Inc. */
 
   button,
   input,
   select,
-  textarea {
+  textarea 
     font-size: 100%;
     margin: 0;
     vertical-align: baseline;
     *vertical-align: middle;
-  }
-  button, input {
+  
+  button, input 
     line-height: normal;
     *overflow: visible;
-  }
-  button::-moz-focus-inner, input::-moz-focus-inner {
+  
+  button::-moz-focus-inner, input::-moz-focus-inner 
     border: 0;
     padding: 0;
-  }
+  
   button,
   input[type="button"],
   input[type="reset"],
-  input[type="submit"] {
+  input[type="submit"] 
     cursor: pointer;
     -webkit-appearance: button;
-  }
-  input[type=checkbox], input[type=radio] {
+  
+  input[type=checkbox], input[type=radio] 
       cursor: pointer;
-  }
+  
   /* override default chrome & firefox settings */
-  input:not([type="image"]), textarea {
+  input:not([type="image"]), textarea 
     box-sizing: content-box;
-  }
+  
 
-  input[type="search"] {
+  input[type="search"] 
     box-sizing: content-box;
-  }
-  input[type="search"]::-webkit-search-decoration {
+  
+  input[type="search"]::-webkit-search-decoration 
     -webkit-appearance: none;
-  }
+  
   label,
   input,
   select,
-  textarea {
+  textarea 
     // font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
     font-weight: normal;
     line-height: normal;
     margin-bottom: 18px;
-  }
-  input[type=checkbox], input[type=radio] {
+  
+  input[type=checkbox], input[type=radio] 
     cursor: pointer;
     margin-bottom: 0;
-  }
+  
   input[type=text],
   input[type=password],
   textarea,
-  select {
+  select 
     display: inline-block;
     width: 210px;
     padding: 4px;
@@ -271,37 +247,37 @@ pre > code {
     line-height: 18px;
     height: 18px;
     color: #808080;
-    border: 1px solid #ccc;
+    border: 1px solid $md-border-color
     border-radius: 3px;
-  }
-  select, input[type=file] {
+  
+  select, input[type=file] 
     height: 27px;
     line-height: 27px;
-  }
-  textarea {
+  
+  textarea 
     height: auto;
-  }
+  
   /* grey out placeholders */
-  :-moz-placeholder {
+  :-moz-placeholder 
     color: #bfbfbf;
-  }
-  ::-webkit-input-placeholder {
+  
+  ::-webkit-input-placeholder 
     color: #bfbfbf;
-  }
+  
   input[type=text],
   input[type=password],
   select,
-  textarea {
+  textarea 
     transition: border linear 0.2s, box-shadow linear 0.2s;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  input[type=text]:focus, input[type=password]:focus, textarea:focus {
+  
+  input[type=text]:focus, input[type=password]:focus, textarea:focus 
     outline: none;
     border-color: rgba(82, 168, 236, 0.8);
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
-  }
+  
   /* buttons */
-  button {
+  button 
     display: inline-block;
     padding: 4px 14px;
     // font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -324,75 +300,130 @@ pre > code {
     transition: 0.1s linear all;
     border-color: #0064cd #0064cd #003f81;
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  }
-  button:hover {
+  
+  button:hover 
     color: #fff;
     background-position: 0 -15px;
     text-decoration: none;
-  }
-  button:active {
+  
+  button:active 
     box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
-  button::-moz-focus-inner {
+  
+  button::-moz-focus-inner 
     padding: 0;
     border: 0;
-  }
-  table {
+  
+  table 
     *border-collapse: collapse; /* IE7 and lower */
     border-spacing: 0;
     width: 100%;
-  }
-  table {
-    border: solid #ccc 1px;
-    border-radius: 6px;
-      /*-webkit-box-shadow: 0 1px 1px #ccc;
-      -moz-box-shadow: 0 1px 1px #ccc;
-      box-shadow: 0 1px 1px #ccc;   */
-  }
-  table tr:hover {
-    background: #fbf8e9;
+  
+  table 
+    border: solid $md-border-color 1px;
+    border-radius: $md-br
+  
+  table tbody tr:hover 
+    background: fade-out($md-color-link-active, .9)
     transition: all 0.1s ease-in-out;
-  }
-  table td, .table th {
-    border-left: 1px solid #ccc;
-    border-top: 1px solid #ccc;
-    padding: 10px;
+    color: $md-color-link-active
+
+  table td, .table th 
+    border-left: 1px solid $md-border-color
+    border-top: 1px solid $md-border-color
+    padding: .6em 1em;
     text-align: left;
-  }
+    font-weight: normal
 
-  table th {
-    background-color: #dce9f9;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
-    background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
-    background-image:    -moz-linear-gradient(top, #ebf3fc, #dce9f9);
-    background-image:     -ms-linear-gradient(top, #ebf3fc, #dce9f9);
-    background-image:      -o-linear-gradient(top, #ebf3fc, #dce9f9);
-    background-image:         linear-gradient(top, #ebf3fc, #dce9f9);
-    /*-webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
-    -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;
-    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;*/
+  table th 
+    background-color: $md-color-link-active
+    color: $md-table-thead-color
     border-top: none;
-    text-shadow: 0 1px 0 rgba(255,255,255,.5);
-    padding: 5px;
-  }
+    padding: .5em 1em
+    font-weight: normal
 
-  table td:first-child, table th:first-child {
+  table td:first-child, table th:first-child 
     border-left: none;
-  }
 
-  table th:first-child {
-    border-radius: 6px 0 0 0;
-  }
-  table th:last-child {
-    border-radius: 0 6px 0 0;
-  }
-  table th:only-child{
-    border-radius: 6px 6px 0 0;
-  }
-  table tr:last-child td:first-child {
-    border-radius: 0 0 0 6px;
-  }
-  table tr:last-child td:last-child {
-    border-radius: 0 0 6px 0;
-  }
-}
+  table th:first-child 
+    border-radius: $md-br 0 0 0;
+
+  table th:last-child 
+    border-radius: 0 $md-br 0 0;
+
+  table th:only-child
+    border-radius: $md-br $md-br 0 0;
+
+  table tr:last-child td:first-child 
+    border-radius: 0 0 0 $md-br;
+
+  table tr:last-child td:last-child 
+    border-radius: 0 0 $md-br 0;
+
+
+  code.hljs 
+    display: block;
+    overflow-x: auto;
+    background: $hljs-bg
+    color: $hljs-title
+  //   padding: .5em;
+
+  .hljs-emphasis,.hljs-strong 
+    color: $hljs-emphasis
+
+  .hljs-bullet,.hljs-link,.hljs-literal,.hljs-number,.hljs-quote,.hljs-regexp 
+    color: $hljs-literal
+
+  .hljs-code,.hljs-section,.hljs-selector-class
+    color: $hljs-section
+
+  .hljs-strong 
+    font-weight: bold
+
+  // .hljs-emphasis 
+  //     font-style: italic
+
+  .hljs-attr,.hljs-keyword,.hljs-name,.hljs-selector-tag 
+    color: $hljs-attr
+
+  .hljs-attribute,.hljs-symbol 
+    color: $hljs-attribute
+
+  .hljs-class .hljs-title,.hljs-params 
+    color: $hljs-title
+
+  .hljs-addition,.hljs-built_in,.hljs-builtin-name,.hljs-selector-attr,.hljs-selector-id,.hljs-selector-pseudo,.hljs-string,.hljs-template-variable,.hljs-type,.hljs-variable 
+    color: $hljs-string
+
+  .hljs-comment,.hljs-deletion,.hljs-meta 
+    color: $hljs-comment
+
+
+
+// code, pre 
+//   border-radius: 3px;
+//   color: inherit;
+// code 
+//   margin: 0 2px;
+//   padding 2px 4px;
+//   color: #e96900;
+//   background: #f9f2f4;
+
+
+// pre 
+//   line-height: 1.3em;
+//   overflow: auto;
+//   padding: 6px 10px;
+//   background-color:#f7f7f7;
+//   margin-bottom 1em;
+
+
+// pre > code 
+//   border: 0;
+//   display: inline;
+//   max-width: initial;
+//   padding: 0;
+//   margin: 0;
+//   overflow: initial;
+//   line-height: inherit;
+//   font-size: .85em;
+//   white-space: pre;

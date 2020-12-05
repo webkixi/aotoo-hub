@@ -5,7 +5,7 @@
   3 notice
   4 alert  未做
 */
-const cbody = document.body;
+let cbody = null
 class Popx {
   constructor(config){
     this.config = config
@@ -27,6 +27,7 @@ class Popx {
   }
   
   modal(params) {
+    cbody = document.body;
     const that = this
     this.curType = 1
     this.elem[this.curType] = typeof this.elem[this.curType] === 'undefined' ? [] : this.elem[this.curType]
@@ -150,6 +151,7 @@ class Popx {
   }
 
   _partCom(params, type) {
+    cbody = document.body;
     //tips and notice
     let dfg = {
       type: 'warning',        //类型 sucess fail warning

@@ -22,10 +22,11 @@ customScrollCfg = {
   $height: 300px
   $scrollbar: 5px
   $scrollbarHei: 1px
-  $br: 3px
+  $br: 5px
   $hoverbg: fade-out(#999, .7)
   $min-height: false
   $scroll: y
+  $scrollbarShow: true
 }
 ss-func-customscroll($class = '.hlist', $config = false)
   cfg = merge({}, customScrollCfg, $config)
@@ -42,17 +43,23 @@ ss-func-customscroll($class = '.hlist', $config = false)
         else 
           height: cfg.$height
     
-    &::-webkit-scrollbar      /*滚动条整体样式*/
-      width: cfg.$scrollbar    /*高宽分别对应横竖滚动条的尺寸*/
-      height: cfg.$scrollbarHei
-    &::-webkit-scrollbar-thumb        /*滚动条里面小方块*/
-      border-radius: cfg.$br 
-      background: rgba(153,153,153, .5)
-      &:hover
-        background: rgba(153,153,153, 1)
+    &:hover
+      &::-webkit-scrollbar-thumb 
+        background: rgba(153,153,153, .4)
         cursor: pointer
-        // background: cfg.$hoverbg       //色值不对，
-    &::-webkit-scrollbar-track        /*滚动条里面轨道*/
+      if (cfg.$scrollbarShow == false)
+        &::-webkit-scrollbar  
+          display: block
+    &::-webkit-scrollbar     
+      width: cfg.$scrollbar   
+      height: cfg.$scrollbarHei
+      display: none if (cfg.$scrollbarShow == false)
+    &::-webkit-scrollbar-thumb       
+      border-radius: cfg.$br 
+      background: rgba(153,153,153, 0)
+      &:hover
+        background: rgba(153,153,153, .5)
+    &::-webkit-scrollbar-track       
       border-radius: cfg.$br 
 
 //块状

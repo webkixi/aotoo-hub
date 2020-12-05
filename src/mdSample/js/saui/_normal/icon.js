@@ -1,54 +1,30 @@
+import _inject from 'aotoo-inject'
+let inject = _inject()
+inject.css([
+  'https://at.alicdn.com/t/font_2218644_d4uaf0wxlxl.css'
+])
 // function pages() {
-//   const data = [
-//     {
-//       title: 'e66b',
-//       itemStyle: {
-//         '--icon': "\\e840"
-//       }
-//     },
-//     {
-//       title: 'e607',
-//       itemStyle: {
-//         '--icon': '\\e840'
-//       }
-//     },
-//     {
-//       title: 'e81b',
-//       itemStyle: {
-//         '--icon': '\\e840'
-//       }
-//     },
-//     {
-//       title: 'e81c',
-//       itemStyle: {
-//         '--icon': '\\e840'
-//       }
-//     },
-//     {
-//       title: 'e83f',
-//       itemStyle: {
-//         '--icon': '\\e840'
-//       }
-//     },
-//     {
-//       title: 'e840',
-//       itemStyle: {
-//         '--icon': '\\e840'
-//       }
-//     },
-//     {
-//       title: 'e605',
-//       itemStyle: {
-//         '--icon': '\\e840'
-//       }
-//     },
-//     {
-//       title: 'e64e',
-//       itemStyle: {
-//         '--icon': '\\e840'
-//       }
-//     },
-//   ]
+  const iconList = [
+    { title: '&#e7b0;', itemClass: 'icon-sousuo' },
+    { title: '&#e7b3;', itemClass: 'icon-yiwenjieda' },
+    { title: '&#e7b6;', itemClass: 'icon-tishishuoming' },
+    { title: '&#e7b7;', itemClass: 'icon-chenggongtishi' },
+    { title: '&#e7b8;', itemClass: 'icon-cuowutishi' },
+    { title: '&#e7b9;', itemClass: 'icon-shuomingtishi' },
+    { title: '&#e63e;', itemClass: 'icon-xiaochengxu1' },
+    { title: '&#e608;', itemClass: 'icon-saoma' },
+    { title: '&#e614;', itemClass: 'icon-qq1' },
+    { title: '&#e677;', itemClass: 'icon-github' },
+    { title: '&#e63e;', itemClass: 'icon-xiaochengxu1' },
+    { title: '&#e617;', itemClass: 'icon-arrow_up' },
+    { title: '&#e605;', itemClass: 'icon-saui' },
+    { title: '&#e66b;', itemClass: 'icon-nav' },
+    { title: '&#e644;', itemClass: 'icon-riqi' },
+    { title: '&#e602;', itemClass: 'icon-jianhao' },
+    { title: '&#e607;', itemClass: 'icon-guanbi' },
+    { title: '&#e74e;', itemClass: 'icon-xiala' },
+    { title: '&#e611;', itemClass: 'icon-jiahao' },
+  ]
 
 //   const tree = Aotoo.list({
 //     data: data,
@@ -72,7 +48,21 @@ const {lib} = ao2
 function template(state, props) {
   // let md = requireMarkdown(state.file)
   let mdContent = ui_item({
-    title: '图标'
+    title: {
+      title: '图标',
+      itemClass: 'pages-title-lg'
+    },
+    dot: [
+      {
+        title: '此处的iconfont的类名，仅供展示，如需调用，请写before',
+        itemClass: 'pages-title mb-defalut color-info'
+      }
+    ],
+    '@list': {
+      data: iconList,
+      itemClass: 'icon-xx',
+      listClass: 'flex-row-wrap'
+    }
   })
   return <mdContent.UI />
 }

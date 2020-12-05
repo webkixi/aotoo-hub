@@ -1,6 +1,6 @@
 
 const path = require('path')
-const asset = {"name":"mdSample","ROOT":"/Users/yc/git/project/aotoohub-react","version":"1.1.0","onlynode":false,"server":true,"TYPE":"web","startup":true,"isDev":true,"SRC":"/Users/yc/git/project/aotoohub-react/src/mdSample","DIST":"/Users/yc/git/project/aotoohub-react/src/mdSample/dist/1.1.0/dev","HOST":"localhost","PORT":8400,"PROXYPORT":8417,"options":{"scenes":"default"},"argv":{"_":["dev-clean"],"rebuild":true},"host":"localhost","port":8400,"proxyPort":8417,"contentBase":"/Users/yc/git/project/aotoohub-react/src/mdSample/dist/1.1.0/dev"} 
+const asset = {"name":"mdSample","ROOT":"/Users/yc/git/project/aotoohub-react","version":"1.1.0","onlynode":false,"server":true,"TYPE":"web","startup":true,"isDev":false,"SRC":"/Users/yc/git/project/aotoohub-react/src/mdSample","DIST":"/Users/yc/git/project/aotoohub-react/src/mdSample/dist/1.1.0/pro","HOST":"localhost","PORT":8400,"PROXYPORT":8417,"options":{"scenes":"default"},"argv":{"_":["build-clean"],"onlybuild":true},"host":"localhost","port":8400,"proxyPort":8417,"contentBase":"/Users/yc/git/project/aotoohub-react/src/mdSample/dist/1.1.0/pro"} 
 const scene = 'default'
 module.exports = function (opts) {
   let targetConfig = require('../configs/default')(asset)
@@ -49,7 +49,7 @@ module.exports = function (opts) {
   asset.DIST = nDist
   asset.options.scenes = targetConfig
   asset.options.scenes.isXcx = undefined
-  const mapper = require("/Users/yc/git/project/aotoohub-react/src/mdSample/dist/1.1.0/dev/mapfile.json")
+  const mapper = require("/Users/yc/git/project/aotoohub-react/src/mdSample/dist/1.1.0/pro/mapfile.json")
   asset.options.scenes.mapper = mapper
   if (typeof wx == 'undefined') {
     global.CONFIG.ROOT = nRoot

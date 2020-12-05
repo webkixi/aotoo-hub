@@ -1,10 +1,53 @@
-@import "./_commoncss/normalize"
-@import "./_commoncss/markdown"
 
-body {
-    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 16px;
-    color: #2c3e50;
-}
+*
+  margin: 0
+  padding: 0
+
+h5, h6 
+  font-weight: normal
+
+em
+  font-style: normal
+
+.flex-1
+  flex: 1
+
+.oh
+  overflow hidden
+
+
+
+.ss-center
+  text-align: center
+.ss-left
+  text-align: left
+.ss-right
+  text-align: right
+
+.ss-sizing-border
+  box-sizing: border-box
+
+.ss-zindex-m
+  position: relative
+  z-index: -9999!important
+.none
+  display none
+  @extends .ss-zindex-m
+.disN
+  display none!important
+  @extends .ss-zindex-m
+
+.ss-opacity-0
+  opacity: 0
+
+.ss-block
+  display block
+.ss-i-block
+  display: inline-block
+
+.ss-relative
+  position: relative
+
+.ss-hover-underline
+  &:hover
+    text-decoration: underline

@@ -2,11 +2,12 @@
 rootHeadCfg = {
   // $bgimage: '/images/saui-logo.png'
   $bgimage: false
-  $HeaderHeight: 60px
+  $HeaderHeight: 100%
   $HeaderBg: #fff
   $HeadColor: #333
   $HeadSize: 12px
   $mWidth: 260px
+  $logoWidth: 18%      //logo大小
   //缩小版
   $min-width: 70px
   $lh: 50px
@@ -18,8 +19,9 @@ admin = {
   $box-line: 1px solid $color-line
   $br: 0
   $mBg: #fff
+  $mColor: #666
   $space: 0
-  $boxSpace: 30px
+  $boxSpace: var(--space, $space)
   $mWidth: false
   $min-width: 80px        //缩小版
   $min-titleShow: true
@@ -30,11 +32,12 @@ adminMenus = {
   $menusType: 1
   $logoColor: $color-text-title
   $mBg: #fff
-  $bs: none,
   $mColor: #666
-  $mWidth: 260px
+  $bs: none
+  $width: 18%
+  $mWidth: 430px
   $mActiveBg: $color-primary
-  $mActiveItemBg: #e6f7ff //fade-out($color-primary, .9)
+  $mActiveItemBg: fade-out($color-primary, .9) //#e6f7ff //
   $mActiveColor: $color-primary
   $mUlBg: #fff
   $lh: 40px
@@ -44,13 +47,15 @@ adminMenus = {
   $isShowIcon: false
   $isShowIconRight: true
   $isAllShow: true
-  $typeleft: false
+  $typeleft: left
   $isClick: true
-  $size-title: 13px
-  $space: 0 40px 15px
-  $spaceItem: 40px
+  $size-title: 12px
+  $space: 0 2em
+  $spaceItem: 2em
   $mLine: 1px solid $color-line
   $spaceCaption: 16px 0 
+  $cursor: false
+  $color: $color-text-title
 
   $min-width: 70px
   $lh-2: 50px

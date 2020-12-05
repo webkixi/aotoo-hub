@@ -1,106 +1,97 @@
 
 // @import './routerconfig/routerStyle2'
 
-ss-admin($class= '.routerGroup', $config = admin)
+ss-admin($class= '.routerGroup', $config = admin, $menusClass = '&')
+  cfg = merge({}, admin, $config)
   //所有内容在一屏内显示
   /html, body, /.container
     height 100%
+    overflow: hidden
   {$class}
-    background: $config.$routerBg if $config.$routerBg
+    background: cfg.$routerBg if cfg.$routerBg
     height: 100%
-    padding: $config.$space
+    padding: cfg.$space if cfg.$space
     ss-display-flex(row nowrap, flex-start)
-    &.active          //缩小版本的menus
-      >.router-menus
-        width: $config.$min-width
-        line-height: $config.$lh-2
-        .item-icon
-          justify-content: center
-        if (!$min-titleShow)
-          .item-title
-            display: none
-        .ul
-          position: absolute;
-          top: 0;
-          left: ($config.$min-width - 5px)
-          padding: 10px 0;
-          white-space: nowrap;
-          z-index: $zidx-h
-          display: none
-          border: 1px solid $tipsx-bc-2
-          ss-arrow-direction(right, $tips-arrow-size, $tipsx-bc-2, $tipsx-bg-2, 20%, -($tips-arrow-size - 4px))
-
     //菜单部分
     >.router-menus
-      ss-menus()
-      border-right: $config.$box-line  if ($config.$box-line)
+      ss-menus($menusClass)
+      border-right: cfg.$box-line  if (cfg.$box-line)
+      background: cfg.$mBg2 if cfg.$mBg2
+      color: cfg.$mColor   if cfg.$mColor
+      margin-right: cfg.$space if cfg.$space
+      flex: 0 0 auto
+      &.active
+        opacity: 0
+        width: 0
     //内容部分
     >.router-page
       flex: 1
-      padding: $config.$boxSpace
-      background: $config.$mBg if $config.$mBg
-      border-radius: $config.$br  if $config.$br
-      margin-left: 30px
+      padding: cfg.$boxSpace
+      background: cfg.$mBg if cfg.$mBg
+      border-radius: cfg.$br  if cfg.$br
       overflow: hidden
-    ss-func-customscroll('>.router-page', {$height: auto, $min-height: 300px}) if $config.$scrollBox     //滚动
+    ss-func-customscroll($menusClass, {$height: auto, $min-height: 300px, $scrollbarShow: false}) if cfg.$scrollBox     //滚动
+    ss-func-customscroll('.router-page', {$height: auto, $min-height: 300px}) if cfg.$scrollBox     //滚动
     
 
 
 /***************路由菜单部分*********************/
 ss-menus($class='>.hlist', $config = adminMenus)
+  if ($config.$mWidth != false)
+    width: $config.$width 
+    max-width: $config.$mWidth 
+  // else 
+  //   width: $config.$min-width
   {$class}
     background: $config.$mBg if $config.$mBg
     border-radius: $config.$br  if $config.$br
     box-shadow: $config.$bs  if $config.$bs
-    color: $config.$mColor   if $config.$size
+    // color: $config.$mColor   if $config.$mColor
     transition: 250ms ease;
     font-size: $config.$size if $config.$size
     line-height: $config.$lh if $config.$lh
     padding: $config.$space-b if $config.$space-b
-    if ($config.$mWidth != false)
-      width: $config.$mWidth 
-    else 
-      width: $config.$min-width
     >.item
+      margin-top: 15px
       &:first-child
         margin-top: 30px
       &:last-child
         margin-bottom: 30px
   .itemroot
-    >.htitle
+    >.htitle,.item-title
       margin: $config.$space
       line-height: $config.$lh-title
       font-size: $config.$size-title
       // margin: $config.$spaceCaption if $config.$spaceCaption
+      cursor: $config.$cursor if $config.$cursor
       if ($config.$mLine)
-        border-bottom: $config.$mLine
+        border-bottom: 1px solid $config.$mLine
         color: fade-out($config.$mColor, .3)
         display: block
-      &.active-none
-        ~.ul
-          display: none
-      &.active
-        .item-title
-          &:after
-            transform: rotateZ(180deg)
-        ~.ul
-          height: auto
-          display: block
+    &.active-none
+      .ul
+        display: none
+    &.active
+      .item-title
+        &:after
+          transform: rotateZ(180deg)
+      .ul
+        height: auto
+        display: block
   .ul
     background: $config.$mUlBg
     border-radius: $config.$br  if $config.$br
     box-shadow: $config.$bs  if $config.$bs
     // overflow: hidden
-    min-width: 140px
+    // min-width: 140px
     .li-item 
       cursor: pointer
       padding-left: $config.$spaceItem
-      color: $color-text-title
+      color: $config.$color
       &:hover, &.active
         background: $config.$mActiveItemBg if ($config.$mActiveItemBg)
         color: $color-primary
       &[data-path*='item-title']
-        
         font-size: 16px
         font-weight: bold
         &:hover
@@ -144,11 +135,11 @@ ss-menus($class='>.hlist', $config = adminMenus)
       cursor: pointer
     .item-title
       ss-display-flex(row nowrap, space-between)
-      margin-left: 10px   if adminMenus.$isShowIcon == row
+      margin: 0 2em   if adminMenus.$isShowIcon == row
       margin-top: 7px   if adminMenus.$isShowIcon == column
       if (adminMenus.$isShowIconRight)
         &:after
-          content: '\e64e'
+          content: '\e617'
           transform: rotateZ(0)
           display: block
           font-size: 12px
@@ -156,7 +147,7 @@ ss-menus($class='>.hlist', $config = adminMenus)
 
 
 /***************路由顶部部分*********************/
-ss-root-header($class= '.root-header', $config = false)
+ss-root-header($class= '.root-header', $config = false, $class2 = '.admin-header')
   cfg = merge({}, rootHeadCfg, $config)
   {$class}
     background: cfg.$HeaderBg
@@ -166,28 +157,16 @@ ss-root-header($class= '.root-header', $config = false)
     font-size: cfg.$HeadSize
     height: cfg.$HeaderHeight
     position: relative
-    padding: 0 $space
     transition: 250ms ease;
-
-    .abc
-      color: #999
-
-    .admin-header
-      @extends $flex-nowrap-between-center
-      color: #666
-      &.active
-        .item-logo
-          width: cfg.$logoWidth-2 if cfg.$logoWidth-2
-        .item-logo-title
-          display: none
-    //   &.abc
-    //     color: #333
-    // .abc
-    //   color: #000 
-    //logo
+    z-index 1
+    {$class2}
+      @extends $flex-nowrap-start-center
+      height: 100%
     .item-logo
-      width: cfg.$logoWidth
+      width: cfg.$logoWidth if cfg.$logoWidth
       height: cfg.$HeaderHeight
+      padding: var(--space, $space)
+      box-sizing: border-box
       if (cfg.$bgimage)
         background-image: url(cfg.$bgimage)
         background-repeat: no-repeat
@@ -198,13 +177,20 @@ ss-root-header($class= '.root-header', $config = false)
       else 
         @extends $flex-nowrap-center-center
         .item-logo-title
-          margin-left: 16px
+          margin-left: 4px
           font-size: 36px
-          color: cfg.$HeadColor
           font-family: monospace
-      
+    .item-nav
+      ss-display-flex()
+      line-height: 30px
+      font-size: 16px
+      >.item
+        &.active
+          a
+            color: $color-primary
+
     .hbody
-      padding-left: $space
+      padding-right: var(--space, $space)
       flex: 1
       @extends $flex-nowrap-between-center
     .admin-right

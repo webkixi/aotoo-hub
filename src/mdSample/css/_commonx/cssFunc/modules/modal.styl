@@ -59,13 +59,17 @@ ss-modal($class = '.ss-modal', $type = 'tips', $config = false, $config2 = false
   {$class}
     background: #fff
     box-shadow: $box-shadow-tips
-    border-radius:$br-lg
+    border-radius: $br-lg
     // max-height: $modalMaxHei
     max-height: 90%
+    max-width: 90%
     min-height: 140px
     position: relative
     ss-display-flex(column)
     z-index: 2
+    img
+      max-width: 100%
+      max-height: 100%
     .item-header
       ss-display-flex(row nowrap, space-between, center)
       {config-title-modal}

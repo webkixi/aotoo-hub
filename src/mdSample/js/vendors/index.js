@@ -18,9 +18,9 @@ let inject = _inject()
 function highlightCode(){
   if (lib.isClient()) {
     // 注入markdown 高亮样式
-    inject.css([
-      'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.1/build/styles/monokai-sublime.min.css'
-    ])
+    // inject.css([
+    //   'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.1/build/styles/monokai-sublime.min.css'
+    // ])
   
     // 注入markdown高亮
     inject.js([
@@ -30,7 +30,7 @@ function highlightCode(){
         document.querySelectorAll('pre code').forEach((block) => {
           hljs.highlightBlock(block);
         });
-      }, 500);
+      }, 50);
     })
   }
 }
@@ -78,7 +78,6 @@ function requireMd(filename, fromapi) {
   if (lib.isClient()) {
     // md = require('docs/' + filename)
 
-    highlightCode()
     return new Promise((resolve, rej)=>{
       Fetcher.get('/docs', {filename}).then(res=>{
         let targetKey = '@md'
@@ -91,6 +90,7 @@ function requireMd(filename, fromapi) {
           [targetKey]: md,
           itemClass: 'markdown-body'
         })
+        highlightCode()
         resolve(<mdContent.UI />)
       })
     })

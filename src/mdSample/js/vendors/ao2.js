@@ -4,7 +4,8 @@ import aotoo, {
   ReturnPromiseComponent,
   extTemplate,
   render,
-  html
+  html,
+  $$
 } from '@aotoo/aotoo';
 
 export {
@@ -13,7 +14,8 @@ export {
   ReturnPromiseComponent,
   extTemplate,
   render,
-  html
+  html,
+  $$
 }
 
 export default aotoo

@@ -11,6 +11,7 @@ const data = [
   {title: '文字色', child: [
     {title: 'REGULAR 主色', name: 'text-title'},
     {title: 'PRIMARY 副色', name: 'text'},
+    {title: 'PRIMARY 提示', name: 'text-info'},
   ]},
   {title: '线条', type: 'border', child: [
     {title: '边框色', name: 'secondary'},

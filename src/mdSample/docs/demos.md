@@ -1,39 +1,79 @@
-# 自带的演示示例  
+# 自带的演示示例
 
 ## 文档演示示例
 
-__mdSample__，文档系统是一套完整的全栈DEMO，REACT技术栈  
+**mdSample**，文档系统是一套完整的全栈 DEMO，REACT 技术栈
 
-* 全栈系统  
-* SPA/MPA(多单页系统)
-* 仿小程序的路由
-* 支持markdown
-* 支持SEO
-* 多场景化
-* 支持动态样式编译(stylus/sass)
+- 全栈系统
+- SPA/MPA(多单页系统)
+- 仿小程序的路由
+- 支持 markdown
+- 支持 SEO
+- 多场景化
+- 支持动态样式编译(stylus/sass)
 
-## vue演示DEMO
+**启动命令**
 
-__vueSample__，vue2.0的开发环境  
+```bash
+# 开发模式
+aotoo dev
 
-## REACT演示DEMO
+# 生产模式
+aotoo build-clean
+node index.js
+```
 
-__reactSample__，REACT16的演示
+## vue 演示 DEMO
 
-## 小程序演示DEMO
+**vueSample**，vue2.0 的开发环境
 
-__xcxSample__，由`queryUI`构建，糅合了一些jQuery特性及一些方便好用的特性，用于简化小程序开发成本及帮助后期能更好的维护项目
+**启动命令**
 
-* 原生微信小程序  
-* 动态模板构建
-* template less
-* 支持钩子方法
-* 内置支持MARKDOWN富文本
-* 内置支持HTML富文本  
+```bash
+# 开发模式
+aotoo dev vueSample
 
-## 项目配置  
+# 生产模式
+aotoo build-clean vueSample
+node index.js
+```
 
-创建工作空间后，打开根目录下`aotoo.config.js`文件，修改apps字段  
+## REACT 演示 DEMO
+
+**reactSample**，REACT16 的演示
+
+**启动命令**
+
+```bash
+# 开发模式
+aotoo dev reactSample
+
+# 生产模式
+aotoo build-clean reactSample
+node index.js
+```
+
+## 小程序演示 DEMO
+
+**xcxSample**，由`queryUI`构建，糅合了一些 jQuery 特性及一些方便好用的特性，用于简化小程序开发成本及帮助后期能更好的维护项目
+
+- 原生微信小程序
+- 动态模板构建
+- template less
+- 支持钩子方法
+- 内置支持 MARKDOWN 富文本
+- 内置支持 HTML 富文本
+
+**启动命令**
+
+```bash
+# 开发模式/生产模式 -> 使用微信开发者工具打开dist目录
+aotoo dev xcxSample
+```
+
+## 项目配置
+
+创建工作空间后，打开根目录下`aotoo.config.js`文件，修改 apps 字段
 
 ```javascript
 apps: [
@@ -77,26 +117,4 @@ apps: [
   },
 ],
 
-```
-
-## 项目启动
-
-__启动默认项目__  
-
-```bash
-aotoo start # 启动startup===true的项目
-```
-
-__启动指定项目__  
-使用该方法，将忽略startup的配置，并只启动指定的项目  
-
-```bash
-aotoo start vueSample
-```
-
-__启动多项目__  
-可以将配置文件中多个项目配置为startup=true，也可以使用命令行启动多项目，下例启动3个项目  
-
-```bash
-aotoo start vueSample --name reactSmple --name mdSample
 ```

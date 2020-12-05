@@ -1,83 +1,13 @@
-@import '../../css/_commonx/css/index'
-@import '../../css/_commonx/config/iconfont'
-@import '../../css/_commonx/css/icon'
-// @import '../../css/_commonx/css/button'
-// @import '../../css/_commonx/css/tag'
-// @import '../../css/_commonx/css/width'
-// @import '../../css/_commonx/css/padding'
-// @import '../../css/_commonx/css/margin'
-// @import '../../css/_commonx/css/pages/margin'
-// @import '../../css/_commonx/css/nodata'
-// //开关 按钮
-// @import '../../css/_commonx/css/switch'
-// //下拉控件
-// @import '../../css/_commonx/css/dropdown'
-//提示框
-@import '../../css/_commonx/css/tips'
-// //form表单
-// @import '../../css/_commonx/modules/form/index'
-//modal
-@import '../../css/_commonx/modules/modal'
-@import '../../css/_commonx/css/_animate'
-// //加载动画
-// @import '../../css/_commonx/modules/load/index'
-// //tabs组件
-// @import '../../css/_commonx/modules/tabs/index'
-// //upload上传组件
-// @import '../../css/_commonx/modules/uploader/index'
-// //日期控件
-// @import '../../css/_commonx/modules/datetimepicker/index'
-// //日历控件
-// @import '../../css/_commonx/modules/calendarx'
+@import '../../css/_commonx/config/theme/default'    //系统主题
+@import '../../css/_commonx/config/codetheme/black'  //代码块模版
+@import '../../css/_commonx/cssFunc/pages/routerconfig/routerStyle2'        //左边菜单列表模板
+@import '../../css/_commondoc'                      //各系统公用部分
 
-//页面布局选择模板
-@import '../../css/_commonx/cssFunc/pages/routerconfig/routerStyle2'
-@import '../../css/_commonx/cssFunc/pages/adminrouter'
-// //input 偏业务
-// @import '../../css/_commonx/css/input'
-// @import '../../css/_commonx/css/pages/*'
-// //路由 布局
-// ss-admin()
-// .routerGroup
-//   >.routerMenus
-//     >.hlist
-//       padding-bottom: 30px
-// .admin-header
-//   padding-left: 30px
-// .wrap
-//   height: 100%
-//   ss-display-flex(column)
-//   ss-root-header()
-//   #root
-//     height: calc(100% - 60px)
-//     position: relative
-//     z-index: 1
-//   .root-header
-//     z-index: 2
-// //路由 end
-
-body
-  color: $color-text-title
-
-//路由  模板1 上下，左右结构
-// html, body, .container
-//   height: 100%
-.router-container
-  width: 100%
-  height: 100%
-  ss-display-flex(column)
-  .router-header
-    height: 60px
-  .router-body
-    flex: 1
-    height: calc(100% - 60px)
-
-
-ss-admin('.router-body')
-ss-root-header('.router-header')
-
-
-
+@media (max-width: 768px)
+  .router-container
+    .demo-grid
+      .ss-col
+        width: calc(100% / 2)
 
 //业务
 .pages-title-lg
@@ -138,19 +68,39 @@ ss-root-header('.router-header')
 .demo-bg-border-input .item-box
   background:$color-line-input
 
-.ss-modal
-  .close-circle-l
-    position: absolute
-    left : calc(50% - 15px)
-    bottom: -80px
-    &:before
-      font-size: 20px
-      width: 30px
-      height: @width
-      line-height: @width
-      border: 1px solid
-      border-radius: 100%
-      color: #fff
-      text-align: center
-  &.modal-2
-    margin-top: 22vh
+
+.item-theme
+  ss-display-flex()
+  >.item
+    margin-left: 10px
+
+.icon-saui
+  &:before
+    content: '\e605'
+    font-size: 40px
+
+.icon-xx
+  font-size: 12px
+  ss-display-flex(column, center, flex-start)
+  margin-bottom: 20px
+  margin-right: 0
+  width: 20%
+  &:before
+    content: '\e605'
+    font-size: 36px
+    color: $color-primary
+    margin-bottom: 6px
+
+.like-search
+  color: $color-text-placeholder
+  height: $inputHeight
+  /* border-bottom: 1px solid; */
+  line-height: @height
+  min-width: 200px;
+  border-left: 1px solid;
+  padding-left: 16px;
+  &:before
+    content: '\e7b0'
+    font-size: 16px
+    color: $color-text-title
+    margin-right: 6px
