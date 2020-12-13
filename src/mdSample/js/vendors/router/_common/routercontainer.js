@@ -5,12 +5,20 @@ import { getRenderPage } from "./routerpage";
 let routerEventType = 'redirect'
 let roruterPages = {}
 
-export function setRouterEventType(evt){
-  routerEventType = evt
+export function setRouterEventType(evt, ctx){
+  if (ctx) {
+    ctx.routerEventType = evt
+  } else {
+    routerEventType = evt
+  }
 }
 
-export function getRouterEventType(){
-  return routerEventType
+export function getRouterEventType(ctx){
+  if (ctx) {
+    return ctx.routerEventType
+  } else {
+    return routerEventType
+  }
 }
 
 export function setRouterMultiPages(pageInstance){
@@ -18,7 +26,7 @@ export function setRouterMultiPages(pageInstance){
   roruterPages[id] = pageInstance
 }
 
-export function getRouterPages(id){
+export function getRouterMultiPages(id){
   if (id) return roruterPages[id]
   return roruterPages
 }
@@ -76,6 +84,7 @@ export function getRenderContainer(opts){
 
   const containerConfig = {
     data: {
+      $$id: this.uniqId + '_container',
       layout: this.layout,
       header: this.header,
       footer: this.footer,
@@ -85,12 +94,17 @@ export function getRenderContainer(opts){
     },
     currentQuery: $query,
     onReady(){
+      that.hasMounted = true
       if (lib.isFunction(that.config.onReady)) {
         that.config.onReady.call(that)
       }
     },
     resetItems(param){
       this.routerItems.reset([param])
+    },
+    detached(){
+      that.hasMounted = false
+      that.hooks.fire('__unload')
     },
     push(param){
       let routerItems = this.routerItems
@@ -103,21 +117,24 @@ export function getRenderContainer(opts){
     pull(cb){
       let lastOne = that.history[(that.history.length-1)]
       let navPages = lastOne.navPages||[]
-      let lastPage = navPages[(navPages.length-1)]
+      let lastPage = navPages[(navPages.length-1)] || lastOne
+      // let lastPage = navPages[(navPages.length-1)]
       let pageId = lastPage.id
       let inst = getRouterMultiPages(pageId)
       this.routerItems.pop(function(){
         if (lib.isFunction(cb)) cb()
         if (inst) {
-          setTimeout(inst.onShow, 50);
+          setTimeout(()=>{
+            inst.onShow && inst.onShow()
+          }, 50);
         }
       })
     }
   }
 
   let ContainerInstance = null
+  let item = this.history[this.history.length - 1]
   if (this.ContainerInstance && this.ContainerInstance.multipage) {
-    let item = this.history[this.history.length - 1]
     let container = item.ContainerInstance
     let detached = pageInst.detached
     pageInst.detached = function(){

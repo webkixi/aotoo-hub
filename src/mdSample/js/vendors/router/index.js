@@ -1,5 +1,6 @@
-import createComponet, {lib, _elements, render, html} from '../ao2'
+import createComponet, {lib, _elements, render, html, ReturnPromiseComponent} from '../ao2'
 import Pager, { page } from "../page";
+import md5 from "md5";
 
 import {
   getRenderContainer,
@@ -17,6 +18,7 @@ import {
 
 const ROUTERHOOKS = lib.hooks('router-hooks')
 const ROUTERSTOREHOOKS = lib.hooks('router-store-hooks', true)
+const Loading = ReturnPromiseComponent
 
 if (lib.isClient()) {
   require('./_common/popstate').default(ROUTERHOOKS)
@@ -27,6 +29,15 @@ if (lib.isClient()) {
 function isChildRouter(params) {
   let pagesPath = Pager.getAllPages()
   return pagesPath.length ? true : false
+}
+
+function genarateRouterUniqId(){
+  let pages = this.pages
+  let urlstr = pages.reduce((p, n)=>{
+    let url = n.url
+    return p+url
+  }, '')
+  return md5(urlstr)
 }
 
 function genarateReallyPages(params) {
@@ -81,14 +92,16 @@ class Route {
   historyStorage = []
   
   constructor(config) {
+    let that = this
     let oriConfig = lib.cloneDeep(config)
-    this.uniqId = lib.uniqueId('route_')
-    this.hooks = lib.hooks('route_')
     this.config = config
     this.config.root = this.config.root || 'root'
     this.oriConfig = oriConfig
     this.oriPages = oriConfig.pages
     this.pages = genarateReallyPages.call(this, config.pages)
+    // this.uniqId = lib.uniqueId('route_')
+    this.uniqId = genarateRouterUniqId.call(this)
+    this.hooks = lib.hooks(this.uniqId)
     this.sep = config.sep || '#' // 默认路由分隔符
     this.maxAge = config.maxAge || 2 * 60 * 1000  // 默认路由存储localStorage最大时长
     this.isChildRouter = isChildRouter()  // 窗口路由，Pager.pages子页面使用Pager.pages生成的窗口路由
@@ -99,6 +112,7 @@ class Route {
     this.ContainerInstance = null  // 当前路由实例
     this.history = []
     this.historyStorage = []
+    this.hasMounted = false
 
 
     this.header = config.header
@@ -120,8 +134,24 @@ class Route {
     }
 
     let historyList = this.restoreHistory()
-    this.routerWillRender()
+    this.routerPrepare()
     // this.select = _select
+
+    this.UI = function(props={}) {
+      let dft = {
+        loadingClass: '',
+        content: (()=>{
+          return new Promise((resolve, reject)=>{
+            that.hasMounted = true
+            that.hooks.once('render-ui', function(param){
+              resolve(param.JSX)
+            })
+          })
+        })()
+      }
+      let target = Object.assign({}, dft, props)
+      return <Loading {...target}/>
+    }
 
     if (lib.isClient()) {
       if (historyList) {
@@ -135,17 +165,22 @@ class Route {
     }
   }
 
+  getCurrentPages(){
+    return this.selectPageItem
+  }
+
   findPageIndex(select) {
     return (this.pages.findIndex((pg, ii) => (ii === select || pg.id === select || pg.url === select))) || 0
   }
 
-  switchSelect(select){
+  switchSelect(select, ourl){
     this.selectUrl = select || this.select
+    this.selectOurl = ourl
     this.selectIndex = this.findPageIndex((select||this.select))
     this.selectPageItem = this.pages[this.selectIndex]
   }
 
-  routerWillRender(){
+  routerPrepare(){
     let that = this
     function getHistoryItem(time){
       let index = findHistoryIndex.call(that, {time})
@@ -186,18 +221,20 @@ class Route {
           let url = param.url
           let ourl = param.ourl
           let title = param.title
-          if (this.sep === '#') {
-            let hash = location.hash
-            if (hash === url) return
+          if (this.sep) {
+            if (this.sep === '#') {
+              let hash = location.hash
+              if (hash === url) return
+            }
+            url = this.sep + ourl
+            window.history.pushState(param, title, url)
           }
-          url = this.sep + ourl
-          window.history.pushState(param, title, url)
           // window.history.replaceState(param, title, url)
         }
       })
     }
 
-    function _redirectBack(options){
+    function _redirectBack(opts){
       if (this.ContainerInstance.multipage) {
         let lastOne = this.history[(this.history.length-1)]
         let navPages = lastOne.navPages||[]
@@ -206,14 +243,14 @@ class Route {
           let curPage = navPages.pop()
           if (navPages.length) {
             let lastPage = navPages[(navPages.length-1)]
-            this.switchSelect(lastPage.url)
+            this.switchSelect(lastPage.url, lastPage.ourl)
           } else {
-            this.switchSelect(lastOne.url)
+            this.switchSelect(lastOne.url, lastOne.ourl)
           }
           lastOne.multipage = navPages.length ? true : false
           lastOne.navPages = navPages
           this.history[(this.history.length - 1)] = lastOne
-          curContainer.pull()
+          curContainer.pull(this.config.goback)
         } else {
           this.ContainerInstance.multipage = false
           _redirectBack.call(this)
@@ -223,15 +260,25 @@ class Route {
         let prevPage = this.history[(this.history.length-2)]
         if (prevPage) {
           let curPage = this.history.pop()
-          this.switchSelect(prevPage.url)
+          this.switchSelect(prevPage.url, prevPage.ourl)
           let options = {
             url: prevPage.url,
             $query: prevPage.$query,
             selectPageItem: prevPage.selectPageItem,
             selectPageContent: prevPage.selectPageContent
           }
-          renderUI.call(this, options)
 
+          // if (prevPage.multipage && prevPage.navPages && prevPage.navPages.length) {
+          //   this.ContainerInstance.multipage = true
+          // } else {
+          //   this.ContainerInstance.multipage = false
+          // }
+
+          renderUI.call(this, options)
+          let goback = this.config.goback // 后退后
+          if (lib.isFunction(goback)) {
+            goback()
+          }
 
 
           // let curPage = this.history.pop()
@@ -242,6 +289,12 @@ class Route {
           // this.render(JSX, 'root')
           // curPage.ContainerInstance.destory()
           
+        } else {
+          let parentRouter = this.__parentRouter
+          if (parentRouter) {
+            parentRouter.routerPrepare()
+            parentRouter._redirectBack()
+          }
         }
       }
       memeryHistoryStorageBack.call(this)
@@ -291,19 +344,19 @@ class Route {
   }
 
   reLaunch(param){
-    setRouterEventType('reLaunch')
+    setRouterEventType('reLaunch', this)
     this.clearHistory()
     this.redirectTo(param)
   }
 
   async navigateTo(param){
-    setRouterEventType('navigate')
+    setRouterEventType('navigate', this)
     this.ContainerInstance.multipage = true
     this.redirectTo(param, true)
   }
 
   navigateBack(){
-    setRouterEventType('navigateBack')
+    setRouterEventType('navigateBack', this)
     this.ContainerInstance.multipage = true
     this.redirectBack(null, true)
   }
@@ -318,7 +371,7 @@ class Route {
    */
   async redirectTo(param={}, delegate){
     if (!delegate) {
-      setRouterEventType('redirect')
+      setRouterEventType('redirect', this)
       this.ContainerInstance && (this.ContainerInstance.multipage = false)
     }
     let that = this
@@ -327,7 +380,7 @@ class Route {
     let fail = param.fail
     let complete = param.complete
     let events = param.events
-    let beforeNav = param.beforeNav || this.config.beforeNav // 路由前
+    let beforeNav = param.beforeNav || param.beforenav || this.config.beforeNav || this.config.beforenav // 路由前
 
     let res = lib.urlTOquery(url)
     let $hasQuery = res.hasQuery
@@ -337,12 +390,20 @@ class Route {
     let from = this.selectPageItem || {}
 
     // 相同路由地址+多开路由 不跳转
-    // if ($url === this.selectUrl || url === this.selectUrl) return
-    if ((this.ContainerInstance && this.ContainerInstance.multipage === true) &&
-    ($url === this.selectUrl || url === this.selectUrl)) {
+    // if ((this.ContainerInstance && this.ContainerInstance.multipage === true) &&
+    // ($url === this.selectUrl || url === this.selectUrl)) {
+    //   return
+    // }
+
+    // if ((this.ContainerInstance && !this.ContainerInstance.multipage) && 
+    // ($url === this.selectUrl || url === this.selectUrl)) {
+    //   return 
+    // }
+
+    if ($url === this.selectUrl && url === this.selectOurl) {
       return
     }
-    this.switchSelect($url)
+    this.switchSelect($url, url)
 
     let selectPageItem = this.selectPageItem
     let selectPageContent = selectPageItem.content
@@ -380,6 +441,8 @@ class Route {
         ContainerInstance
       } = result
   
+      // 路由初始化
+      // 路由初始化时没有ContainerInstance
       if (ContainerInstance) {
         that.ContainerInstance = ContainerInstance
         that.ContainerInstance.multipage = false
@@ -389,15 +452,33 @@ class Route {
       that.selectPageItemConfigQuery = {}
   
       // history存储
-      memeryHistory.call(that, result, options)
+      let evtType = getRouterEventType(that)
+      if (that.isChildRouter) {
+        if (evtType === 'navigate') {
+          memeryHistory.call(that, result, options)
+        }
+      } else {
+        memeryHistory.call(that, result, options)
+      }
   
       // multipage为true时 不会返回JSX
       if (JSX) {
-        return that.render(JSX, that.config.root)
+        if (!that.isChildRouter) {
+          return that.render(JSX, that.config.root)
+        } else {
+          function render_ui(){
+            if (that.hasMounted) {
+              that.hooks.fire('render-ui', {JSX})
+            } else {
+              setTimeout('render_ui', 50);
+            }
+          }
+          render_ui()
+        }
       }
     }
 
-    beforeNav = beforeNav || selectPageItem.beforeNav
+    beforeNav = beforeNav || selectPageItem.beforeNav || selectPageItem.beforenav
     if (lib.isFunction(beforeNav)) {
       return beforeNav(options, from, next) // beforeNav(to, from, next)
     } else {
@@ -406,7 +487,7 @@ class Route {
   }
 
   redirectBack(options, delegate) {
-    if (!delegate) setRouterEventType('redirectBack')
+    if (!delegate) setRouterEventType('redirectBack', this)
     if (lib.isClient() && this.sep) {
       window.history.go(-1)  // 该动作将触发popstate事件
     } else {
@@ -416,7 +497,8 @@ class Route {
 
   render(pageJSX, rootId){
     if (this.isChildRouter) {
-      return pageJSX
+      let UI = this.UI
+      if (UI) return <UI />
     }
     if (lib.isNode()) {
       return render(pageJSX)

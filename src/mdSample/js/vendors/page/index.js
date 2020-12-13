@@ -11,6 +11,12 @@ Pager.$$ = function (id) {
  * ]
  */
 
+// 根路由实例
+let rootRouterInstance = null
+
+// 当前路由实例
+let curRouterInstance = null
+
 function findPageIndex(select) {
   return (pagesPath.findIndex((pg, ii) => (ii === select || pg.id === select || pg.url === select))) || 0
 }
@@ -23,9 +29,28 @@ function findPage(select) {
   return pagesPath[index]
 }
 
+function deletePagePath(select) {
+  if (!select && select !== 0) return
+  let ary = select.split('?')
+  select = ary[0].split('#')[0]
+  let indexPos = -1
+  pagesPath.forEach((item, ii)=>{
+    if (item.id === select || item.url === select) {
+      indexPos = ii
+    }
+  })
+  if (indexPos > -1) {
+    pagesPath.splice(indexPos, 1)
+  }
+}
+
 // 收集所有router实例的路由项信息
 let pagesPath = []
 let collectAllPagesPath = function(pages) {
+  let thePages = pages
+  thePages.forEach(function(item){
+    deletePagePath(item.url)
+  })
   pagesPath = pagesPath.concat(pages)
 }
 
@@ -35,6 +60,7 @@ Pager.nav = {
     let pageItem = findPage(url)
     if (pageItem) {
       let routerContext = pageItem.routerContext
+      curRouterInstance = routerContext
       routerContext.reLaunch(param)
     }
   },
@@ -44,6 +70,7 @@ Pager.nav = {
     let pageItem = findPage(url)
     if (pageItem) {
       let routerContext = pageItem.routerContext
+      curRouterInstance = routerContext
       routerContext.navigateTo(param)
     }
   },
@@ -59,6 +86,7 @@ Pager.nav = {
     let pageItem = findPage(url)
     if (pageItem) {
       let routerContext = pageItem.routerContext
+      curRouterInstance = routerContext
       routerContext.redirectTo(param)
     }
   }, 
@@ -75,12 +103,29 @@ Pager.getAllPages = function() {
 }
 
 Pager.pages = function(params=[], options={}) {
-  if (this) {
+  let isrootRouter = true
+  if (this.name === 'Pager') {
     pagesPath = []
+  } else {
+    isrootRouter = false
   }
   if (params.length) {
     let Router = require('../router').default  // 必须在此引入，否则Pager的附加方法不能传递给fakePager
     let router = Router(params, options, collectAllPagesPath)
+    
+    // containerInstance 卸载时执行
+    lib.isClient() && router.hooks.once('__unload', function(){
+      if (options.unLoad && lib.isFunction(options.unLoad)) {
+        options.unLoad()
+      }
+    })
+    
+    if (!isrootRouter) {
+      router.__ancestorRouter = rootRouterInstance // 路由的根路由
+      router.__parentRouter = curRouterInstance  // 子路由的父级路由
+    } else {
+      rootRouterInstance = router
+    }
     return router
   }
 }
