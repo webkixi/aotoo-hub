@@ -1,4 +1,19 @@
-# 自带的演示示例
+# 自带的演示示例  
+
+```bash
+hub工作空间
+  ├── build
+  ├── aotoo.config.js
+  ├── index.js
+  ├── package.json
+  ├── postcss.config.js
+  └── src
+       ├─ mdSample
+       ├─ vueSample
+       ├─ reactSample
+       └─ xcxSample
+
+```
 
 ## 文档演示示例
 

@@ -1,15 +1,19 @@
-# pager
+## pager
 
 pager是路由实例的封装方法，我们使用`Pager`来构建SPA页面而不直接使用路由或者路由实例
 
 ### Pager.pages
 
-该方法用于定义路由表，及路由页面配置  
+该方法用于定义路由表，产出路由实例  
 
 #### 语法
 
 ```js
-Pager.pages(items, options)
+const route = Pager.pages([
+  item,
+  item,
+  ...
+], options)
 ```
 
 #### items
@@ -49,6 +53,10 @@ Pager.pages(items, options)
 `options.beforeNav`  
 {Function}  
 全局路由守卫，手动拦截/放行所有路由  
+
+`options.unLoad`  
+{Function}  
+路由卸载时，触发此方法
 
 #### 定义SPA路由表
 

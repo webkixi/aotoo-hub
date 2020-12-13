@@ -10,7 +10,7 @@ hub 自带react项目的demo，该项目是一个空项目(react@16)，观察与
 aotoo init workspace
 ```
 
-## 启动vue演示项目
+## 启动react演示项目
 
 ```bash
 cd workspace

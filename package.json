@@ -14,7 +14,7 @@
   },
   "author": "webkixi",
   "engines": {
-    "node": ">= 8.9.0"
+    "node": ">= 14.0.0"
   },
   "browserslist": [
     "last 2 version",

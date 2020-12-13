@@ -2,18 +2,36 @@
 // 	transform: translate(-50%,-100%)
 
 .msgbox-fade-enter-active 
-	animation: msgbox-fade-in .3s
+	animation: msgbox-fade-in .2s
 
 .msgbox-fade-leave-active 
-	animation: msgbox-fade-out .3s
+	animation: msgbox-fade-out .2s
 
 .msgbox-fade-enter-active-x
 	.item-animation
-		animation: msgbox-fade-in .3s
+		animation: msgbox-fade-in .2s
 
 .msgbox-fade-leave-active-x
 	.item-animation
-		animation: msgbox-fade-out .3s
+		animation: msgbox-fade-out .2s
+
+.drawer-fade-to-left
+	animation: drawer-fade-to-left .2s
+	&.active
+		animation: drawer-fade-to-left-out .2s
+.drawer-fade-to-right
+	animation: drawer-fade-to-right .2s
+	&.active
+		animation: drawer-fade-to-right-out .2s
+.drawer-fade-to-top
+	animation: drawer-fade-to-top .2s
+	&.active
+		animation: drawer-fade-to-top-out .2s
+.drawer-fade-to-bottom
+	animation: drawer-fade-to-bottom .2s
+	&.active
+		animation: drawer-fade-to-bottom-out .2s
+
 
 @keyframes msgbox-fade-in 
 	0% 
@@ -30,3 +48,49 @@
 	to 
 		transform: translate3d(0,-20px,0);
 		opacity: 0
+
+@keyframes drawer-fade-to-left
+	0% 
+		transform: translateX(100%);
+	to 
+		transform: translateX(0px);
+
+@keyframes drawer-fade-to-left-out
+	0% 
+		transform: translateX(0px);
+	to 
+		transform: translateX(100%);
+
+@keyframes drawer-fade-to-right
+	0% 
+		transform: translateX(-100%);
+	to 
+		transform: translateX(0px);
+
+@keyframes drawer-fade-to-right-out
+	0% 
+		transform: translateX(0px);
+	to 
+		transform: translateX(-100%);
+
+@keyframes drawer-fade-to-top
+	0% 
+		transform: translateY(100%);
+	to 
+		transform: translateY(0px);
+@keyframes drawer-fade-to-top-out
+	0% 
+		transform: translateY(0px);
+	to 
+		transform: translateY(100%);
+		
+@keyframes drawer-fade-to-bottom
+	0% 
+		transform: translateY(-100%);
+	to 
+		transform: translateY(0px);
+@keyframes drawer-fade-to-bottom-out
+	0% 
+		transform: translateY(0px);
+	to 
+		transform: translateY(-100%);

@@ -3,19 +3,22 @@
   1 modal 
   2 tip
   3 notice
-  4 alert  未做
+  4 drawer top bottom left  right 多层
+  5 alert  未做
 */
+
 let cbody = null
 class Popx {
   constructor(config){
     this.config = config
     this.animation = false
-    this.inst = []
     // idx = ''
     this.idxArr = []
     this.curType = 1    //1为modal   2为tip 3 为通知
     this.wrapDiv = {}   //this.wrapDiv[this.curType] 
     this.elem = {}      //this.elem[this.curType] 对应分类所有的节点集合
+    this.animationCls = null
+    this.animationOutCls = null
   }
   popup(val, ele, cb){
     if (React.isValidElement(val)) {
@@ -29,25 +32,28 @@ class Popx {
   modal(params) {
     cbody = document.body;
     const that = this
-    this.curType = 1
+    this.curType = 'modal'
     this.elem[this.curType] = typeof this.elem[this.curType] === 'undefined' ? [] : this.elem[this.curType]
-    const idx = this.elem[this.curType].length 
-    // this.idxArr.push(idx, this.curType)
+    const idx = this.elem[this.curType].length
     let cfg = null
     
     if (React.isValidElement(params)) {
       //直接传结构进来，默认只有一个蒙版
+      if (this.config.animation) {
+        this.animationCls = ' msgbox-fade-enter-active-x'
+        this.animationOutCls = ' msgbox-fade-leave-active-x'
+      }
       cfg = {
         title: params,
         dot: [{title: ' ', itemClass: this.config.mask ? 'ss-modal-bg' : 'ss-modal-bg transparent', aim: this.config.bgClose ? 'onCloseBg' : ''}],
-        itemClass: this.config.animation ? 'ss-modal-wrap msgbox-fade-enter-active-x' : 'ss-modal-wrap',
+        itemClass: 'ss-modal-wrap' + this.animationCls,
         onCloseBg() {
           //背景
-          if (typeof that.config.cbBg === 'function') {
-            that.config.cbBg.call(this, idx, that.curType)
+          if (typeof opts.cbBg === 'function') {
+            opts.cbBg.call(that, that.curType, idx)
           }
           else {
-            that.close(idx, that.curType)
+            that.close(that.curType, idx)
           }
         },
       }
@@ -75,6 +81,10 @@ class Popx {
       }
       let opts = Object.assign({}, dfg, params)
       this.animation = opts.animation
+      if (opts.animation) {
+        this.animationCls = ' msgbox-fade-enter-active-x'
+        this.animationOutCls = ' msgbox-fade-leave-active-x'
+      }
       cfg = { 
         '@item' : {
           title: opts.title ?
@@ -97,38 +107,37 @@ class Popx {
           itemStyle: opts.width ? {'width': opts.width} : ''
         },
         dot: [{title: ' ', itemClass: opts.mask ? 'ss-modal-bg' : 'ss-modal-bg transparent', aim: opts.bgClose ? 'onCloseBg' : ''}],
-        itemClass: opts.animation ? 'ss-modal-wrap msgbox-fade-enter-active-x' : 'ss-modal-wrap',
+        itemClass: 'ss-modal-wrap' + this.animationCls,
         onCloseBg() {
           //背景
           if (typeof opts.cbBg === 'function') {
-            opts.cbBg.call(this, idx, this.curType)
+            opts.cbBg.call(that, that.curType, idx)
           }
           else {
-            that.close(idx, this.curType)
+            that.close(that.curType, idx)
           }
         },
         onClose(e, pm, inst) {
           //关闭按钮
           if (typeof opts.cbCancel === 'function') {
-            opts.cbCancel.call(this, idx, this.curType)
+            opts.cbCancel.call(that, that.curType, idx)
           }
           else {
-            that.close(idx, this.curType)
+            that.close(that.curType, idx)
           }
         },
         onConfirm() {
           //确定按钮
           if (typeof opts.cbConfirm === 'function') {
-            opts.cbConfirm.call(this, idx, this.curType)
+            opts.cbConfirm.call(that, that.curType, idx)
           }
           else {
-            that.close(idx, this.curType)
+            that.close(that.curType, idx)
           }
         }
       }
     }
     const temp = ui_item(cfg)
-    this.inst.push(temp)
 
     let iwrap = '_ss_modal_wrap'
     if (document.getElementsByClassName(iwrap).length <= 0) {
@@ -143,42 +152,51 @@ class Popx {
   }
 
   tip(params) {
-    this._partCom(params, 2)
-  }
-
-  notice(params) {
-    this._partCom(params, 3)
-  }
-
-  _partCom(params, type) {
-    cbody = document.body;
-    //tips and notice
     let dfg = {
       type: 'warning',        //类型 sucess fail warning
       itemClass: '',          //
       timer: 3000,             //为false的时候，不自动关闭 
       showClose: false,
       cbCancel: false,        //方法
-      mask: this.config.mask,
+      mask: false,
       animation: this.config.mask,
-      direction: 'right top'
+      direction: false,
+      containersClass: ''
     }
     let opts = Object.assign({}, dfg, params)
-
-    const that = this
-    this.curType = type
-    this.elem[this.curType] = typeof this.elem[this.curType] === 'undefined' ? [] : this.elem[this.curType]
-    this.wrapDiv[this.curType] = typeof this.wrapDiv[this.curType] === 'undefined' ? [] : this.wrapDiv[this.curType]
-    const idx = this.elem[this.curType].length
-    // this.idxArr.push(idx)
     this.animation = opts.animation
 
+    if (opts.animation) {
+      this.animationCls = ' msgbox-fade-enter-active'
+      this.animationOutCls = ' msgbox-fade-leave-active'
+    }
+
+    let typeCls = opts.type
+    typeCls = typeCls + this.animationCls
+    let noticetype = opts.type === 'error' ? 2 : opts.type === 'success' ? 3 : opts.type === 'warning' ? 1 : 0
+    this._partCom(params, 'tips', opts, typeCls, noticetype)
+
+  }
+
+  notice(params) {
+    let dfg = {
+      itemClass: '',          //
+      timer: 3000,             //为false的时候，不自动关闭 
+      showClose: false,
+      cbCancel: false,        //方法
+      mask: false,
+      animation: this.config.mask,
+      direction: 'right top',
+      containersClass: ''
+    }
+    let opts = Object.assign({}, dfg, params)
+    this.animation = opts.animation
 
     let direCls = ''
     let noticetype = 1
     if (opts.direction.indexOf('bottom') > -1 && opts.direction.indexOf('left') > -1) {
       direCls =  ' bottom left'
-      noticetype= 2
+      noticetype = 2
     } 
     else if (opts.direction.indexOf('bottom') > -1 && opts.direction.indexOf('right')) {
       direCls = ' bottom right'
@@ -192,87 +210,205 @@ class Popx {
       direCls = ' top right'
       noticetype = 1
     }
+    if (opts.animation) {
+      this.animationCls = ' msgbox-fade-enter-active'
+      this.animationOutCls = ' msgbox-fade-leave-active'
+    }
+    direCls = direCls + this.animationCls
+    this._partCom(params, 'notice', opts, direCls, noticetype)
+  }
 
-    let isClick = false         //手动点击关闭后不执行自动关闭
-    let ic = type === 2 ? 'ss-tips ' : 'ss-notice '
-    let aniCls = opts.animation ? ' msgbox-fade-enter-active' : ''
-    let cfg = {
+  drawer(params) {
+    
+    let dfg = {
+      containersClass: '',    //容器class
+      itemClass: '',          //item class
+      showClose: false,
+      cbCancel: false,        //方法
+      mask: this.config.mask,
+      animation: false,
+      direction: 'right',
+      bgCloseSmall: false,    //用于多层抽屉时
+    }
+    let opts = Object.assign({}, dfg, params)
+    this.animation = opts.animation
+    let direCls = ''
+    let noticetype = 1
+
+    if (opts.direction.indexOf('top') > -1) {
+      if (opts.animation) {
+        this.animationCls = ' drawer-fade-to-bottom'
+        this.animationOutCls = ' drawer-fade-out-bottom'
+      }
+      direCls = 'top' + this.animationCls
+      noticetype = 4
+    }
+    else if (opts.direction.indexOf('bottom') > -1) {
+      if (opts.animation) {
+        this.animationCls = ' drawer-fade-to-top'
+        this.animationOutCls = ' drawer-fade-out-top'
+      }
+      direCls = 'bottom' + this.animationCls
+      noticetype = 3
+    }
+    else if (opts.direction.indexOf('left') > -1) {
+      if (opts.animation) {
+        this.animationCls = ' drawer-fade-to-right'
+        this.animationOutCls = ' drawer-fade-out-right'
+      }
+      direCls ='left' + this.animationCls
+      noticetype = 2
+    }
+    else {
+      if (opts.animation) {
+        this.animationCls = ' drawer-fade-to-left'
+        this.animationOutCls = ' drawer-fade-out-left'
+      }
+      direCls = 'right' + this.animationCls
+      noticetype = 1
+    }
+    this._partCom(params, 'drawer', opts, direCls, noticetype)
+  }
+
+  _partCom(params, type, opts, cls = '', noticetype = null) {
+    cbody = document.body;
+    console.log('opts.direction', opts.direction, opts.type);
+    
+    const that = this
+    let iwrapClass = type !== 'drawer' ? 'ss_'+type+'_wrap ' + opts.containersClass + ' ' + opts.direction + ' ' + opts.type : 'ss_'+type+'_wrap ' + opts.containersClass + ' ' +cls            //容器类名
+    let bgClass = 'ss-modal-bg'                            //容器背景
+    
+
+    this.curType = type
+    this.elem[this.curType] = typeof this.elem[this.curType] === 'undefined' ? [] : this.elem[this.curType]
+    this.wrapDiv[this.curType] = typeof this.wrapDiv[this.curType] === 'undefined' ? [] : this.wrapDiv[this.curType]
+    
+    const idx = this.elem[this.curType].length
+    
+    let cfg = type !== 'drawer' ? {
       title: opts.body ? opts.showClose ? [{title: opts.title}, {title: ' ', itemClass: 'item-close', aim: 'onClose'}] : [{title: opts.title}] : opts.title,
       body: opts.body ? [{title: opts.body}] : '',
-      itemClass: ic + opts.type + ' ' + opts.itemClass + aniCls,
+      itemClass: opts.itemClass + ' ss-'+type +' '+ cls + (opts.type ? ' ' +opts.type : ''),
       titleClass: 'item-header',
       bodyClass: opts.body ? 'item-body' : '',
       onClose() {
         if (typeof opts.cbCancel === 'function') {
-          opts.cbCancel.call(that, idx, this.curType, noticetype)
+          opts.cbCancel.call(that, that.curType, idx, noticetype, opts.direction || opts.type )
         }
         else {
-          that.close(idx, this.curType, noticetype)
+          that.close(that.curType, idx, noticetype, opts.direction || opts.type )
         }
-        isClick = true
+      }
+    } : {
+      title: {
+        title: opts['@item'],
+        itemClass: opts.itemClass + ' ss-'+type,
+      },
+      dot: [{title: ' ', itemClass: opts.bgCloseSmall ? 'ss-modal-bg' : '', aim: opts.bgClose ? 'onCloseBg' : ''}],
+      onClose() {
+
+        if (typeof opts.cbCancel === 'function') {
+          opts.cbCancel.call(that, that.curType, idx, noticetype)
+        }
+        else {
+          that.close(that.curType, idx, noticetype)
+        }
+      },
+      onCloseBg() {
+        const _idx = that.wrapDiv[that.curType][noticetype].length - 1
+        //背景
+        if (typeof opts.cbBg === 'function') {
+          opts.cbBg.call(that, _idx, that.curType, noticetype)
+        }
+        else {
+          that.close(that.curType, _idx, noticetype)
+        }
+      },
+      __ready() {
+          var bg = document.getElementById("ss-modal-bg");
+          bg.onclick=function(){
+            const _idx = type === 'drawer' ? that.wrapDiv[that.curType][noticetype].length - 1 : that.elem[that.curType][that.elem[that.curType].length - 1].idx
+            if (typeof opts.cbBg === 'function') {
+              opts.cbBg.call(that, that.curType, _idx, noticetype)
+            }
+            else {
+              that.close(that.curType, _idx, noticetype)
+            }
+            if (document.getElementsByClassName(bgClass).length > 0) {
+              document.getElementsByClassName(bgClass)[0].remove()
+            }
+          }
       }
     }
     const temp = ui_item(cfg)
-    this.inst.push(temp)
 
-    
-    let iwrap = type === 2 ? 'ss_tips_wrap' : 'ss_notice_wrap' + direCls
-    if (document.getElementsByClassName(iwrap).length <= 0) {
-      this.wrapDiv[this.curType][noticetype] = document.createElement('div')
-      this.wrapDiv[this.curType][noticetype].className = iwrap
-      cbody.appendChild(this.wrapDiv[this.curType][noticetype])
+    if (opts.mask && document.getElementsByClassName(bgClass).length <= 0) {
+      const bg = document.createElement('div')
+      bg.className = bgClass
+      bg.id = bgClass
+      cbody.appendChild(bg)
     }
-    this.elem[this.curType].push({idx: idx, box: document.createElement('div')})
-    this.wrapDiv[this.curType][noticetype].appendChild(this.elem[this.curType][idx].box)
+    if (type === 'drawer') {
+      this.wrapDiv[this.curType][noticetype] = this.wrapDiv[this.curType][noticetype] || []
+      const _idx = this.wrapDiv[this.curType][noticetype].length
+      this.wrapDiv[this.curType][noticetype][_idx] = document.createElement('div')
+      this.wrapDiv[this.curType][noticetype][_idx].className = iwrapClass
+      cbody.appendChild(this.wrapDiv[this.curType][noticetype][_idx])
 
-    this.popup(<temp.UI />, this.elem[this.curType][idx].box)
-    if(opts.timer !== 0) {
-      let timeId = setTimeout(() => {
-        !isClick ? that.close('', type, noticetype) : ''
-      }, opts.timer);
-      if (isClick) {
-        clearTimeout(timeId)
+      this.popup(<temp.UI />, this.wrapDiv[this.curType][noticetype][_idx])
+    }
+    else {
+      if (document.getElementsByClassName(iwrapClass).length <= 0) {
+        this.wrapDiv[this.curType][noticetype] = document.createElement('div')
+        this.wrapDiv[this.curType][noticetype].className = iwrapClass
+        cbody.appendChild(this.wrapDiv[this.curType][noticetype])
       }
+      this.elem[this.curType].push({idx: idx, dire: opts.direction || opts.type, box: document.createElement('div')})
+      this.wrapDiv[this.curType][noticetype].appendChild(this.elem[this.curType][idx].box)
+      this.popup(<temp.UI />, this.elem[this.curType][idx].box)
+    }
+
+    if (opts.timer) {
+      const timerx = setInterval(() => {
+        clearInterval(timerx)
+        //延迟是为了动画先执行
+        this.close(this.curType, idx, noticetype)
+      }, opts.timer);
     }
   }
 
-  close(idx, type, noticetype) {
-    type = type ? type : this.curType
-    let i = 0
-    if (typeof idx === 'number') {
-      this.elem[type].map((item, ii) => {
-        item.idx === idx ? i = ii : ''
-      })
-    }
-    if (this.animation) {
-      type === 1 ? this.inst[i].addClass('msgbox-fade-leave-active-x') : this.inst[i].addClass('msgbox-fade-leave-active')
-      this.inst.shift()
-      setTimeout(() => {
-        //延迟是为了动画先执行
-        this._closeCom(type, idx, i, noticetype)
-      }, 300);
-    }
-    else {
-      this._closeCom(type, idx, i, noticetype)
-    }
-  }
-  _closeCom(type, idx, i, noticetype = null) {
+  close(type, idx, noticetype = null, dire) {
     let wrap = noticetype !== null ? this.wrapDiv[type][noticetype] : this.wrapDiv[type]
-    if (typeof idx === 'number') {
-      wrap.removeChild(this.elem[type][i].box)
-      this.elem[type].splice(i, 1)
+    // wrap.className = wrap.className +' active'
+    console.log('idx', idx, type);
+    
+    if (!idx && idx != 0) {
+      wrap.remove()
+      this.elem[type] = []
     }
     else {
-      if (type === 1){
-        wrap.remove()
-        this.elem[type] = []
+      if (type === 'drawer') {
+        wrap[idx].remove()
+        wrap.splice(idx,1)
       }
       else {
-        wrap.removeChild(this.elem[type][0].box)
-        this.elem[type].shift()
+        this.elem[type].map((item, ii) => {
+          if (dire ? item.idx === idx && item.dire === dire : item.idx === idx) {
+            item.box.children ? item.box.children[0].className = item.box.children[0].className.replace(this.animationCls, this.animationOutCls) : ''
+            // setInterval(() => {
+              wrap.removeChild(item.box)
+              this.elem[type].splice(ii, 1)
+            // }, 200);
+          }
+        })
+        this.elem[type].length === 0 ? wrap.remove() : ''
       }
     }
-    wrap.children.length === 0 ? wrap.remove() : ''
+  }
+
+  closeHooks(elem, type, box, ii) {
+    wrap.removeChild(item.box)
+    this.elem[type].splice(ii, 1)
   }
 }
 export default function (params) {
@@ -280,7 +416,7 @@ export default function (params) {
     mask: true,               //遮盖层
     animation: true,          //动画 false时无动画
     bgClose: false,
-    cbBg: false
+    cbBg: false,
   }
   let opts = Object.assign({}, dfg, params)
   return new Popx(opts)
@@ -369,14 +505,14 @@ export default function (params) {
 // 调用 tips({title: '这是一条提示', type: 'success'})
 
 // const dft = {
-//   cpType: 'tip',      //tips modal  组件类型
+//   cpType: 'tips',      //tips modal  组件类型
 //   title: '默认我是tips',
 //   itemClass: '',
 //   type: ''        
 // }
 // let opts = Object.assign({}, dft, params)
 
-// if (opts.type === 'tip') {
+// if (opts.type === 'tips') {
 //   opts.itemClass = 'ss-tip ' + opts.type + ' ' + opts.itemClass
 // }
 // else {

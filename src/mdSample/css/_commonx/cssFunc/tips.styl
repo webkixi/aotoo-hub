@@ -172,41 +172,63 @@ ss-tips-arrow($class = 'ss-tips-arrow', $config = false)
           transform: rotate(135deg)
 
 //系统提示，提示语垂直居中
-ss-tips-system($config = false)
+ss-tips-system($config = false, $class='.ss_tips_wrap', $class2= '.ss-tips')
   cfg = merge({}, tipsCfg, $config)
-  .ss-tips
+  {$class}
     z-index: $zidx-h;
     position: fixed;
     left: 50%
     top: 50%
     transform: translate(-50%, -50%) if cfg.$transform
-    ss-tips('&', cfg)
+    ss-tips($class2, cfg)
 
 
 
 
 //一次出现n个提示, 无法垂直居中，居左或右，目前是右
-ss-tips-system2($config = false, $class2 = '.ss-notice')
-  cfg = merge({}, tipsCfg, $config)
-  .ss_notice_wrap
+noticeAnddrawerCfg = {
+  right: 30px
+  top: 50px
+  mb: 20px
+  width: 330px
+  pd: 10px $space-minor
+  min-width: false
+  min-height: auto
+  br: $br-lg
+  dire: 'lr'
+}
+ss-tips-system2($class='.ss_notice_wrap', $config = false, $class2 = '.ss-notice')
+  cfg = merge({}, noticeAnddrawerCfg, $config)
+  {$class}
     z-index: $zidx-h;
     position: fixed;
-    right: 30px
-    top: 50px
-    // top: 0
-    // bottom: 0
+    right: cfg.right
+    top: cfg.top
     ss-display-flex(column, center, center)
     ss-modal($class2)
+    border-radius: cfg.br
     {$class2}
-      margin-bottom: 20px
-      min-height: auto
-      width: 330px
-      padding: 10px $space-minor
+      margin-bottom: cfg.mb if cfg.mb
+      min-height: cfg.min-height if cfg.min-height
+      height: cfg.height if cfg.height
+      width: cfg.width if cfg.width
+      min-width: cfg.min-width if cfg.min-width
+      max-width: 100%
+      padding: cfg.pd
+      box-sizing: border-box
+      border-radius: cfg.br
     .item-body
       color: $color-text
     &.left
       right: initial
-      left: 30px
+      left: cfg.right
     &.bottom
       top: initial
-      bottom: 50px
+      bottom: cfg.top
+    if (cfg.dire != 'lr')
+      &.top, &.bottom
+        {$class2}
+          height: auto
+          min-height:  cfg.direCfg.min-height || cfg.min-height if  cfg.direCfg.min-height || cfg.min-height
+          height: cfg.direCfg.height || cfg.height  if cfg.direCfg.height || cfg.height
+          width: 100vw

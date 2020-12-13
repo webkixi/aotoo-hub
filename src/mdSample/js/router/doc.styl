@@ -1,0 +1,54 @@
+@import "../../css/index.styl";
+
+
+.router-container
+  &.window
+    >.router-body
+      >.router-page
+        position: relative
+        margin: var(--space, 30px);
+        padding: 0
+        >.router-item
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 1;
+          background: #fff;
+          width: 100%;
+          height: 100%;
+          &.active
+            z-index 3
+
+
+
+.demo-more-window
+  border: 1px solid
+  box-sizing: border-box
+  ss-display-flex(row wrap)
+  .like-tabs
+    flex: 1
+    border-left: 1px solid
+    &:first-child
+      border: none
+  .item-btn-list
+    border-top: 1px solid
+    width: 100%
+    padding: 20px 0
+    ss-display-flex(row wrap)
+.like-tabs
+  // border: 1px solid
+  // box-sizing: border-box
+  // .item-header
+  //   height: 50px
+  //   ss-display-flex(row nowrap, flex-start, center)
+  //   border-bottom: 1px solid
+  //   .item
+  //     flex: 1
+  //     text-align: center
+  //     border-left: 1px solid
+  //     &:first-child
+  //       border: none
+  //     &.active
+  //       color: $color-primary
+  .router-page
+    padding: var(--space, 30px);

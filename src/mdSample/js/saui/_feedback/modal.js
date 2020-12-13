@@ -81,15 +81,15 @@ export default function(Pager) {
             mask: false,
             itemClass: 'modal-2',
             cbConfirm: function(idx2) {
-              message.close('', 1)
+              message.close('modal')
             },
             onClose: function(idx2) {
-              message.close(idx2, 1)
+              message.close('modal', idx2)
             }
           })
         },
-        cbCancel(idx) {
-          message.close(idx, 1)
+        cbCancel(type, idx) {
+          message.close(type, idx)
           message.tip({title: 'action: cancal'})
         }
       })
@@ -102,7 +102,7 @@ export default function(Pager) {
         itemClass: 'ss-modal options',
         methods: {
           onClosex() {
-            message.close()
+            message.close('modal')
           }
         }
       })

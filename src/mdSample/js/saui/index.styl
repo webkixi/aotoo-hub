@@ -16,8 +16,35 @@
   font-weight: bold
   margin-bottom: 40px;
 
+.demo-item-content
+  border-radius: $br
+  border: 1px solid $color-line-secondary
+  min-height: 160px
+  .item-head
+    padding: var(--space, $space)
+  .item-hr
+    position: relative
+    &:before
+      content: ''
+      height: 1px
+      width: 100%
+      background: $color-line-secondary
+      display: block
+    &:after
+      content: attr(data-content)
+      position: relative;
+      top: -9px;
+      background: #fff;
+      padding: 0 6px;
+      left: var(--space, $space)
+  .pages-title
+    padding: 0 var(--space, $space)
+
 .demo-grid
   ss-func-grid('&', {$num: 5, $spacing: 10px})
+  &.num2
+    .ss-col
+      width: calc(100% / 2)
   .caption
     font-size: $size-title-sm
     color: $color-text-title
@@ -90,17 +117,3 @@
     font-size: 36px
     color: $color-primary
     margin-bottom: 6px
-
-.like-search
-  color: $color-text-placeholder
-  height: $inputHeight
-  /* border-bottom: 1px solid; */
-  line-height: @height
-  min-width: 200px;
-  border-left: 1px solid;
-  padding-left: 16px;
-  &:before
-    content: '\e7b0'
-    font-size: 16px
-    color: $color-text-title
-    margin-right: 6px

@@ -88,6 +88,19 @@ ss-admin('.router-body', $menusClass: '.list-body')
 ss-root-header('.router-header', $class2: '&')
 
 
+.pages-drawer
+  ss-display-flex(column)
+  height: 100%
+  .item-head
+    height: 80px
+    border-left: none
+    padding: var(--space, $space)
+    border-bottom: 1px solid;
+    box-sizing: border-box;
+    line-height: initial;
+  .item-body
+    flex: 1
+
 .admin-logo
   justify-content: space-between
   .item-pic
@@ -214,6 +227,19 @@ ss-root-header('.router-header', $class2: '&')
     content: '\e608'
 
 
+.like-search
+  color: $color-text-placeholder
+  height: $inputHeight
+  /* border-bottom: 1px solid; */
+  line-height: @height
+  min-width: 200px;
+  border-left: 1px solid;
+  padding-left: 16px;
+  &:before
+    content: '\e7b0'
+    font-size: 16px
+    margin-right: 6px
+
 @media (max-width: 768px)
   // $space = 15px
   :root {
@@ -334,3 +360,11 @@ ss-root-header('.router-header', $class2: '&')
         img
           width: 160px
           height @width
+  .like-search
+    border: 1px solid
+    height: 30px
+    line-height: @height
+    padding: 0 4%
+    min-width: 15%
+    border-radius:(@height / 2)
+    margin-right: 4%

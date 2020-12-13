@@ -28,6 +28,7 @@ let menuInstance = ui_tree({
     {title: '提示框', attr: {file: '/feedback/tip'}, parent: 'feedback', aim: 'aimx'}, 
     {title: '弹出层', attr: {file: '/feedback/modal'}, parent: 'feedback', aim: 'aimx'}, 
     {title: '通知', attr: {file: '/feedback/notice'}, parent: 'feedback', aim: 'aimx'},
+    {title: '抽屉', attr: {file: '/feedback/drawer'}, parent: 'feedback', aim: 'aimx'},
   ],
   itemMethod: {
     aimx(e, param, inst){
@@ -156,7 +157,7 @@ let header = ui_item({
       itemClass: 'ml-default'
     },
     {
-      title: '搜索功能待完善',
+      title: 'Search',
       itemClass: 'like-search ml-auto',
       aim: 'onSearchPop'
     },
@@ -192,6 +193,7 @@ export default Pager.pages([
   {url: '/feedback/tip', content: import('./_feedback/tip')},
   {url: '/feedback/modal', content: import('./_feedback/modal')},
   {url: '/feedback/notice', content: import('./_feedback/notice')},
+  {url: '/feedback/drawer', content: import('./_feedback/drawer')},
 ], {
   header: function () {
     return <header.UI/>

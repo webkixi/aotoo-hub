@@ -1,6 +1,31 @@
 //TIPS 部分
-ss-tips-system(tipsSysCfg)
+ss-tips-system(tipsSysCfg, '.ss_tips_wrap')
+
 ss-tips-system2()
+drawerCfg = {
+  right: 0
+  top: 0
+  mb: false
+  min-width: 45vw
+  width: false
+  height: 100vh
+  br: 0
+  pd: 0
+  dire: 'tb'
+  direCfg: {
+    height: 18vh
+  }
+}
+
+ss-tips-system2('.ss_drawer_wrap', drawerCfg, '.ss-drawer')
+
+.ss_drawer_wrap
+  ss-display-flex(row)
+  &.abc
+    .ss-drawer
+      min-width: 35vw
+      z-index: 3
+
 //模拟表单提示
 ss-tips-like-form('.form-tips')
 //文字提示
@@ -22,31 +47,10 @@ xx = {
 }
 ss-tips-arrow('.ss-tips-widp100', xx)
 
-// //组件 提示框
-// popConfig =  {
-//   $icon: false
-//   $isNowrap: false
-//   $spc: true
-// }
-// .pop-title-arrow
-//   position: relative
-//   &:hover, &.active
-//     ss-arrow-direction(top, 6px, $tipsx-bc, $tipsx-bg, calc(100% - 3px))
-//   &.arrow-bottom
-//     &:before
-//       transform: rotateZ(135deg);
-//       top: inherit
-//       bottom: calc(100%)
 
-// ss-tips('.popup-box', popConfig)
-// //组件 提示框
-// popContentConfig =  {
-//   $icon: false
-//   $isNowrap: false
-//   $spc: true
-//   $max-width: 190px
-//   //arrow
-//   $arrowTop: -8px
-//   $arrowLeft: 15px
-// }
-// ss-tips-arrow-content('.popup-box-2', popContentConfig)
+@keyframes abc-xx
+  0% 
+    width: 0
+  100% 
+    width: 40vw
+    opacity: 0

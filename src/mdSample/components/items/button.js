@@ -2,7 +2,7 @@ const {lib} = ao2
 
 export default function(params ={}) {
   let dft = {
-    $$id: 'ss-btn',
+    $$id: lib.uniqueId('ss-btn-'),
     title: '',
     disable: false,
     itemClass: 'ss-button',
@@ -55,7 +55,6 @@ export default function(params ={}) {
       this.reset()
     }
   }
-
   return <UI_item {...opts}/>
 }
 
