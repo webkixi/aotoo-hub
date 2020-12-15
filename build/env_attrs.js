@@ -8,7 +8,8 @@ var path = require('path')
   , OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
   , HtmlWebpackPlugin = require('html-webpack-plugin')
   , CopyPlugin = require('copy-webpack-plugin')
-  , getEntryTrunks = require('./util/entry');
+  , getEntryTrunks = require('./util/entry')
+  , MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 
 function getTrunks(src, opts) {
@@ -29,8 +30,13 @@ function getPublicPath(options) {
 }
 
 module.exports = function (asset) {
-  const {isDev, SRC, DIST, options, PORT, PROXYPORT } = asset
+  const {isDev, SRC, DIST, options, PORT, PROXYPORT, userScenesConfig } = asset
   let publicPath = getPublicPath(options)
+  let SITE = userScenesConfig.SITE
+  let domain = SITE.domain || `//localhost:${PORT}/`
+  if (!_.endsWith(domain, '/')) {
+    domain += '/'
+  }
 
   return function (name, param, param1) {
     switch (name) {
@@ -136,12 +142,44 @@ module.exports = function (asset) {
 
 
 
-      case 'styl': // styl loader
-        const cssLoaders = param
-        if (isDev) {
-          // cssLoaders.unshift('css-hot-loader')
-        }
-        return cssLoaders
+    
+      case 'styl':  // var cssLoaders = param
+        return ([
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: domain,
+            }
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              url: false
+            }
+          },
+          'postcss-loader',
+        ]).concat(param)
+        break;
+
+
+      case 'stylcommon': // styl loader
+        return ([
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: domain
+            }
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              url: false
+            }
+          },
+          'postcss-loader',
+        ]).concat(param)
         break;
       
       

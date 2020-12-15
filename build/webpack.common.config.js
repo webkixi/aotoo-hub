@@ -56,36 +56,17 @@ module.exports = function (asset, envAttributs) {
         },
         {
           test: /\.css$/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            'css-loader'
-          ]
+          use: envAttributs('stylcommon', [])
         },
         {
           test: /\.s[ac]ss$/i,
-          use: [
-            MiniCssExtractPlugin.loader,
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2,
-              }
-            },
-            'postcss-loader',
+          use: envAttributs('stylcommon', [
             'sass-loader',
-          ],
+          ])
         },
         {
           test: /\.styl(us)?$/,
-          use: envAttributs('styl', [
-            MiniCssExtractPlugin.loader,
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2,
-              }
-            },
-            'postcss-loader',
+          use: envAttributs('stylcommon', [
             'stylus-loader'
           ])
         },

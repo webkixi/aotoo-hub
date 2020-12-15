@@ -167,6 +167,9 @@ function* startOneProjectDevServer(startDevQueues) {
 // 如果没有则新建一个初始配置文件
 function *getScenesConfig(asset) {
   let {SRC, options} = asset
+  let userScenesConfig = {}
+  let defaultCft = {}
+  let senseCfg = {}
 
   if (!options) {
     asset.options = options = {}
@@ -192,7 +195,13 @@ function *getScenesConfig(asset) {
     if (!fs.existsSync(senesConfigPath)) {
       generateScenesDir(scenesDir, asset.options.scenes, asset)
     }
+    senseCfg = require(senesConfigPath)(asset)
   }
+
+  defaultCft = require(defaultSenesConfigPath)(asset)
+  userScenesConfig = Object.assign(userScenesConfig, defaultCft, senseCfg)
+
+  asset.userScenesConfig = userScenesConfig
   return asset
 }
 

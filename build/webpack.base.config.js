@@ -65,59 +65,17 @@ function baseConfig(asset, envAttributs) {
         },
         {
           test: /\.css$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-              options: {
-                hmr: process.env.NODE_ENV === 'development',
-                reloadAll: true,
-              }
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2
-              }
-            },
-          ]
+          use: envAttributs('styl', [])
         },
         {
           test: /\.s[ac]ss$/i,
           use: envAttributs('styl', [
-            {
-              loader: MiniCssExtractPlugin.loader,
-              options: {
-                hmr: process.env.NODE_ENV === 'development',
-                reloadAll: true,
-              }
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2
-              }
-            },
-            'postcss-loader',
             'sass-loader'
           ]),
         },
         {
           test: /\.styl(us)?$/,
           use: envAttributs('styl', [
-            {
-              loader: MiniCssExtractPlugin.loader,
-              options: {
-                hmr: process.env.NODE_ENV === 'development',
-                reloadAll: true,
-              }
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2
-              }
-            },
-            'postcss-loader',
             'stylus-loader'
           ])
         },
