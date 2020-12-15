@@ -3,34 +3,46 @@
 
 .msgbox-fade-enter-active 
 	animation: msgbox-fade-in .2s
+	animation-fill-mode : forwards;
 
 .msgbox-fade-leave-active 
 	animation: msgbox-fade-out .2s
+	animation-fill-mode : forwards;
 
 .msgbox-fade-enter-active-x
 	.item-animation
 		animation: msgbox-fade-in .2s
+		animation-fill-mode : forwards;
 
 .msgbox-fade-leave-active-x
 	.item-animation
 		animation: msgbox-fade-out .2s
+		animation-fill-mode : forwards;
 
 .drawer-fade-to-left
 	animation: drawer-fade-to-left .2s
+	animation-fill-mode : forwards;
 	&.active
 		animation: drawer-fade-to-left-out .2s
+		animation-fill-mode : forwards;
 .drawer-fade-to-right
 	animation: drawer-fade-to-right .2s
+	animation-fill-mode : forwards;
 	&.active
 		animation: drawer-fade-to-right-out .2s
+		animation-fill-mode : forwards;
 .drawer-fade-to-top
 	animation: drawer-fade-to-top .2s
+	animation-fill-mode : forwards;
 	&.active
 		animation: drawer-fade-to-top-out .2s
+		animation-fill-mode : forwards;
 .drawer-fade-to-bottom
 	animation: drawer-fade-to-bottom .2s
+	animation-fill-mode : forwards;
 	&.active
 		animation: drawer-fade-to-bottom-out .2s
+		animation-fill-mode : forwards;
 
 
 @keyframes msgbox-fade-in 
@@ -51,9 +63,11 @@
 
 @keyframes drawer-fade-to-left
 	0% 
-		transform: translateX(100%);
+		// transform: translateX(100%);
+		right: -100%
 	to 
-		transform: translateX(0px);
+		// transform: translateX(0px);
+		right: 0
 
 @keyframes drawer-fade-to-left-out
 	0% 

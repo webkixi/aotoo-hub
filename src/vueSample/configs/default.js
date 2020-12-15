@@ -26,6 +26,8 @@ module.exports = function (asset) {
 
   let configSite = {
     SITE: {
+      // css使用url指定背景图片需要注意
+      domain: isDev ? `//localhost:${PORT}/` : '/'
       /** web site params */
     },
   }

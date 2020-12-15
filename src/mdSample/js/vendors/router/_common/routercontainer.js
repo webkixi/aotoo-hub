@@ -59,11 +59,20 @@ export function getRenderContainer(opts){
     // let contents = [].concat(Page).map((p, ii)=>React.cloneElement(p, {key: 'page_'+ii}))
     let contents = [].concat(Page).map((p, ii)=>p)
     let routerItems = ui_list({
+      $$id: this.uniqId+'_router_items',
       data: contents,
       header: subHeader,
       footer: subFooter,
       itemClass: 'router-item',
       listClass: 'router-page',
+      didUpdate(){
+        let runtimePageItem = that.selectPageItem.runtime
+        let success = runtimePageItem.param && runtimePageItem.param.success
+        let $data = this.getData().data
+        if ($data.length) {
+          success && lib.isFunction(success) && success()
+        }
+      }
       // type: 'expose'
     })
 

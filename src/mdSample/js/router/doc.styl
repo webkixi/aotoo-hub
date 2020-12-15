@@ -1,5 +1,70 @@
-@import "../../css/index.styl";
+@import '../../css/_commonx/config/theme/default'    //系统主题
+@import '../../css/_commonx/config/codetheme/black'  //代码块模版
+@import '../../css/_commonx/cssFunc/pages/routerconfig/routerStyle2'        //左边菜单列表模板
+@import '../../css/_commondoc'                      //各系统公用部分
 
+.bgurl
+  width 200px
+  height 200px
+  background-image url('/images/logo.png')
+
+:root {
+  /* --loading-attach-color: rgba(211, 211, 211, 0.5); */
+  --loading-attach-color: inherit;
+  --loading-attach-width: 1em;
+  --loading-attach-height: 1em;
+  --loading-attach-margin-right: 0.5em;
+}
+
+.router-loading1::before {
+  content: "";
+  display: block;
+  width: var(--loading-attach-width);
+  height: var(--loading-attach-height);
+  /* margin-right: var(--loading-attach-margin-right); */
+  color: var(--loading-attach-color);
+
+  border: 0.2em dotted currentcolor;
+  border-radius: 50%;
+  animation: 1s loader-01 linear infinite;
+}
+.router-loading::before {
+  content: "";
+  display: block;
+  width: var(--loading-attach-width);
+  height: var(--loading-attach-height);
+  margin-right: var(--loading-attach-margin-right);
+  color: var(--loading-attach-color);
+
+  border: 0.2em solid transparent;
+  border-left-color: currentcolor;
+  border-right-color: currentcolor;
+  border-radius: 50%;
+  animation: 1s loader-02 linear infinite;
+}
+@keyframes loader-01 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-02 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.router-loading
+  min-height: 200px
+  flex: 1
+  ss-display-flex(row, center, center)
 
 .router-container
   &.window

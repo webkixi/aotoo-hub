@@ -26,9 +26,9 @@ export default function(Pager) {
       {title: '窗口路由1', tap(){ nav.redirectTo({url: '/win/1'}) }},
       {title: '窗口路由2', tap(){ nav.redirectTo({url: '/win/2'}) }},
       {title: '窗口路由3', tap(){ nav.redirectTo({url: '/win/3'}) }},
-      {title: '窗口路由1', tap(){ nav.redirectTo({url: '/w/1'}) }},
-      {title: '窗口路由2', tap(){ nav.redirectTo({url: '/w/2'}) }},
-      {title: '窗口路由3', tap(){ nav.redirectTo({url: '/w/3'}) }},
+      {title: '窗口路由1', itemClass: 'btn-minor', tap(){ nav.redirectTo({url: '/w/1'}) }},
+      {title: '窗口路由2', itemClass: 'btn-minor', tap(){ nav.redirectTo({url: '/w/2'}) }},
+      {title: '窗口路由3', itemClass: 'btn-minor', tap(){ nav.redirectTo({url: '/w/3'}) }},
     ],
     itemClass: 'ss-button btn-default ml-default',
     listClass: 'item-btn-list'

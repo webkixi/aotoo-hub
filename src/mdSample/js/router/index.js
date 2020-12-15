@@ -17,7 +17,7 @@ const menuList = ui_tree({
     {title: '子页面D', attr: {url: '/index/d'}, parent: 'level-1'},
   ],
   footer: {
-    title: [
+    dot: [
       {
         '@list': {
           data: [

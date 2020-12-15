@@ -271,9 +271,7 @@ class Popx {
   }
 
   _partCom(params, type, opts, cls = '', noticetype = null) {
-    cbody = document.body;
-    console.log('opts.direction', opts.direction, opts.type);
-    
+    cbody = document.body;    
     const that = this
     let iwrapClass = type !== 'drawer' ? 'ss_'+type+'_wrap ' + opts.containersClass + ' ' + opts.direction + ' ' + opts.type : 'ss_'+type+'_wrap ' + opts.containersClass + ' ' +cls            //容器类名
     let bgClass = 'ss-modal-bg'                            //容器背景
@@ -316,9 +314,11 @@ class Popx {
       },
       onCloseBg() {
         const _idx = that.wrapDiv[that.curType][noticetype].length - 1
+        console.log('=========', _idx);
+        
         //背景
         if (typeof opts.cbBg === 'function') {
-          opts.cbBg.call(that, _idx, that.curType, noticetype)
+          opts.cbBg.call(that, that.curType, _idx, noticetype)
         }
         else {
           that.close(that.curType, _idx, noticetype)
@@ -328,6 +328,7 @@ class Popx {
           var bg = document.getElementById("ss-modal-bg");
           bg.onclick=function(){
             const _idx = type === 'drawer' ? that.wrapDiv[that.curType][noticetype].length - 1 : that.elem[that.curType][that.elem[that.curType].length - 1].idx
+            console.log('=========22', _idx);
             if (typeof opts.cbBg === 'function') {
               opts.cbBg.call(that, that.curType, _idx, noticetype)
             }
@@ -378,9 +379,9 @@ class Popx {
   }
 
   close(type, idx, noticetype = null, dire) {
+    type = type || this.curType
     let wrap = noticetype !== null ? this.wrapDiv[type][noticetype] : this.wrapDiv[type]
     // wrap.className = wrap.className +' active'
-    console.log('idx', idx, type);
     
     if (!idx && idx != 0) {
       wrap.remove()
@@ -389,18 +390,29 @@ class Popx {
     else {
       if (type === 'drawer') {
         wrap[idx].remove()
-        wrap.splice(idx,1)
+        wrap.splice(idx, 1)
       }
       else {
+        let indexs = []
         this.elem[type].map((item, ii) => {
           if (dire ? item.idx === idx && item.dire === dire : item.idx === idx) {
             item.box.children ? item.box.children[0].className = item.box.children[0].className.replace(this.animationCls, this.animationOutCls) : ''
-            // setInterval(() => {
-              wrap.removeChild(item.box)
-              this.elem[type].splice(ii, 1)
-            // }, 200);
+            indexs.push(item)
           }
         })
+
+        setTimeout(() => {
+          indexs.forEach(it=>{
+            let index = (()=>this.elem[type].findIndex($it=>$it.idx === it.idx))()
+            if (index > -1) {
+              this.elem[type].splice(index, 1)  
+            }
+            setTimeout(() => {
+              wrap.removeChild(it.box)
+            }, 100);
+          })  
+        }, 500);
+        
         this.elem[type].length === 0 ? wrap.remove() : ''
       }
     }

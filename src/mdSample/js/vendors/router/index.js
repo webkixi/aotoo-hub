@@ -139,7 +139,7 @@ class Route {
 
     this.UI = function(props={}) {
       let dft = {
-        loadingClass: '',
+        loadingClass: 'router-loading',
         content: (()=>{
           return new Promise((resolve, reject)=>{
             that.hasMounted = true
@@ -404,6 +404,10 @@ class Route {
       return
     }
     this.switchSelect($url, url)
+    this.selectPageItem.runtime = {
+      param,
+      query: $query,
+    }
 
     let selectPageItem = this.selectPageItem
     let selectPageContent = selectPageItem.content
