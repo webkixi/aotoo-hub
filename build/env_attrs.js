@@ -144,42 +144,51 @@ module.exports = function (asset) {
 
     
       case 'styl':  // var cssLoaders = param
-        return ([
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: domain,
-            }
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 2,
-              url: false
-            }
-          },
-          'postcss-loader',
-        ]).concat(param)
-        break;
+        return {
+          oneOf: [
+            // this applies to `<style lang="css|sass|scss|less|styl">` in Vue components
+            {
+              resourceQuery: /^\?vue/,
+              use: [
+                {
+                  loader: MiniCssExtractPlugin.loader,
+                  options: {
+                    publicPath: domain,
+                    esModule: false,
+                  }
+                },
+                {
+                  loader: 'css-loader',
+                  options: {
+                    importLoaders: 2,
+                    url: false
+                  }
+                },
+                'postcss-loader',
+              ].concat(param)
+            },
 
-
-      case 'stylcommon': // styl loader
-        return ([
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: domain
-            }
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 2,
-              url: false
-            }
-          },
-          'postcss-loader',
-        ]).concat(param)
+            // 处理其他样式
+            {
+              use: [
+                {
+                  loader: MiniCssExtractPlugin.loader,
+                  options: {
+                    publicPath: domain,
+                  }
+                },
+                {
+                  loader: 'css-loader',
+                  options: {
+                    importLoaders: 2,
+                    url: false
+                  }
+                },
+                'postcss-loader',
+              ].concat(param)
+            },
+          ]
+        }
         break;
       
       

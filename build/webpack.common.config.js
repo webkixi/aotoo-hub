@@ -56,17 +56,17 @@ module.exports = function (asset, envAttributs) {
         },
         {
           test: /\.css$/,
-          use: envAttributs('stylcommon', [])
+          ...envAttributs('styl', [])
         },
         {
           test: /\.s[ac]ss$/i,
-          use: envAttributs('stylcommon', [
-            'sass-loader',
+          ...envAttributs('styl', [
+            'sass-loader'
           ])
         },
         {
           test: /\.styl(us)?$/,
-          use: envAttributs('stylcommon', [
+          ...envAttributs('styl', [
             'stylus-loader'
           ])
         },

@@ -65,17 +65,17 @@ function baseConfig(asset, envAttributs) {
         },
         {
           test: /\.css$/,
-          use: envAttributs('styl', [])
+          ...envAttributs('styl', [])
         },
         {
           test: /\.s[ac]ss$/i,
-          use: envAttributs('styl', [
+          ...envAttributs('styl', [
             'sass-loader'
-          ]),
+          ])
         },
         {
           test: /\.styl(us)?$/,
-          use: envAttributs('styl', [
+          ...envAttributs('styl', [
             'stylus-loader'
           ])
         },
