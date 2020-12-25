@@ -74,6 +74,33 @@ hub工作空间
 - 不支持~~windows~~，但 win10 的 linux 子系统可以
 - node >= 12
 
+### 命令行一览
+
+```bash
+aotoo init <work-space-name> # 新建工作空间
+aotoo create <project-name> # 新建本地项目  
+aotoo install <url> # 安装远程项目
+
+aotoo dev [project-name] # 启动项目开发环境  
+aotoo dev-clean [project-name] # 启动项目开发环境，并清空缓存
+
+aotoo build [project-name] # 生产编译项目资源
+aotoo build-clean [project-name] # 生产编译项目资源，并清空缓存
+
+aotoo start [project-name] # 本地启动生产模式，需要先以生产模式编译
+
+aotoo dev [project-name] --config test # 启动测试环境，开发模式
+aotoo dev [project-name] --config test1 # 启动测试环境，开发模式
+aotoo dev [project-name] --config test2 # 启动测试环境，开发模式
+aotoo dev [project-name] --config ....  # 启动测试环境，开发模式
+
+aotoo dev --name proj1 --name proj2 --name proj3 # 同时启动多个项目的开发环境
+
+# 部署
+node index.js --config test  # 使用node启动测试环境的生产项目(需完成生产编译)
+pm2 start index.js -- --config test
+```
+
 ### INSTALL
 
 ```bash
@@ -122,35 +149,18 @@ $ aotoo create minip_name
 > 将会在xxx/src目录下，创建项目目录`minip_name`，提示请输入`n`
 > 完成安装后，打开`aotoo.config.js`，补充项目描述，重新启动项目
 
-### 启动自带项目  
+#### 安装远程项目  
 
-安装完成后，hub的src目录下包含4个演示项目，通过以下命令可以分别启动  
-
-#### 启动文档项目  
+支持远程git项目和zip项目
 
 ```bash
-# 文档项目属于默认项目，可以直接启动
-$ aotoo dev
-```
+cd workspace
 
-#### 启动VUE项目  
+# 安装远程git项目到本地
+aotoo install https://github.com/webkixi/hub-vue2.git  # 从远程安装vue2基础项目
 
-```bash
-aotoo dev vueSample
-```
-
-#### 启动REACT项目  
-
-```bash
-aotoo dev reactSample
-```
-
-#### 启动小程序项目
-
-编译完成后需要使用小程序开发工具打开终端黄色字体指示的目录  
-
-```bash
-aotoo dev xcxSample
+# 安装远程zip项目到本地 
+aotoo install https://github.com/webkixi/hub-vue2/archive/master.zip # 从远程安装vue2基础项目zip版
 ```
 
 ### 工作模式
