@@ -1,13 +1,10 @@
 const nav = Pager.nav
 const lib = ao2.lib
 import _message from "components/items/message";
+
 const ad = require('../_common/advertising')
 
 const message = _message()
-
-
-// console.log('isDuringDate', isDuringDate('2018/09/17', '2030/09/17'));
-
 
 function onCovering() {
   const pageshead = $$('#pageshead')
@@ -23,12 +20,15 @@ let menuInstance = ui_tree({
     {title: '色块', attr: {file: '/normal/color'}, parent: 'normal' , aim: 'aimx'},
     {title: '按钮', attr: {file: '/normal/button'}, parent: 'normal' , aim: 'aimx'},
 
-    // {title: '数据展示', itemClass: 'menu-caption', idf: 'show'},
     {title: '反馈', itemClass: 'menu-caption', idf: 'feedback', aim: 'aimx'},
     {title: '提示框', attr: {file: '/feedback/tip'}, parent: 'feedback', aim: 'aimx'}, 
     {title: '弹出层', attr: {file: '/feedback/modal'}, parent: 'feedback', aim: 'aimx'}, 
     {title: '通知', attr: {file: '/feedback/notice'}, parent: 'feedback', aim: 'aimx'},
     {title: '抽屉', attr: {file: '/feedback/drawer'}, parent: 'feedback', aim: 'aimx'},
+    {title: '加载中', attr: {file: '/feedback/load'}, parent: 'feedback', aim: 'aimx'},
+
+    {title: '数据展示', itemClass: 'menu-caption', idf: 'show'},
+    {title: '表格', attr: {file: '/show/table'}, parent: 'show', aim: 'aimx'}, 
   ],
   itemMethod: {
     aimx(e, param, inst){
@@ -45,7 +45,12 @@ let menuInstance = ui_tree({
         inst.addClass('active')
         if (file) {
           setTimeout(() => {
-            nav.redirectTo({ url: file })
+            nav.redirectTo({
+              url: file,
+              beforeNav(to, from, next) {
+                next()
+              }
+            })
           }, 50);
         }
       }
@@ -194,6 +199,9 @@ export default Pager.pages([
   {url: '/feedback/modal', content: import('./_feedback/modal')},
   {url: '/feedback/notice', content: import('./_feedback/notice')},
   {url: '/feedback/drawer', content: import('./_feedback/drawer')},
+  {url: '/feedback/load', content: import('./_feedback/load')},
+
+  {url: '/show/table', content: import('./_show/table')},
 ], {
   header: function () {
     return <header.UI/>

@@ -59,115 +59,36 @@ ReactDOM.render(<Component.UI />, root)
 
 为react原生计数组件添加了属性和api方法，在业务中，通过调用实例方法来修改组件状态和数据，如下例中的button按钮通过increase方法控制组件计数
 
-Demo: <https://codesandbox.io/s/aotoo6jishuqi-dv1uf>
+Demo: <https://codepen.io/webkixi/pen/vYXgKYM>
 
-```js
-import createComponent from '@aotoo/aotoo'
-
-class Count extends React.Component {
-  render() {
-    return (
-      <div className="container" onClick={this.env.increase}>
-        {this.state.count || 0}
-      </div>
-    );
-  }
-}
-
-const countInstance = createComponent(Count, {
-  data: {  // 将转化成react组件的state
-    count: 0,
-  },
-  increase(e) {
-    let count = this.getData().count;
-    count++;
-    this.setData({ count });
-  }
-});
-
-function Container() {
-  return (
-    <>
-      <countInstance.UI />
-      <button onClick={countInstance.increase}>计数器</button>
-    </>
-  );
-}
-
-ReactDOM.render(<Container />, document.getElementById('root'))
-```
-
-> `countInstance.increase`通过组件api方法修改组件内部状态
+<iframe height="406" style="width: 100%;" scrolling="no" title="计数器(counter) -- from react component" src="https://codepen.io/webkixi/embed/vYXgKYM?height=406&theme-id=dark&default-tab=css,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/webkixi/pen/vYXgKYM'>计数器(counter) -- from react component</a> by 天天修改
+  (<a href='https://codepen.io/webkixi'>@webkixi</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
 
 计数器DEMO2
 -----------------------
 
-仿小程序配置化组件
+仿小程序配置化组件，基于配置构建
 
 仿造小程序的生命周期封装的JS实例，参考微信小程序组件的设计，使用配置化生成react组件，并对外曝露相关api方法  
 
-Demo: <https://codesandbox.io/s/aotoo6jishuqi-forked-vh8n2>
+Demo: <https://codepen.io/webkixi/pen/OJRWNEY>
 
-```js
-import createComponent from '@aotoo/aotoo'
-
-const countTemplate = function (state, props) {
-  return <div className={"container"}>{state.count}</div>;
-};
-
-const countConfig = {
-  data: {
-    count: 0
-  },
-  increase() {
-    let count = this.getData().count;
-    count++;
-    this.setData({ count });
-  },
-  ready(){
-    console.log('已生成真实DOM')
-  }
-};
-
-let count = createComponent(countConfig, countTemplate);
-
-function Container() {
-  return (
-    <>
-      <count.UI />
-      <button onClick={count.increase}>计数器</button>
-    </>
-  );
-}
-
-ReactDOM.render(<Container/>, document.getElementById('root'))
-```
-
-> `count.increase`通过组件api方法修改组件内部状态
+<iframe height="434" style="width: 100%;" scrolling="no" title="计数器1" src="https://codepen.io/webkixi/embed/OJRWNEY?height=434&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/webkixi/pen/OJRWNEY'>计数器1</a> by 天天修改
+  (<a href='https://codepen.io/webkixi'>@webkixi</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
 
 WRAP
 ------------------
 
 有些交互仅仅通过操作dom就可以完成，通过封装JSX，获得JSX的真实DOM，此时可以使用jquery作用于该dom并生成交互
 
-```js
-import createComponent from '@aotoo/aotoo'
-
-let jsx = createComponent((
-  <div>
-    <span>文本内容</span>
-  <div>
-), function(dom){
-  $(dom).on('click', clickHandle)
-
-  // 返回组件移除时的回调方法
-  return function(){
-    $dom.off('click', clickHandle)
-  }
-})
-
-ReactDOM.render(jsx, document.getElementById('root'))
-```
+<iframe height="399" style="width: 100%;" scrolling="no" title="wrap react JSX" src="https://codepen.io/webkixi/embed/BaLpJBR?height=399&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/webkixi/pen/BaLpJBR'>wrap react JSX</a> by 天天修改
+  (<a href='https://codepen.io/webkixi'>@webkixi</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
 
 生命周期
 ------------------

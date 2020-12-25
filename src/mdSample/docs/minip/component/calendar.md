@@ -1,5 +1,7 @@
 # 日历组件
 
+日历组件基于`queryUI`库开发而成，`queryUI`是一套基于微信原生小程序的小程序开发库，`queryUI`的设计思想与我们web端项目aotoo一致。所以PC，小程序开发切换so easy。
+
 ## wxml
 
 ```html
@@ -39,7 +41,7 @@ Pager({
 })
 ```
 
-# 日历组件参数说明  
+## 日历组件参数说明  
 
 mode
 ------------------
@@ -446,6 +448,107 @@ toolbox.rangeEdge
 
 {Function}  
 默认值null，type='range'时，自定义range选择算法  
+
+下例算法是酒店行业的一个特殊算法，适用于入住与离店，不懂我也不会解释，有点复杂  
+
+```js
+let rangeEdge = function (nexts) {
+  let that = this
+  let tmp = null
+  let newEdgeDate = null
+  let curDayStamp = this.current
+  let endDayStamp = this.end
+  let calenderId = this.calenderId
+  let getYmd = this.getYmd
+  endDayStamp = endDayStamp + 1 * 24 * 60 * 60 * 1000 //离店需要加一天
+  let curDate = getYmd(curDayStamp)
+  let endDate = getYmd(endDayStamp)
+
+  function checkInvalidDate(edgeMonth) {
+    edgeMonth.forEach(_item => {
+      let item = _item.getData()
+      if (item.valid) {
+        _item.removeClass('invalid')
+      }
+      if (item.date &&
+        (item.timestamp && item.timestamp < endDayStamp && item.timestamp > curDayStamp) &&
+        item.valid === false &&
+        !newEdgeDate
+      ) {
+        if (!tmp) {
+          tmp = _item
+          let tap = `onSelected?type=date&date=${item.date}`
+          _item.update({
+            itemClass: 'valid',
+            tap
+          })
+        }
+      }
+    })
+  }
+
+  nexts.forEach(monInstId => {
+    let edgeMon = that.activePage.getElementsById(monInstId)
+    if (edgeMon) {
+      let config = edgeMon.getData()
+      edgeMon.visible(true)
+      edgeMon.show()
+      if (config.data.length) {
+        checkInvalidDate(edgeMon)
+      } else {
+        edgeMon.fillMonth(function () {
+          checkInvalidDate(edgeMon)
+        })
+      }
+    }
+  })
+
+  if (tmp) {
+    let xstamp = tmp.getData().timestamp
+    xstamp = xstamp + 1 * 24 * 60 * 60 * 1000
+    let ymd = getYmd(xstamp)
+    newEdgeDate = ymd.year + '-' + ymd.month + '-' + ymd.day
+  }
+
+  function handleTintInvalid(date, from) {
+    let ymd = getYmd(date)
+    let handleId = calenderId + '-' + ymd.year + '-' + ymd.month
+    let handle = that.activePage.getElementsById(handleId)
+    if (handle) {
+      handle.tint(date, null, 'invalid')
+      if (from) {
+        let opMonth = []
+        let matchIndex = null
+        nexts.forEach((m, ii) => {
+          if ((matchIndex || matchIndex === 0) && ii > matchIndex) {
+            opMonth.push(m)
+          } else {
+            if (m === handleId) {
+              matchIndex = ii
+            }
+          }
+        })
+
+        if (opMonth.length) {
+          opMonth.forEach(mid => {
+            let h = that.activePage.getElementsById(mid)
+            if (h) {
+              h.visible(false)
+              h.hide()
+            }
+          })
+        }
+      }
+    }
+  }
+
+  if (newEdgeDate) {
+    handleTintInvalid(newEdgeDate, 'newEdgeDate')
+  } else {
+    handleTintInvalid(endDayStamp)
+  }
+}
+```
 
 toolbox.discontinue
 --------------  

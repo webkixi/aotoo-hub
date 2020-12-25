@@ -1,6 +1,12 @@
 import Button from "components/items/button";
 import _message from "components/items/message";
+import Table from "components/list/table";
+import { drawerDoc } from "../document";
 
+const drawer = Table({
+  tableClass: 'wid-p100',
+  ...drawerDoc
+})
 const message = _message()
 
 
@@ -28,8 +34,6 @@ function template(state, props) {
                   <View className='item-head'>
                     {
                       item.child.map((itemx, jj) => {
-                        console.log('itemx', itemx.type);
-                        
                         return <Button key={'b-'+jj} title={itemx.title || item.title} itemClass='ss-button btn-default' data-type={itemx.type} data-level={itemx.level} tap={this[itemx.tap]} />
                       })
                     }
@@ -42,6 +46,8 @@ function template(state, props) {
           })
         }
       </View>
+      <View className="pages-title-sm">Attributes</View>
+      {drawer.render()}
     </>
   )
 }
@@ -55,8 +61,6 @@ export default function(Pager) {
     onDrawer(e, param, inst) {
       const type = inst.attr('data-type')
       const more = inst.attr('data-level')
-      console.log('more', type);
-      
       message.drawer({
         '@item' : {
           title: {

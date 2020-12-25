@@ -22,25 +22,28 @@
 .drawer-fade-to-left
 	animation: drawer-fade-to-left .2s
 	animation-fill-mode : forwards;
-	&.active
-		animation: drawer-fade-to-left-out .2s
-		animation-fill-mode : forwards;
+.drawer-fade-out-left
+	animation: drawer-fade-to-left-out .2s
+	animation-fill-mode : forwards;
+
 .drawer-fade-to-right
 	animation: drawer-fade-to-right .2s
 	animation-fill-mode : forwards;
-	&.active
+.drawer-fade-out-right
 		animation: drawer-fade-to-right-out .2s
 		animation-fill-mode : forwards;
+
 .drawer-fade-to-top
 	animation: drawer-fade-to-top .2s
 	animation-fill-mode : forwards;
-	&.active
+.drawer-fade-out-top
 		animation: drawer-fade-to-top-out .2s
 		animation-fill-mode : forwards;
+		
 .drawer-fade-to-bottom
 	animation: drawer-fade-to-bottom .2s
 	animation-fill-mode : forwards;
-	&.active
+.drawer-fade-out-bottom
 		animation: drawer-fade-to-bottom-out .2s
 		animation-fill-mode : forwards;
 
@@ -63,7 +66,7 @@
 
 @keyframes drawer-fade-to-left
 	0% 
-		// transform: translateX(100%);
+		// transform: translateX(100%);			
 		right: -100%
 	to 
 		// transform: translateX(0px);

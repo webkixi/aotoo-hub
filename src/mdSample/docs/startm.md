@@ -1,10 +1,8 @@
 # hub 的小程序
 
-hub 的小程序 DEMO(xcxSample)基于小程序原生开发，使用 webpack4 进行编译，输出文件可直接使用小程序 IDE 编辑器直接打开。  
+hub的小程序项目基于微信原生开发，webpack编译，hub按照1:1对等输出小程序源码，仅利用webpack处理一下小程序的一些小毛病，比如markdown，动态样式，html等等。(输出不会产生webpack的冗余代码)，支持热更新  
 
-hub自带的小程序支持解析HTML字串, markdown字串为小程序原生模板(相比wxParse更好用)
-
-> 在 github 中搜索 aotoo-xquery
+[**GITHUB**](https://github.com/webkixi/aotoo-xquery)
 
 ## 创建工作空间
 

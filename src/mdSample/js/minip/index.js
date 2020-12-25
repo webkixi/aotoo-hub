@@ -9,11 +9,11 @@ export default Pager.pages([
   header: function(){
     return mkheader('minip')
   },
-  select: '/index/a?file=startm.md',
+  select: '/index/a?file=minip/startm.md',
   menus: function () {
     return mkmenus([
       {title: '演示项目', itemClass: 'menu-caption', idf: 'a1' },
-      {title: '上手项目', attr: {file: 'startm.md'}, parent: 'a1'},  // webpack支持
+      {title: '上手项目', attr: {file: 'minip/startm.md'}, parent: 'a1'},  // webpack支持
   
         
       {title: 'queryUI', itemClass: 'menu-caption', idf: 'a2' },
@@ -36,6 +36,15 @@ export default Pager.pages([
       {title: '事件', attr: {file: 'minip/listevent.md'} ,parent: 'a4'}, // node端跨域 node端插件化 ssr
       {title: '树', attr: {file: 'minip/tree.md'} ,parent: 'a4'}, // node端跨域 node端插件化 ssr
       {title: '使用说明', attr: {file: 'minip/listusage.md'} ,parent: 'a4'}, // node端跨域 node端插件化 ssr
+
+      {title: 'ui组件', itemClass: 'menu-caption', idf: 'a5'},
+      {title: '日历组件', attr: {file: 'minip/component/calendar.md'} ,parent: 'a5'}, // node端跨域 node端插件化 ssr
+      {title: '筛选组件', attr: {file: 'minip/component/filter.md'} ,parent: 'a5'}, // node端跨域 node端插件化 ssr
+      {title: '折叠组件', attr: {file: 'minip/component/collapse.md'} ,parent: 'a5'}, // node端跨域 node端插件化 ssr
+      {title: '仿微信锁盘', attr: {file: 'minip/component/locker.md'} ,parent: 'a5'}, // node端跨域 node端插件化 ssr
+      {title: '弹窗组件', attr: {file: 'minip/component/popup.md'} ,parent: 'a5'}, // node端跨域 node端插件化 ssr
+      {title: '下拉菜单组件', attr: {file: 'minip/component/dropdown.md'} ,parent: 'a5'}, // node端跨域 node端插件化 ssr
+      {title: 'slider组件', attr: {file: 'minip/component/slider.md'} ,parent: 'a5'}, // node端跨域 node端插件化 ssr
     ])
   },
 })

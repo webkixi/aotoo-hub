@@ -56,8 +56,6 @@ Demo: <https://codepen.io/webkixi/pen/OJRWNEY>
   (<a href='https://codepen.io/webkixi'>@webkixi</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
-> `count.increase`通过组件api方法修改组件内部状态
-
 WRAP
 ------------------
 

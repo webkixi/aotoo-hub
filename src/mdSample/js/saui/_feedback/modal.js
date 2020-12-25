@@ -1,6 +1,12 @@
 import Button from "components/items/button";
 import _message from "components/items/message";
+import Table from "components/list/table";
+import { modalDoc } from "../document";
 
+const doc = Table({
+  tableClass: 'wid-p100',
+  ...modalDoc
+})
 const message = _message()
 
 const data = [
@@ -33,6 +39,9 @@ function template(state, props) {
           )
         })
       }
+      <View className="pages-title-sm">Attributes</View>
+      {doc.render()}
+      <View className=''>注：modal 除了可以通过参数配制，也可以直接写结构</View>
     </>
   )
 }

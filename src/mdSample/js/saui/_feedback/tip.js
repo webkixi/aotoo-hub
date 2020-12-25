@@ -1,6 +1,12 @@
 import Button from "components/items/button";
 import _message from "components/items/message";
+import Table from "components/list/table";
+import { tipDoc } from "../document";
 
+const tips = Table({
+  tableClass: 'wid-p100',
+  ...tipDoc
+})
 const message = _message()
 
 const data = [
@@ -42,6 +48,8 @@ function template(state, props) {
           )
         })
       }
+      <View className="pages-title-sm">Attributes</View>
+      {tips.render()}
     </>
   )
 }
@@ -57,23 +65,6 @@ export default function(Pager) {
       const type = inst.attr('data-status')
       const title = inst.attr('data-clues')
       message.tip({ title: '这是一条'+title, type: type})
-    },
-    // onLoad(options){
-    //   console.log(options, '======= onLoad options');
-    //   // let $file = this.getData().file
-    //   // let file = options.file
-    //   // if (file && file !== $file) {
-    //   //   this.setData({ file })
-    //   // }
-      
-    // },
-
-    // onUnload(){
-    //   console.log('====== unload a');
-    // },
-    
-    // onReady(){
-
-    // }
+    }
   })
 }

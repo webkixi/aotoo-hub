@@ -83,7 +83,7 @@ function requireMd(filename, fromapi) {
         let targetKey = '@md'
         md = res.data
         if (res.data.data) {  // 数据从node推送过来
-          targetKey = '@html'
+          // targetKey = '@html'
           md = md.data
         }
         let mdContent = ui_item({
@@ -99,26 +99,33 @@ function requireMd(filename, fromapi) {
   if (lib.isNode()) {
     let approot = process.env.APPENV_SRC
     let filepath = path.join(approot, 'docs/' + filename)
+    let cnt = null
     const commandStr = `
     let marked = require('marked')
     let fs = require('fs')
     let mdStr = ''
     if (fs.existsSync(filepath)) {
-      let tmpBuffer = fs.readFileSync(filepath)
-      mdStr = tmpBuffer.toString()
-      md = marked(mdStr)
-      Cache.set(filepath, md)
+      cnt = Cache.ifid(filepath, function(){
+        let tmpBuffer = fs.readFileSync(filepath)
+        mdStr = tmpBuffer.toString()
+        // md = marked(mdStr)
+        md = mdStr
+        Cache.set(filepath, md)
+      })
     }
     `
-    let cnt = Cache.ifid(filepath, function(){
-      eval(commandStr)
-    })
-    md = cnt || md
-    let mdContent = ui_item({
-      "@html": md,
-      itemClass: 'markdown-body'
-    })
-    return fromapi ? {data: md} : (<mdContent.UI />)
+    eval(commandStr)
+    md = cnt || md || ' '
+    
+    if (fromapi) {
+      return {data: md}
+    } else {
+      let mdContent = ui_item({
+        "@md": md,
+        itemClass: 'markdown-body'
+      })
+      return (<mdContent.UI />)
+    }
   }
   return md
 }

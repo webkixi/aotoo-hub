@@ -67,10 +67,10 @@ class Popx {
         showConfirm: false,
         cancelText: '取消',
         confirmText: '确定',
-        titleClass: '',
+        headClass: '',
         bodyClass: '',
         footerClass: '',
-        itemClass: '',
+        modalClass: '',
         width: '20%',
         cbConfirm: false,             //点击确定按钮的回调方法
         cbCancel: false,               //点击取消按钮的回调方法
@@ -102,8 +102,8 @@ class Popx {
           ),
           bodyClass: 'item-body ' + opts.bodyClass,
           footerClass: 'item-footer ' + opts.footerClass,
-          itemClass:'ss-modal item-animation ' + opts.type + ' ' + opts.itemClass,
-          titleClass: 'item-header ' + opts.titleClass,
+          itemClass:'ss-modal item-animation ' + opts.type + ' ' + opts.modalClass,
+          titleClass: 'item-header ' + opts.headClass,
           itemStyle: opts.width ? {'width': opts.width} : ''
         },
         dot: [{title: ' ', itemClass: opts.mask ? 'ss-modal-bg' : 'ss-modal-bg transparent', aim: opts.bgClose ? 'onCloseBg' : ''}],
@@ -219,7 +219,6 @@ class Popx {
   }
 
   drawer(params) {
-    
     let dfg = {
       containersClass: '',    //容器class
       itemClass: '',          //item class
@@ -282,7 +281,6 @@ class Popx {
     this.wrapDiv[this.curType] = typeof this.wrapDiv[this.curType] === 'undefined' ? [] : this.wrapDiv[this.curType]
     
     const idx = this.elem[this.curType].length
-    
     let cfg = type !== 'drawer' ? {
       title: opts.body ? opts.showClose ? [{title: opts.title}, {title: ' ', itemClass: 'item-close', aim: 'onClose'}] : [{title: opts.title}] : opts.title,
       body: opts.body ? [{title: opts.body}] : '',
@@ -304,7 +302,6 @@ class Popx {
       },
       dot: [{title: ' ', itemClass: opts.bgCloseSmall ? 'ss-modal-bg' : '', aim: opts.bgClose ? 'onCloseBg' : ''}],
       onClose() {
-
         if (typeof opts.cbCancel === 'function') {
           opts.cbCancel.call(that, that.curType, idx, noticetype)
         }
@@ -314,8 +311,6 @@ class Popx {
       },
       onCloseBg() {
         const _idx = that.wrapDiv[that.curType][noticetype].length - 1
-        console.log('=========', _idx);
-        
         //背景
         if (typeof opts.cbBg === 'function') {
           opts.cbBg.call(that, that.curType, _idx, noticetype)
@@ -327,17 +322,20 @@ class Popx {
       __ready() {
           var bg = document.getElementById("ss-modal-bg");
           bg.onclick=function(){
-            const _idx = type === 'drawer' ? that.wrapDiv[that.curType][noticetype].length - 1 : that.elem[that.curType][that.elem[that.curType].length - 1].idx
-            console.log('=========22', _idx);
-            if (typeof opts.cbBg === 'function') {
-              opts.cbBg.call(that, that.curType, _idx, noticetype)
-            }
-            else {
-              that.close(that.curType, _idx, noticetype)
-            }
-            if (document.getElementsByClassName(bgClass).length > 0) {
-              document.getElementsByClassName(bgClass)[0].remove()
-            }
+            const cur = that.wrapDiv[that.curType][noticetype]
+            const _idx = type === 'drawer' ? cur.length - 1 : that.elem[that.curType][that.elem[that.curType].length - 1].idx
+            cur[0].className = cur[0].className.replace(that.animationCls, that.animationOutCls)
+            setTimeout(() => {
+              if (typeof opts.cbBg === 'function') {
+                opts.cbBg.call(that, that.curType, _idx, noticetype)
+              }
+              else {
+                that.close(that.curType, _idx, noticetype)
+              }
+              if (document.getElementsByClassName(bgClass).length > 0) {
+                document.getElementsByClassName(bgClass)[0].remove()
+              }
+            }, 500);
           }
       }
     }
@@ -389,6 +387,9 @@ class Popx {
     }
     else {
       if (type === 'drawer') {
+        // wrap[idx].className = wrap[idx].className.replace(this.animationCls, this.animationOutCls)
+        // setTimeout(() => {
+        // }, 500);
         wrap[idx].remove()
         wrap.splice(idx, 1)
       }

@@ -1,0 +1,25 @@
+$tableCfg = {
+  space: $space-minor
+  space-sm: $space-small
+  borderColor: $color-line-input
+  headFw: bold
+}
+
+.ss-table
+  border: 1px solid $tableCfg.borderColor
+  border-collapse: collapse;
+  display: table
+  .table-head, .item-tr
+    display: table-row
+  .item-tr
+    border-top: @border
+  .item-td
+    border-left: @border
+    display: table-cell
+    padding: $tableCfg.space
+  .table-head
+    .item-td
+      font-weight: $tableCfg.headFw
+      padding: $tableCfg.space-sm $space-minor
+  .list-body
+    display: table-row-group

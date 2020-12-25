@@ -1,10 +1,11 @@
 import _inject from 'aotoo-inject'
 let inject = _inject()
 inject.css([
-  'https://at.alicdn.com/t/font_2218644_d4uaf0wxlxl.css'
+  'https://at.alicdn.com/t/font_2218644_9i34el5d7gu.css'
 ])
 // function pages() {
   const iconList = [
+    { title: '&#e609;', itemClass: 'icon-jiazai' },
     { title: '&#e7b0;', itemClass: 'icon-sousuo' },
     { title: '&#e7b3;', itemClass: 'icon-yiwenjieda' },
     { title: '&#e7b6;', itemClass: 'icon-tishishuoming' },

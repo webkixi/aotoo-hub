@@ -1,37 +1,6 @@
 const {lib, $$} = ao2
 import Button from "components/items/button";
 
-const adapter = (data) => {
-  return data.map((item, ii) => {
-    return {
-      title: {
-        title: item.title,
-        itemClass: 'pages-title'
-      },
-      body: item.child.map((itemx, yy) => {
-        let op = {}
-        op = item.type ?
-          item.type === 'load' ? 
-          {
-            '@item': itemx.type === 1 ?  <Button  $$id={'btn'+ii+yy} title={item.title} itemClass={itemx.name} loading={true} loadClass='icon-sm' loadType='1' tap='onBtnLoad' /> : <Button $$id={'btn'+ii+yy} title='点啊点啊' itemClass='btn-minor' loading='true' loadClass='icon-sm' loadType='2' tap='onBtnLoad'/>,
-            itemClass: 'ml-default'
-          }
-          : {
-            title: itemx.title,
-            itemClass: 'ml-default ss-i-block ' + itemx.name
-          }
-        : {
-          '@item': <Button title={item.title} itemClass={itemx.name} $$id={'btn'+ii+yy}  />,
-          itemClass: 'ml-default'
-        }
-        return op
-      }),
-      bodyClass: 'mt-default  flex-row',
-      itemClass: 'm-default'
-    }
-  })
-}
-
 function template(state, props) {
   //方式一
   // let btnList = ui_list({
@@ -78,7 +47,7 @@ export default function(Pager) {
         {title: '空心', child: [{name: 'btn-default plain'}, {name: 'btn-minor plain'}, {name: 'btn-grey plain'}]},
         {title: '圆角', child: [{name: 'btn-default round'}, {name: 'btn-minor round'}, {name: 'btn-grey round'}]},
         {title: '大小', child: [{name: 'btn-default larger plain'}, {name: 'btn-minor plain'}, {name: 'btn-grey small plain'}]},
-        {title: '带加载效果', type: 'load', child: [{title: '自动关闭', name: 'btn-default', type: '1', tap: 'onBtnLoad', load: true}, {title: '手动关闭', name: 'btn-minor', tap: 'onBtnLoad', load: true}]},
+        {title: '点击显示加载效果', type: 'load', child: [{title: '自动关闭', name: 'btn-default', type: '1', tap: 'onBtnLoad', load: true}, {title: '手动关闭', name: 'btn-minor', tap: 'onBtnLoad', load: true}]},
         {title: '文字链', type: 'link', child: [
           {title: '文字链接', name: 'ss-link-primary'},
           {title: '下划画', name: 'ss-link ss-hover-underline'},
