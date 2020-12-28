@@ -1,3 +1,0 @@
-<import src="../parse_common/index.wxml" />
-<template is="target-object-img" data="{{item: {src: item.img}, source: item }}" />
-<!-- 其他的组件 -->

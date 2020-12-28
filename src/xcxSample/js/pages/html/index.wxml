@@ -1,3 +1,0 @@
-<view class="container">
-  <ui-markit dataSource="{{htmlConfig}}" textType="html" />
-</view>
