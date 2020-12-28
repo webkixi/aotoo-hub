@@ -5,6 +5,7 @@ var _  = require('lodash')
 var webpack = require('webpack')
 var path = require('path')
 const xcxCloudProjectConfigFile = path.join(__dirname, './lib/xcx_template/project.config.json')
+const xcxCloudProjectCloudModule = path.join(__dirname, './lib/xcx_template/cloudclient.js')
 var MiniCssExtractPlugin = require('mini-css-extract-plugin')
   , HappyPack = require('happypack')
   , happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })  // 构造一个线程池
@@ -30,8 +31,10 @@ class DoneCompile {
 
       if (cloud) {
         const projectConfigFile = path.join(DIST, 'project.config.json')
-        projectConfig.appid = appid || ""
+        const appCloudConfigFile = path.join(DIST, projectConfig.miniprogramRoot, 'cloudclient.js')
+        projectConfig.appid = appid || projectConfig.appid || ""
         fse.outputJsonSync(projectConfigFile, projectConfig)
+        // fse.copySync(xcxCloudProjectCloudModule, appCloudConfigFile)
       }
     })
   }
@@ -41,7 +44,7 @@ function jsEntries(dir) {
   var jsFiles = {}
   const accessExts = ['.md', '.js', '.wxml', '.wxss', '.styl', '.wxs', '.json', '.png', '.jpg', '.jpeg', '.gif']
   if (fse.existsSync(dir)) {
-    globby.sync([`${dir}/**/*`, `!${dir}/js/**/cloudfunctions`, '!node_modules', `!${dir}/dist`]).forEach(function (item) {
+    globby.sync([`${dir}/**/*`, `!${dir}/js/cloudfunctions`, '!node_modules', `!${dir}/dist`]).forEach(function (item) {
       const fileObj = path.parse(item)
       const xcxSrc = path.join(dir, 'js')
       if (~item.indexOf(xcxSrc)) {
@@ -191,7 +194,7 @@ function baseConfig(asset, envAttributs) {
               to: DIST,
               context: path.join(SRC, 'js'),
               globOptions: {
-                ignore: ['cloudfunctions/**/*', 'project.config.json'],
+                ignore: ['**/cloudfunctions/**', 'project.config.json'],
               }
               // copyUnmodified: true,
             }
