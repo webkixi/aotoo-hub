@@ -97,9 +97,7 @@ function baseConfig(asset, envAttributs) {
         verbose: true,
         loaders: [{
           loader: 'babel-loader',
-          options: {
-            cacheDirectory: true
-          }
+          ...envAttributs('babel-options')
         }],
         threadPool: happyThreadPool
       }),

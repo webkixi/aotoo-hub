@@ -244,6 +244,7 @@ module.exports = function (asset) {
         }
         break;
 
+
       case 'plugins':
         const commonPlugins = param
         let target = []
@@ -289,6 +290,52 @@ module.exports = function (asset) {
         }
         return target
         break;
+
+
+      case 'babel-options': 
+        return {
+          options: {
+            babelrc: false,
+            cacheDirectory: true,
+            "presets": [
+              ["@babel/preset-env", {
+                  "useBuiltIns": "usage",
+                  "corejs": 3
+              }],
+              ["@babel/preset-react", {
+                "useSpread": false
+              }]
+            ],
+            "env": {
+              "development": {
+                "presets": [["@babel/preset-react", { "development": true }]]
+              }
+            },
+            "plugins": [
+              "react-hot-loader/babel",
+              "@babel/plugin-syntax-dynamic-import",
+              "@babel/plugin-transform-modules-commonjs",
+              "@babel/plugin-proposal-export-default-from",
+              "@babel/plugin-proposal-export-namespace-from",
+              ["@babel/plugin-proposal-decorators", { "legacy": true }],
+              ["@babel/plugin-proposal-class-properties", { "loose": true }],
+              "@babel/plugin-proposal-function-bind",
+              "@babel/plugin-proposal-function-sent",
+              "@babel/plugin-transform-computed-properties",
+              [
+                "@babel/plugin-transform-runtime",
+                {
+                  "absoluteRuntime": false,
+                  "corejs": false,
+                  "helpers": true,
+                  "regenerator": true,
+                  "useESModules": false
+                }
+              ]
+            ]
+          }
+        }
+      
     }
   }
 }
