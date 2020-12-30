@@ -20,13 +20,69 @@ class Popx {
     this.animationCls = null
     this.animationOutCls = null
   }
-  popup(val, ele, cb){
+  _popup(val, ele, cb){
     if (React.isValidElement(val)) {
       return ReactDom.render(
         val,
         ele
       )
     }
+  }
+
+  alert(params) {
+    let dfg = {
+      type: 'info',        //类型 sucess fail warning info
+      itemClass: '',          //
+      showClose: false,
+      cbCancel: false,        //方法
+      animation: false,
+      icon: true
+    }
+    let opts = Object.assign({}, dfg, params)
+    let animationCls = ''
+    let animationOutCls = ''
+    if (opts.animation) {
+      animationCls = ' msgbox-fade-enter-active'
+      animationOutCls = ' msgbox-fade-leave-active'
+    }
+
+    let typeCls = opts.type
+    opts.itemClass = 'ss-alert ' + opts.itemClass
+    typeCls = typeCls + animationCls + (opts.icon === false ? ' no-icon' : '')
+    // let noticetype = opts.type === 'error' ? 2 : opts.type === 'success' ? 3 : opts.type === 'warning' ? 1 : 0
+    // console.log('opts', opts);
+    const itemCfg = {
+      body: [
+        {
+          title: opts.title,
+          itemClass: 'item-title'
+        },
+        {
+          title: opts.content,
+          itemClass: 'item-content',
+        }
+      ],
+      dot: opts.showClose ? [{
+        itemClass: 'item-close',
+        tap: 'onClose'
+      }] : '',
+      itemClass: opts.itemClass +' ' + typeCls,
+      
+      onClose(e, par, inst) {
+        if (typeof opts.cbCancel === 'function') {
+          opts.cbCancel.call(this, inst)
+        }
+        else {
+          if (inst.parentInst.hasClass('disN')) {
+            inst.parentInst.removeClass('disN')
+          }else {
+            inst.parentInst.addClass('disN')
+          }
+        }
+      }
+    }
+    return <UI_item {...itemCfg} />
+    // this._partCom(params, 'tips', opts, typeCls, noticetype)
   }
   
   modal(params) {
@@ -148,7 +204,7 @@ class Popx {
     this.elem[this.curType].push({idx: idx, box: document.createElement('div')})
     this.wrapDiv[this.curType].appendChild(this.elem[this.curType][idx].box)
 
-    this.popup(<temp.UI />, this.elem[this.curType][idx].box)
+    this._popup(<temp.UI />, this.elem[this.curType][idx].box)
   }
 
   tip(params) {
@@ -175,7 +231,6 @@ class Popx {
     typeCls = typeCls + this.animationCls
     let noticetype = opts.type === 'error' ? 2 : opts.type === 'success' ? 3 : opts.type === 'warning' ? 1 : 0
     this._partCom(params, 'tips', opts, typeCls, noticetype)
-
   }
 
   notice(params) {
@@ -354,7 +409,7 @@ class Popx {
       this.wrapDiv[this.curType][noticetype][_idx].className = iwrapClass
       cbody.appendChild(this.wrapDiv[this.curType][noticetype][_idx])
 
-      this.popup(<temp.UI />, this.wrapDiv[this.curType][noticetype][_idx])
+      this._popup(<temp.UI />, this.wrapDiv[this.curType][noticetype][_idx])
     }
     else {
       if (document.getElementsByClassName(iwrapClass).length <= 0) {
@@ -364,7 +419,7 @@ class Popx {
       }
       this.elem[this.curType].push({idx: idx, dire: opts.direction || opts.type, box: document.createElement('div')})
       this.wrapDiv[this.curType][noticetype].appendChild(this.elem[this.curType][idx].box)
-      this.popup(<temp.UI />, this.elem[this.curType][idx].box)
+      this._popup(<temp.UI />, this.elem[this.curType][idx].box)
     }
 
     if (opts.timer) {
@@ -434,100 +489,3 @@ export default function (params) {
   let opts = Object.assign({}, dfg, params)
   return new Popx(opts)
 }
-
-
-
-
-// export default function (params) {
-//   let dfg = {
-//     type: 'normal',           //normal 提示性, options 操作性
-//     showClose: false,         //是否显示关闭按钮
-//     showFooter: false,        //是否有底部 为true时，才会出现取消，确认等按钮
-//     showCancel:  false,
-//     showConfirm: false,
-//     cancelText: '取消',
-//     confirmText: '确定',
-//     bgClose: false,           //是否需要点击背景关闭弹出层
-//     titleClass: '',
-//     bodyClass: '',
-//     footerClass: '',
-//     itemClass: '',
-//     width: '20%',
-//     cbConfirm: '',             //点击确定按钮的回调方法
-//     cbCancel: '',               //点击取消按钮的回调方法
-//     cbBg: ''                   //点击背景关闭弹出层时的回调方法
-//   }
-//   let opts = Object.assign({}, dfg, params)
-//   return new Popx(opts)
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function Modal(props){
-//   const {show, setShow} = useState({})
-//   if (props.show === false) {
-//     setShow({
-//       show: false
-//     })
-//   }
-//   return (
-//     <div style=`display: ${show ? 'block':'none'}`>{props.children}</div>
-//   )
-// }
-// export default function(params) {
-//   const elem = document.createElement('div');
-//   modalRoot.appendChild(elem);
-
-//   const config = {
-//     data: {
-//       title: '',
-//       itemClass: 'xxx'
-//     }
-//   }
-//   let opts = Object.assign({}, config, params)
-
-//   const alertTemp = function (state, props) {
-    
-    
-//     console.log(state, props, '============ 11', React);
-    
-//     const temp = ui_item(state)
-
-//     return ReactDom.createPortal(
-//       <temp.UI />,
-//       elem
-//     )
-//   };
-//   console.log(opts, '======= opts');
-//   let count = createComponent(opts, alertTemp);
-//   return <count.UI />
-// }
-
-// 调用 tips({title: '这是一条提示', type: 'success'})
-
-// const dft = {
-//   cpType: 'tips',      //tips modal  组件类型
-//   title: '默认我是tips',
-//   itemClass: '',
-//   type: ''        
-// }
-// let opts = Object.assign({}, dft, params)
-
-// if (opts.type === 'tips') {
-//   opts.itemClass = 'ss-tip ' + opts.type + ' ' + opts.itemClass
-// }
-// else {
-//   opts.itemClass = 'ss-modal ' + opts.itemClass
-// }

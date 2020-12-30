@@ -32,6 +32,7 @@ export default Pager.pages([
       {title: {title: '上手指南', itemClass: 'item-title'}, itemClass: 'menu-caption', idf: 'a2'},
       {title: '快速开始web项目', attr: {file: 'start.md'}, parent: 'a2' }, // node端跨域 node端插件化 ssr
       {title: '快速开始小程序项目', attr: {file: 'startm.md'}, parent: 'a2' }, // node端跨域 node端插件化 ssr
+      {title: '安装远程项目', attr: {file: 'startr.md'}, parent: 'a2' }, // node端跨域 node端插件化 ssr
       {title: '多项目配置', attr: {file: 'service.md'}, parent: 'a2' },  // 多服务模式 微服务模式
       {title: '文档项目上手', attr: {file: 'web/readme.md'}, parent: 'a2' },  // 多服务模式 微服务模式
       {title: 'react项目上手', attr: {file: 'reactdemo.md'}, parent: 'a2' },  // 多服务模式 微服务模式

@@ -11,33 +11,59 @@ aotoo -V # 检查是否安装成功
 
 ## USAGE
 
-### init <dir>
-
-新建工作空间
+使用 aotoo 命令行启动各个服务
 
 ```bash
-# 新建xxx项目
-$ aotoo init xxx
+aotoo init <work-space-name> # 新建工作空间
+aotoo create <project-name> # 新建本地项目  
+aotoo install <url> # 安装远程项目
+
+aotoo dev [project-name] # 启动项目开发环境  
+aotoo dev-clean [project-name] # 启动项目开发环境，并清空缓存
+
+aotoo build [project-name] # 生产编译项目资源
+aotoo build-clean [project-name] # 生产编译项目资源，并清空缓存
+
+aotoo start [project-name] # 本地启动生产模式，需要先以生产模式编译
+
+aotoo dev [project-name] --config test # 启动测试环境，开发模式
+aotoo dev [project-name] --config test1 # 启动测试环境，开发模式
+aotoo dev [project-name] --config test2 # 启动测试环境，开发模式
+aotoo dev [project-name] --config ....  # 启动测试环境，开发模式
+
+aotoo dev --name proj1 --name proj2 --name proj3 # 同时启动多个项目的开发环境
+
+# 部署
+node index.js --config test  # 使用node启动测试环境的生产项目(需完成生产编译)
+pm2 start index.js -- --config test
 ```
 
-### create <dir>
+### init \<dir\>
 
-#### 新建web类项目
+新建工作空间，dir为必须参数
 
-适用于创建pc/h5/公众号等web项目
+```bash
+aotoo init workspace
+```
+
+### create \<dir\>
+
+新建本地项目，dir为必须参数
+
+**新建web类项目**  
+
+适用于PC/H5
 
 ```bash
 # 新建项目
-$ cd xxx
+$ cd workspace
 $ aotoo create project_name
 ```
 
-> 将会在xxx/src目录下，创建项目目录`project_name`，按照提示输`Y`，回车继续  
-完成安装后，修改`aotoo.config.js`，补充项目描述
+> 将会在 workspace/src 目录下创建项目目录`project_name`，按照提示输`Y`，回车继续  
+> 完成安装后，修改`aotoo.config.js`，补充项目描述
 
 #### 新建小程序项目  
-
-适用于创建小程序项目
 
 ```bash
 # 新建项目
@@ -46,16 +72,28 @@ $ aotoo create minip_name
 ```
 
 > 将会在xxx/src目录下，创建项目目录`minip_name`，按照提示输`n`，回车继续
-完成安装后，修改`aotoo.config.js`，补充项目描述
+> 完成安装后，修改`aotoo.config.js`，补充项目描述
+
+### 安装远程项目到本地  
+
+支持远程git项目和zip项目
+
+```bash
+cd workspace
+
+# 安装远程git项目到本地
+aotoo install https://github.com/webkixi/hub-vue2.git  # 从远程安装vue2基础项目
+
+# 安装远程zip项目到本地 
+aotoo install https://github.com/webkixi/hub-vue2/archive/master.zip # 从远程安装vue2基础项目zip版
+```
 
 ### 开发模式
 
 #### dev [name]
 
-开发模式编译，并启动服务
-
 ```bash
-# 启动aotoo.config中apps中的启动项目
+# 启动默认项目开发模式
 $ aotoo dev
 
 # 启动指定项目
@@ -67,6 +105,7 @@ $ aotoo dev project_name
 开发模式编译，清除common/vendors等dll文件，重新生成，并启动服务
 
 ```bash
+# 启动默认项目开发模式
 $ aotoo dev-clean
 
 # 启动指定项目，并清除该项目common的缓存

@@ -3,8 +3,12 @@
 @import '../../css/_commonx/cssFunc/pages/routerconfig/routerStyle2'        //左边菜单列表模板
 @import '../../css/_commondoc'                      //各系统公用部分
 
-@import '../../css/_commonx/modules/table'        //table
 @import '../../css/_commonx/css/width'        //width
+@import '../../css/_commonx/modules/table'        //table
+@import '../../css/_commonx/modules/swiper'       //swiper
+@import '../../css/_commonx/modules/bt_table'     //boostrap table
+@import '../../css/_commonx/modules/alert'        //alert
+@import '../../css/_commonx/modules/tooltip'        //tooltip
 
 
 @media (max-width: 768px)
@@ -125,3 +129,190 @@
     font-size: 36px
     color: $color-primary
     margin-bottom: 6px
+
+//bootstrap
+.bootstrap-table
+  width: 100%
+
+
+//swiper
+.demo-swiper
+  height: 300px
+  width: 100%
+  img
+    width: 100%
+    display: block
+    height: 100%;
+    object-fit: cover;
+  &.item-swiper-2
+    height: 500px
+
+.demo-swiper-bg
+  background: url('https://www.weaver.com.cn/em/hwcloud/img/index/s_bg.jpg')
+  background-size: cover
+  width: 100%
+  height: 100%
+  &.full-center
+    ss-display-flex(column, center, center)
+  &.dsb-2
+    ss-display-flex(row nowrap, space-around, center)
+    .item-right
+      width: 40%
+  .btn-default
+    display: inline-flex
+    margin-top: 20px
+
+.swiper-slide-active
+  .bounceIn
+    animation-name: bounceIn
+  .bounceInUp
+    animation-name: bounceInUp
+  .fadeInUp
+    animation-name: fadeInUp
+  .fadeInRight
+    animation-name: fadeInRight
+  .fadeInUpBig
+    animation-name: fadeInUpBig
+  .fadeInRightBig
+    animation-name: fadeInRightBig
+.demo-title
+  font-size: 20px
+.demo-title-lg
+  font-size: 34px
+.demo-title-sm
+  font-size: 16px
+
+//动画
+.ss-animate
+  animation-duration: 1s;
+  animation-fill-mode: forwards
+// .bounceIn
+//   animation-name: bounceIn
+// .bounceInUp
+//   animation-name: bounceInUp
+// .fadeInUp
+//   animation-name: fadeInUp
+// .fadeInRight
+//   animation-name: fadeInRight
+// .fadeInUpBig
+//   animation-name: fadeInUpBig
+
+@keyframes fadeInRightBig {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateX(2000px);
+        -ms-transform: translateX(2000px);
+        transform: translateX(2000px)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateX(0);
+        -ms-transform: translateX(0);
+        transform: translateX(0)
+    }
+}
+
+@keyframes fadeInUpBig {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(2000px);
+        transform: translateY(2000px)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0)
+    }
+}
+@keyframes fadeInRight {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateX(100px);
+        transform: translateX(100px)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateX(0);
+        transform: translateX(0)
+    }
+}
+
+@keyframes bounceInUp {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(2000px);
+        -ms-transform: translateY(2000px);
+        transform: translateY(2000px)
+    }
+
+    60% {
+        opacity: 1;
+        -webkit-transform: translateY(-30px);
+        -ms-transform: translateY(-30px);
+        transform: translateY(-30px)
+    }
+
+    80% {
+        -webkit-transform: translateY(10px);
+        -ms-transform: translateY(10px);
+        transform: translateY(10px)
+    }
+
+    100% {
+        -webkit-transform: translateY(0);
+        -ms-transform: translateY(0);
+        transform: translateY(0)
+    }
+}
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        -webkit-transform: scale(.3);
+        -ms-transform: scale(.3);
+        transform: scale(.3)
+    }
+
+    50% {
+        opacity: 1;
+        -webkit-transform: scale(1.05);
+        -ms-transform: scale(1.05);
+        transform: scale(1.05)
+    }
+
+    70% {
+        -webkit-transform: scale(.9);
+        -ms-transform: scale(.9);
+        transform: scale(.9)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1)
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(20px);
+        transform: translateY(20px)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0)
+    }
+}
+
+
+.demo-rounad-ui
+  .item-li
+    ss-display-flex(row, space-between)
+    &:first-child, &:last-child
+      justify-content: center

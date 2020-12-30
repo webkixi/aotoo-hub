@@ -19,8 +19,11 @@ let menuInstance = ui_tree({
     {title: '图标', attr: {file: '/normal/icon'}, parent: 'normal' , aim: 'aimx'},
     {title: '色块', attr: {file: '/normal/color'}, parent: 'normal' , aim: 'aimx'},
     {title: '按钮', attr: {file: '/normal/button'}, parent: 'normal' , aim: 'aimx'},
+    {title: '行高', attr: {file: '/normal/lineheight'}, parent: 'normal' , aim: 'aimx'},
 
     {title: '反馈', itemClass: 'menu-caption', idf: 'feedback', aim: 'aimx'},
+    {title: '文字提示', attr: {file: '/feedback/tooltip'}, parent: 'feedback', aim: 'aimx'}, 
+    {title: '警告提示', attr: {file: '/feedback/alert'}, parent: 'feedback', aim: 'aimx'}, 
     {title: '提示框', attr: {file: '/feedback/tip'}, parent: 'feedback', aim: 'aimx'}, 
     {title: '弹出层', attr: {file: '/feedback/modal'}, parent: 'feedback', aim: 'aimx'}, 
     {title: '通知', attr: {file: '/feedback/notice'}, parent: 'feedback', aim: 'aimx'},
@@ -29,6 +32,8 @@ let menuInstance = ui_tree({
 
     {title: '数据展示', itemClass: 'menu-caption', idf: 'show'},
     {title: '表格', attr: {file: '/show/table'}, parent: 'show', aim: 'aimx'}, 
+    {title: 'bootstrap-Table', attr: {file: '/show/btTable'}, parent: 'show', aim: 'aimx'}, 
+    {title: '轮播图', attr: {file: '/show/swiper'}, parent: 'show', aim: 'aimx'}, 
   ],
   itemMethod: {
     aimx(e, param, inst){
@@ -136,7 +141,7 @@ let menuInstance = ui_tree({
   },
   methods: {
     __ready() {
-      ad('2020/12/24', '2020/12/26')
+      ad('2020/12/24', '2021/01/02')
     }
   }
 })
@@ -194,7 +199,10 @@ export default Pager.pages([
   {url: '/normal/color', content: import('./_normal/color')},
   {url: '/normal/icon', content: import('./_normal/icon')},
   {url: '/normal/button', content: import('./_normal/button')},
+  {url: '/normal/lineheight', content: import('./_normal/lineheight')},
   
+  {url: '/feedback/tooltip', content: import('./_feedback/tooltip')},
+  {url: '/feedback/alert', content: import('./_feedback/alert')},
   {url: '/feedback/tip', content: import('./_feedback/tip')},
   {url: '/feedback/modal', content: import('./_feedback/modal')},
   {url: '/feedback/notice', content: import('./_feedback/notice')},
@@ -202,6 +210,8 @@ export default Pager.pages([
   {url: '/feedback/load', content: import('./_feedback/load')},
 
   {url: '/show/table', content: import('./_show/table')},
+  {url: '/show/btTable', content: import('./_show/btTable')},
+  {url: '/show/swiper', content: import('./_show/swiper')},
 ], {
   header: function () {
     return <header.UI/>

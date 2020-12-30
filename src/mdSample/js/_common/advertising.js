@@ -57,7 +57,6 @@ module.exports = function (data1, data2) {
   })
   const status = isDuringDate(data1, data2)
   const xx = document.cookie.indexOf('showAd') < 0 ? true : false
-  
   if (status && xx || !data1) {
     message.modal(<kk.UI/>)
     setAdCookie()

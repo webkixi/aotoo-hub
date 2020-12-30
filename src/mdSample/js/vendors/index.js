@@ -12,8 +12,13 @@ import './ajax'  // context.Fetcher
 import marked from "marked";
 import _inject from 'aotoo-inject'
 import Pager from "./page";
+import jquery from 'jquery'
 let context = lib.curContext()
 let inject = _inject()
+if (lib.isClient()) {
+  window.$ = jquery
+  window.jQuery = jquery
+}
 
 function highlightCode(){
   if (lib.isClient()) {

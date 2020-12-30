@@ -9,9 +9,9 @@ hub工作空间
   ├── postcss.config.js
   └── src
        ├─ mdSample
-       ├─ vueSample
-       ├─ reactSample
-       └─ xcxSample
+       ├─ hub-react
+       ├─ hub-vue2
+       └─ hub-xcx
 
 ```
 
@@ -40,50 +40,61 @@ node index.js
 
 ## vue 演示 DEMO
 
-**vueSample**，vue2.0 的开发环境
+vue的演示项目已迁移至github，可以通过install安装远程项目到本地
 
 **启动命令**
 
 ```bash
+# 安装远程vue demo项目至本地
+aotoo install https://github.com/webkixi/hub-vue2.git
+# 或者 
+aotoo install https://gitee.com/webkixi/hub-vue2.git
+
 # 开发模式
-aotoo dev vueSample
+aotoo dev hub-vue2
 
 # 生产模式
-aotoo build-clean vueSample
+aotoo build-clean hub-vue2
 node index.js
 ```
 
 ## REACT 演示 DEMO
 
-**reactSample**，REACT16 的演示
+react的演示项目已迁移至github，可以通过install安装远程项目到本地
 
 **启动命令**
 
 ```bash
+# 安装远程react demo项目至本地
+aotoo install https://github.com/webkixi/hub-react.git
+# 或者 
+aotoo install https://gitee.com/webkixi/hub-react.git
+
 # 开发模式
-aotoo dev reactSample
+aotoo dev hub-react
 
 # 生产模式
-aotoo build-clean reactSample
+aotoo build-clean hub-react
 node index.js
 ```
 
 ## 小程序演示 DEMO
 
-**xcxSample**，由`queryUI`构建，糅合了一些 jQuery 特性及一些方便好用的特性，用于简化小程序开发成本及帮助后期能更好的维护项目
-
-- 原生微信小程序
-- 动态模板构建
-- template less
-- 支持钩子方法
-- 内置支持 MARKDOWN 富文本
-- 内置支持 HTML 富文本
+小程序初始化演示项目已迁移至github，可以通过install安装远程项目到本地
 
 **启动命令**
 
 ```bash
-# 开发模式/生产模式 -> 使用微信开发者工具打开dist目录
-aotoo dev xcxSample
+# 安装远程小程序 demo项目至本地
+aotoo install https://github.com/webkixi/hub-xcx.git
+# 或者 
+aotoo install https://gitee.com/webkixi/hub-xcx.git
+
+# 开发模式
+aotoo dev hub-xcx
+
+# 生产模式
+aotoo build-clean hub-xcx
 ```
 
 ## 项目配置

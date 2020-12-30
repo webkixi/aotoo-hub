@@ -35,7 +35,7 @@ function template(state, props) {
   return (
     <>
       <View className="pages-title-lg">表格</View>
-      <View className='flex-row-wrap demo-grid'>
+      <View className='demo-grid'>
         {inst.render()}
       </View>
     </>

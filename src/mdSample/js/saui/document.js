@@ -1,3 +1,76 @@
+const btTableDoc = {
+  columns: [
+    {title: '参数', field: 'params'},
+    {title: '说明', field: 'desc'},
+    {title: '类型', field: 'type'},
+    {title: '可选值', field: 'ck'},
+    {title: '默认值', field: 'default'}
+  ],
+  data: [
+    {
+      params: '$$id',
+      desc: 'id',
+      type: 'string',
+      ck: '-',
+      default: 'swiperx'
+    },
+    {
+      params: 'options',
+      desc: 'bootstrapTable组件的配置参数，详情可参考bootstrapTable',
+      type: 'object',
+      ck: '-',
+      default: '-'
+    },
+  ]
+}
+
+const swiperDoc = {
+  columns: [
+    {title: '参数', field: 'params'},
+    {title: '说明', field: 'desc'},
+    {title: '类型', field: 'type'},
+    {title: '可选值', field: 'ck'},
+    {title: '默认值', field: 'default'}
+  ],
+  data: [
+    {
+      params: 'type',
+      desc: 'list/img  list: 是Aoolist组件需要的格式',
+      type: 'string',
+      ck: '-',
+      default: 'list'
+    },
+    {
+      params: 'swiperClass',
+      desc: '容器 Class',
+      type: 'string',
+      ck: '-',
+      default: '-'
+    },
+    {
+      params: '$$id',
+      desc: 'id',
+      type: 'string',
+      ck: '-',
+      default: 'swiperx'
+    },
+    {
+      params: 'data',
+      desc: '数据',
+      type: 'array',
+      ck: '-',
+      default: '-'
+    },
+    {
+      params: 'options',
+      desc: 'swiper组件的配置参数，详情可参考swiper',
+      type: 'object',
+      ck: '-',
+      default: '-'
+    },
+  ]
+}
+
 const tipDoc = {
   columns: [
     {title: '参数', field: 'params'},
@@ -324,5 +397,7 @@ module.exports = {
   loadDoc,
   modalDoc,
   drawerDoc,
-  tipDoc
+  tipDoc,
+  swiperDoc,
+  btTableDoc
 }

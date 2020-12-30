@@ -1,7 +1,7 @@
 import _inject from 'aotoo-inject'
 let inject = _inject()
 inject.css([
-  'https://at.alicdn.com/t/font_2218644_9i34el5d7gu.css'
+  'https://at.alicdn.com/t/font_2218644_muc2ysz5h68.css'
 ])
 // function pages() {
   const iconList = [
@@ -23,6 +23,7 @@ inject.css([
     { title: '&#e644;', itemClass: 'icon-riqi' },
     { title: '&#e602;', itemClass: 'icon-jianhao' },
     { title: '&#e607;', itemClass: 'icon-guanbi' },
+    { title: '&#e7ab;', itemClass: 'icon-cha-xiaohao' },
     { title: '&#e74e;', itemClass: 'icon-xiala' },
     { title: '&#e611;', itemClass: 'icon-jiahao' },
   ]
@@ -56,7 +57,7 @@ function template(state, props) {
     dot: [
       {
         title: '此处的iconfont的类名，仅供展示，如需调用，请写before',
-        itemClass: 'pages-title mb-defalut color-info'
+        itemClass: 'pages-title mb-default color-info'
       }
     ],
     '@list': {

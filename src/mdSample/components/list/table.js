@@ -1,5 +1,3 @@
-const createComponent = ao2
-
 class Table {
   constructor(props) {
   this.columns = props.columns

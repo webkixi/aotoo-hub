@@ -1,0 +1,24 @@
+.ss-alert
+  position: relative
+  ss-tips('&')
+  &.no-icon
+    display: block
+    &:before
+      display: none
+  &.info
+    display: block
+    background-color: lighten($tips-icon-info-color, 90%)
+    border-color: lighten($tips-icon-info-color, 70%)
+    box-shadow: $box-shadow-pop
+    ss-display-flex(row wrap)
+    &:before
+      content: $tips-icon-info
+      color: $tips-icon-info-color
+  // .item-title, .item-content
+  //   display: block
+  // .item-content
+  //   width: 100%
+  .item-close
+    position: absolute
+    {$ab-tr}
+    ss-icon($icon-del-s, 12px)
