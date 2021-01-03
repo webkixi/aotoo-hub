@@ -5,7 +5,7 @@
 
 - mac osx
 - linux
-- 不支持~~windows~~，但 win10 的 linux 子系统可以
+- ~~windows~~，但 win10 的 linux 子系统可以
 - node >= 12
 
 全局环境

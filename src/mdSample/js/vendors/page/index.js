@@ -17,47 +17,12 @@ let rootRouterInstance = null
 // 当前路由实例
 let curRouterInstance = null
 
-function findPageIndex(select) {
-  return (pagesPath.findIndex((pg, ii) => (ii === select || pg.id === select || pg.url === select))) || 0
-}
-
-function findPage(select) {
-  if (!select) return
-  let ary = select.split('?')
-  select = ary[0].split('#')[0]
-  let index = findPageIndex.call(this, (select || 0))
-  return pagesPath[index]
-}
-
-function deletePagePath(select) {
-  if (!select && select !== 0) return
-  let ary = select.split('?')
-  select = ary[0].split('#')[0]
-  let indexPos = -1
-  pagesPath.forEach((item, ii)=>{
-    if (item.id === select || item.url === select) {
-      indexPos = ii
-    }
-  })
-  if (indexPos > -1) {
-    pagesPath.splice(indexPos, 1)
-  }
-}
-
-// 收集所有router实例的路由项信息
 let pagesPath = []
-let collectAllPagesPath = function(pages) {
-  let thePages = pages
-  thePages.forEach(function(item){
-    deletePagePath(item.url)
-  })
-  pagesPath = pagesPath.concat(pages)
-}
 
 Pager.nav = {
   reLaunch(param){
     let url = param.url
-    let pageItem = findPage(url)
+    let pageItem = findPage(url, param)
     if (pageItem) {
       let routerContext = pageItem.routerContext
       curRouterInstance = routerContext
@@ -67,7 +32,7 @@ Pager.nav = {
 
   navigateTo: function(param) {
     let url = param.url
-    let pageItem = findPage(url)
+    let pageItem = findPage(url, param)
     if (pageItem) {
       let routerContext = pageItem.routerContext
       curRouterInstance = routerContext
@@ -83,7 +48,7 @@ Pager.nav = {
 
   redirectTo: function(param) {
     let url = param.url
-    let pageItem = findPage(url)
+    let pageItem = findPage(url, param)
     if (pageItem) {
       let routerContext = pageItem.routerContext
       curRouterInstance = routerContext
@@ -126,8 +91,77 @@ Pager.pages = function(params=[], options={}) {
     } else {
       rootRouterInstance = router
     }
+
+    collectAllPagesPath(router.pages) //搜集所有路由的页面数据
+    if (lib.isNode()) {
+      return router.redirectTo({
+        url: options.select
+      })
+    }
+
     return router
   }
+}
+
+Pager.getRouter = function(){
+  return curRouterInstance
+}
+
+Pager.getRootRouter = function(){
+  return rootRouterInstance
+}
+
+function findPageIndex(select) {
+  return (pagesPath.findIndex((pg, ii) => (ii === select || pg.id === select || pg.url === select))) || 0
+}
+
+function findPage(select, param={}) {
+  if (!select) return
+  let thePage = null
+  let ary = select.split('?')
+  select = ary[0].split('#')[0]
+  let index = findPageIndex.call(this, (select || 0))
+  if (index > -1) {
+    thePage = pagesPath[index]
+    if (param.success && lib.isFunction(param.success)) {
+      thePage = param.success(thePage) || thePage
+    } 
+  } else {
+    if (param.fail && lib.isFunction(param.fail)) {
+      thePage = param.fail()
+    } else {
+      let idx = findPageIndex.call(this, '404')
+      if (idx > -1) thePage = pagesPath[idx]
+    }
+  }
+  if (param.complete && lib.isFunction(param.complete)) {
+    thePage = param.complete()
+  }
+  return thePage
+}
+
+function deletePagePath(select) {
+  if (!select && select !== 0) return
+  let ary = select.split('?')
+  select = ary[0].split('#')[0]
+  let indexPos = -1
+  pagesPath.forEach((item, ii)=>{
+    if (item.id === select || item.url === select) {
+      indexPos = ii
+    }
+  })
+  if (indexPos > -1) {
+    pagesPath.splice(indexPos, 1)
+  }
+}
+
+// 收集所有router实例的路由项信息
+function collectAllPagesPath(pages) {
+  let thePages = pages
+  thePages.forEach(function(item){
+    deletePagePath(item.url)
+  })
+  pagesPath = pagesPath.concat(pages)
 }
 
 

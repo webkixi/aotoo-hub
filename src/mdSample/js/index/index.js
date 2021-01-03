@@ -24,7 +24,7 @@ export default Pager.pages([
       {title: '目录结构', attr: {file: 'structor.md'}, parent: 'a1' },
       {title: '项目配置', attr: {file: 'asset.md'}, parent: 'a1' },  // 开发、测试、生产、部署
       {title: '拥抱小程序', attr: {file: 'assetmini.md'}, parent: 'a1' }, // 小程序
-      {title: '4个DEMO', attr: {file: 'demos.md'}, parent: 'a1' }, // 小程序
+      {title: 'DEMOS', attr: {file: 'demos.md'}, parent: 'a1' }, // 小程序
       {title: '套件', attr: {file: 'kit.md'}, parent: 'a1' }, 
       {title: '约定', attr: {file: 'agreement.md'}, parent: 'a1' },
         

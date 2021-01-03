@@ -277,7 +277,7 @@ class Route {
           renderUI.call(this, options)
           let goback = this.config.goback // 后退后
           if (lib.isFunction(goback)) {
-            goback()
+            goback(prevPage)
           }
 
 
@@ -499,7 +499,7 @@ class Route {
     }
   }
 
-  render(pageJSX, rootId){
+  render(pageJSX, rootId, cb){
     if (this.isChildRouter) {
       let UI = this.UI
       if (UI) return <UI />
@@ -508,7 +508,7 @@ class Route {
       return render(pageJSX)
     }
     if (lib.isClient()) {
-      render(pageJSX, this.config.root)
+      render(pageJSX, (rootId || this.config.root), cb)
     }
   }
 }
@@ -518,12 +518,13 @@ export default function Router(params=[], options, collectAllPagesPath) {
     pages: params,
     ...options
   }
-  let instance = new Route(param)
-  collectAllPagesPath(instance.pages) //搜集所有路由的页面数据
-  if (lib.isNode()) {
-    return instance.redirectTo({
-      url: options.select
-    })
-  }
-  return instance
+  return new Route(param)
+  // let instance = new Route(param)
+  // collectAllPagesPath(instance.pages) //搜集所有路由的页面数据
+  // if (lib.isNode()) {
+  //   return instance.redirectTo({
+  //     url: options.select
+  //   })
+  // }
+  // return instance
 }

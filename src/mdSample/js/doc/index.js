@@ -20,11 +20,12 @@ export default Pager.pages([
         
         
       {title: '路由', itemClass: 'menu-caption', idf: 'a2'},
-      {title: '仿小程序路由', attr: {file: 'web/minip.md'}, parent: 'a2'},  // 编译模式易扩展
-      {title: 'pager与路由表', attr: {file: 'web/pager.md'}, parent: 'a2'},  // 编译模式易扩展
-      {title: 'pager的路由方法', attr: {file: 'web/pagernav.md'}, parent: 'a2'},  // 编译模式易扩展
-      {title: 'pager页面', attr: {file: 'web/pagerpage.md'}, parent: 'a2'},  // 编译模式易扩展
-      {title: '路由实例', attr: {file: 'web/router.md'}, parent: 'a2'},  // 编译模式易扩展
+      {title: '仿小程序路由', attr: {file: 'web/minip_npm.md'}, parent: 'a2'},  // 编译模式易扩展
+      // {title: '仿小程序路由', attr: {file: 'web/minip.md'}, parent: 'a2'},  // 编译模式易扩展
+      // {title: 'pager与路由表', attr: {file: 'web/pager.md'}, parent: 'a2'},  // 编译模式易扩展
+      // {title: 'pager的路由方法', attr: {file: 'web/pagernav.md'}, parent: 'a2'},  // 编译模式易扩展
+      // {title: 'pager页面', attr: {file: 'web/pagerpage.md'}, parent: 'a2'},  // 编译模式易扩展
+      // {title: '路由实例', attr: {file: 'web/router.md'}, parent: 'a2'},  // 编译模式易扩展
 
 
       {title: '项目源码', itemClass: 'menu-caption', idf: 'a3'},

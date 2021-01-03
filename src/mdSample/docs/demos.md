@@ -1,5 +1,44 @@
 # 自带的演示示例  
 
+`aotoo-hub`支持安装远程项目，我们清除了一些本地的示例项目，使得安装包更加快速，精简。
+
+## 远程项目  
+
+使用`aotoo install`可安装远程项目，快速搭建本地开发环境，示例
+
+```bash
+# 在hub环境下安装
+aotoo install https://github.com/webkixi/hub-vue2.git
+```
+
+上例为使用命令行安装远程的vue项目，目前包含以下远程项目  
+
+```bash
+#vue2初始化项目, vue2 + vue-router
+aotoo install https://github.com/webkixi/hub-vue2.git
+aotoo install https://gitee.com/webkixi/hub-vue2.git  # gitee版
+
+
+# react初始化项目, react + react-router
+aotoo install https://github.com/webkixi/hub-react.git
+aotoo install https://gitee.com/webkixi/hub-react.git  # gitee版
+
+
+# 小程序初始化项目，小程序开发工具初的始化项目
+aotoo install https://github.com/webkixi/hub-xcx.git
+aotoo install https://gitee.com/webkixi/hub-xcx.git  # gitee版
+
+
+# react + aotoo初始化项目， react路由新轮子
+aotoo install https://github.com/webkixi/hub-aotoo-case.git
+aotoo install https://gitee.com/webkixi/hub-aotoo-case.git # gitee版
+
+
+# 小程序 with queryui，小程序精简项目，包含queryui的组件示例
+aotoo install https://github.com/webkixi/aotoo-xquery.git
+aotoo install https://gitee.com/webkixi/aotoo-xquery.git # gitee版
+```
+
 ```bash
 hub工作空间
   ├── build
@@ -12,7 +51,6 @@ hub工作空间
        ├─ hub-react
        ├─ hub-vue2
        └─ hub-xcx
-
 ```
 
 ## 文档演示示例

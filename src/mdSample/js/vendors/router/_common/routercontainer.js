@@ -65,15 +65,15 @@ export function getRenderContainer(opts){
       footer: subFooter,
       itemClass: 'router-item',
       listClass: 'router-page',
-      didUpdate(){
-        let runtimePageItem = that.selectPageItem.runtime
-        let success = runtimePageItem.param && runtimePageItem.param.success
-        let $data = this.getData().data
-        if ($data.length) {
-          success && lib.isFunction(success) && success()
-        }
-      }
-      // type: 'expose'
+      // didUpdate(){
+      //   let runtimePageItem = that.selectPageItem.runtime
+      //   let success = runtimePageItem.param && runtimePageItem.param.success
+      //   let $data = this.getData().data
+      //   if ($data.length) {
+      //     success && lib.isFunction(success) && success()
+      //   }
+      // }
+      // // type: 'expose'
     })
 
     this.routerItems = routerItems
@@ -123,7 +123,7 @@ export function getRenderContainer(opts){
         routerItems.select(index)
       })
     },
-    pull(cb){
+    pull(goback){
       let lastOne = that.history[(that.history.length-1)]
       let navPages = lastOne.navPages||[]
       let lastPage = navPages[(navPages.length-1)] || lastOne
@@ -131,7 +131,7 @@ export function getRenderContainer(opts){
       let pageId = lastPage.id
       let inst = getRouterMultiPages(pageId)
       this.routerItems.pop(function(){
-        if (lib.isFunction(cb)) cb()
+        if (lib.isFunction(goback)) goback(lastPage)
         if (inst) {
           setTimeout(()=>{
             inst.onShow && inst.onShow()
