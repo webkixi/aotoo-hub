@@ -234,6 +234,18 @@ function delDist(asset, buildType, isXcx) {
   del.sync(delTarget, { force: true })
 }
 
+function customWebpackConfig(asset, oriConfig, isdll){
+  let {SRC} = asset
+  let appendConfigFile = path.join(SRC, 'wp-config.js')
+  if (fse.pathExistsSync(appendConfigFile)) {
+    let appendConfigFun = require(appendConfigFile)
+    if (_.isFunction(appendConfigFun)) {
+      oriConfig = appendConfigFun(oriConfig, isdll)||oriConfig
+    }
+  }
+  return oriConfig
+}
+
 // 生成小程序的配置文件
 function createXcxConfig(asset, envAttributs) {
   return require('./webpack.xcx.config')(asset, envAttributs)
@@ -241,7 +253,8 @@ function createXcxConfig(asset, envAttributs) {
 
 // 生成公共文件precommon
 function createCommonConfig(asset, envAttributs) {
-  return require('./webpack.common.config')(asset, envAttributs)
+  let wpCommonConfig = require('./webpack.common.config')(asset, envAttributs)
+  return customWebpackConfig(asset, wpCommonConfig, 'dll')
 }
 
 // 生成业务文件
@@ -251,7 +264,6 @@ function createBusinessConfig(asset, envAttributs) {
     const { startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT, argv } = asset
     const isProxy = checkIsProxy(asset)
     const wpBaseConfig = require('./webpack.base.config')(asset, envAttributs)
-  
 
     // html入口集合
     const html_entries = getEntry(SRC, { dir: 'html', type: 'html' })
@@ -328,11 +340,12 @@ function createBusinessConfig(asset, envAttributs) {
     }
 
 
-    return Object.assign({}, wpBaseConfig, {
+    wpBaseConfig = Object.assign({}, wpBaseConfig, {
       // entry: js_entries
       entry: resause_entries
     })
 
+    return customWebpackConfig(asset, wpBaseConfig)
   } catch (error) {
     console.log(error);
   }

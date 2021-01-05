@@ -1,4 +1,5 @@
 var os = require('os')
+var fse = require('fs-extra')
 var webpack = require('webpack')
 var path = require('path')
 var MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -68,6 +69,12 @@ function baseConfig(asset, envAttributs) {
           ...envAttributs('styl', [])
         },
         {
+          test: /\.less$/,
+          ...envAttributs('styl', [
+            'less-loader'
+          ])
+        },
+        {
           test: /\.s[ac]ss$/i,
           ...envAttributs('styl', [
             'sass-loader'
@@ -84,7 +91,7 @@ function baseConfig(asset, envAttributs) {
     },
     resolve: {
       alias: alias,
-      extensions: ['.js', '.vue', '.styl', '.stylus', '.css', '.jsx', '.json', '.md']
+      extensions: ['.js', '.jsx', '.vue', '.css', '.styl', '.stylus', '.less', '.sass', '.scss', '.json', '.md']
     },
     plugins: envAttributs('plugins', [
       new VueLoaderPlugin(),

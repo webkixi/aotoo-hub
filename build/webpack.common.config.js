@@ -48,7 +48,7 @@ module.exports = function (asset, envAttributs) {
           test: /\.js(x?)$/,
           use: {
             loader: 'babel-loader',
-            ...envAttributs('babel-options')
+            ...envAttributs('babel-options', 'dll')
           },
           exclude: /node_modules/,
         },

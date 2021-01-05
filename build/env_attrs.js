@@ -102,6 +102,7 @@ module.exports = function (asset) {
           // chunkFilename: isDev ? 'js/[name]_[id].js' : 'js/[name]_[id]_[hash:10].js'
         }
         break;
+        
       
       case 'markdown-loader': 
         return {
@@ -293,7 +294,8 @@ module.exports = function (asset) {
 
 
       case 'babel-options': 
-        return {
+        let isDll = param // 是否webpack.common.config的请求
+        let babelOptions = {
           options: {
             babelrc: false,
             cacheDirectory: true,
@@ -335,7 +337,16 @@ module.exports = function (asset) {
             ]
           }
         }
-      
+        
+        let appendConfigFile = path.join(SRC, 'wp-babel.js')
+        if (fse.pathExistsSync(appendConfigFile)) {
+          let appendConfigFun = require(appendConfigFile)
+          if (_.isFunction(appendConfigFun)) {
+            babelOptions = appendConfigFun(babelOptions, isDll)||babelOptions
+          }
+        }
+
+        return babelOptions
     }
   }
 }

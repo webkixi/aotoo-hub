@@ -32,9 +32,9 @@
     socket.io "^2"
 
 "@aotoo/aotoo@^6.0.0":
-  version "6.1.34"
-  resolved "https://registry.yarnpkg.com/@aotoo/aotoo/-/aotoo-6.1.34.tgz#e2121ff712028b0a5ec5708f3b57e9643ab5f558"
-  integrity sha512-SWn9obDxZDiljSIkCvg3FHJXaB7MCoH5ngqSPRqcb8jZqr2UVt7HTCW4iIoTyM7jhAf2DaMc91Jnj7avLgKwKQ==
+  version "6.1.35"
+  resolved "https://registry.yarnpkg.com/@aotoo/aotoo/-/aotoo-6.1.35.tgz#449f09549ebd3739c362dd280f8ab92609e9c346"
+  integrity sha512-PSZpLOC+GVGkr6sXd4HS9CG73CBD10jAnJ3d7AJo0E8gkG87UBZyvhnGmBPMM+b0o6ILy7yQVJHVgZs42JdRKw==
   dependencies:
     lodash "^4.17.4"
     md5 "^2.3.0"
@@ -3740,11 +3740,6 @@ deep-is@~0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.3.tgz#b369d6fb5dbc13eecf524f91b070feedc357cf34"
   integrity sha1-s2nW+128E+7PUk+RsHD+7cNXzzQ=
 
-deepmerge@^4.2.2:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.2.2.tgz#44d2ea3679b8f4d4ffba33f03d865fc1e7bf4955"
-  integrity sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==
-
 default-gateway@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/default-gateway/-/default-gateway-4.2.0.tgz#167104c7500c2115f6dd69b0a536bb8ed720552b"
@@ -5467,9 +5462,9 @@ inherits@2.0.3:
   integrity sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=
 
 ini@^1.3.4, ini@^1.3.5, ini@~1.3.0:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.8.tgz#a29da425b48806f34767a4efce397269af28432c"
-  integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
+  integrity sha512-RZY5huIKCMRWDUqZlEi72f/lmXKMvuszcMBduliQ3nnWbx9X/ZBQO7DijMEYS9EhHBb2qacRUMtC7svLwe0lcw==
 
 inquirer@^7.0.0:
   version "7.3.3"
@@ -6172,6 +6167,15 @@ latest-version@^5.0.0:
   integrity sha512-weT+r0kTkRQdCdYCNtkMwWXQTMEswKrFBkm4ckQOMVhhqhIMI1UT2hMj+1iigIhgSZm5gTmrRXBNoGUgaTY1xA==
   dependencies:
     package-json "^6.3.0"
+
+less-loader@^7.2.1:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/less-loader/-/less-loader-7.2.1.tgz#a923df8567256751b0ab4e0c3eecff10fd0a5876"
+  integrity sha512-4v83WZ7KGbluOWPgk3iNjreAaJDNStfmmdfJbQIib3Jlc8mejV3w6A9xU+EkaivjBVqwQEK0y8cFthyNeGnrTQ==
+  dependencies:
+    klona "^2.0.4"
+    loader-utils "^2.0.0"
+    schema-utils "^3.0.0"
 
 leven@^3.1.0:
   version "3.1.0"
