@@ -261,26 +261,26 @@ function createCommonConfig(asset, envAttributs) {
 function createBusinessConfig(asset, envAttributs) {
   try {
 
-    const { startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT, argv } = asset
-    const isProxy = checkIsProxy(asset)
-    const wpBaseConfig = require('./webpack.base.config')(asset, envAttributs)
+    let { startup, isDev, SRC, DIST, HOST, PORT, PROXYPORT, argv } = asset
+    let isProxy = checkIsProxy(asset)
+    let wpBaseConfig = require('./webpack.base.config')(asset, envAttributs)
 
     // html入口集合
-    const html_entries = getEntry(SRC, { dir: 'html', type: 'html' })
+    let html_entries = getEntry(SRC, { dir: 'html', type: 'html' })
 
     // css入口集合
-    const css_entries = getEntry(SRC, { dir: 'css', type: 'styl' })
+    let css_entries = getEntry(SRC, { dir: 'css', type: 'styl' })
 
-    const js_entries_css = getEntry(SRC, { dir: 'js', type: 'styl' })
-    const js_entries_html = getEntry(SRC, { dir: 'js', type: 'html' })
+    let js_entries_css = getEntry(SRC, { dir: 'js', type: 'styl' })
+    let js_entries_html = getEntry(SRC, { dir: 'js', type: 'html' })
     
     // js入口集合
-    const js_entries   = envAttributs('entries', path.join(SRC, 'js'), {
+    let js_entries   = envAttributs('entries', path.join(SRC, 'js'), {
       exclude: ['common', 'vendors'],  // 排除common目录
       isProxy
     })
 
-    const resause_entries = (()=>{
+    let resause_entries = (()=>{
       let result = {}
 
       Object.keys(js_entries).forEach(ky=>{
