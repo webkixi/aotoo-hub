@@ -93,7 +93,7 @@
     "@aotoo/aotoo-koa-server": "^3",
     "aotoo-inject": "^2",
     "app-module-path": "^2.2.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "co": "^4.6.0",
     "core-js": "^3.6.5",
     "jquery": "^3.2.1",
