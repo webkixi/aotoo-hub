@@ -21,7 +21,7 @@ const browserSync = require('../util/openBrowser')
 
 function* generateBabelCfgFile(distserver) {
   const DISTSERVER = distserver
-  const path_babelrc = path.join(DISTSERVER, '.babelrc')
+  const path_babelrc = path.join(DISTSERVER, '../.babelrc')
   
   const content_babelrc_path = path.join(__dirname, '../lib/babelrc')
   const content_babelrc = fs.readFileSync(content_babelrc_path, 'utf-8')
