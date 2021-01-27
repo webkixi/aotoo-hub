@@ -91,6 +91,7 @@
   "dependencies": {
     "@aotoo/aotoo": "^6.1.36",
     "@aotoo/aotoo-koa-server": "^3",
+    "@aotoo/react-pager": "^1.0.1",
     "aotoo-inject": "^2",
     "app-module-path": "^2.2.0",
     "axios": "^0.21.1",
