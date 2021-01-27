@@ -11,19 +11,26 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'production'
 }
 
+if (!argv._.length) {
+  // delete argv._
+  if (_.isEmpty(argv) && process.env.NODE_ENV === 'production') {
+    argv.start = true
+  }
+} else {
+  let __  = argv._; delete argv._
+  if (_.isEmpty(argv) && process.env.NODE_ENV === 'production') {
+    argv.start = __
+  } else {
+    argv._ = __
+  }
+}
+
 if (argv.start && (typeof argv.start == 'string' || Array.isArray(argv.start))) {
   argv.start = [].concat(argv.start)
   if (argv.name) {
     argv.name = ([].concat(argv.name)).concat(argv.start)
   } else {
     argv.name = [].concat(argv.start)
-  }
-}
-
-if (!argv._.length) {
-  delete argv._
-  if (_.isEmpty(argv) && process.env.NODE_ENV === 'production') {
-    argv.start = true
   }
 }
 

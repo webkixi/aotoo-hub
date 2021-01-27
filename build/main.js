@@ -430,7 +430,7 @@ module.exports = function* main(assets, opts) {
       server: config.server,
       TYPE: config.type||'web',    // mp(小程序), web
       startup: config.startup,
-      isDev: process.env.NODE_ENV == 'development',
+      isDev: process.env.NODE_ENV === 'development',
       SRC: yield valideAttribut('src', config.src),
       DIST: yield valideAttribut('dist', config.dist, config),
       HOST: yield valideAttribut('host', config.host),
@@ -449,7 +449,7 @@ module.exports = function* main(assets, opts) {
         build_asset.server = true
       }
     } else {
-      let onlyNodeNames = [].concat((argv.onlynode || argv.node)) || []
+      let onlyNodeNames = [].concat( (argv.onlynode || argv.node) || [] ) 
       if (onlyNodeNames.length && onlyNodeNames.includes(build_asset.name)) {
         build_asset.onlynode = true
       }
@@ -492,7 +492,7 @@ module.exports = function* main(assets, opts) {
     //     yield generateServer(build_asset)
     //   }
     // }
-    if ((argv_name && Commonds.server) || config.server) {
+    if ((argv_name && Commonds.server) || config.server || build_asset.server) {
       if (isMiniapp(build_asset) && build_asset.options && build_asset.options.cloud) {
         /** do nothing with xcx cloud development*/
       } else {

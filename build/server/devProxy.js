@@ -214,12 +214,28 @@ function* wpProductionDone(compiler, asset) {
   })
 }
 
-function* selectConfig(asset, ifStart) {
+function* prepareEnvironmentFiles(asset){
   let { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv, onlynode } = asset
-  
+  let DISTSERVER = path.join(SRC, 'server')
+  let path_mapfile = path.join(DIST, 'mapfile.json')
+  let path_config_file = path.join(DISTSERVER, 'configs.js')
+  // yield fillupMapfile(asset)
+  yield generateBabelCfgFile(DISTSERVER)
+  yield sleep(500, '==========  babel配置文件写入完成  ===========')
+  yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
+  yield sleep(500, '=========  server端的configs文件写入完成  ===============')
+}
+
+function* selectConfig(asset, ifStart) {
+  let genCount = 0
+  let { TYPE, name, contentBase, isDev, host, port, proxyPort, SRC, DIST, argv, onlynode } = asset
   let DISTSERVER = path.join(SRC, 'server')
   let starts = argv.start ? argv.start !== true ? [].concat(argv.start) : false : false
   let path_config_file = path.join(DISTSERVER, 'configs.js')
+  if (!fs.existsSync(path_config_file)) {
+    yield prepareEnvironmentFiles(asset)
+    genCount = 1
+  }
   if ((starts && starts.length && starts.indexOf(name) > -1) || onlynode) {
     return asset
   }
@@ -239,13 +255,17 @@ function* selectConfig(asset, ifStart) {
     }
   }
 
-  const path_mapfile = path.join(DIST, 'mapfile.json')
-  // yield fillupMapfile(asset)
-  yield generateBabelCfgFile(DISTSERVER)
-  yield sleep(500, '==========  babel配置文件写入完成  ===========')
-  yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
-  yield sleep(500, '=========  server端的configs文件写入完成  ===============')
-  // return yield asset
+  if (genCount === 0) {
+    yield prepareEnvironmentFiles(asset)
+  }
+
+  // const path_mapfile = path.join(DIST, 'mapfile.json')
+  // // yield fillupMapfile(asset)
+  // yield generateBabelCfgFile(DISTSERVER)
+  // yield sleep(500, '==========  babel配置文件写入完成  ===========')
+  // yield generateServerConfigsFile(DISTSERVER, path_mapfile, path_config_file, asset)
+  // yield sleep(500, '=========  server端的configs文件写入完成  ===============')
+  // // return yield asset
   return asset
 }
 
