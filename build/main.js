@@ -191,7 +191,8 @@ function *getScenesConfig(asset) {
   }
   
   if (asset.options.scenes != 'default') {
-    const senesConfigPath = path.join(scenesDir, asset.options.scenes, '.js')
+    let senesConfigPath = path.join(scenesDir, asset.options.scenes)
+    senesConfigPath = senesConfigPath+'.js'
     if (!fs.existsSync(senesConfigPath)) {
       generateScenesDir(scenesDir, asset.options.scenes, asset)
     }
@@ -408,6 +409,8 @@ module.exports = function* main(assets, opts) {
     if (argv_name) {
       if (argv_name.indexOf(config.name) > -1) {
         config.startup = true
+      } else {
+        config.startup = false
       }
     }
 

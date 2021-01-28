@@ -11,28 +11,56 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'production'
 }
 
-if (!argv._.length) {
-  // delete argv._
-  if (_.isEmpty(argv) && process.env.NODE_ENV === 'production') {
-    argv.start = true
-  }
-} else {
-  let __  = argv._; delete argv._
-  if (_.isEmpty(argv) && process.env.NODE_ENV === 'production') {
-    argv.start = __
-  } else {
-    argv._ = __
+if (process.env.NODE_ENV === 'production') {
+  argv.start = argv.start || true
+  if (argv.start && typeof argv.start !== 'boolean') {
+    argv.start = [].concat(argv.start)
   }
 }
 
-if (argv.start && (typeof argv.start == 'string' || Array.isArray(argv.start))) {
-  argv.start = [].concat(argv.start)
-  if (argv.name) {
-    argv.name = ([].concat(argv.name)).concat(argv.start)
+if (argv._.length) {
+  let __ = argv._; delete argv._;
+  if (argv.start) {
+    if (typeof argv.start !== 'boolean') {
+      argv.name = [].concat(__, argv.start);
+    } else {
+      argv.name = __
+    }
   } else {
-    argv.name = [].concat(argv.start)
+    argv.name = __
   }
 }
+
+// console.log(argv);
+// process.exit()
+
+// if (!argv._.length) {
+//   delete argv._
+//   if (_.isEmpty(argv) && process.env.NODE_ENV === 'production') {
+//     argv.start = true
+//   }
+// } else {
+//   let __  = argv._; delete argv._
+//   if (_.isEmpty(argv) && process.env.NODE_ENV === 'production') {
+//     argv.name = __
+//     argv.start = true
+//   } else {
+//     if (!argv.name && !argv.start) {
+//       argv.name = __
+//       argv.start = true
+//     }
+//   }
+// }
+
+// if (argv.start && (typeof argv.start == 'string' || Array.isArray(argv.start))) {
+//   argv.start = [].concat(argv.start)
+//   if (argv.name) {
+//     argv.name = ([].concat(argv.name)).concat(argv.start)
+//   } else {
+//     argv.name = [].concat(argv.start)
+//   }
+// }
+
 
 const Commonds = {
   name: argv.name,
