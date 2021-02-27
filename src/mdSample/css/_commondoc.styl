@@ -1,17 +1,8 @@
+@import './_commonx/commonfunc'
 @import './_commonx/css/index'
 @import './_commonx/config/iconfont'
 @import './_commonx/css/icon'
-// @import './_commonx/css/button'
-// @import './_commonx/css/tag'
-// @import './_commonx/css/width'
-// @import './_commonx/css/padding'
-// @import './_commonx/css/margin'
-// @import './_commonx/css/pages/margin'
-// @import './_commonx/css/nodata'
-// //开关 按钮
-// @import './_commonx/css/switch'
-// //下拉控件
-// @import './_commonx/css/dropdown'
+@import './_commonx/css/list'
 //提示框
 @import './_commonx/css/tips'
 // //form表单
@@ -85,7 +76,7 @@ body
     overflow: hidden
 
 
-ss-admin('.router-body', $menusClass: '.list-body')
+ss-admin('.router-body', $menusClass: '>.list-body')
 ss-root-header('.router-header', $class2: '&')
 
 
@@ -369,3 +360,8 @@ ss-root-header('.router-header', $class2: '&')
     min-width: 15%
     border-radius:(@height / 2)
     margin-right: 4%
+
+
+
+
+ss-list-normal-func('.ss-list-in-block', {$type: 'ib'})

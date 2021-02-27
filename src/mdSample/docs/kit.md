@@ -14,6 +14,22 @@ aotoo 现在的工作涉及 web/node/小程序/公众号/app，aotoo 并不是�
 npm i -g aotoo-cli
 ```
 
+## @aotoo/aotoo
+
+一套react栈的工具库，使用小程序的方式构建react组件，<https://github.com/webkixi/aotoo>
+
+```bash
+npm install @aotoo/aotoo
+```
+
+## @aotoo/react-pager
+
+基于aotoo的路由组件，支持node端渲染首屏，<https://github.com/webkixi/aotoo-react-pager>
+
+```bash
+npm install @aotoo/react-pager
+```
+
 ## aotoo-inject
 
 前端注入工具，无依赖性，可独立应用，用来在运行时注入 JS/CSS，支持 node 端注入，<https://github.com/webkixi/aotoo-inject>

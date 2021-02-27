@@ -1,3 +1,174 @@
+const treeDoc = {
+  columns: [
+    {title: '参数', field: 'params'},
+    {title: '说明', field: 'desc'},
+    {title: '类型', field: 'type'},
+    {title: '可选值', field: 'ck'},
+    {title: '默认值', field: 'default'}
+  ],
+  data: [
+    {
+      params: 'data',
+      desc: '数据： [{ title: "菜单一", id: "aaa", children: [....] }] ',
+      type: 'array',
+      ck: '-',
+      default: '-'
+    },
+    {
+      params: 'allShow',
+      desc: '是否全部展开',
+      type: 'boolean',
+      ck: '-',
+      default: 'true'
+    },
+    {
+      params: 'showCheck',
+      desc: '是否显示 checkbox',
+      type: 'boolean',
+      ck: '-',
+      default: 'true'
+    },
+    {
+      params: 'icon',
+      desc: '可指定checkbox前的icon，这里只是更换icon，具体布局需要于listClass等配合',
+      type: 'string',
+      ck: '-',
+      default: 'icon-select'
+    },
+    {
+      params: 'getTreeData',
+      desc: '获取选中值',
+      type: 'function',
+      ck: '-',
+      default: ''
+    },
+    {
+      params: 'clearTreeData',
+      desc: '清空所有数据',
+      type: 'function',
+      ck: '-',
+      default: ''
+    },
+    {
+      params: 'resetData',
+      desc: '重置数据',
+      type: 'function',
+      ck: '-',
+      default: ''
+    }
+  ]
+}
+
+const tabsDoc = {
+  columns: [
+    {title: '参数', field: 'params'},
+    {title: '说明', field: 'desc'},
+    {title: '类型', field: 'type'},
+    {title: '可选值', field: 'ck'},
+    {title: '默认值', field: 'default'}
+  ],
+  data: [
+    {
+      params: 'select',
+      desc: '显示第几个菜单，及对应的内容',
+      type: 'number',
+      ck: '-',
+      default: '0'
+    },
+    {
+      params: 'position',
+      desc: 'tabs组件的排序，是上下结构还是左右结构，目前支持top/right',
+      type: 'string',
+      ck: '-',
+      default: 'top'
+    },
+    {
+      params: 'allShow',
+      desc: 'tabs内容是否全部展开',
+      type: 'boolean',
+      ck: '-',
+      default: 'false'
+    },
+    {
+      params: 'assignJump',
+      desc: '点击菜单跳转到对应的内容。注：allShow 为true时，生效',
+      type: 'boolean',
+      ck: '-',
+      default: 'false'
+    },
+    {
+      params: 'containerClass',
+      desc: '最外层内器 class',
+      type: 'string',
+      ck: '-',
+      default: 'tabs-containe'
+    },
+    {
+      params: 'menusClass',
+      desc: '菜单 class',
+      type: 'string',
+      ck: '-',
+      default: 'tabsMenus'
+    },
+    {
+      params: 'contentClass',
+      desc: '内容 class',
+      type: 'string',
+      ck: '-',
+      default: 'tabsBoxes'
+    },
+    {
+      params: 'menus',
+      desc: '菜单 数据',
+      type: '数组',
+      ck: '-',
+      default: '[]'
+    },
+    {
+      params: 'content',
+      desc: '内容 数据',
+      type: '数组',
+      ck: '-',
+      default: '[]'
+    },
+    {
+      params: 'footer',
+      desc: 'tabs 底部',
+      type: '支持 item 结构',
+      ck: '-',
+      default: ''
+    },
+    {
+      params: 'appendItem',
+      desc: '自定义添加菜单，及内容, appendItem({menus: {title: "xx"}, content: {title: "xxx"})',
+      type: 'function',
+      ck: '-',
+      default: ''
+    },
+    {
+      params: 'changeSort',
+      desc: '同时可通过方法，改变tabs的排序 changeSort("top/right")',
+      type: 'function',
+      ck: '-',
+      default: ''
+    },
+    {
+      params: 'removeDisabled',
+      desc: '移除菜单的禁止状态，只接受菜单的下标（number） removeDisabled(idx)',
+      type: 'function',
+      ck: '-',
+      default: ''
+    },
+    {
+      params: 'deleteItem',
+      desc: '删除某一菜单，只接受菜单的下标（number） removeDisabled(idx)',
+      type: 'function',
+      ck: '-',
+      default: ''
+    }
+  ]
+}
+
 const btTableDoc = {
   columns: [
     {title: '参数', field: 'params'},
@@ -399,5 +570,7 @@ module.exports = {
   drawerDoc,
   tipDoc,
   swiperDoc,
-  btTableDoc
+  btTableDoc,
+  tabsDoc,
+  treeDoc
 }

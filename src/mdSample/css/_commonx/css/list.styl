@@ -1,182 +1,206 @@
-$height = 88rpx
-$color = #333
-/*
- gird
-*/
-ssfunc-list-grid-3()
-  .list-grid-3
-    ss-display-flex(row wrap, flex-start)
-    margin-left: -3%
-    margin-top: -3%
-    >ui-item
-      >.item
-        width: calc(91% / 3 )
-        margin-left: 3%
-        margin-top: 3%
-        .htitle
-          width: calc(100% - 4rpx)
-
-ssfunc-list-check()
-  .list-check
-    background: #fff
-    .item-li
-      padding: 0 40rpx
-      font-size: 30rpx
-      color: $color
-      height: 100rpx
-      line-height: @height
-      ss-textellipsis(1)
-      &:before
-        content: '\e78f'
-        color: #ccc
-        font-size: 36rpx
-        margin-right: 20rpx
-      &.active
-        &:before
-          content: '\e78d'
-          color: $color-primary
-    &.checked
-      .item-li
-        &:before
-          display: none
-/*
-  item 下划线
-*/
-// ssfunc-item-bb()
-//   .item-bb
-//     border-bottom: 1rpx solid $color-border
-//     padding: $dit-tb
-//     &:last-child
-//       border-bottom: none
-// ssfunc-item-bb-np()
-//   .item-bb-np
-//     border-bottom: 1rpx solid $color-border
-//     &:last-child
-//       border-bottom: none
-
-ssfunc-list-bb()
-  .list-bb
-    >ui-item
-      >.item
-        padding: 0 $space
-      &:last-child
-        .item-border
-          border: none
-    .item-border
-      border-bottom: 1rpx solid $color-border
-      padding: $space 0
-ssfunc-list-mt-30-r()
-  .list-mt-30-r
-    margin-top: -30rpx
-    >ui-item
-      >.item-li
-        margin-top: 30rpx
-
-/*
-  中间带边线  .line-li-10 (10指的是间距)
-*/
-ssfunc-line-li-20()
-  .line-li-20
-    ss-row-list-x(2, $color-border)
-ssfunc-line-li2-20()
-  .line-li2-20
-    ss-row-list-x(1, $color-border)
-
-//上下结构    图片 
-ssfunc-list-pic-column()
-  .list-pic-column
-    &.pic-2
-      ss-display-flex(row wrap, space-between, flex-start, flex-start)
-      >ui-item
-        width: 47.9%
-    .item-header
-      background: #f5f5f5;
-      position: relative;
-    .item-header-pic
-      width: 100%
-      height: 330rpx
-      image 
-        width: 100%
-        height: auto
-    .item-body
-      width: 100%
-      padding: 16rpx 0 38rpx 0
 
 
-//nav 底部导航
-ssfunc-list-nav()
-  .list-nav
-    background: #fff
-    border-top: 1rpx solid $color-border
-    position: fixed
-    bottom: 0
-    left 0
-    width: 100%
-    height: $height
-    ss-display-flex(row nowrap, flex-start, center)
-    color: $color
-    .item
-      flex: 1
-      text-align: center
-      &.active
-        color: $color-primary
-    .item-icon
-      font-size: 38rpx
-    .item-title
-      font-size: 24rpx
 
-//两列  默认间距是3%
-ssfunc-list-lines-2()
-  .list-lines-2
-    @extends .flex-row-wrap
-    margin-top: -3%
-    margin-left: @margin-top
-    >ui-item
-      >.item
-        width: 47%
-        margin-top: 3%
-        margin-left: @margin-top
-        box-sizing: border-box
+listConfig = {
+  $size: $size
+  $lh: 34px
+  $spacePd: 8px 0
+  $itemAcolor: $color-primary               // item active bg
+  $itemAfw: bold
+  $itemSpacePd: 0 10px          // item padding 大小
+}
+
+ss-list-func('.ss-list', listConfig)
+
+.no-data
+  font-size: $size
+  padding: 8px 10px
+  color: $color-aux-warning
+
+.init-data
+  font-size: $size
+  padding: 8px 10px
+  color: $color-text-info 
+
+// $height = 88rpx
+// $color = #333
+// /*
+//  gird
+// */
+// ssfunc-list-grid-3()
+//   .list-grid-3
+//     ss-display-flex(row wrap, flex-start)
+//     margin-left: -3%
+//     margin-top: -3%
+//     >ui-item
+//       >.item
+//         width: calc(91% / 3 )
+//         margin-left: 3%
+//         margin-top: 3%
+//         .htitle
+//           width: calc(100% - 4rpx)
+
+// ssfunc-list-check()
+//   .list-check
+//     background: #fff
+//     .item-li
+//       padding: 0 40rpx
+//       font-size: 30rpx
+//       color: $color
+//       height: 100rpx
+//       line-height: @height
+//       ss-textellipsis(1)
+//       &:before
+//         content: '\e78f'
+//         color: #ccc
+//         font-size: 36rpx
+//         margin-right: 20rpx
+//       &.active
+//         &:before
+//           content: '\e78d'
+//           color: $color-primary
+//     &.checked
+//       .item-li
+//         &:before
+//           display: none
+// /*
+//   item 下划线
+// */
+// // ssfunc-item-bb()
+// //   .item-bb
+// //     border-bottom: 1rpx solid $color-border
+// //     padding: $dit-tb
+// //     &:last-child
+// //       border-bottom: none
+// // ssfunc-item-bb-np()
+// //   .item-bb-np
+// //     border-bottom: 1rpx solid $color-border
+// //     &:last-child
+// //       border-bottom: none
+
+// ssfunc-list-bb()
+//   .list-bb
+//     >ui-item
+//       >.item
+//         padding: 0 $space
+//       &:last-child
+//         .item-border
+//           border: none
+//     .item-border
+//       border-bottom: 1rpx solid $color-border
+//       padding: $space 0
+// ssfunc-list-mt-30-r()
+//   .list-mt-30-r
+//     margin-top: -30rpx
+//     >ui-item
+//       >.item-li
+//         margin-top: 30rpx
+
+// /*
+//   中间带边线  .line-li-10 (10指的是间距)
+// */
+// ssfunc-line-li-20()
+//   .line-li-20
+//     ss-row-list-x(2, $color-border)
+// ssfunc-line-li2-20()
+//   .line-li2-20
+//     ss-row-list-x(1, $color-border)
+
+// //上下结构    图片 
+// ssfunc-list-pic-column()
+//   .list-pic-column
+//     &.pic-2
+//       ss-display-flex(row wrap, space-between, flex-start, flex-start)
+//       >ui-item
+//         width: 47.9%
+//     .item-header
+//       background: #f5f5f5;
+//       position: relative;
+//     .item-header-pic
+//       width: 100%
+//       height: 330rpx
+//       image 
+//         width: 100%
+//         height: auto
+//     .item-body
+//       width: 100%
+//       padding: 16rpx 0 38rpx 0
 
 
-$screenHei = 88rpx
-$screenBg = #fff
-$screenColorActive = $color-primary
+// //nav 底部导航
+// ssfunc-list-nav()
+//   .list-nav
+//     background: #fff
+//     border-top: 1rpx solid $color-border
+//     position: fixed
+//     bottom: 0
+//     left 0
+//     width: 100%
+//     height: $height
+//     ss-display-flex(row nowrap, flex-start, center)
+//     color: $color
+//     .item
+//       flex: 1
+//       text-align: center
+//       &.active
+//         color: $color-primary
+//     .item-icon
+//       font-size: 38rpx
+//     .item-title
+//       font-size: 24rpx
 
-ssfunc-item-screen()
-  flex: 1
-  border-left: 1rpx solid $color-border
-  text-align: center
-  &:first-child
-    border-left: none
-  &.active
-    color: $screenColorActive
-    .item-li
-      >text
-        &:after
-          content: '\e6b0'
-          // color: $screenColorActive
-  .item-li
-    >text
-      ss-display-flex(row nowrap, center, center)
-      &:after
-        content: '\e794'
-        color: #999
-        font-size: 15rpx
-        margin-left: 10rpx
+// //两列  默认间距是3%
+// ssfunc-list-lines-2()
+//   .list-lines-2
+//     @extends .flex-row-wrap
+//     margin-top: -3%
+//     margin-left: @margin-top
+//     >ui-item
+//       >.item
+//         width: 47%
+//         margin-top: 3%
+//         margin-left: @margin-top
+//         box-sizing: border-box
+
+
+// $screenHei = 88rpx
+// $screenBg = #fff
+// $screenColorActive = $color-primary
+
+// ssfunc-item-screen()
+//   flex: 1
+//   border-left: 1rpx solid $color-border
+//   text-align: center
+//   &:first-child
+//     border-left: none
+//   &.active
+//     color: $screenColorActive
+//     .item-li
+//       >text
+//         &:after
+//           content: '\e6b0'
+//           // color: $screenColorActive
+//   .item-li
+//     >text
+//       ss-display-flex(row nowrap, center, center)
+//       &:after
+//         content: '\e794'
+//         color: #999
+//         font-size: 15rpx
+//         margin-left: 10rpx
         
-ssfunc-list-screen()
-  .list-screen
-    @extends .flex-row-between-center
-    background: $screenBg
-    height: $screenHei
-    position: relative
-    z-index 22
-    >.item
-      ssfunc-item-screen()
-    >ui-item
-      flex: 1
-      >.t-item
-        ssfunc-item-screen()
+// ssfunc-list-screen()
+//   .list-screen
+//     @extends .flex-row-between-center
+//     background: $screenBg
+//     height: $screenHei
+//     position: relative
+//     z-index 22
+//     >.item
+//       ssfunc-item-screen()
+//     >ui-item
+//       flex: 1
+//       >.t-item
+//         ssfunc-item-screen()
 
     

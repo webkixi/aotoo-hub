@@ -19,7 +19,12 @@ let menuInstance = ui_tree({
     {title: '图标', attr: {file: '/normal/icon'}, parent: 'normal' , aim: 'aimx'},
     {title: '色块', attr: {file: '/normal/color'}, parent: 'normal' , aim: 'aimx'},
     {title: '按钮', attr: {file: '/normal/button'}, parent: 'normal' , aim: 'aimx'},
+    {title: '标签', attr: {file: '/normal/tag'}, parent: 'normal' , aim: 'aimx'},
     {title: '行高', attr: {file: '/normal/lineheight'}, parent: 'normal' , aim: 'aimx'},
+
+    {title: '导航', itemClass: 'menu-caption', idf: 'navigation', aim: 'aimx'},
+    {title: '下拉菜单', attr: {file: '/navigation/dropdown'}, parent: 'navigation', aim: 'aimx'}, 
+    {title: '标签页', attr: {file: '/navigation/tabs'}, parent: 'navigation', aim: 'aimx'}, 
 
     {title: '反馈', itemClass: 'menu-caption', idf: 'feedback', aim: 'aimx'},
     {title: '文字提示', attr: {file: '/feedback/tooltip'}, parent: 'feedback', aim: 'aimx'}, 
@@ -31,6 +36,7 @@ let menuInstance = ui_tree({
     {title: '加载中', attr: {file: '/feedback/load'}, parent: 'feedback', aim: 'aimx'},
 
     {title: '数据展示', itemClass: 'menu-caption', idf: 'show'},
+    {title: '树形控件', attr: {file: '/show/tree'}, parent: 'show', aim: 'aimx'}, 
     {title: '表格', attr: {file: '/show/table'}, parent: 'show', aim: 'aimx'}, 
     {title: 'bootstrap-Table', attr: {file: '/show/btTable'}, parent: 'show', aim: 'aimx'}, 
     {title: '轮播图', attr: {file: '/show/swiper'}, parent: 'show', aim: 'aimx'}, 
@@ -199,7 +205,11 @@ export default Pager.pages([
   {url: '/normal/color', content: import('./_normal/color')},
   {url: '/normal/icon', content: import('./_normal/icon')},
   {url: '/normal/button', content: import('./_normal/button')},
+  {url: '/normal/tag', content: import('./_normal/tag')},
   {url: '/normal/lineheight', content: import('./_normal/lineheight')},
+  
+  {url: '/navigation/dropdown', content: import('./_navigation/dropdown')},
+  {url: '/navigation/tabs', content: import('./_navigation/tabs')},
   
   {url: '/feedback/tooltip', content: import('./_feedback/tooltip')},
   {url: '/feedback/alert', content: import('./_feedback/alert')},
@@ -209,6 +219,7 @@ export default Pager.pages([
   {url: '/feedback/drawer', content: import('./_feedback/drawer')},
   {url: '/feedback/load', content: import('./_feedback/load')},
 
+  {url: '/show/tree', content: import('./_show/tree')},
   {url: '/show/table', content: import('./_show/table')},
   {url: '/show/btTable', content: import('./_show/btTable')},
   {url: '/show/swiper', content: import('./_show/swiper')},

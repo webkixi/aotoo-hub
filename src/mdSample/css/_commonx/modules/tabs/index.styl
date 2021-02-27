@@ -1,41 +1,17 @@
-tabcfg = {
-  $activeClass: '.select'
-  $activeType: 'tab'
-  $itemPadding: 0 20px
-  $bg: #FAFAFA
-}
-tabsCard = {
+menusCardCfg = {
   $activeType: 'card'
+  $itemPadding: 0 20px 
 }
-boxCfg = {
-  $boxPadding: 20px
+menusCardTagCfg = {
+  $activeType: 'card-tag'
+  $itemPadding: 0 20px 
+  $br: false
+  $itemMargin: -1px
 }
-
-ss-tabs('.tabsGroup-tab', $menusCfg: tabcfg, $boxCfg: boxCfg)
-ss-tabs('.tabsGroup-normal', {$activeClass: '.select', $isPadding: false}, $oldMenusScroll: true, $width: 100%)
-xx = merge({}, tabcfg, tabsCard)
-ss-tabs('.tabsGroup-card', xx, $boxCfg: boxCfg)
-
-//仿tabs的list组件
-ss-like-tabs('.likeTabsMenus')
-
-tagListCfg = {
-  $showAni: true
-  $height: 40px
-  $itemPadding: 0 40px 0 0
-  $color: $color-text
-  $activeColor: $color-primary
-  $activeFw: false
-  $isPadding: false
-  $activeType: 'lr'       //line单线条样式， card卡片化样式  tab选项卡样式  lr左右结构带有footer或header
-  //lr时，下面的参数才生效
-  $listMl: 40px
-  $listMW: 55vw
-  $listBtnsWidth: 24px
-
-  $likeTabsAniCfg: {
-    $lineWid: 20px
-  }
+menusLineCfg = {
+  $itemPadding: falsse
+  $itemMargin: 0 20px 
 }
-//仿tabs的list组件 带删除标签
-ss-like-tabs('.tag-nav-list', tagListCfg)
+ss-tabs('.tabs-container.card', $menusConfig: menusCardCfg)
+ss-tabs('.tabs-container.card-tag', $menusConfig: menusCardTagCfg)
+ss-tabs('.tabs-container.line', $menusConfig: menusLineCfg)

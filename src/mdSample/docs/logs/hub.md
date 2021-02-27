@@ -2,6 +2,25 @@
 
 ## aotoo-hub更新日志
 
+#### 2020-01-09
+
+新增远程项目hub-aotoo-antd，antd的基础使用环境  
+
+```bash
+aotoo install https://gitee.com/webkixi/hub-aotoo-antd.git
+```
+
+#### 2020-01-05
+
+* 简化@aotoo/aotoo， @aotoo/react-pager，hub-aotoo-case项目的依赖  
+* 支持由项目追加、设置webpack、babel配置项
+
+`wp-config.js`  
+该文件返回一个方法，用于设置webpack的常规设置  
+
+`wp-babel.js`  
+该文件返回一个方法，用于追加或重置webpack的babel配置  
+
 #### 2020-12-30
 
 * 更新aotoo-cli到版本1.0.32，替换github源为gitee源，优化初始化速度

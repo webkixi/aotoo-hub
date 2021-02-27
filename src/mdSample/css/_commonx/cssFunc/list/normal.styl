@@ -1,0 +1,105 @@
+//普通类似的列表
+listCfg = {
+  $flex: false
+  $size: $size
+  $color: $color-text
+  $fw: false
+  $border: false                    
+  $bDire: bottom                 //ul 边线的位置 bottom top right left  all时是全边
+  $bg: false
+  $br: false
+  $spacePd: false
+  $spaceMg: false
+  $lh: false
+
+  $itemAbg: false               // item active bg
+  $itemAcolor: false               // item active color
+  $itemAfw: false               // item active font-weight
+
+  $itemHbg: $color-bg               // item hover bg
+  $itemHcolor: false               // item hover color
+  $itemHfw: false               // item hover font-weight
+
+  $itemSpacePd: false          // item padding 大小
+  $itemSpaceMg: false          // item margin 大小
+  $itemMinWid:  false         // item margin 大小
+  $itemFlexVal:  false         // item flex
+  $itemCenter: false          // item 是否居中
+
+  $itemBorder: false            //为false时，$itembDire $itembFirst 不生效
+  $itembDire: bottom        //item 边线的位置 bottom top right left  all时是全边
+  $itembLast: false        //item 边线第一条是否存在
+}
+ss-list-func($class='.ss-list', $config = false)
+  cfg = merge({}, listCfg, $config)
+  {$class}
+    if (cfg.$flex) 
+      ss-display-flex()
+    if (cfg.$bDire && cfg.$border)
+      border-radius: cfg.$br if cfg.$br
+      if (cfg.$bDire == 'all')
+        border: cfg.$border 
+      else 
+        border-{cfg.$bDire}: cfg.$border
+    background: cfg.$bg if cfg.$bg
+    color: cfg.$color   if cfg.$color
+    font-size: cfg.$size if cfg.$size
+    font-weight: cfg.$fw if cfg.$fw
+    padding: cfg.$spacePd if cfg.$spacePd
+    margin: cfg.$spaceMg if cfg.$spaceMg
+    line-height: cfg.$lh if cfg.$lh
+    >[class*='item']
+      if (cfg.$itembDire && cfg.$itemBorder)
+        if (cfg.$itembDire == 'all')
+          border: cfg.$border 
+        else 
+          border-{cfg.$itembDire}: cfg.$itemBorder
+        if (!cfg.$itembLast)
+          &:last-child
+            border: none
+      padding: cfg.$itemSpacePd if cfg.$itemSpacePd != false
+      margin: cfg.$itemSpaceMg if cfg.$itemSpaceMg != false
+      min-width: cfg.$itemMinWid  if cfg.$itemMinWid
+      flex: cfg.$itemFlexVal if cfg.$itemFlexVal
+      text-align: cfg.$itemCenter if cfg.$itemCenter
+      cursor: pointer
+      &:hover
+        background: cfg.$itemHbg
+        color: cfg.$itemHcolor if cfg.$itemHcolor
+        font-weight: cfg.$itemHfw if cfg.$itemHfw
+      &.active
+        background: cfg.$itemAbg if cfg.$itemAbg 
+        color: cfg.$itemAcolor if cfg.$itemAcolor
+        font-weight: cfg.$itemAfw if cfg.$itemAfw
+      [href*='//']
+        color: cfg.$color
+      &[data-icon=right]
+        &.active
+          ss-display-flex(row nowrap, space-between)
+          &:after
+            content: $icon-sucess
+          
+
+normalListCfg = {
+  $type: 'flex'
+  $size: false
+  $color: false
+  $margin: false
+  $itemPadding: false
+  $itemMargin: 0 5px 0 0
+}
+ss-list-normal-func($class='.ss-list', $config = false)
+  cfg = merge({}, normalListCfg, $config)
+  {$class}
+    font-size: cfg.$size if cfg.$size
+    margin: cfg.$margin if cfg.$margin
+    color: cfg.$color if cfg.$color
+    if (cfg.$type == 'flex')
+      ss-display-flex(row wrap)
+    else 
+      >.item
+        display: inline-block
+    >.item
+      padding: cfg.$itemPadding if cfg.$itemPadding != false
+      margin: cfg.$itemMargin if cfg.$itemMargin  != false
+

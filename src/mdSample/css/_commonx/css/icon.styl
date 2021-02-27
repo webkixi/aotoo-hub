@@ -11,11 +11,14 @@ $iconActiveColor = $color-text-title
 
 //问号 圆圈中间带问号 实心
 .icon-question
-  ss-icon('\e7b3', 16px, $iconColor, true, $space: $tips-mg-sm, $pseudo: after)
+  ss-icon('\e7b3', 16px, $iconColor, true, $pseudo: after)
 
 .icon-warn-nothing
   ss-icon('\e7b9', 16px, #98A0B3, true, $space: $tips-mg-sm, $pseudo: after)
 
+//del 
+.icon-add
+  ss-icon($inputAddIcon, 16px, $color-text)
 //del 
 .icon-del-primary
   ss-icon($icon-del, 16px, $color-text,$activeColor: $color-aux-fail)
@@ -61,3 +64,26 @@ $iconActiveColor = $color-text-title
 .icon-sm
   &:before
     font-size: $size-sm
+
+.icon-check
+  &:before
+    content: $checkbox 
+
+.icon-check-line
+  &:before
+    content: '-'
+    background: $color-primary
+    width: 14px
+    height: @width
+    color: #fff
+    border-radius: 3px
+    display: block
+    font-weight: bold;
+    line-height: 10px;
+    text-align: center;
+    font-size: 16px;
+
+.icon-checked
+  &:before
+    content: $checkboxChecked 
+    color: $color-primary

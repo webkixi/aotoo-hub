@@ -1,7 +1,7 @@
 import _inject from 'aotoo-inject'
 let inject = _inject()
 inject.css([
-  'https://at.alicdn.com/t/font_2218644_muc2ysz5h68.css'
+  'https://at.alicdn.com/t/font_2218644_6cfjrxm6ern.css'
 ])
 // function pages() {
   const iconList = [
@@ -26,6 +26,8 @@ inject.css([
     { title: '&#e7ab;', itemClass: 'icon-cha-xiaohao' },
     { title: '&#e74e;', itemClass: 'icon-xiala' },
     { title: '&#e611;', itemClass: 'icon-jiahao' },
+    { title: '&#e7bd;', itemClass: 'icon-fuxuan01' },
+    { title: '&#e7be;', itemClass: 'icon-fuxuan02' },
   ]
 
 //   const tree = Aotoo.list({

@@ -24,8 +24,8 @@ ss-tagFunc($class = '.tag-default', $config = false)
   {$class}
     background-color: cfg.$bgc
     border-color: @background-color
-    color: #fff
+    color: cfg.$color || #fff
     &.plain
-      background-color: #fff
+      background-color: cfg.$pbgc || #fff
       border-color: @border-color
       color: cfg.$pcolor

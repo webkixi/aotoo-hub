@@ -15,9 +15,9 @@ function onCovering() {
 
 function onItemClick(e, param, inst){
   e.stopPropagation()
-  let file = inst.attr('file')
-  let parent = inst.parent().parent()
-  let xx = false
+  const file = inst.attr('file')
+  inst.addClass('active')
+  const parent = inst.parent().parent()
   if (parent) {
     parent.forEach(child=>{
       if (child && child.children) {
@@ -26,7 +26,6 @@ function onItemClick(e, param, inst){
         })
       }
     })
-    inst.addClass('active')
     if (file) {
       setTimeout(() => {
         nav.redirectTo({ url: '/index/a?file=' + file})

@@ -1,7 +1,7 @@
 
 // @import './routerconfig/routerStyle2'
 
-ss-admin($class= '.routerGroup', $config = admin, $menusClass = '&')
+ss-admin($class= '.routerGroup', $config = admin, $menusClass = '>.router-menus')
   cfg = merge({}, admin, $config)
   //所有内容在一屏内显示
   /html, body, /.container
@@ -14,7 +14,6 @@ ss-admin($class= '.routerGroup', $config = admin, $menusClass = '&')
     ss-display-flex(row nowrap, flex-start)
     //菜单部分
     >.router-menus
-      ss-menus($menusClass)
       border-right: cfg.$box-line  if (cfg.$box-line)
       background: cfg.$mBg2 if cfg.$mBg2
       color: cfg.$mColor   if cfg.$mColor
@@ -23,6 +22,8 @@ ss-admin($class= '.routerGroup', $config = admin, $menusClass = '&')
       &.active
         opacity: 0
         width: 0
+      ss-menus($menusClass)
+      ss-func-customscroll($menusClass, {$height: auto, $min-height: 300px, $scrollbarShow: false}) if cfg.$scrollBox     //滚动
     //内容部分
     >.router-page
       flex: 1
@@ -30,7 +31,6 @@ ss-admin($class= '.routerGroup', $config = admin, $menusClass = '&')
       background: cfg.$mBg if cfg.$mBg
       border-radius: cfg.$br  if cfg.$br
       overflow: hidden
-    ss-func-customscroll($menusClass, {$height: auto, $min-height: 300px, $scrollbarShow: false}) if cfg.$scrollBox     //滚动
     ss-func-customscroll('.router-page', {$height: auto, $min-height: 300px}) if cfg.$scrollBox     //滚动
     
 
@@ -40,8 +40,6 @@ ss-menus($class='>.hlist', $config = adminMenus)
   if ($config.$mWidth != false)
     width: $config.$width 
     max-width: $config.$mWidth 
-  // else 
-  //   width: $config.$min-width
   {$class}
     background: $config.$mBg if $config.$mBg
     border-radius: $config.$br  if $config.$br
@@ -84,7 +82,7 @@ ss-menus($class='>.hlist', $config = adminMenus)
     box-shadow: $config.$bs  if $config.$bs
     // overflow: hidden
     // min-width: 140px
-    .li-item 
+    [class*='item']
       cursor: pointer
       padding-left: $config.$spaceItem
       color: $config.$color

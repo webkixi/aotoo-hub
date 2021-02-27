@@ -11,6 +11,9 @@ hub工作空间
   ├── postcss.config.js
   └── src
        └─ project-1
+             ├── wp-babel.js # 自定义babel配置
+             ├── wp-config.js # 自定义webpack配置
+             ├── package.json # 项目独立配置
              ├── configs # node环境配置文件，默认包含default.js
              ├── venders # 第三方库文件目录+自定义公共库(前端)
              ├── dist      # 静态资源输出目录
@@ -19,6 +22,8 @@ hub工作空间
                    │── pages  # node端的业务目录
                    └── plugins # 自定义插件目录
 ```
+
+## 工作空间公共文件/目录说明
 
 __build__  
 存放所有编译文件  
@@ -38,9 +43,44 @@ __src__
 __src/project__  
 项目目录，通过命令行`aotoo create xxx`新建的项目
 
-## 项目结构
+## 项目文件/目录说明
 
-### 项目结构，仅前端
+**wp-babel.js**  
+非必须文件，补充自定义的babel配置，一般当项目有独立package.json使用，该配置参与webpack运行时使用，注意请先安装配置所需的依赖包  
+
+wp-babel.js  
+
+```js
+/*
+* babelOptions {Object}: 当前webpack解析babel的配置项
+* isdll {Boolean}: 当前编译是否为公共项
+*/
+module.exports = function(babelOptions, isdll){
+  babelOptions.abc = [...]
+  return babelOptions
+}
+```
+
+**wp-config.js**  
+非必须文件，补充自定义的webpack配置，一般当项目有独立package.json使用，该配置参与webpack运行时使用，注意请先安装配置所需的依赖包  
+
+wp-babel.js  
+
+```js
+/*
+* webpackConfig {Object}: 当前webpack的配置项
+* isdll {Boolean}: 当前编译是否为公共项
+*/
+module.exports = function(webpackConfig, isdll){
+  webpackConfig.abc = [...]
+  return webpackConfig
+}
+```
+
+**package.json**  
+该项目的独立依赖，一般情况下我们可以直接将依赖包安装在工作空间，但也可以支持在项目中安装单独依赖包
+
+## 前端项目结构
 
 ```bash
 └─ project-1
@@ -93,7 +133,7 @@ __src/project__
 
 ```
 
-### 项目结构，包含server端
+## 前端+server端项目结构
 
 ```bash
 └─ project-1

@@ -1,0 +1,97 @@
+
+
+
+.ss-tree
+  &.show
+    .item
+      >.itemroot
+        display: block
+  line-height: 30px
+  .ul
+    margin-left: 20px
+  .item-title
+    cursor: pointer
+    position: relative
+    &.row
+      ss-display-flex(row nowrap)
+    &.disabled
+      color: $color-text-disabled
+      .icon-check
+        &:before
+          color: $color-text-disabled
+    .icon-select
+      position: absolute
+      left -10px
+    .t-item
+      margin-left: 10px
+      ss-display-flex(row, center, center)
+      &.icon-select
+        margin-left: 0
+  .item
+    >.itemroot
+      display: none
+    &.block
+      >.itemroot
+        display: block
+  .active-input
+    .input
+      color: $color-primary
+  .icon-add
+    position: absolute
+    left -10px
+  &.add
+    >.list-body
+      .ul.itemroot
+        position: relative
+        &:before
+          content: ''
+          height: 100%
+          width: 1px
+          position: absolute
+          top: 0
+          left: -15px
+          background: #000
+    .item-title
+      .t-item
+        margin-left: 15px
+    .icon-add
+      position: absolute
+      left -15px
+      top: 9px
+      width: 10px
+      height: 10px
+      border: 1px solid
+      ss-display-flex(row, center, center)
+    
+    .item
+      &.block
+        >.item-title
+          .icon-add
+            &:before
+              content: '\e602'
+      &:last-child
+        .ul.itemroot
+          &:before
+            display: none
+      &:not(.level0)
+        .item-title
+          .t-item
+            &:only-child
+              &:before
+                content: ''
+                width: 10px
+                height: 1px
+                background: #000
+                position: absolute;
+                left: 0;
+                top: 45%;
+              &:after
+                content: ''
+                width: 1px
+                height: 100%
+                background: #000
+                position: absolute;
+                left: 0;
+                top: 0;
+
+  

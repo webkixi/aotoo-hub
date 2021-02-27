@@ -9,6 +9,10 @@
 @import '../../css/_commonx/modules/bt_table'     //boostrap table
 @import '../../css/_commonx/modules/alert'        //alert
 @import '../../css/_commonx/modules/tooltip'        //tooltip
+@import '../../css/_commonx/modules/form/index'        //tooltip
+@import '../../css/_commonx/modules/droppop'        //tooltip
+@import '../../css/_commonx/modules/tabs'        //tooltip
+@import '../../css/_commonx/modules/tree'        //tooltip
 
 
 @media (max-width: 768px)
@@ -50,7 +54,7 @@
       padding: 0 6px;
       left: var(--space, $space)
   .pages-title
-    padding: 0 var(--space, $space)
+    padding: 0 var(--space, $space) var(--space, $space)
 
 .demo-grid
   ss-func-grid('&', {$num: 5, $spacing: 10px})
@@ -316,3 +320,16 @@
     ss-display-flex(row, space-between)
     &:first-child, &:last-child
       justify-content: center
+
+.item_tooltip 
+  white-space: nowrap
+
+
+
+.demo-tabs-fixed-height
+  height: 400px
+  .tabsBoxes
+    border: 1px solid $color-line
+    border-top: none
+    >.item
+      min-height: 350px

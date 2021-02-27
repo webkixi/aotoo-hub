@@ -1,27 +1,7 @@
-ssfunc-ss-title()
-  .ss-title
-    color: #666666
-    display: block
-    font-size: 14px
-    padding: $space-dispaly
+// ssfunc-ss-title()
+//   .ss-title
+//     color: #666666
+//     display: block
+//     font-size: 14px
+//     padding: $space-dispaly
 
-ssfunc-ss-title-flex-between()
-  .ss-title-flex-between
-    @extends .ss-title
-    @extends .flex-row-between-center
-
-
-//tree 列表 形式一
-$tl-padidng = 0 $space
-$tl-item-mb = 20rpx
-$tl-item-bg = #fff
-$tl-item-br = $br-lg
-
-ssfunc-ss-tree-list()
-  .ss-tree-list
-    padding: $tl-padidng
-    >ui-item
-      >.level0
-        margin-bottom: $tl-item-mb
-        background: $tl-item-bg 
-        border-radius: $tl-item-br

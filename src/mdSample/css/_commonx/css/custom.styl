@@ -35,6 +35,14 @@ body
   &:hover
     color: $color-primary
 
+[data-close=true],[data-close=right]
+  &:after
+    content: $icon-del-s
+    color: $color-text 
+  &:hover
+    &:after
+      color: $color-text-title
+
 dCfg = {
   $bg: $color-bg-special
   $padding: 10px

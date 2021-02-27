@@ -1,209 +1,221 @@
 //tabs Menus
-listTabsCfg = {
+listTabsConfig = {
   $showAni: false
   $activeClass: '.active'
   $bg: #fff
+  $br: $br
   $height: 40px
   $padding: false 
   $sizeM: false
   $itemPadding: 0 10px
+  $itemMargin: false
   $color: #666
+  $itemLine: 1px solid $color-line
+  $disabledBg: $color-line
+  $activeType: 'line'       //line单线条样式， card卡片化样式   lr左右结构带有footer或header
+
+  $activeBg: false
   $activeColor: #000
   $activeFw: bold
-  $isPadding: true
-  $itemLine: 1px solid $color-line
-  $activeType: 'line'       //line单线条样式， card卡片化样式  tab选项卡样式  lr左右结构带有footer或header
-  //lr时，下面的参数才生效
-  $listMl: 40px
-  $listMW: 55vw
-  $listBtnsWidth: 24px
+  $position: 'bottom'
   // $itemMg: 40px
 }
 //tabs内容
-boxTabCfg = {
+boxTabConfig = {
   $boxBg: #fff
   $boxPadding: 20px 10px
   $scrollBoxes: false
 }
 //下线画
-brLineAniCfg =  {
+brLineAniConfig =  {
   $activeClass: '.active'
+  $position: 'bottom'
   $lineHei: 2px
   $lineBot: 0
+  $lineRight: false
   $lineColor: $color-hover
   $lineWid: 100%
+  $disabledBg: $color-line
+}
+brLineAniLRConfig =  {
+  $activeClass: '.active'
+  $position: 'right'
+  $lineHei: 100%
+  $lineBot: false
+  $lineRight: 0
+  $lineColor: $color-hover
+  $lineWid: 2px
+  $disabledBg: $color-line
 }
 
-abc = {
-  $class: '.active'
-}
 
-$kkk = '.active'
 
 ss-border-ani($class = '.item', $config = false)
-  cfg = merge({}, brLineAniCfg, $config)
+  cfg = merge({}, brLineAniConfig, $config)
   {$class}
     position: relative
     // overflow: hidden
     &:after
       content: ''
       position: absolute
-      bottom: cfg.$lineBot
-      height: cfg.$lineHei
-      border-radius: (@height / 2)
-      width: cfg.$lineWid
-      transform: translateX(@width);
+      right: cfg.$lineRight if cfg.$lineRight != false
+      bottom: cfg.$lineBot if cfg.$lineBot != false
+      height: cfg.$lineHei if cfg.$lineHei
+      border-radius: (cfg.$lineWid / 2) 
+      border-radius: (cfg.$lineHei / 2) if (cfg.$position == 'top' || cfg.$position == 'bottom')
+      width: cfg.$lineWid if cfg.$lineWid
+      transform: translateY(@height)
+      transform: translateX(@width) if (cfg.$position == 'top' || cfg.$position == 'bottom')
       transition: transform .5s
-    &{cfg.$activeClass}
-      &:after
-        if (cfg.$lineWid) 
-          left: "calc(50% - %s)" % (cfg.$lineWid / 2)
-        else
-          left: 0
-        transform: translateX(0);
-        background: cfg.$lineColor
-      ~.item
+      z-index: 1
+    &.disabled
+      background: inherit
+      color: cfg.$disabledBg
+    if (cfg.$position == 'top' || cfg.$position == 'bottom')
+      &{cfg.$activeClass}
         &:after
-          left: -(cfg.$lineWid)
-          transform: translateX(@left)
+          if (cfg.$lineWid) 
+            left: "calc(50% - %s)" % (cfg.$lineWid / 2)
+          else
+            left: 0
+          top: inherit
+          transform: translateX(0);
+          background: cfg.$lineColor
+        ~.item
+          &:after
+            top: inherit
+            left: -(cfg.$lineWid)
+            transform: translateX(@left)
+    else 
+      &{cfg.$activeClass}
+        &:after
+          left: inherit
+          if (cfg.$lineHei) 
+            top: "calc(50% - %s)" % (cfg.$lineHei / 2)
+          else
+            top: 0
+          // transform: translateX(0);
+          // transform: translateY(0);
+          transform: translateY(0)
+          background: cfg.$lineColor
+        ~.item
+          &:after
+            left: inherit
+            top: -(cfg.$lineHei)
+            transform: translateY(@top)
 
 ss-like-tabs($class = '.hlist', $config = {})
-  cfg = merge({}, listTabsCfg, $config)
+  cfg = merge({}, listTabsConfig, $config)
   {$class}
     color: cfg.$color
-    background: cfg.$bg
     font-size: cfg.$sizeM if cfg.$sizeM
     padding: cfg.$padding if cfg.$padding != false
-    if (cfg.$activeType == 'tab' || cfg.$activeType == 'card')     //选项卡样式
-      border: cfg.$itemLine if cfg.$itemLine
-      border-bottom: none
-      border-radius: $br
-      margin-bottom: -1px;
+    line-height: cfg.$height if cfg.$height
+    &[class*=flex1]
       .item
+        flex: 1
+    .item:not(.t-item)
+      padding: cfg.$itemPadding if cfg.$itemPadding != false
+      margin: cfg.$itemMargin if cfg.$itemMargin != false
+      background: cfg.$bg if cfg.$bg
+      ss-display-flex(column, center, center)
+      &{cfg.$activeClass}
+        background: cfg.$activeBg if cfg.$activeBg
+        color: cfg.$activeColor if cfg.$activeColor
+        font-weight: cfg.$activeFw if cfg.$activeFw
+      &.disabled
+        background: cfg.$disabledBg
+        cursor: no-drop
+    if (cfg.$activeType == 'card')     //选项卡样式
+      border: cfg.$itemLine if cfg.$itemLine
+      border-radius: cfg.$br if cfg.$br
+      margin-bottom: -1px;
+      .item:not(.t-item)
         border-bottom: cfg.$itemLine
+        border-left: cfg.$itemLine if cfg.$itemLine
+        &:first-child
+          border-left: none
         &{cfg.$activeClass}
           border-bottom-color: #fff
-    if (cfg.$activeType == 'card')
-      .item
-        border-left: 1px solid transparent
-        border-right: @border-left
-        &:first-child
-          border-left: none
-        &{cfg.$activeClass}
           border-left-color: $color-line
-          border-right-color: @border-left-color
-    if (cfg.$activeType == 'tab')     //选项卡样式
-      display: inline-flex
-      .item
-        border-left: cfg.$itemLine
-        &:first-child
-          border-left: none
-    else 
-      ss-display-flex(row nowrap, flex-start, center)
-    //带footer结构
-    if (cfg.$activeType == 'lr')
-      justify-content: space-between
-      margin-left: cfg.$listMl
-      max-width: cfg.$listMW
-      overflow: hidden
-      >.hlist
-        @extends $flex-nowrap-start-center
-        position: relative
-        z-index: 1
-        width: "calc(100% - %s)" % cfg.$listBtnsWidth
-        overflow: hidden
-        >.item
-          // margin-right: cfg.itemMg
-          position: relative
-          cursor: pointer
-          white-space: nowrap;
-          &:hover
-            .item-icon
-              display: inline-block
-              color: cfg.$activeColor
-              &:hover
-                color: $color-aux-fail
-        .item-icon
-          display: none
-          position: absolute
-          right: -12px
-          color: @color
-          cursor: pointer
-          
-      .item-btns
-        background: #fff;
-        box-shadow: 0px 0px 6px 12px #fff;
-        width: cfg.$listBtnsWidth;
-        flex: 0 0 auto
-        position: relative;
-        z-index: 2;
-
-    a
-      color: @color
-    .item
-      cursor: pointer
-      height: cfg.$height
+    else if (cfg.$activeType == 'card-tag')     //选项卡 标签 样式
+      border-bottom: cfg.$itemLine if cfg.$itemLine
       line-height: @height
-      text-align: center
-      if (cfg.$isPadding == true)
-        padding: cfg.$itemPadding
-      else 
-        margin: cfg.$itemPadding
-        &:first-child     //适用只有一行的时候，如果是多行的话，需要再添加个判断
-          margin-left: 0
-      &.disabled
-        cursor: not-allowed
-        color: $color-text-disabled
-        
-      &{cfg.$activeClass}, &:not(.disabled):hover
-        background: #fff
-        color: cfg.$activeColor
-        font-weight: cfg.$activeFw if cfg.$activeFw
-        a
-          color: @color
-    if (cfg.$activeType == 'line' || cfg.$showAni)
-      ss-border-ani($config: cfg.$likeTabsAniCfg)
+      margin-left: cfg.$itemMargin
+      &:first-child
+        margin-left: 0
+      .item:not(.t-item)
+        border: cfg.$itemLine if cfg.$itemLine
+        border-radius: cfg.$br if cfg.$br
+        margin-bottom: -1px;
+        &{cfg.$activeClass}
+          border-bottom-color: #fff
+    else 
+      border-bottom: cfg.$itemLine if cfg.$itemLine
+      ss-border-ani('.item:not(.t-item)',{position: cfg.$position})
+
+          
+
+      
       
 
-// $menusScroll treeFooter 或 treeHeader存在时
+// // $menusScroll treeFooter 或 treeHeader存在时
+containerConfig = {
+  $menusScroll:false
+  $width: 100%
+  $height:false
+}
 
-ss-tabs($class = '.tabsGroup', $menusCfg = false, $boxCfg = false, $menusScroll = false, $width = 500px, $oldMenusScroll = false, $height = false)
-  cfg = merge({}, listTabsCfg, $menusCfg)
-  cfgBox = merge({}, boxTabCfg, $boxCfg)
-  .itemrootCkb
-    display: none
+ss-tabs($class = '.tabsGroup', $containerConfig = false,  $menusConfig = false, $boxConfig = false)
+  cfg = merge({}, containerConfig, $containerConfig)
+  cfgMenus = merge({}, listTabsConfig, $menusConfig)
+  cfgBox = merge({}, boxTabConfig, $boxConfig)
   {$class}
-    width: $width
-    height: $height if $height
+    width: cfg.$width if cfg.$width
+    height: cfg.$height if cfg.$height
+    ss-display-flex(column)
+    &.box-disN
+      >.tabsBoxes
+        >.item
+          display: none
+          &.active
+            display: block
+    ss-like-tabs('>.tabsMenus', cfgMenus)
     >.tabsMenus
-      ss-like-tabs($config: cfg)
-      if (cfg.$activeType == 'line')
-        border-bottom: cfg.$itemLine  if cfg.$itemLine
-        // margin: 0 cfgBox.$boxPadding
-      if ($menusScroll != false)
-        ss-display-flex(row nowrap, space-between, center)
-        .hlist
-          flex-flow: row wrap
-          position: relative
-        ss-tabs-btnx()
-      if ($oldMenusScroll != false)
-        .list-wrap
-          ss-display-flex(row nowrap, space-between, center)
-        .hlist
-          flex-flow: row wrap
-          position: relative
+      ss-display-flex()
+      [class='list-body']
+        ss-display-flex()
     >.tabsBoxes
       background: cfgBox.$boxBg
+      box-sizing: border-box
       padding: cfgBox.$boxPadding if cfgBox.$boxPadding
       if (cfgBox.$boxWidth)
         width: cfgBox.$boxWidth 
         margin: auto
-      if (cfg.$activeType == 'tab' || cfg.$activeType == 'card')
-        border: cfg.$itemLine
-      if (cfgBox.$scrollBoxes)
-        ss-func-customscroll('&', {$height: calc(100% - 54px), $min-height: 300px})
-      // else 
-      //   padding: cfgBox.$boxPadding
+      if (cfgMenus.$activeType == 'card')
+        border: cfgMenus.$itemLine
+        border-top: none
+        border-radius: 0 0 cfgMenus.$br cfgMenus.$br
+
+    [class*='scroll']
+      ss-func-customscroll('&', {$height: 100%, $min-height: 300px})
+    //以下这个地方，可移到外面？！ 是否
+    &[class*='row']
+      flex-flow: row nowrap
+      >.tabsMenus
+        flex-flow: column
+        border-bottom: none
+        border-right: cfgMenus.$itemLine if cfgMenus.$itemLine
+        ss-border-ani($config: brLineAniLRConfig)
+        .item:not(.t-item)
+          margin: 0 0 10px 0
+          padding: cfgMenus.$itemMargin
+        [class='list-body']
+          flex-flow: column
+      >.tabsBoxes
+        padding: 10px 20px
+        flex: 1
+        
       
 ss-tabs-btnx()
   .list-wrap
@@ -230,147 +242,3 @@ ss-tabs-btnx()
         cursor: not-allowed
 
 
-
-// listTabCfg = {
-//   $algin: flex-start
-//   $bg: #fff
-//   $border: 1px solid $color-line
-//   $size: 16px
-//   $color: $color-text
-//   $activeColor: $color-primary 
-//   $padding: false
-//   $firstItem: false
-//   $height: false
-//   $isPadding: true
-//   $itemPadding: 16px 
-//   $showAni: true      //为true时，likeTabsAniCfg生效
-//   $likeTabsAniCfg: {
-//     $lineWid: 40px
-//     $lineHei: 4px
-//   }
-// }
-// ss-like-tabs-list($class= '.hlist', $config = false)
-//   cfg = merge({}, listTabCfg, $config)
-//   {$class}
-//     ss-display-flex(row wrap , cfg.$algin)
-//     background: cfg.$bg if cfg.$bg
-//     border-bottom: cfg.$border if cfg.$border
-//     color: cfg.$color
-//     font-size: cfg.$size
-//     padding: cfg.$padding if cfg.$padding != false
-//     a
-//       color: @color
-//     >.item
-//       cursor: pointer
-//       height: cfg.$height if cfg.$height
-//       line-height: @height if cfg.$height
-//       text-align: center
-//       if (cfg.$isPadding == true)
-//         padding: cfg.$itemPadding
-//         if (cfg.$firstItem)
-//           &:first-child     //适用只有一行的时候，如果是多行的话，需要再添加个判断
-//             padding-left: 0
-//       else 
-//         margin: cfg.$itemPadding
-//         &:first-child     //适用只有一行的时候，如果是多行的话，需要再添加个判断
-//           margin-left: 0
-//       &.active, &:hover
-//         color: cfg.$activeColor
-//       &.disabled
-//         cursor: not-allowed
-//         color: $color-text-disabled
-//     if (cfg.$activeType == 'line' || cfg.$showAni)
-//       ss-border-ani($config: cfg.$likeTabsAniCfg)
-
-
-// //发布攻略
-// listTabsCfg = {
-//   $showAni: true
-//   $sizeM: 16px
-//   $activeClass: '.select'
-//   $bg: #fff
-//   $height: 40px
-//   $padding: 0 20px 20px
-//   $isPadding: false
-//   $itemPadding: 0 16px
-//   $color: $color-text
-//   $activeColor: $color-primary
-//   $activeFw: bold
-//   $itemLine: 1px solid $color-line
-//   $activeType: 'line'       //line单线条样式， card卡片化样式  tab选项卡样式  lr左右结构带有footer或header
-
-//   $likeTabsAniCfg: {
-//     $activeClass: '.select'
-//     $lineWid: 40px
-//     $lineHei: 4px
-//   }
-// }
-// boxTabCfg = {
-//   $boxBg: #fff
-//   $boxPadding: false
-//   $scrollBoxes: true
-// }
-// ss-tabs('.tabsGroup-admin', $menusCfg: listTabsCfg, $boxCfg: boxTabCfg, $width: 100%, $height: 100%)
-// //发布攻略 二级
-// listTabsCfg2 = {
-//   $showAni: true
-//   $sizeM: 14px
-//   $activeClass: '.select'
-//   $bg: #fff
-//   $height: 40px
-//   $padding: 14px 20px
-//   $isPadding: false
-//   $itemPadding: 0 16px
-//   $color: $color-text
-//   $activeColor: $color-primary
-//   $activeFw: false
-//   $itemLine: 1px solid $color-line
-//   $activeType: 'line'       //line单线条样式， card卡片化样式  tab选项卡样式  lr左右结构带有footer或header
-
-//   $likeTabsAniCfg: {
-//     $activeClass: '.select'
-//     $lineWid: 20px
-//     $lineHei: 4px
-//   }
-// }
-// boxTabCfg2 = {
-//   $boxBg: #fff
-//   $boxPadding: false
-//   $boxWidth: 390px
-// }
-// ss-tabs('.tabsGroup-level-2', $menusCfg: listTabsCfg2, $boxCfg: boxTabCfg2, $width: 100%)
-// .tabsGroup-level-2
-//   >.tabsMenus
-//     >.hlist
-//       justify-content: center
-// //发布攻略 三级
-// listTabsCfg3 = {
-//   $showAni: true
-//   $sizeM: 14px
-//   $activeClass: '.select'
-//   $bg: #fff
-//   $height: 40px
-//   $padding: 14px 20px
-//   $isPadding: false
-//   $itemPadding: 0 16px
-//   $color: $color-text
-//   $activeColor: $color-text-title
-//   $activeFw: false
-//   $itemLine: false
-//   $activeType: 'line'       //line单线条样式， card卡片化样式  tab选项卡样式  lr左右结构带有footer或header
-
-//   $likeTabsAniCfg: {
-//     $activeClass: '.select'
-//     $lineWid: 20px
-//     $lineHei: 4px
-//     $lineColor: $color-text-title
-//   }
-// }
-// boxTabCfg3 = {
-//   $boxBg: #fff
-//   $boxPadding: false
-// }
-// .tabsGroup-level-3
-  // ss-display-flex(row nowrap, space-between)
-  // >.hlist
-  //   ss-like-tabs({$config: listTabsCfg3})

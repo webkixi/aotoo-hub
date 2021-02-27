@@ -1,0 +1,57 @@
+
+.ss-selected
+  border: 1px solid $borderColor
+  border-radius: $inputBr
+  box-sizing: border-box
+  min-width: 120px
+  ~/, .item-input-wrap
+    ss-display-flex(row nowrap, flex-start, center)
+  .item-input-wrap
+    padding: 6px 18px 6px 10px
+    box-sizing: border-box;
+  &.tag
+    .item-input-wrap
+      display: block
+    .item-input-wrap
+      &:after
+        display: none
+      >*
+        display: inline
+  &.tag-pure
+    border: none 
+    border-radius: none
+    .item-click
+      width: 80px
+      border: 1px solid $borderColor
+      border-radius: $inputBr
+      display: inline-block
+      text-align: left 
+      placeholder($color-text-title)
+      
+  input
+    border: none
+    flex: 1
+    padding: 0
+    width: 100%;
+    max-width: 100%
+    box-sizing: border-box;
+    &:read-only
+      cursor: pointer
+  .item-input-wrap
+    position: relative
+    cursor: pointer
+    width: 100%
+    &:after
+      content: $inputSelect
+      font-size: 16px
+      position: absolute;
+      right: 6px;
+    &:hover
+      .icon-del
+        display: block
+  .icon-del
+    display: none
+    position: absolute
+    right: 6px
+    &:before
+      font-size: 12px
