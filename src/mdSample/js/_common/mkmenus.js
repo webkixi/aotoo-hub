@@ -16,7 +16,6 @@ function onCovering() {
 function onItemClick(e, param, inst){
   e.stopPropagation()
   const file = inst.attr('file')
-  inst.addClass('active')
   const parent = inst.parent().parent()
   if (parent) {
     parent.forEach(child=>{
@@ -31,6 +30,7 @@ function onItemClick(e, param, inst){
         nav.redirectTo({ url: '/index/a?file=' + file})
       }, 50);
     }
+    inst.addClass('active')
   }
   else {
     if (!inst.hasClass('active')) {
