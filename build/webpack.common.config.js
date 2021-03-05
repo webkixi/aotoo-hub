@@ -36,34 +36,55 @@ module.exports = function (asset, envAttributs) {
     module: {
       rules: [
         {
+          test: /\.html/, // 配合htmlwebpackplugin
+          exclude: /node_modules/,
+          use: {
+            loader: 'html-loader',
+            options: {
+              interpolate: true
+            }
+          }
+        },
+        {
           test: /\.vue$/,
           exclude: /node_modules/,
           loader: 'vue-loader'
         },
         {
           test: /\.json$/,
+          exclude: /node_modules/,
           loader: 'json-loader'
         }, 
         {
           test: /\.js(x?)$/,
+          exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
             ...envAttributs('babel-options', 'dll')
           },
-          exclude: /node_modules/,
         },
         {
           test: /\.css$/,
+          exclude: /node_modules/,
           ...envAttributs('styl', [])
         },
         {
+          test: /\.less$/,
+          exclude: /node_modules/,
+          ...envAttributs('styl', [
+            'less-loader'
+          ])
+        },
+        {
           test: /\.s[ac]ss$/i,
+          exclude: /node_modules/,
           ...envAttributs('styl', [
             'sass-loader'
           ])
         },
         {
           test: /\.styl(us)?$/,
+          exclude: /node_modules/,
           ...envAttributs('styl', [
             'stylus-loader'
           ])
