@@ -9,7 +9,7 @@ module.exports = function (oridata) {
   return {
     get: function name(ctx) {
       oridata.title = 'aotoo-hub 多项目全栈脚手架'
-      oridata.root = '123'
+      oridata.root = 'aotoo-hub 智能脚手架'
       return oridata
     }, 
     post: function name(ctx) {
