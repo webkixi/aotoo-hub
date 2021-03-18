@@ -1,5 +1,5 @@
 require('@babel/register')({
-  extends: '../.babelrc',
+  extends: './.babelrc',
   ignore: [/node_modules/],
   cache: true,
 })
