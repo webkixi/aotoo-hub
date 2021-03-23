@@ -9,6 +9,7 @@ module.exports = function (atc, asset) {
     components: path.join(SRC, 'components'),
     docs: path.join(SRC, 'docs'),
     common: path.join(SRC, 'common'),
+    configs: path.join(SRC, 'configs'),
     
     vue: 'vue/dist/vue.js',
     '@': path.join(SRC, 'js'), // vue项目中需要用到

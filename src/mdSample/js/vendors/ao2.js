@@ -1,3 +1,5 @@
+import reactdom from 'react-dom';
+
 import aotoo, {
   lib,
   _elements,
@@ -7,6 +9,11 @@ import aotoo, {
   html,
   $$
 } from '@aotoo/aotoo';
+
+if (lib.isClient()) {
+  const context = lib.curContext()
+  context.ReactDOM = context.ReactDom = reactdom
+}
 
 export {
   lib,
