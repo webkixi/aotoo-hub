@@ -1,8 +1,6 @@
 # aotoo
 
-aotoo希望将REACT组件封装成类似JQ组件，即通过曝露的API方法能够在组件外很容易更新组件状态，而不需要引入redux，mobx等状态库。
-
-文档系统的路由与菜单都是基于aotoo完成的组件  
+aotoo库是一套基于react的前端开发库，方便快速开发react组件，我们的开发理念比较接近JQUERY，但同时又保留有REACT本身的特性，摒弃了JQUERY工程化难，维护难的问题。同时aotoo又汲取了非常多的小程序开发理念，力求在开发过程中保持与小程序(原生)开发同步。  
 
 [GITHUB源码](https://www.github.com/webkixi/aotoo)
 
@@ -10,76 +8,43 @@ INSTALL
 ------------------
 
 ```bash
+yarn add react react-dom
 yarn add @aotoo/aotoo
+
 # 或者
 npm install @aotoo/aotoo
 ```
 
-作用
+引入
 ------------------
 
-封装react组件，并将其实例化，aotoo有3种封装方式  
-
-1. 封装原生react组件  
-2. 封装配置生成组件(仿小程序)
-3. 封装JSX，获取其真实dom，使用jquery等第三方库作用(非实例)
-
-### 引入
-
 ```js
-import createComponent, {
-  lib,
-  $$,
-  extTemplate,
-  render
-} from '@aotoo/aotoo'
-
-const hooks = lib.hooks
+import aotoo from '@aotoo/aotoo'
 ```
 
-`lib`  
-包含loadash等助手方法  
-
-`$$`  
-查找aotoo的组件，使用aotoo封装的REACT组件，可通过此方法查找组价实例  
-
-`render`  
-该方法可使用与前端与node端，在前端替代`ReactDOM.render`方法，在Node端替代`ReactDomServer.renderToString`
-
-`extTemplate`  
-扩展内置组件方法  
-
-`hooks`  
-钩子方法类  
-
-### 简单组件
+一个简单的组件  
+------------------
 
 ```js
-import createComponent, {render} from '@aotoo/aotoo'
+import aotoo from '@aotoo/aotoo'
 
 const template = (state, props) => {
   return (
-    <div className='container'>
-      <div className='counter'>{state.count}</div>
-      <div className='button' onClick={this.env.inc}>+1</button>
-    </div>
+    <div className='counter' onClick={this.env.inc}>{state.count}</div>
   )
 }
 
 const config = {
-  data: {
-    count: 0
-  },
+  data: { count: 0 },
   inc(){
     let count = this.getData().count
-    count ++
-    this.setData({count})
+    this.setData({(count++)})
   }
 }
 
 const Count = createComponent(config, template)
 
-render(<Count.UI />, 'root')
+ReactDOM.render(<Count.UI />, document.getElementById('root'))
 ```
 
 通用属性

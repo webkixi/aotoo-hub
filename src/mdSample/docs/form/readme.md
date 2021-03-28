@@ -1,8 +1,8 @@
 # aotoo-react-cell
 
-可以把cell当做一款灵活的容器组件(react)，cell提供标准化的结构，api方法，支持组件注册(注册组件产出标准结构)，支持组件分拆，重组等
+CELL组件是一个开放性的组件，设计之初是想开发一套非常灵活的表单系统，做着做着发现可以衍生出来作为一个通用性很强的容器组件
 
-cell最初是作为表单来开发的，在开发的过程中我们发现cell可以更加抽象，并使用其开发非表单组件，这些在其他的文档中会详细介绍。
+CELL组件提供标准化的结构，通用API方法，支持注册机制。CELL组件可以支持任意组合，分拆，能够轻松应对产品提出的交互需求
 
 [GITHUB源码](https://www.github.com/webkixi/aotoo-hub)
 
@@ -16,8 +16,20 @@ yarn add @aotoo/aotoo
 yarn add @aotoo/react-cell
 ```
 
-使用说明
+引入
 ------------------
+
+```js
+import reactdom from 'react-dom'
+import '@aotoo/aotoo'
+import '@aotoo/react-cell'
+window.ReactDOM = reactdom 
+```
+
+使用说明
+------------------  
+
+我们还是以表单系统来说明CELL组件的使用
 
 1. 单表单
 2. 复合表单
@@ -27,15 +39,15 @@ yarn add @aotoo/react-cell
 
 ### 单表单
 
-cell默认只支持文本表单，如type=text, number, telphone等，更多的表单需要通过注册的方式自定义，我们也提供了一些经典的表单组件，需要额外加载进来
+CELL组件默认只支持文本表单  
+更多表单需要自定义开发，后续会说明如何自定义一个CELL组件
 
 ```js
 import cell from '@aotoo/react-cell'
-const data = {title: '哈哈', id: 'haha', value: 'ddddd', type: 'text'}
 
 function App(){
   let [$data, setData] = React.useState(data)
-  return <cell.Text data={$data}/>
+  return <cell.Text data={{title: '哈哈', id: 'haha', value: 'ddddd'}}/>
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))

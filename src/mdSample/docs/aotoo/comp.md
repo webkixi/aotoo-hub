@@ -35,10 +35,12 @@ ReactDOM.render(<Component.UI />, root)
 
 Demo: <https://codepen.io/webkixi/pen/vYXgKYM>
 
-<iframe height="406" style="width: 100%;" scrolling="no" title="计数器(counter) -- from react component" src="https://codepen.io/webkixi/embed/vYXgKYM?height=406&theme-id=dark&default-tab=css,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
-  See the Pen <a href='https://codepen.io/webkixi/pen/vYXgKYM'>计数器(counter) -- from react component</a> by 天天修改
-  (<a href='https://codepen.io/webkixi'>@webkixi</a>) on <a href='https://codepen.io'>CodePen</a>.
-</iframe>
+<iframe src="https://codesandbox.io/embed/aotoo6jishuqi-dv1uf?fontsize=14&hidenavigation=1&theme=dark"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="aotoo@6_计数器"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
 
 > `countInstance.increase`通过组件api方法修改组件内部状态
 
@@ -51,10 +53,12 @@ Demo: <https://codepen.io/webkixi/pen/vYXgKYM>
 
 Demo: <https://codepen.io/webkixi/pen/OJRWNEY>
 
-<iframe height="434" style="width: 100%;" scrolling="no" title="计数器1" src="https://codepen.io/webkixi/embed/OJRWNEY?height=434&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
-  See the Pen <a href='https://codepen.io/webkixi/pen/OJRWNEY'>计数器1</a> by 天天修改
-  (<a href='https://codepen.io/webkixi'>@webkixi</a>) on <a href='https://codepen.io'>CodePen</a>.
-</iframe>
+<iframe src="https://codesandbox.io/embed/aotoo6jishuqi1-vh8n2?fontsize=14&hidenavigation=1&theme=dark"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="aotoo@6_计数器1"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
 
 WRAP
 ------------------

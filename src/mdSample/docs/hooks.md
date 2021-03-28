@@ -1,13 +1,18 @@
-# 钩子系统
+# 钩子系统  
 
-在`queryUI(小程序)`和`aotoo(web项目)`的项目中，我们都提供了钩子系统，并且钩子系统得到比较深的应用，比如各个组件都拥有自己的钩子环境，同时钩子系统也能够独立使用，方便数据存储，事件订阅、消费
+在WEB或者小程序的开发中，如果引入了aotoo库，则可以使用aotoo库所带的钩子系统，不同于react hooks系统，aotoo的钩子系统比较贴近传统钩子系统的使用方式，但也是非常强大和好用
 
-下面以小程序的DEMO说明钩子的使用方法，在web项目中，使用方法，api调用方法均与小程序一致
+aotoo的钩子系统包含`数据处理`、`消息处理`两个部分，`数据处理`部分我们引入了localStorage的理念并融合了LRU的理念，`消息处理`部分则比较接近JQUERY的事件订阅、消费等使用方式
+
+aotoo的组件开发中，我们较深入的使用了钩子系统。下面以小程序的DEMO说明钩子的使用方法，在web项目中，使用方法，api调用方法均与小程序一致
+
+**云钩子**  
+关于云钩子系统，是我们针对小程序云数据库开发的钩子系统，用于操作云端数据的增删改查，请关注我们的说明文档
 
 ## 创建钩子
 
 ```js
-const core = require(‘components/aotoo/core’)  
+import {lib} from '@aotoo/aotoo';
 const lib = core.lib  
 const hooks = lib.hooks  
 
@@ -17,12 +22,17 @@ const hookInst = hooks(‘hooks-name’)
 // 内存及storage钩子
 // 将数据存在内存，并同时存在localStorage，有持久性
 const hookInst = hooks(‘hooks-name’, true)
-
 ```
+
+**内存钩子**  
+内存钩子的概念主要是针对数据处理部分，当刷新页面，则数据丢失，适用于SPA等项目
+
+**实体钩子**  
+实体钩子的概念主要是针对数据处理部分，我们会将setItem后的数据存储在localstorage中(支持超时设置)，刷新页面不影响数据读取
 
 ## 数据操作
 
-日常数据操作，数据的增删改查
+数据操作的API主要参考localstorage，几乎没有学习成本。主要用于数据的增删改查
 
 ```js
 // 使用钩子存储数据

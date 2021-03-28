@@ -9,7 +9,7 @@ npm install -g aotoo-cli
 aotoo -V # 检查是否安装成功
 ```
 
-## USAGE
+## 常用命令大全
 
 使用 aotoo 命令行启动各个服务
 

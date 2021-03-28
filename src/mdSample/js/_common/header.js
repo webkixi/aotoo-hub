@@ -12,10 +12,10 @@ module.exports = function(type, menusInst){
       data: [
         {title: '脚手架', url: '/', select: type === 'index'},
         {title: '小程序', url: '/minip', select: type === 'minip'},
-        {title: 'AOTOO', url: '/aotoo', select: type === 'aotoo'},
-        {title: '表单组件', url: '/form', select: type === 'form'},
+        {title: 'AOTOO库', url: '/aotoo', select: type === 'aotoo'},
+        {title: 'CELL组件', url: '/form', select: type === 'form'},
         {title: '文档系统', url: '/doc', select: type === 'doc'},
-        {title: '日志', url: '/logs', select: type === 'log'},
+        // {title: '日志', url: '/logs', select: type === 'log'},
         {title: 'SAUI', url: '/saui', select: type === 'saui'},
       ],
       listClass: 'item-nav',

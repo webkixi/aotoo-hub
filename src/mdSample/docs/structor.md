@@ -48,8 +48,6 @@ __src/project__
 **wp-babel.js**  
 非必须文件，补充自定义的babel配置，一般当项目有独立package.json使用，该配置参与webpack运行时使用，注意请先安装配置所需的依赖包  
 
-wp-babel.js  
-
 ```js
 /*
 * babelOptions {Object}: 当前webpack解析babel的配置项
@@ -63,8 +61,6 @@ module.exports = function(babelOptions, isdll){
 
 **wp-config.js**  
 非必须文件，补充自定义的webpack配置，一般当项目有独立package.json使用，该配置参与webpack运行时使用，注意请先安装配置所需的依赖包  
-
-wp-babel.js  
 
 ```js
 /*
@@ -133,7 +129,7 @@ module.exports = function(webpackConfig, isdll){
 
 ```
 
-## 前端+server端项目结构
+## 全栈项目结构
 
 ```bash
 └─ project-1

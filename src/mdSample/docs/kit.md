@@ -14,6 +14,14 @@ aotoo 现在的工作涉及 web/node/小程序/公众号/app，aotoo 并不是�
 npm i -g aotoo-cli
 ```
 
+## @aotoo/react-cell
+
+开放性表单组件，支持自定义容器，自定义表单 <https://github.com/webkixi/aotoo-react-cell>
+
+```bash
+npm install @aotoo/react-cell
+```
+
 ## @aotoo/aotoo
 
 一套react栈的工具库，使用小程序的方式构建react组件，<https://github.com/webkixi/aotoo>
