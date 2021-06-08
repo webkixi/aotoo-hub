@@ -1,17 +1,14 @@
 const fs = require('fs')
 const path = require('path')
-const stream = require('stream');
-const {promisify} = require('util');
 const multer = require('@koa/multer');
-const pipeline = promisify(stream.pipeline);
-const uploaderRoot = CONFIG.server.uploads.root
+const uploaderRoot = CONFIG.server.uploads
+if (!fs.existsSync(uploaderRoot)) {
+  fs.mkdirSync(uploaderRoot)
+}
 
 //上传文件存放路径、及文件命名
 let storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    if (!fs.existsSync(uploaderRoot)) {
-      fs.mkdirSync(uploaderRoot)
-    }
     cb(null, uploaderRoot)
   },
   filename: function (req, file, cb) {
@@ -25,7 +22,6 @@ let storage = multer.diskStorage({
 let defaultLimits = {
   fields: 10, //非文件字段的数量
   fileSize: 500 * 1024, //文件大小 单位 b
-  // files: 1 //文件数量,
 }
 
 // const upload = multer({ storage, limits });

@@ -13,11 +13,11 @@ export default Pager.pages([
   menus: function () {
     return mkmenus([
       {title: '演示项目', itemClass: 'menu-caption', idf: 'a1' },
-      {title: '上手项目', attr: {file: 'minip/startm.md'}, parent: 'a1'},  // webpack支持
+      {title: '示例项目', attr: {file: 'minip/startm.md'}, select: true, parent: 'a1'},  // webpack支持
   
         
-      {title: 'queryUI', itemClass: 'menu-caption', idf: 'a2' },
-      {title: '简介', attr: {file: 'minip/readme.md'}, select: true, parent: 'a2'},  // webpack支持
+      {title: 'queryui', itemClass: 'menu-caption', idf: 'a2' },
+      {title: '简介', attr: {file: 'minip/readme.md'}, parent: 'a2'},  // webpack支持
       {title: '安装', attr: {file: 'assetmini.md'} ,parent: 'a2'},  // 编译模式易扩展
       {title: '钩子系统', attr: {file: 'hooks.md'} ,parent: 'a2'},  // 编译模式易扩展
       {title: '内嵌组件', attr: {file: 'minip/inner.md'} ,parent: 'a2'},  // 编译模式易扩展

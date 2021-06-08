@@ -63,7 +63,7 @@ ss-menus($class='>.hlist', $config = adminMenus)
       // margin: $config.$spaceCaption if $config.$spaceCaption
       cursor: $config.$cursor if $config.$cursor
       if ($config.$mLine)
-        border-bottom: 1px solid $config.$mLine
+        border-bottom: $config.$mLine
         color: fade-out($config.$mColor, .3)
         display: block
     &.active-none

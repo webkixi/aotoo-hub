@@ -89,8 +89,8 @@
     "write-assets-webpack-plugin": "^1.0.4"
   },
   "dependencies": {
-    "@aotoo/aotoo": "^6.1.36",
-    "@aotoo/aotoo-koa-server": "^3",
+    "@aotoo/aotoo": "^6.1.48",
+    "@aotoo/aotoo-koa-server": "^3.0.8",
     "@aotoo/react-pager": "^1.0.1",
     "aotoo-inject": "^2",
     "app-module-path": "^2.2.0",

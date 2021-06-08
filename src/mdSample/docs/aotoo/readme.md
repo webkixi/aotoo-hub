@@ -1,8 +1,11 @@
-# aotoo
+# AOTOO
 
-aotoo库是一套基于react的前端开发库，方便快速开发react组件，我们的开发理念比较接近JQUERY，但同时又保留有REACT本身的特性，摒弃了JQUERY工程化难，维护难的问题。同时aotoo又汲取了非常多的小程序开发理念，力求在开发过程中保持与小程序(原生)开发同步。  
+AOTOO是一套基于REACT的前端基础库，将REACT组件封装为JS对象，通过操作该对象的API渲染组件及控制组件状态。  
+适用于WEB项目，RN项目。  
 
-[GITHUB源码](https://www.github.com/webkixi/aotoo)
+QUERYUI 基础库是AOTOO基础库的小程序实现  
+
+[AOTOO源码](https://www.github.com/webkixi/aotoo)
 
 INSTALL
 ------------------
@@ -12,25 +15,94 @@ yarn add react react-dom
 yarn add @aotoo/aotoo
 
 # 或者
+npm install react react-dom
 npm install @aotoo/aotoo
 ```
 
-引入
-------------------
+## 基础组件  
+
+基础组件(ITEM, LIST, TREE)是AOTOO的核心组件，基于这些核心组件可以很方便实现、扩展其他组件。基于小程序的`QUERYUI`基础库具有同样的核心组件
+
+**一个ITEM的例子**  
 
 ```js
-import aotoo from '@aotoo/aotoo'
+const itemData = {
+  title: '标题'
+}
+const itemInstance = ui_item(itemData)
+ReactDOM.render(<itemInstance.UI />, document.getElementsById('root'))
+
+/*
+生成结构大致如下
+<div id='root'>
+  <div class='item'>
+    <span>标题</span>
+  </div>
+</div>
+*/
 ```
 
-一个简单的组件  
-------------------
+**一个LIST的例子**  
+
+```js
+const listData = {
+  data: [
+    {title: '数据项-1'},
+    {title: '数据项-2'},
+    {title: '数据项-3'},
+  ]
+}
+const listInstance = ui_list(listData)
+ReactDOM.render(<listInstance.UI />, document.getElementsById('root'))
+
+/*
+生成结构大致如下
+<div id='root'>
+  <div class='list-box'>
+    <div class='list-item'>...</div>
+    <div class='list-item'>...</div>
+    <div class='list-item'>...</div>
+  </div>
+</div>
+*/
+```
+
+**一个TREE的例子**  
+
+```js
+const treeData = {
+  data: [
+    {title: '数据项-1', idf: 'aaa'},
+    {title: '数据项-2', parent: 'aaa'},
+    {title: '数据项-3', parent: 'aaa'},
+  ]
+}
+const treeInstance = ui_tree(treeData)
+ReactDOM.render(<treeInstance.UI />, document.getElementsById('root'))
+
+/*
+生成结构大致如下
+<div id='root'>
+  <div class='tree-box'>
+    <div class='tree-item' data-idf="aaa">
+        <div class='sub-item'>...</div>
+        <div class='sub-item'>...</div>
+    </div>
+  </div>
+</div>
+*/
+```
+
+## 组件开发  
+
+### 自定义组件
 
 ```js
 import aotoo from '@aotoo/aotoo'
 
 const template = (state, props) => {
   return (
-    <div className='counter' onClick={this.env.inc}>{state.count}</div>
+    <div className='counter' onClick={this.inc}>{state.count}</div>
   )
 }
 
@@ -45,6 +117,63 @@ const config = {
 const Count = createComponent(config, template)
 
 ReactDOM.render(<Count.UI />, document.getElementById('root'))
+```
+
+### 自定义组件(仿小程序)
+
+```js
+import createComponent from '@aotoo/aotoo'
+
+const countTemplate = function (state, props) {
+  return <div className={"container"}>{state.count}</div>;
+};
+
+const countConfig = {
+  data: {
+    count: 0
+  },
+  increase() {
+    let count = this.getData().count;
+    count++;
+    this.setData({ count });
+  }
+};
+
+let count = createComponent(countConfig, countTemplate);
+
+ReactDOM.render(<count.UI />, document.getElementById('root'))
+```
+
+### 内嵌化组件
+
+```js
+import {extTemplate} from '@aotoo/aotoo'
+extTemplate({
+  "@md": function(string){
+    let markdownContent = marked(value);
+    return (
+      <View className="markdown-section" dangerouslySetInnerHTML={{ __html: markdownContent }}></View>
+    )
+  }
+})
+
+const itemData = {
+  "@md": `# 内嵌组件可以在ITEM组件配置中直接使用`
+}
+
+const itemInsance = ui_item(itemData)
+ReactDOM.render(<itemInsance.UI />, document.getElementsById('root'))
+
+/*
+生成结构大致如下
+<div id='root'>
+  <div class='item'>
+    <div className="markdown-section">
+      <H1>内嵌组件可以在ITEM组件配置中直接使用</H1>
+    </div>
+  </div>
+</div>
+*/
 ```
 
 通用属性

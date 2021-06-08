@@ -1,32 +1,40 @@
 # 文档系统
 
-`aotoo-hub`的自带演示文档系统，就是你现在看到的文档系统，它包含以下特点
+文档系统是`AOTOO-HUB`的 WEB 演示项目(REACT技术栈)，安装 AOTOO-HUB 后即可启动。就是你现在看到的文档系统，它包含以下特点
 
-- 全栈系统
+- 全栈系统，静态文档(MD)系统
 - SPA/MPA(多单页系统)
 - 仿小程序的路由
-- 支持 markdown
 - 支持 SEO
 - 多场景化
 - 支持动态样式编译(stylus/sass)
 
-文档系统是一套完整的示例项目，阅读文档系统的代码，有助于你熟悉和使用hub系统
+文档系统是一套完整的示例项目，阅读文档系统的代码，有助于你了解和使用 AOTOO-HUB 脚手架
 
-## 全栈
+## 安装  
 
-文档系统是一套全栈项目，前端 webpack4 提供编译服务，node 端由 koa2 提供渲染服务
+使用 AOTOO-CLI 工具初始化工作空间后即可运行文档项目，文档项目为 AOTOO-HUB 脚手架自带的演示项目
 
-### 项目目录结构
+```bash
+aotoo init workspace-name
+cd workspace-name 
+
+# 运行  
+aotoo dev
+```
+
+## 项目目录结构
 
 ```bash
 workspace
  ├─aotoo.config.js
  └─src
-    ├─ 其他系统
-    └─ 文档系统
+    ├─ 其他项目
+    └─ 文档项目
         ├── configs # node环境配置文件，默认包含default.js
         ├── venders # 第三方库文件目录+自定义公共库(前端)
         ├── dist      # 静态资源输出目录
+        ├── docs      # 文档目录 markdown
         ├── css       # 样式资源输出目录
         ├── js        # 前端业务js目录(前端)
         └── server    # node端的源码目录

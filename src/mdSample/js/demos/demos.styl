@@ -1,0 +1,134 @@
+@import '../../css/_commonx/config/theme/green'    //系统主题
+@import '../../css/_commonx/config/codetheme/grey'  //代码块模版
+@import '../../css/_commonx/cssFunc/pages/routerconfig/routerStyle3'        //左边菜单列表模板
+@import '../../css/_commondoc'                      //各系统公用部分
+
+@keyframes loader-01 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.codebox
+  border: 1px solid #ececec
+  padding: 1rem
+  h2
+    margin 0 0 2rem 0
+  h3
+    margin 0 0 1rem 0
+
+  .select-item
+    display flex
+    flex-direction column
+    .select-options
+      display none
+      border 1px solid rgba(0,0,0,.15);
+      background-color: #fff;
+      border-radius 4px
+      width: 300px;
+      border-radius: 5px;
+      box-shadow: 0 3px 6px rgba(0,0,0,.2);
+      margin-top 0.3em
+      &>.body-item
+        margin 0 1em
+        height 40px
+        border-bottom 1px dotted #ccc
+        display flex
+        align-items center
+        &:first-child
+          margin-top 1em
+          height 30px
+        &:last-child
+          margin-bottom 1em
+          border-bottom none
+          height 30px
+        &.selected
+          color red
+    .select-title
+      width 100px
+      height 35px
+      display flex
+      align-items center
+      justify-content center
+      box-sizing border-box
+      border 1px solid #2e6da4
+      border-radius 5px
+      background-color #337ab7
+      color #fff
+      &:after
+        content: '▾'
+        margin-left 0.4em
+
+
+  .button-item
+    width 100px
+    height 40px
+    margin-bottom 1rem
+    display flex
+    align-items center
+    justify-content center
+    box-sizing border-box
+    border 1px solid #4cae4c
+    border-radius 10px
+    background-color #5cb85c
+    color #fff
+    &.loading
+      opacity .7
+      &:before
+        content: '';
+        display: block;
+        width: 0.8em;
+        height: 0.8em;
+        margin-right: 0.4em
+        border-top: .2em solid currentcolor;
+        border-right: .2em solid transparent;
+        animation: loader-01 1s linear infinite;
+        border-radius: 100%;
+        position: relative;
+
+  .item-entity
+    border: 1px solid #2f2f2f;
+    padding: .5rem;
+    margin-bottom 1rem
+    position relative
+    &.black
+      background-color: #000
+      color #fff
+    .url-items
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      height: 60px;
+    .hbody
+      background-color: #0064cd
+      color #fff
+      box-sizing: border-box
+      padding 0.6rem
+    .hfooter
+      background-color: #efa55f
+      color #fff
+      box-sizing: border-box
+      padding 0.6rem
+    .demo-dot
+      position absolute
+      right 0px
+      top 0px
+      width 1.2rem
+      height 1.2rem
+      background-color: red
+      border-radius 50%
+      &.left
+        left 200px
+        right none
+        background-color: blue
+    img
+      width 10rem
+      margin-right 0.4rem
+      &.item-entity-pic
+        border 5px solid red
+        border-radius 10px
+
+
+
+
+  

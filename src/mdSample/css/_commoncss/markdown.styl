@@ -10,9 +10,11 @@
     color: inherit;
     box-sizing: border-box
   code 
+    word-break: break-word;
     color: $md-key-color
     background: fade-out($md-key-color, .9)
-    padding: .1em .3em;
+    font-size 0.9em
+    padding: .055em .4em;
   pre 
     line-height: 1.3em;
     overflow: auto;
@@ -37,6 +39,14 @@
   @media screen and (min-width: 768px) 
     body 
       width: 748px;
+  
+  h1, h2, h3, h4, h5, h6
+    margin-top 2em
+    margin-bottom .7em
+    line-height 1.5
+
+  h6
+    margin-top .3em
 
   h1, h2, h3, h4 
     color: $md-color-title
@@ -48,6 +58,8 @@
   
   h2 
     font-size: $md-size-title-2
+    border-bottom: 1px solid #ececec;
+    padding-bottom .8em
 
   h3 
     font-size: $md-size-title-3
@@ -58,8 +70,8 @@
   h5 
     font-size: $md-size-title-5
   
-  h2, h3, h4, h5
-    margin: 1em 0 
+  // h2, h3, h4, h5
+  //   margin: 1em 0 
 
   a 
     color: $md-color-link
@@ -73,12 +85,26 @@
   
   a:visited 
     /*color: purple;*/
+
+  .text-bold, b, strong 
+    font-weight: 700;
+
+  em strong, strong 
+    color #036aca
+  
   
   ul, ol 
-    padding-left: 24px;
+    padding-left: 1.5em;
   
   ul li
     list-style-type disc
+    color #2c3e50
+    line-height 1.8
+
+  ol li
+    list-style-type decimal
+    color #2c3e50
+    line-height 1.8
   
   // li 
   //   // line-height: 24px;
@@ -103,7 +129,7 @@
     box-sizing: border-box
     &:before
       content: ''
-      width: .5em
+      width: .3em
       background: $md-key-color
       height: 100%
       position: absolute;

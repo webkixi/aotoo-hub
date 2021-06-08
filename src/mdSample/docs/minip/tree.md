@@ -54,8 +54,8 @@ listConfig = {
 }
 ```
 
-__idf__
+**idf**  
 父级标识，{String}类型  
 
-__parent__  
+**parent**  
 指定父级, {String}类型

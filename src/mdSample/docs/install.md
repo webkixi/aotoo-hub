@@ -1,44 +1,47 @@
 # 安装
 
-准备
+安装环境
 ----------------
 
-- mac osx
-- linux
-- ~~windows~~，但 win10 的 linux 子系统可以
-- node >= 12
+- MACOSX
+- LINUX
+- LINUX子系统(win环境)
+- NODE >= 12
 
-全局环境
+全局命令
 ----------------
 
 ```bash
 npm install -g yarn
+npm install -g expo-cli  # REACT-NATIVE项目所需
+npm install -g aotoo-cli # aotoo命令行工具
+
+# aotoo -V # 查看版本，证明安装成功
 ```
 
-安装工具
-----------------
-
-`aotoo-cli`是专门为`aotoo-hub`打造的一套命令工具，通过命令行来进行操作
-
-```bash
-npm install -g aotoo-cli
-aotoo -V # 查看版本，证明安装成功
-```
-
-初始化工作空间
-----------------
-
-初始化会自动拉取最新的 aotoo-hub 代码，并安装 npm 依赖包
+## 初始化
 
 ```bash
 cd ~
-aotoo init xxx # 新建工作空间
+aotoo init workspace-name   # 工作空间名称
 ```
 
-**启动自带项目**
-aotoo-hub 默认 demo 项目，就是现在你看到的 markdown 文档项目，react 框架，node 服务，SSR、M-SPA
+## 创建项目  
+
+我们可以创建本地项目和远程项目，本地项目需要自行配置一些依赖，通常我们建议安装远程项目
+
+**本地项目**
 
 ```bash
-cd xxx
-aotoo dev # 启动默认文档项目
+cd ~/workspace-name
+aotoo create project-name   # 新建项目，完成后配置package.json安装所需依赖
+```
+
+远程项目则是一个个已经成型的项目环境，比如我们提供了REACT/VUE/小程序/RN的基础项目模板  
+
+**远程项目**
+
+```bash
+cd ~/workspace-name
+aotoo install https://www.github.com/...
 ```

@@ -1,6 +1,6 @@
-# 目录结构
+# 目录说明
 
-`aotoo-hub`安装完成后的目录结构
+在初始化工作空间后，其目录结构大致如下
 
 ```bash
 hub工作空间
@@ -17,31 +17,34 @@ hub工作空间
              ├── configs # node环境配置文件，默认包含default.js
              ├── venders # 第三方库文件目录+自定义公共库(前端)
              ├── dist      # 静态资源输出目录
-             ├── js        # 前端业务js目录(前端)
+             └── js        # 前端业务js目录(前端)
+                  │── vendors # 公共库文件
+                  └── index.js # 首页JS文件
              └── server    # node端的源码目录
-                   │── pages  # node端的业务目录
-                   └── plugins # 自定义插件目录
+                  └── pages  # node端的业务目录
+                       └── index.js # 首页JS文件(node)，作为前端js/index的镜像路由文件
+                  └── plugins # 自定义插件目录
 ```
 
-## 工作空间公共文件/目录说明
+## 工作空间文件/目录说明
 
-__build__  
-存放所有编译文件  
+**build**  
+编译文件  
 
-__aotoo.config.js__  
+**aotoo.config.js**  
 项目配置文件
 
-__index.js__  
+**index.js**  
 所有项目启动文件，`aotoo dev、aotoo build、aotoo start、node index.js`命令的启动文件
 
-__postcss.config.js__  
+**postcss.config.js**  
 postcss配置文件  
 
-__src__  
-项目存放目录，建议所有项目都存放于此  
+**src**  
+所有项目的存放目录  
 
-__src/project__  
-项目目录，通过命令行`aotoo create xxx`新建的项目
+**src/project**  
+项目目录
 
 ## 项目文件/目录说明
 
@@ -80,27 +83,27 @@ module.exports = function(webpackConfig, isdll){
 
 ```bash
 └─ project-1
-      ├── dist
-            ├── 1.0.1 # 版本目录，由配置文件中指定
+      ├── dist # 编译后文件存放目录
+            ├── 1.0.1 # 版本目录(在配置文件中指定)
                   ├── dev # 开发文件输出目录
-                        ├── js
+                        └── js
                               ├── index.js
                               └── user.js
-                        ├── css
+                        └── css
                               ├── index.css
                               └── user.css
-                        ├── html
+                        └── html
                               ├── index.html
                               └── user.html
 
                   ├── pro # 生产文件输出目录
-                        ├── js
+                        └── js
                               ├── index__c370a3b2ce.js
                               └── user__385a01bd3a.js
-                        ├── css
+                        └── css
                               ├── index__c370a3b2ce.css
                               └── user__385a01bd3a.css
-                        ├── html 
+                        └── html 
                               ├── index.html
                               └── user.html
 
