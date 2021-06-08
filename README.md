@@ -1,65 +1,71 @@
-# aotoo-hub
+# 介绍  
 
-`aotoo-hub`是一套前端/NODE 端深度融合的全栈系统，`aotoo-hub`关注点在于编译，无任何库依赖，`hub`包含 4 套 DEMO 演示项目（REACT/VUE/小程序/MD 文档系统），方便快速上手各套环境。
+AOTOO-HUB 是一套前端全栈型脚手架
 
-`MD文档系统`是一套基于 markdown 的文档系统，正是你看到的这个，是使用`hub`的一个典型范例，包含前端编译，自定义前端路由(仿小程序)，NODE 端自动镜像路由，NODE 端插件使用，NODE 端自定义路由，命令行的使用等等，较全面的介绍了`hub`系统的使用[**_说明_**](http:www.agzgz.com/doc)
+* 支持 REACT/VUE/小程序/RN  
+* 支持多项目开发，所有项目放置于开发空间中，可独立编译，运行
+* 简单、高效的命令行操作
+* 支持各种动态样式  
+* 支持远程项目，可以安装gitee/github的项目到本地
+* 配置server为true，支持node支撑的后端服务，也可作为项目中间层
 
-`hub`项目可以做到非常精简，这得益于`hub`**_从业务 JS 开始构建_**的独特编译流程，编译器基于业务 JS 结构衍生出其所需要的各项资源，如自动生成所需模板，自动构建 node 端的 controler 文件，自动归类输出静态资源等，当然编译器也能够支持复杂的自定义结构
+**[GITHUB](https://www.github.com/webkixi/aotoo-hub)**  
+**[更多说明](https://www.agzgz.com)**  
 
-[更多说明](http://www.agzgz.com)
+## 多项目开发  
 
-## FEATHER
-
-* 多项目开发、运行、部署
-* 多环境支持，可以快速切换开发环境，测试环境，生产环境等
-* 支持小程序开发
-* 前端与node(koa2)端的融合式开发环境
-
-## INSTALL
-
-```bash
-npm install -g yarn
-npm install -g aotoo-cli
-aotoo -V
-aotoo init workspace   # 新建工作空间
-```
-
-## 快速开始
-
-`aotoo-hub`包含前端/node端，开发会同时启动这两个部分，使之形成有机整体，node端由koa2封装而来
-
-__新建项目__
+aotoo-hub建立了一个统一的开发环境(基于webpack4)，所有项目可以共享开发环境中的编译资源，如babel, sass等。按照简单的目录规则，可以快速开始项目，无需关注编译环境
 
 ```bash
-aotoo create project # 新建项目
+workspack
+  └── src 
+      │── hub-react
+      │── hub-vue
+      └── hub-xcx  # 小程序项目
 ```
 
-__配置项目__  
-打开aotoo.config.js，编辑apps字段
-
-```js
-apps: [
- // 默认项目，hub自带项目
-   {
-      name: 'aotooSample',
-      startup: false,    // 改为false，使该项目默认不启动
-      ...
-    },
-
- // 新建的自定义项目
-    {
-      name: 'project',
-      startup: true,    // 设为true，命令行不用指定--name参数
-      server: true, // 是否需要node提供服务
-      src: path.join(ROOT, 'src/project'),  // 指定项目源码目录
-      port: 8500  // 指定项目端口
-    }
-  ]
-}
-```
-
-__启动项目__
+启动项目也非常简单  
 
 ```bash
-aotoo dev
+aotoo dev hub-react  # 启动hub-react项目，启动开发模式
+aotoo build hub-react  # 按生产模式编译hub-react项目
 ```
+
+## 命令行  
+
+通过专属命令`aotoo`启动项目并附带运行状态，有3中基础命令及由基础命令衍生的状态命令，这个我们会在后面详细说明
+
+```bash
+aotoo dev  # 开发模式
+aotoo build # 生产编译模式
+aotoo install # 安装远程项目  
+```
+
+## 多环境支持  
+
+通过命令行可以快速切换不同的开发环境(需先创建配置文件)，如测试，预发布，生产等等  
+
+```bash
+aotoo dev project --config test  # 启动测试环境
+aotoo dev project --config pre   # 启动预发布环境
+```
+
+**产出目录**  
+
+```bash
+├─ dist          # 输出目录(前端)
+    │─ 1.0.1     # 版本目录，依据配置中的version字段
+    └─ 1.0.8
+        └─ dev # 开发目录
+            │── js/index.js
+            │── html/index.html
+             ...
+```
+
+## 全栈模式  
+
+在`aotoo-hub`配置文件`aotoo.config.js`中配置相关项目的server属性为true，即可以将该项目由纯前端项目转变为大前端项目，由node提供server服务
+
+## 远程模板
+
+把本地项目(基于规则目录)发布到gitee/github后该项目可作为远程模板被其他开发人员安装到本地。
