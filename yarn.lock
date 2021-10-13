@@ -31,9 +31,9 @@
     socket.io "^2"
 
 "@aotoo/aotoo@^6.1.48":
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/@aotoo/aotoo/-/aotoo-6.2.3.tgz#7991375fcd391cd5175b50a23f7b6d3954b9f8b7"
-  integrity sha512-189lAX01DsPzKp2e5IlLP/xJphiJPt8aON9nfx37nMpWWBe5xZ85+YOt2EsGnV7TPuxhT6khy1u+J4wPkZD1kw==
+  version "6.2.4"
+  resolved "https://registry.yarnpkg.com/@aotoo/aotoo/-/aotoo-6.2.4.tgz#ab63fb3ca594ab56dff2a1e145b29c5cd1d72450"
+  integrity sha512-+o3kykAxt4sHh+AbjupSBOUEyMUd2T45UZJE4BB65OUXKBhh8vBjL/tdH6QsplxXPg93w4y/pIrWcpbL//2B0A==
   dependencies:
     lodash "^4.17.4"
     md5 "^2.3.0"
