@@ -488,6 +488,9 @@ module.exports = function* main(assets, opts) {
       yield generateXcx(build_asset)
     }
 
+    // 读取场景配置文件，如开发环境，测试环境，生产环境
+    build_asset = yield getScenesConfig(build_asset)
+
     // 生成server目录
     // @aotoo/aotoo-koa-server
     // if (build_asset.startup) {
@@ -501,16 +504,17 @@ module.exports = function* main(assets, opts) {
       } else {
         yield generateServer(build_asset)
       }
+    } else {
+      const prohibitKeys = ['server', 'bodyOptions', 'cacheOptions', 'fetchOptions', 'hooks', 'routerOptions']
+      const userScenesConfig = build_asset.userScenesConfig
+      const clientWindowConfig = {}
+      Object.keys(userScenesConfig).forEach(ky=>{
+        if (!prohibitKeys.includes(ky)) {
+          clientWindowConfig[ky] = userScenesConfig[ky]
+        }
+      })
+      process.env.CONFIG = JSON.stringify(clientWindowConfig)
     }
-
-    
-    
-    
-    
-    // 读取场景配置文件，如开发环境，测试环境，生产环境
-    build_asset = yield getScenesConfig(build_asset)
-    
-
     
 
 

@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const path = require('path')
     , fs = require('fs')
     , mkdirp = require('mkdirp')
@@ -101,6 +102,10 @@ module.exports = function (asset, envAttributs) {
       new MiniCssExtractPlugin({
         filename: isDev ? "css/common.css" : "css/common__[hash:10].css",
         chunkFilename: isDev ? "css/[id].css" : "css/[id]__[hash:10].css"
+      }),
+      new webpack.DefinePlugin({
+        CONFIG: process.env.CONFIG,
+        'process.env': process.env.CONFIG,
       })
     ]
   }
