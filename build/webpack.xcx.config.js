@@ -3,6 +3,7 @@ var fs = require('fs')
 var os = require('os')
 var _  = require('lodash')
 var webpack = require('webpack')
+var UglifyJS = require("uglify-js");
 var path = require('path')
 const xcxCloudProjectConfigFile = path.join(__dirname, './lib/xcx_template/project.config.json')
 const xcxCloudProjectCloudModule = path.join(__dirname, './lib/xcx_template/cloudclient.js')
@@ -21,14 +22,56 @@ class DoneCompile {
   }
   apply(compiler){
     compiler.hooks.done.tap('xcxCompiler', (stats)=>{
-      const {DIST, options} = this.options
+      const {DIST, options, userScenesConfig, isDev} = this.options
       const {cloud, appid} = options
+
+      /**
+       * 配置文件
+       */
+      const envPath = path.join(DIST, 'envconfig.js')
+      const jsonContent = JSON.stringify(userScenesConfig)
+      const configContent = ` module.exports = ${jsonContent} `
+      fse.outputFileSync(envPath, configContent)
+
       globby.sync([path.join(DIST, '**/*')], {onlyFiles: false}).forEach(filename=>{
         if (filename.indexOf('nobuild__') > -1) {
           fse.removeSync(filename)
+        } else {
+          const fileobj = path.parse(filename)
+          if (fileobj.ext === '.js') {
+            const attachContent = `
+const caseConfig = require('./envconfig');
+if (wx) {
+wx.CONFIG = caseConfig
+}
+`
+            if (!isDev) {
+              let tempContent = fs.readFileSync(filename, 'utf-8');
+              if (fileobj.base === 'app.js') {
+                if (tempContent.indexOf('const caseConfig') === -1) {
+                  tempContent = attachContent + '\n' + tempContent;
+                }
+              } 
+              const result = UglifyJS.minify(tempContent);
+              tempContent = result.code
+              fse.outputFileSync(filename, tempContent)
+            } else {
+              // development
+              if (fileobj.base === 'app.js') {
+                let tempContent = fs.readFileSync(filename, 'utf-8');
+                if (tempContent.indexOf('const caseConfig') === -1) {
+                  const fileContent = attachContent + '\n' + tempContent;
+                  fse.outputFileSync(filename, fileContent)
+                }                
+              }              
+            }
+          }
         }
       })
 
+      /**
+       * 云配置
+       */
       if (cloud) {
         const projectConfigFile = path.join(DIST, 'project.config.json')
         const appCloudConfigFile = path.join(DIST, projectConfig.miniprogramRoot, 'cloudclient.js')
@@ -98,7 +141,7 @@ function baseConfig(asset, envAttributs) {
   let myEntries = jsEntries(SRC)
 
   return {
-    mode: 'development',
+    mode: isDev ? 'development' : 'development',
     entry: myEntries,
     watch: envAttributs('watch'),
     cache: true,

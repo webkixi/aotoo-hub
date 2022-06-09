@@ -221,9 +221,9 @@ function delDist(asset, buildType, isXcx) {
 
   if (isXcx) {
     delTarget = [DIST + '/**']
-    if (!argv.rebuild) {
-      delTarget = []
-    }
+    // if (!argv.rebuild) {
+    //   delTarget = []
+    // }
   }
 
   // 只启动node端
